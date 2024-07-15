@@ -1,0 +1,81 @@
+<div class="profileimage-holder">
+    <div class="user-details-hodler">
+      <img *ngIf="user?.profileimage" [src]="'data:image/jpeg;base64,' + user?.profileimage" alt="Profile Image" (click)="onImageClick()">
+    <app-image-larger *ngIf="showLargerImage" [imageUrl]="'data:image/jpeg;base64,' + user?.profileimage" (close)="onCloseLargerImage()"></app-image-larger>
+
+    <h1>{{user?.username}}</h1>
+    <app-add-post (postAdded)="onPostAdded()" *ngIf="openaddpostscreenbool" (closePost)="openaddpostscreenbool = false"></app-add-post>
+
+    </div>
+
+    <button (click)="openaddpostscreen()">open</button>
+
+
+
+    <div class="button-holder">
+      <button (click)="showfeed()">feed</button>
+      <button (click)="showiamfollowinguserlist()">i am following</button>
+      <button (click)="showiamfolloeduserlist()">i am followed</button>
+    </div>
+
+
+    <div class="posts-container" *ngIf="showfeedBool">
+        <div *ngFor="let post of posts">
+          <app-post [post]="post"></app-post>
+        </div>
+    
+        
+      </div>
+      
+
+      <div class="posts-container" *ngIf="showiamfolloeduserlistBool">
+         
+        <h2>List of Users You Are Followed</h2>
+
+        <div class="user-card" *ngFor="let user of iamfolloweduserslist">
+          <div class="user-profile">
+            <img *ngIf="user.profileImageUrl" [src]="user.profileImageUrl" alt="Profile Image">
+            <div class="user-details">
+              <p><strong>Username:</strong> {{ user.username }}</p>
+              <p *ngIf="user.date"><strong>Date:</strong> {{ user.date | date: 'mediumDate' }}</p>
+              <p *ngIf="user.date"><strong>Time:</strong> {{ user.date | date: 'shortTime' }}</p>
+         
+            </div>
+            
+
+
+          </div>
+        </div>
+        
+      </div>
+
+
+      <div class="posts-container" *ngIf="showiamfollowinguserlistBool">
+        <h2>List of Users You Are Following</h2>
+        
+        <div class="user-card" *ngFor="let user of iamfollowinguserslist">
+          <div class="user-profile">
+            <img *ngIf="user.profileImageUrl" [src]="user.profileImageUrl" alt="Profile Image">
+            <div class="user-details">
+              <p><strong>Username:</strong> {{ user.username }}</p>
+              <p *ngIf="user.date"><strong>Date:</strong> {{ user.date | date: 'mediumDate' }}</p>
+              <p *ngIf="user.date"><strong>Time:</strong> {{ user.date | date: 'shortTime' }}</p>
+            </div>
+
+            <button (click)="toggleDropdown($event, user)" class="dropdown-toggle">⋮oooooo</button>
+            <div *ngIf="user.showDropdown" class="dropdown-menu">
+              <ul>
+                <li (click)="removeIAMFollowingUser(user.otheruserid)">Unfollow</li>
+                <li>Report</li>
+              </ul>
+            </div>
+
+            
+          </div>
+        </div>
+      </div>
+
+
+
+
+</div>

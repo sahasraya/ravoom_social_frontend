@@ -1,0 +1,40 @@
+
+<app-header></app-header>
+<app-add-post (postAdded)="onPostAdded()" *ngIf="openaddpostscreenbool" (closePost)="openaddpostscreenbool = false"></app-add-post>
+<app-notification></app-notification>
+
+
+
+
+<button (click)="createnewgroup()">create group</button>
+
+<div class="group-creation-wrapper" *ngIf="iscreatenewgroupopen">
+  <button (click)="closecreatenewgroup()">close</button>
+
+
+   <app-create-group></app-create-group>
+
+  
+
+
+
+  
+</div>
+
+
+
+
+
+<div class="feed-container">
+  <h1>Feed</h1>
+
+  <button (click)="openaddpostscreen()">open</button>
+ 
+  <div class="posts-container">
+    <div *ngFor="let post of posts; let i = index">
+      <app-post [post]="post" (delete)="handlePostDelete(i)"></app-post>
+    </div>
+
+    
+  </div>
+</div>

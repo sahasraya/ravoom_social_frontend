@@ -1,0 +1,74 @@
+<div class="search-container" (click)="stopPropagation($event)">
+
+    <input type="text" placeholder="Search here..." [(ngModel)]="searchText" (input)="searchResult()" 
+    (focus)="showSavedUsers()"  (keydown.enter)="handleEnterKeyPress()">
+    
+    <div *ngIf="user && user.length" class="results-container">
+      <ul class="user-list">
+        <li *ngFor="let u of user" class="user-item">
+          <a [routerLink]="['/home/profile', u.userid]" (click)="addToLocalStorage(u.username, 'data:image/jpeg;base64,' + u.profileimage,u.userid)">
+            <img *ngIf="u.profileimage" [src]="'data:image/jpeg;base64,' + u.profileimage" alt="Profile Image" class="profile-image">
+            <h1 class="username">{{ u.username }}</h1>
+         
+          </a>
+
+
+        </li>
+      </ul>
+    </div>
+  
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+    <div *ngIf="searchUsers.length > 0 && isFacoused" class="results-container">
+      <ul class="user-list">
+        <li *ngFor="let u of searchUsers" class="user-item">
+          <a [routerLink]="['/home/profile', u.userid]">
+            <img *ngIf="u.profileimage" [src]="u.profileimage" alt="Profile Image" class="profile-image">
+            <h1 class="username">{{ u.username }}</h1>
+
+          </a>
+          <button (click)="removeFromLocalStorage(u.userid)" class="close-button">X</button>
+
+        </li>
+      </ul>
+      
+      <app-popular-post></app-popular-post>
+     
+    </div>
+
+ 
+    <div *ngIf="searchUsers.length == 0 && isFacoused" class="results-container">
+      <p>No recent search</p>
+    
+       <app-popular-post></app-popular-post>
+    </div>
+    
+
+
+  </div>
+  

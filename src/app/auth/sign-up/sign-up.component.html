@@ -1,0 +1,57 @@
+<form [formGroup]="signUpForm" (ngSubmit)="onSubmit()">
+<div [class]="bannerClass" *ngIf="passwordsnotmatching">
+  <span class="bannertext">{{errormessage}}</span>
+</div>
+
+    <div>
+      <label for="username">Username:</label>
+      <input id="username" formControlName="username" type="text">
+    </div>
+  
+    <div>
+      <label for="emailaddress">Email Address:</label>
+      <input id="emailaddress" formControlName="emailaddress" type="email">
+    </div>
+  
+    <div>
+      <label for="phonenumber">Phone Number:</label>
+      <input id="phonenumber" formControlName="phonenumber" type="number">
+    </div>
+  
+    <div>
+      <label for="password">Password:</label> <span (click)="visiblepassword()">{{ showPassword ? 'Hide' : 'Show' }}</span>
+      <input [type]="showPassword ? 'text' : 'password'" id="password" formControlName="password">
+    </div>
+  
+    <div>
+      <label for="reenterpassword">Re-enter Password:</label>
+      <input [type]="showPassword ? 'text' : 'password'" id="reenterpassword" formControlName="reenterpassword">
+    </div>
+
+    <div *ngIf="age !== null && age !== 0">
+      <span class="age" [ngClass]="{'red': age < 18, 'green': age >= 18}">
+        {{ age < 18 ? 'Age is less than 18' : 'Age: ' + age }}
+      </span>
+    </div>
+
+    <div>
+      <label for="birthdate">Birth date</label>
+      <input type="date" id="birthdate" formControlName="birthdate" max="{{ maxDate }}">
+    </div>
+
+
+  
+    <div class="form-group">
+        <label for="profileimage">Profile Image</label>
+        <input id="profileimage" type="file" (change)="onFileSelected($event)" class="form-control" accept=".png, .jpg, .jpeg" />
+        <img *ngIf="imagePreview" [src]="imagePreview" alt="Image Preview" class="image-preview" />
+      </div>
+  
+    <button type="submit"  *ngIf="age! > 18 && signUpForm.valid">Sign Up</button>
+
+    <a routerLink="/auth/log-in">Log in</a>
+
+
+    
+  </form>
+  

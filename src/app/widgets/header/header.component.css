@@ -1,0 +1,48 @@
+.header {
+    background-color: blue;
+    padding: 10px;
+}
+
+.nav-links {
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+}
+
+.nav-links a {
+    color: white;
+    text-decoration: none;
+    position: relative;
+}
+
+.nav-links a::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    display: block;
+    background: white;
+    transition: width .3s;
+    bottom: -5px;
+}
+
+.nav-links a:hover::after {
+    width: 100%;
+}
+
+ 
+  
+  .sign-out-message {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 20px;
+    border-radius: 5px;
+    text-align: center;
+    z-index: 1000;
+    font-size: 18px;
+  }
+  

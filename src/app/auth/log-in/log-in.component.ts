@@ -1,0 +1,106 @@
+import { Component } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms'; 
+import { CommonModule } from '@angular/common';
+import { Router, RouterModule, RouterOutlet } from '@angular/router';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+
+@Component({
+  selector: 'app-log-in',
+  standalone: true,
+  imports: [
+    CommonModule,
+    RouterOutlet,
+    HttpClientModule,
+    FormsModule,
+    ReactiveFormsModule,
+    RouterModule
+  ],
+  templateUrl: './log-in.component.html',
+  styleUrl: './log-in.component.css'
+})
+export class LogInComponent {
+
+  loginForm: FormGroup;
+  showinvalidcredentioalsbanner:boolean = false;
+  showPassword: boolean = false;
+  loginmessage:string = "";
+
+  APIURL = 'http://127.0.0.1:8000/';
+  constructor(private fb: FormBuilder,private http:HttpClient,private router:Router){
+    this.loginForm = this.fb.group({
+      emailaddress: ['', [Validators.required, Validators.email]],
+      password: ['', Validators.required],
+     
+  
+    });
+
+    
+  }
+  onSubmit(): void {
+    if (this.loginForm.valid) {
+      const formData = new FormData();
+      Object.keys(this.loginForm.value).forEach(key => {
+        formData.append(key, this.loginForm.value[key]);
+      });
+  
+      this.http.post(this.APIURL + 'log-in', formData).subscribe({
+        next: (response: any) => {
+       
+          if (response.message === "Login successful") {
+           
+            localStorage.setItem('ppd', 'no');
+            localStorage.setItem('name', 'normal');
+            localStorage.setItem('core', 'never');
+            localStorage.setItem('appd', 'AkfwpkfpMMkwppge');
+            localStorage.setItem('ud', 'AASfeeg2332Afwfafwa');
+            localStorage.setItem('s', '2');
+            localStorage.setItem('g', '34');
+            localStorage.setItem('21', '5g2');
+            localStorage.setItem('cap', 'np');
+            localStorage.setItem('uid', 'Jfwgw2wfAfwawwgAd');
+            localStorage.setItem('doc', '25');
+
+            localStorage.setItem('wmd', response.userid);
+            localStorage.setItem('ger', response.userid);
+            localStorage.setItem('fat', response.userid);
+            localStorage.setItem('mainsource', response.userid);
+            localStorage.setItem('ud', response.userid);
+            localStorage.setItem('www', '34');
+            localStorage.setItem('reload', 'false');
+
+            this.router.navigate(['']).then(() => {
+              location.reload();
+            });
+        
+          }else if (response.message=="Please confirm the email"){
+            this.loginmessage= "Please confirm the email";
+
+            this.showinvalidcredentioalsbanner = true;
+              setTimeout(() => {
+                this.showinvalidcredentioalsbanner = false;
+              }, 3000);
+
+          } else if(response.message =="No user found"){
+
+              this.loginmessage= "Invalid credentials";
+              this.showinvalidcredentioalsbanner = true;
+              setTimeout(() => {
+                this.showinvalidcredentioalsbanner = false;
+              }, 3000);
+          }else {
+            console.error('Login failed:', response.message);
+          }
+        },
+        error: error => {
+          console.error('There was an error!', error);
+        }
+      });
+    }
+  }
+
+  visiblepassword(): void {
+    this.showPassword = !this.showPassword;
+  }
+
+}

@@ -1,0 +1,29 @@
+<form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+
+
+  <div class="error-banner" *ngIf="showinvalidcredentioalsbanner">
+    <span>{{loginmessage}}</span>
+  </div>
+    
+  
+    <div>
+      <label for="emailaddress">Email Address:</label>
+      <input id="emailaddress" formControlName="emailaddress" type="email">
+    </div>
+  
+  
+  
+    <div>
+      <label for="password">Password:</label>
+      <span (click)="visiblepassword()">{{ showPassword ? 'Hide' : 'Show' }}</span>
+      <input [type]="showPassword ? 'text' : 'password'" id="password" formControlName="password">
+    </div>
+  
+ 
+  
+    <button type="submit" *ngIf="loginForm.valid">Log in</button>
+
+
+  <a routerLink="/auth/sign-up">sign up</a>  
+  </form>
+  

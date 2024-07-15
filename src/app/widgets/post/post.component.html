@@ -1,0 +1,147 @@
+<div *ngIf="!post.deleted" class="post">
+  <div class="post-header">
+    <img *ngIf="profileImageUrl" [src]="profileImageUrl" alt="User Profile Image" class="profile-image" />
+    <div class="postownerdetailholder">
+           <div class="username-holder">
+                <a [routerLink]="['/home/profile', post.userid]">{{ post.username }}</a>
+                  <div class="buttun-hodler" >
+                   
+                     <span *ngIf="this.userid !=''">
+                      <span class="joinbtn" *ngIf="post.posttype === 'group' || post.groupid != null " (click)="joingroup(post.grouptype,post.groupid,post.username,post.userid )">{{btntext}}</span>
+                     </span>
+                     
+                   
+                   
+                    
+                    <button (click)="toggleDropdown($event, post)" class="dropdown-toggle">⋮</button>
+                  </div>
+                  <div *ngIf="post.showDropdown" class="dropdown-menu">
+                    <ul>
+                      <li (click)="removePost(post.postid)">Delete</li>
+                      <li>Report</li>
+                    </ul>
+                  </div>
+
+           </div>
+      <p>{{ calculateTimeAgo(post.posteddate) }}</p>
+ 
+    </div>
+
+
+  </div>
+  
+   <small *ngIf="post.groupid != null">{{post.postdescription}}</small>
+  <div *ngIf="userid != post.userid">
+    <h3 *ngIf="post.posttype === 'group'"> {{post.username}} has created a {{post.grouptype}} group. {{post.grouptype === 'private' ? 'Get permission to join.' :'You can join now.'}}</h3>
+  </div>
+
+
+  <h3 *ngIf="userid == post.userid && post.posttype === 'group'">Your group</h3>
+ 
+ 
+
+
+
+  <div *ngIf="post.posttype === 'text'" class="textholder">
+    <div class="text-holder" [style.background-color]="post.textcolor" (click)="commentOnPost(post.postid,post.n_or_g)">
+      <p class="text-post-text">{{ post.textbody }}</p>
+    </div>
+  </div>
+
+  
+  <div *ngIf="post.posttype === 'image'" class="imageholder">
+    <img   [src]="imageUrl" alt="Post Image"   (click)="commentOnPost(post.postid,post.n_or_g)" />
+    <!-- <img   [src]="imageUrl" alt="Post Image" (click)="showImageSliderMethod(post.images)" /> -->
+  </div>
+
+
+  <div *ngIf="post.posttype === 'group'" class="imageholder">
+    <img   [src]="profileImageUrl" alt="Post group"    />
+    
+  </div>
+
+
+  <!-- Image slider component -->
+  <!-- <div *ngIf="showImageSlider" class="image-slider-overlay">
+    <div class="image-slider-container">
+      <img [src]="createBlobUrl(post.images[currentImageIndex], 'image/jpeg')" alt="Slider Image" class="slider-image" />
+      <div class="navigation-buttons">
+        <button class="nav-button" (click)="onPreviousImage()">Previous</button>
+        <button class="nav-button" (click)="onNextImage()">Next</button>
+      </div>
+      <button class="close-button" (click)="closeImageSlider()">Close</button>
+    </div>
+  </div> -->
+  
+
+
+  <!-- <app-image-larger *ngIf="showLargerImage" [imageUrl]="imageUrl" (close)="onCloseLargerImage()"></app-image-larger> -->
+
+  
+
+  <div *ngIf="post.posttype === 'video'" class="videoholder">
+    <!-- <p>{{videoUrl}}</p> -->
+    <video *ngIf="videoUrl" controls (click)="commentOnPost(post.postid,post.n_or_g)">
+      <source [src]="videoUrl" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+  </div>
+
+
+  <div *ngIf="post.posttype === 'link'" class="imageholder">
+    <a [href]="post.thelink" target="_blank" class="link-wrapper">{{post.thelink}}</a>
+    <img [src]="post.textbody" alt="" (click)="commentOnPost(post.postid,post.n_or_g)">
+    <h4>{{post.filepath}}</h4>
+</div>
+
+
+
+  
+
+
+  <div *ngIf="post.posttype === 'audio'" class="audioholder" (click)="commentOnPost(post.postid,post.n_or_g)">
+    <audio *ngIf="audioUrl" controls>
+      <source [src]="audioUrl" type="audio/mpeg">
+      Your browser does not support the audio element.
+    </audio>
+  </div>
+
+  <div class="active-buttons-holder">
+    <button (click)="likePost(post.postid, post.userid,  post.username, post.userprofile,post.n_or_g)">Like</button>
+    <span>{{ likes }} Likes</span>
+
+    <!-- Comment button -->
+    <button (click)="commentOnPost(post.postid,post.n_or_g)">Comment</button>
+    <span>{{ comments }} Comments</span>
+ 
+ <span *ngIf="this.userid !='' && userid != post.userid && post.posttype !='group'">
+  <button (click)="iamstartedtofollow(post.userid)"  >{{followButtonText}}</button>
+
+ </span>
+
+
+  </div>
+
+
+  <div class="alert-BG" *ngIf="postToBeDeleted" >
+    <div  class="delete-confirmation-dialog">
+      <p>Are you sure you want to remove the comment?</p>
+      <button (click)="removePostYes(post.postid)">Yes</button>
+      <button (click)="cancelDeleteComment()">No</button>
+    </div>
+  </div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+

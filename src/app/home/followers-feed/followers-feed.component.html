@@ -1,0 +1,7 @@
+<div class="posts-container">
+    <div *ngFor="let post of posts; let i = index">
+      <app-post [post]="post" (delete)="handlePostDelete(i)"></app-post>
+    </div>
+
+    
+  </div>

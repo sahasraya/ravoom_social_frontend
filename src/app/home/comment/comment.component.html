@@ -1,0 +1,212 @@
+<div *ngIf="post" class="post-container">
+    <div class="post-header">
+      <img class="user-profile" [src]="'data:image/jpeg;base64,' + post.userprofile" alt="User Profile Image">
+      <div class="user-info">
+        <p class="username">{{ post.username }}</p>
+        <p>{{ calculateTimeAgo(post.posteddate) }}</p>
+      </div>
+    </div>
+    <div class="post-body">
+      <p class="post-description">{{ post.postdescription }}</p>
+  
+
+
+
+
+
+
+      <div *ngIf="post.posttype === 'link'" class="linkholder">
+        <a [href]="post.thelink" target="_blank">{{post.thelink}}</a>
+       
+         <img [src]="post.textbody" alt="">
+         <h4>{{post.filepath}}</h4>
+    
+      </div>
+ 
+      <div *ngIf="post.posttype === 'image'" class="post-media">
+        <img [src]="'data:image/jpeg;base64,' + post.post" alt="Post Image" (click)="showImageSliderMethod(images)" >
+
+
+        <div *ngIf="showImageSlider" class="image-slider-overlay">
+          <div class="image-slider-container">
+
+      
+     
+            <img [src]="images[currentImageIndex]" alt="Slider Image" class="slider-image" />
+      
+          
+            <div class="navigation-buttons">
+              <button class="nav-button" (click)="previousImage()">Previous</button>
+              <button class="nav-button" (click)="nextImage()">Next</button>
+            </div>
+            
+        
+            <button class="close-button" (click)="closeSlider()">Close</button>
+          </div>
+        </div>
+
+
+        <app-image-larger *ngIf="showLargerImage" [imageUrl]="'data:image/jpeg;base64,' + post.post" (close)="onCloseLargerImage()"></app-image-larger>
+
+      </div>
+
+
+
+
+
+
+
+
+
+      <div *ngIf="post.posttype === 'video'" class="post-media">
+        <video controls>
+          <source [src]="this.post.filepath" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
+      </div>
+
+      
+
+      
+  <div *ngIf="post.posttype === 'audio'" class="audioholder">
+    <audio   controls>
+      <source [src]="this.post.filepath" type="audio/mpeg">
+      Your browser does not support the audio element.
+    </audio>
+  </div>
+
+  
+
+
+
+  <div *ngIf="post.posttype === 'text'" class="textholder">
+    <div class="text-holder" [style.background-color]="post.textcolor">
+      <p class="text-post-text">{{ post.textbody }}</p>
+    </div>
+  </div>
+
+  
+
+    </div>
+
+
+    
+
+    <form [formGroup]="commentForm" (ngSubmit)="onSubmit(post.postid,post.userid,post.username,post.userprofile)">
+    
+  
+        <div>
+        
+          <input type="text" formControlName="commenttext" placeholder="add comment">
+        </div>
+     
+        <button type="submit">add comment</button>
+      </form>
+
+      <div class="active-buttons-holder">
+        <button (click)="likePost(post.postid, post.userid,  post.username, post.userprofile,post.n_or_g)">Like</button>
+        <span>{{ likes }} Likes</span>
+    
+        <span>{{ comments.length }} Comments</span>
+      </div>
+
+
+
+
+
+
+      <div *ngIf="!isthelastcomment">
+        <h3>Comments</h3>
+        <div *ngFor="let comment of comments" class="comment">
+          <div class="comment-header">
+            <img *ngIf="comment.imageurl" [src]="'data:image/jpeg;base64,' + comment.imageurl" alt="User Profile Image" class="comment-userprofile">
+            <div class="comment-info-holder">
+              <a [routerLink]="['/home/profile', comment.userid]">
+                <p><strong>{{ comment.username }}</strong></p>
+              </a>
+              <p>{{ calculateTimeAgo(comment.commenteddate) }}</p>
+            </div>
+            <button (click)="toggleDropdown($event, comment)" class="dropdown-toggle">⋮</button>
+          </div>
+          <p>{{ comment.text }}</p>
+           
+
+          <span (click)="toggleReplayDiv(comment) ">replay {{comment.replayscount ==0 ? "": comment.replayscount}}</span>
+
+
+
+                    <div class="replay-comment-holder" *ngIf="comment.showReplayDiv">
+                      <p><b>add replay comment</b></p>
+                          <form  [formGroup]="replayCommentForm" (ngSubmit)="addingreplaycomment(post.postid,post.userid,post.username,post.userprofile,comment.commentid,comment.text)">
+
+                             <input type="text" placeholder="add replay" formControlName="replaycomment">
+
+                          <button type="submit" [disabled]="!replayCommentForm.valid">replay</button>
+
+
+                          </form>
+
+                             <div *ngFor="let replay of comment.replays"> 
+
+                              <p>{{replay.text}}</p>
+                             </div>
+
+
+
+                    </div>
+
+
+
+
+
+          <div *ngIf="comment.showDropdown" class="dropdown-menu">
+            <ul>
+            
+              <li (click)="removeComment(comment,comment.commentid)">Delete</li>
+              <li  >Report</li>
+               
+            </ul>
+          </div>
+        </div>
+      </div>
+
+
+
+
+
+
+
+      <div class="alert-BG" *ngIf="commentToBeDeleted" >
+        <div  class="delete-confirmation-dialog">
+          <p>Are you sure you want to remove the comment?</p>
+          <button (click)="removeCommentYes(commentToBeDeleted)">Yes</button>
+          <button (click)="cancelDeleteComment()">No</button>
+        </div>
+      </div>
+
+      
+      
+      
+      <div *ngIf="comments.length === 0 || isthelastcomment">
+        <p>No comments available.</p>
+      </div>
+      
+      
+      
+    
+  </div>
+  <div *ngIf="!post">
+    <p>Loading post data...</p>
+  </div>
+
+
+
+
+
+
+
+
+
+
+ 
+  

@@ -1,0 +1,17 @@
+ 
+<div class="header">
+    <div class="nav-links">
+      
+      <a routerLink="/auth/sign-up" *ngIf="userid == ''">sign up</a>
+      <a routerLink="/auth/log-in" *ngIf="userid == ''">log in</a>
+      <a routerLink="" *ngIf="userid != ''" (click)="logout()">log out</a>
+      <a routerLink="/home/settings/{{userid}}" *ngIf="userid != ''">settings</a>
+      <a routerLink="/home/profile/{{userid}}" *ngIf="userid != ''">profile</a>
+  
+ 
+    </div>
+  </div>
+  
+  <div *ngIf="showSignOutMessage" class="sign-out-message">
+    Logging out...
+  </div>

@@ -1,0 +1,231 @@
+<div class="group-main-holder" *ngIf="group">
+  <button (click)="showhome()">home</button>
+  <button (click)="showfollowers()">followers</button>
+  <button (click)="showrequests()">requests</button>
+  <button (click)="adduser()">add new user</button>
+  
+
+
+    <div *ngIf="group.groupbackgroundimage" class="groupbackgroundimage">
+        <img [src]="groupbackgroundimage" alt="Group Background Image" class="groupbackgroundimage">
+      </div>
+
+ 
+    <div *ngIf="group.groupimage" class="groupimageholder">
+      <img [src]="groupimage" alt="Group Image" class="groupimage">
+                   <div class="detail-holder">
+                    <h2>{{ group.groupname }}</h2>
+                    <span>{{ group.grouptype }}</span>
+                    <button (click)="addgrouppost()">add post</button>
+
+                    <div class="button-holder">
+                      <span (click)="joingroup(group.groupid)">{{btntext}}</span>
+                    </div>
+                    
+                    <span>{{followerscount}} followers</span>
+                   </div>
+    </div>
+  
+ 
+
+
+<app-add-post-group   (postAdded)="onPostAdded()" *ngIf="showaddpostgroup" (closePost)="showaddpostgroup = false"  [groupid]="groupid" [grouptype]="grouptype" [groupname] ="groupname"></app-add-post-group>
+  
+
+
+ 
+  
+   
+
+  <div class="posts-wrapper" *ngIf="showhomeBool">
+    <div *ngFor="let post of groupposts; let i = index">
+      <app-post [post]="post"></app-post>
+    </div>
+  </div>
+
+  
+  <div class="group-users-holder" *ngIf="showfollowersBool">
+    <input type="text" placeholder="search users" (input)="searchfollowers(searchusernamevalue.value)" #searchusernamevalue>
+
+
+    <ul>
+        <li *ngFor="let user of userList">
+            <div class="user-profile">
+                <img *ngIf="user.profileimageBlobUrl" [src]="user.profileimageBlobUrl" alt="User Profile Image" class="profile-image">
+                <div class="user-details">
+                    <div class="user-header">
+                        <span class="username">{{ user.username }}</span>
+
+                        <div class="dropdown" [ngClass]="{'open': user.dropdownOpen}" *ngIf="user.usertype !='admin' ">
+                            <span  *ngIf="this.currunusertype !='user'" class="dropdown-toggle" type="button" id="dropdownMenuButton" (click)="toggleDropdown(user)" aria-haspopup="true" aria-expanded="false">
+                                .
+                            </span>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <a class="dropdown-item" *ngIf="this.currunusertype =='admin' " (click)="changeusertype(user,user.userid , user.username,'admin')">Make as admin</a>
+
+                                <a class="dropdown-item" *ngIf="this.currunusertype =='admin'" (click)="changeusertype(user,user.userid , user.username,'mod')">Make as moderator</a>
+
+                                <a class="dropdown-item" *ngIf="this.currunusertype =='mod'" (click)="changeusertypemodtouser(user,user.userid)">Remove my moderator</a>
+
+
+                                <a class="dropdown-item" *ngIf="this.currunusertype =='admin' || this.currunusertype =='mod'" (click)="changeusertype(user,user.userid , user.username,'user')">Make as User</a>
+                                <a class="dropdown-item" *ngIf="this.currunusertype =='admin'"  (click)="removeuser(user,user.userid)">Remove {{user.username}}</a>
+                            </div>
+                        </div>
+
+                    </div>
+                    <span class="usertype">{{ user.usertype }}</span>
+                    <span class="joined-date">Joined on {{ user.joined_date | date: 'mediumDate' }}</span>
+                </div>
+            </div>
+        </li>
+        <li *ngIf="userList.length === 0">No users found</li>
+    </ul>
+</div>
+
+
+
+
+
+
+
+
+
+<div class="group-users-holder" *ngIf="showrequestsBool">
+    
+  <ul>
+      <li *ngFor="let user of userRequests">
+          <div class="user-profile">
+              <img *ngIf="user.profileimageBlobUrl" [src]="user.profileimageBlobUrl" alt="User Profile Image" class="profile-image">
+              <div class="user-details">
+                  <div class="user-header">
+                      <span class="username">{{ user.username }}</span>
+
+                      <div class="dropdown" [ngClass]="{'open': user.dropdownOpen}" *ngIf="user.usertype !='admin' ">
+                          <span  *ngIf="this.currunusertype !='user'" class="dropdown-toggle" type="button" id="dropdownMenuButton" (click)="toggleDropdown(user)" aria-haspopup="true" aria-expanded="false">
+                              .
+                          </span>
+                          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+ 
+
+                              <a class="dropdown-item" *ngIf="this.currunusertype =='admin'" (click)="acceptuser(user,user.userid)">Accept {{user.username}}</a>
+                           
+                              <a class="dropdown-item" *ngIf="this.currunusertype =='admin'"  (click)="removeuser(user,user.userid)">Remove {{user.username}}</a>
+                          </div>
+                      </div>
+
+                  </div>
+                  <span class="usertype">{{ user.usertype }}</span>
+                  <span class="joined-date">Joined on {{ user.joined_date | date: 'mediumDate' }}</span>
+              </div>
+          </div>
+      </li>
+  </ul>
+</div>
+
+
+
+
+
+
+ 
+
+
+
+
+
+ <div *ngIf="showadduserBool" class="group-users-holder">
+
+    
+    <div class="show-selecting-user-list-names" *ngIf="selecteduserList.length > 0">
+        <span class="count">Selected Users: {{ selecteduserList.length }}/5</span>
+
+  
+        <ul>
+          <li *ngFor="let user of selecteduserList">
+            <img *ngIf="user.profileBlobUrl" [src]="user.profileBlobUrl" alt="Selected User Profile Image" class="selected-profile-image">
+            <span class="selected-username">{{ user.username }}</span>
+          </li>
+        </ul>
+        <button (click)="addFollowedUsersIntoGroup()" [disabled]="selecteduserList.length === 0">Add this {{selecteduserList.length}}</button>
+      </div>
+
+      <input type="text" placeholder="search users" (input)="searchallusers(searchallusersnamevalue.value)" #searchallusersnamevalue>
+
+
+
+
+
+ 
+      <ul *ngIf="serachAllUsersList.length > 0 && isstarttoseachrallusers">
+        
+        <li *ngFor="let user of serachAllUsersList">
+            <div class="user-profile">
+                <img *ngIf="user.profileBlobUrl" [src]="user.profileBlobUrl" alt="User Profile Image" class="profile-image">
+                <div class="user-details">
+                    <div class="user-header">
+                        <span class="username">{{ user.username }}</span>
+                        <div class="dropdown" *ngIf="currunusertype === 'admin'">
+                            <input type="checkbox" name="selectedUser" [checked]="isSelected(user)" (change)="selectUser(user)" [disabled]="selecteduserList.length >= 5 && !isSelected(user)">
+                        </div>
+                    </div>
+                    <span class="usertype">{{ user.usertype }}</span>
+                </div>
+            </div>
+        </li>
+       
+    </ul>
+
+    <div class="no-serach-users" *ngIf="serachAllUsersList.length ==0 && isstarttoseachrallusers">
+        <span>no serached users</span>
+    </div>
+
+    
+
+
+
+
+
+
+
+
+
+
+    <ul *ngIf="curruntuserisFollowedList.length > 1 && !isstarttoseachrallusers">
+        
+        <li *ngFor="let user of curruntuserisFollowedList">
+            <div class="user-profile">
+                <img *ngIf="user.profileBlobUrl" [src]="user.profileBlobUrl" alt="User Profile Image" class="profile-image">
+                <div class="user-details">
+                    <div class="user-header">
+                        <span class="username">{{ user.username }}</span>
+                      
+  
+                        <div class="dropdown"    *ngIf="currunusertype =='admin'">
+                            <input type="checkbox" name="selectedUser" [checked]="isSelected(user)" (change)="selectUser(user)" [disabled]="selecteduserList.length >= 5 && !isSelected(user)">
+                        </div>
+  
+                    </div>
+                    <span class="usertype">{{ user.usertype }}</span>
+                     
+                </div>
+            </div>
+        </li>
+
+
+        
+
+    </ul>
+      <div class="no-users" *ngIf="curruntuserisFollowedList.length == 1 && !isstarttoseachrallusers">
+        <span>no users found</span>
+      </div>
+ </div>
+
+  
+    
+  </div>
+
+
+
+
+  

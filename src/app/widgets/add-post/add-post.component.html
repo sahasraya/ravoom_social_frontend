@@ -1,0 +1,213 @@
+
+<div class="add-post-main-holder">
+
+  <button class="closebtn" (click)="closeAddPost()">Close</button>
+
+
+
+
+
+  <div class="btn-holder">
+    <button (click)="showvideoaudioform()">add viode or audio post</button>
+  <button (click)="showimagepostsform()">add images post</button>
+  <button (click)="showtextpostform()">add text post</button>
+  <button (click)="showlinkpostform()">add link post</button>
+  </div>
+  
+
+
+
+  <form  [formGroup]="addPostForm" (ngSubmit)="onSubmit()" *ngIf="showvideoaudioformbool">
+
+
+   
+
+
+    <div>
+      <label for="postdescription">Description</label>
+      <input id="postdescription" formControlName="postdescription" type="text" placeholder="Wrrite something here...">
+
+    </div>
+  
+    <div>
+      <label for="mediafile">Media File</label>
+      <input type="file" id="mediafile" (change)="onFileSelected($event)" accept=".mp3, .mp4" formControlName="mediafile" >
+  
+  
+  
+  
+    </div>
+  
+    
+  
+    <div *ngIf="filePreview" class="file-preview-container">
+      <ng-container [ngSwitch]="selectedFile?.type">
+        <div class="preview-wrapper">
+         
+          <video *ngSwitchCase="'video/mp4'" [src]="filePreview" class="video-preview" controls></video>
+          <audio *ngSwitchCase="'audio/mpeg'" [src]="filePreview" controls></audio>
+          <div *ngSwitchDefault>File preview not available</div>
+          <button type="button" class="close-button" (click)="removeSelectedFile()">X</button>
+        </div>
+      </ng-container>
+    </div>
+  
+    <button type="submit" [disabled]="!addPostForm.valid">Add Post</button>
+  </form>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <form  [formGroup]="imagePostForm" (ngSubmit)="onSubmitImag()" *ngIf="showimagepostsformbool">
+  
+  
+  
+    <div>
+      <label for="imagePostdescription">Description</label>
+      <input id="imagePostdescription" formControlName="imagePostdescription" type="text" placeholder="Wrrite something here...">
+    </div>
+  
+  
+    <label for="imagefile">image File</label>
+    <input type="file" id="imagefile" (change)="onImageFileSelected($event)" accept=".jpg, .jpeg, .png" formControlName="imagefile" multiple>
+  
+  
+    <div *ngIf="imagePreviews.length > 0" class="image-preview-container">
+      <div *ngFor="let preview of imagePreviews" class="preview-wrapper">
+        <img [src]="preview" alt="Image Preview">
+        <button type="button" class="close-button" (click)="removeImagePreview(preview)">X</button>
+      </div>
+    </div>
+  
+  
+    <button type="submit" [disabled]="!imagePostForm.valid">Add image Post</button>
+  
+  
+  </form>
+   
+  <br>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <form [formGroup]="textPostForm" (ngSubmit)="onSubmitText()" *ngIf="showtextpostformbool">
+    <div>
+      <label for="textPostdescription">Title</label>
+      <input id="textPostdescription" formControlName="textPostdescription" type="text" placeholder="Write title here...">
+    </div>
+  
+    <div class="thebodyoftext">
+      <label for="textPostbody">Body</label>
+      <textarea id="textPostbody"
+              formControlName="textPostbody"
+              placeholder="Write body here..."
+              #bodytext
+              (input)="autoResize(bodytext)"
+              rows="1"
+              style="resize: none; overflow: hidden;"></textarea>
+    </div>
+  
+    <div class="preview-window" *ngIf="writigtextpost">
+      <div class="inner-preview">
+        <h4>{{textPostForm.get('textPostbody')?.value}}</h4>
+      </div>
+  
+      <div class="colorpalletholder">
+        <span class="color-red" (click)="selectColor('#f50505', $event)"></span>
+        <span class="color-green" (click)="selectColor('#04ba28', $event)"></span>
+        <span class="color-blue" (click)="selectColor('#0407ba', $event)"></span>
+        <span class="color-purple" (click)="selectColor('#7404ba', $event)"></span>
+        <span class="color-pink" (click)="selectColor('#ba04a8', $event)"></span>
+      </div>
+    </div>
+  
+    <button type="submit" [disabled]="!textPostForm.valid">Add Text Post</button>
+  </form>
+  
+  <br>
+
+
+
+
+
+
+
+  <form [formGroup]="linkPostForm" (ngSubmit)="onSubmitLink()" *ngIf="showlinkpostformbool" class="add-preview">
+
+    <div class="missing-image-details" *ngIf="isNoImage">
+       <p>You can t add this link</p>
+    </div>
+    <div>
+      <label for="
+      ">Link discription</label>
+      <input id="listPostdescription" formControlName="listPostdescription" type="text" placeholder="Write title here...">
+      <input id="img" formControlName="img" type="text" placeholder="Wrrite something here..."  style="display: none;" >
+
+    </div>
+  
+     
+    <div >
+      <h2>Add Preview</h2>
+      <input type="text" placeholder="Enter URL" (input)="getPreview(link.value)" #link formControlName="linkrul">
+ 
+      <div *ngIf="linkPreviewData" class="previewdiv">
+        <h3>{{ linkPreviewData.title }}</h3>
+        <p>{{ linkPreviewData.description }}</p>
+        <img [src]="linkPreviewData.img" alt="{{ linkPreviewData.title }}">
+        <a [href]="linkPreviewData.url" target="_blank">{{ linkPreviewData.domain }}</a>
+      </div>
+
+    </div>
+     
+  
+    <button type="submit" [disabled]="!linkPostForm.valid">Add link Post</button>
+  </form>
+
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
