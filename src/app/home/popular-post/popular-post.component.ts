@@ -139,9 +139,9 @@ constructor(private http:HttpClient,private router:Router){}
 
 
 
-  nanigatetocommentsscreen(postdid:any):void{
+  nanigatetocommentsscreen(postdid:any, norg:string):void{
     
-
-    this.router.navigate(['/home/comment', postdid]);
+ 
+    this.router.navigate(['/home/comment', postdid,norg]);
   }
 }

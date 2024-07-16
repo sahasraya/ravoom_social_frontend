@@ -1,6 +1,6 @@
-<button (click)="getNotifications()">open notification</button>
+<button (click)="getNotifications()" *ngIf="this.currentUserId">open notification</button>
  
-<a routerLink="/home/followers-feed">followers feed</a>
+<a routerLink="/home/followers-feed" *ngIf="this.currentUserId">followers feed</a>
 
 <div class="notofication-holder" *ngIf="!opennotificationwindow">
 

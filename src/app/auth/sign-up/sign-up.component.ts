@@ -30,6 +30,20 @@ export class SignUpComponent implements OnInit{
 
 
   errormessage:string = "";
+  isPasswordFieldFocused: boolean = false;
+
+
+  correctImage = '../../../assets/images/correct.png';
+  wrongImage = '../../../assets/images/wrong.png';
+
+  passwordConditions = {
+    minLength: false,
+    hasNumber: false,
+    hasLowercase: false,
+    hasUppercase: false,
+    hasSpecialChar: false
+  };
+
 
   constructor(private fb: FormBuilder, private http: HttpClient,private router:Router) {
     this.signUpForm = this.fb.group({
@@ -56,9 +70,30 @@ export class SignUpComponent implements OnInit{
       }
     });
 
+    this.signUpForm.get('password')?.valueChanges.subscribe(() => {
+      this.isPasswordFieldFocused = true;
+      this.checkPasswordStrength();
+    });
+
   }
 
-
+ togglePasswordVisibility() {
+    this.showPassword = !this.showPassword;
+  }
+  allPasswordConditionsMet(): boolean {
+    return Object.values(this.passwordConditions).every(condition => condition);
+  }
+  
+  checkPasswordStrength() {
+    const password = this.signUpForm.get('password')?.value;
+    this.passwordConditions.minLength = password.length >= 8;
+    this.passwordConditions.hasNumber = /\d/.test(password);
+    this.passwordConditions.hasLowercase = /[a-z]/.test(password);
+    this.passwordConditions.hasUppercase = /[A-Z]/.test(password);
+    this.passwordConditions.hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+  }
+  
+  
   calculateAge(birthdate: string): void {
     const today = new Date();
     const birthDate = new Date(birthdate);

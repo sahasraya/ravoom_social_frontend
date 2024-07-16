@@ -3,6 +3,7 @@
   <button (click)="showfollowers()">followers</button>
   <button (click)="showrequests()">requests</button>
   <button (click)="adduser()">add new user</button>
+  <button (click)="settings()">setings</button>
   
 
 
@@ -14,11 +15,12 @@
     <div *ngIf="group.groupimage" class="groupimageholder">
       <img [src]="groupimage" alt="Group Image" class="groupimage">
                    <div class="detail-holder">
-                    <h2>{{ group.groupname }}</h2>
+                    <h2>{{ groupname }}</h2>
+                   
                     <span>{{ group.grouptype }}</span>
                     <button (click)="addgrouppost()">add post</button>
 
-                    <div class="button-holder">
+                    <div class="button-holder" *ngIf="this.currunusertype !='admin'">
                       <span (click)="joingroup(group.groupid)">{{btntext}}</span>
                     </div>
                     
@@ -223,6 +225,24 @@
 
   
     
+
+
+ <div *ngIf="showsettingsBool" class="group-users-holder">
+    <input type="text" [value]="group.groupname" #groupname (input)="updatethegroupname(group.groupname,groupname.value)">
+  
+    <span>Background image</span>
+    <img [src]="groupbackgroundimage" alt="Group Background Image" class="groupbackgroundimageupdate">
+    <input type="file" class="updatebackgroundimage" (change)="onBackgroundImageSelected($event)">
+  
+    <span>Main group image</span>
+    <img [src]="groupimage" alt="Group Image" class="groupimageupdate">
+    <input type="file" class="updategroupimage" (change)="onGroupImageSelected($event)">
+  
+    <button (click)="removegroup(group.groupid )">Remove group</button>
+    <button (click)="updateGroupInformation(group.groupid ,groupname.value)">Update group information</button>
+  </div>
+
+
   </div>
 
 

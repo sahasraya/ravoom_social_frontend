@@ -35,11 +35,13 @@ export class FeedComponent {
   offset = 0;
   loading = false;
   iscreatenewgroupopen: boolean = false;
+  userid:string = "";
 
   constructor(private http: HttpClient, private cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {
     this.getPostsFeed();
+    this.userid = localStorage.getItem('wmd') || '';
   }
 
 

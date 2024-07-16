@@ -2,30 +2,72 @@
   <h3>Update details</h3>
   <div>
     <label for="username">Username:</label>
-    <input id="username" formControlName="username" [value]="user?.username" type="text">
+    <input id="username" formControlName="username" [value]="user?.username" type="text" placeholder="username">
   </div>
 
   <div>
     <label for="emailaddress">Email Address:</label>
-    <input id="emailaddress" formControlName="emailaddress" [value]="user?.emailaddress" type="email">
+    <input id="emailaddress" formControlName="emailaddress" [value]="user?.emailaddress" type="email" placeholder="Email address">
   </div>
 
   <div>
     <label for="phonenumber">Phone Number:</label>
-    <input id="phonenumber" formControlName="phonenumber" [value]="user?.phonenumber" type="number">
+    <input id="phonenumber" formControlName="phonenumber" [value]="user?.phonenumber" type="number" placeholder="Phone number">
   </div>
 
   <div>
     <label for="password">Password:</label>
-    <input type="password" id="password" formControlName="password" [value]="user?.password">
+    <input type="text" id="password" formControlName="password" [value]="user?.password" placeholder="Password" (input)="checkPasswordStrength()" #password>
   </div>
 
-  <div>
+
+
+  <div class="password-strength-show-panel" *ngIf="isPasswordFieldFocused">
+    <ul>
+      <li>
+        <img [src]="passwordConditions.minLength ? correctImage : wrongImage" alt="status">
+   
+        At least 8 characters
+      </li>
+      <li>
+        <img [src]="passwordConditions.hasNumber ? correctImage : wrongImage" alt="status">
+        At least 1 number
+      </li>
+      <li>
+        <img [src]="passwordConditions.hasLowercase ? correctImage : wrongImage" alt="status">
+        At least 1 lowercase letter
+      </li>
+      <li>
+        <img [src]="passwordConditions.hasUppercase ? correctImage : wrongImage" alt="status">
+        At least 1 uppercase letter
+      </li>
+      <li>
+        <img [src]="passwordConditions.hasSpecialChar ? correctImage : wrongImage" alt="status">
+        At least 1 special symbol
+      </li>
+    </ul>
+  </div>
+
+
+
+
+
+  <div  *ngIf="allPasswordConditionsMet()">
     <label for="reenterpassword">Re-enter Password:</label>
-    <input type="password" id="reenterpassword" formControlName="reenterpassword" [value]="user?.password">
+    <input type="text" id="reenterpassword" formControlName="reenterpassword" #reenterpassword [value]="user?.password" placeholder="Re-enter your password" (input)="checkpasswordsaresame(password.value,reenterpassword.value)">
   </div>
 
  
-  <img *ngIf="user?.profileimage" [src]="'data:image/jpeg;base64,' + user?.profileimage" alt="Profile Image">
-  <button type="submit">Update</button>
+  <input type="file" class="updatebackgroundimage" (change)="onProfileImageSelected($event)">
+
+  <div class="image-holder" *ngIf="!isprofileimageselected">
+    <img *ngIf="user?.profileimage" [src]="'data:image/jpeg;base64,' + user?.profileimage" alt="Profile Image">
+
+  </div>
+
+  <img *ngIf="profileimage && isprofileimageselected" [src]="profileimage" alt="Profile Image"  >
+
+ 
+ 
+  <button type="submit"     *ngIf="updateForm.valid &&   allPasswordConditionsMet() && passwordsaresame">Update</button>
 </form>

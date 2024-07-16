@@ -3,7 +3,12 @@
     <img *ngIf="profileImageUrl" [src]="profileImageUrl" alt="User Profile Image" class="profile-image" />
     <div class="postownerdetailholder">
            <div class="username-holder">
-                <a [routerLink]="['/home/profile', post.userid]">{{ post.username }}</a>
+            <span>
+              <a [routerLink]="['/home/profile', post.userid]">{{ post.username }} </a>
+              <span *ngIf="post.groupid != null">&#64; {{ post.groupname }}</span>
+   
+
+            </span>
                   <div class="buttun-hodler" >
                    
                      <span *ngIf="this.userid !=''">
@@ -11,13 +16,13 @@
                      </span>
                      
                    
-                   
+              
                     
-                    <button (click)="toggleDropdown($event, post)" class="dropdown-toggle">⋮</button>
+                    <button (click)="toggleDropdown($event, post)" class="dropdown-toggle" *ngIf="this.userid !=''">⋮</button>
                   </div>
                   <div *ngIf="post.showDropdown" class="dropdown-menu">
                     <ul>
-                      <li (click)="removePost(post.postid)">Delete</li>
+                      <li (click)="removePost(post.postid)" *ngIf="post.userid == this.userid">Delete</li>
                       <li>Report</li>
                     </ul>
                   </div>

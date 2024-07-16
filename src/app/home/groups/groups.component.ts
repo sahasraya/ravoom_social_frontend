@@ -1,7 +1,7 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { ChangeDetectorRef, Component, HostListener, Inject, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AddPostGroupComponent } from '../../widgets/add-post-group/add-post-group.component';
 import { PostComponent } from '../../widgets/post/post.component';
 import { PLATFORM_ID } from '@angular/core';
@@ -30,8 +30,11 @@ export class GroupsComponent implements OnInit{
   showhomeBool:boolean= true;
   showfollowersBool:boolean=false;
   showrequestsBool:boolean=false;
+  showsettingsBool:boolean=false;
   showadduserBool:boolean=false;
   isstarttoseachrallusers:boolean=false;
+  BGimagechanched:boolean=false;
+  maingroupimageischanched:boolean=false;
   limit = 5;
   offset = 0;
   loading = false;
@@ -46,7 +49,7 @@ export class GroupsComponent implements OnInit{
 
 
 
-  constructor(private route: ActivatedRoute, private http: HttpClient,private cdr: ChangeDetectorRef,@Inject(PLATFORM_ID) private platformId: Object) {}
+  constructor(private route: ActivatedRoute, private http: HttpClient,private cdr: ChangeDetectorRef,@Inject(PLATFORM_ID) private platformId: Object,private router:Router) {}
 
   ngOnInit(): void {
     this.groupid = this.route.snapshot.paramMap.get('groupid')!;
@@ -68,10 +71,105 @@ export class GroupsComponent implements OnInit{
    
   }
 
+  onBackgroundImageSelected(event: Event): void {
+    const file = (event.target as HTMLInputElement).files?.[0];
+    this.BGimagechanched = true;
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.groupbackgroundimage = reader.result as string;
+      };
+      reader.readAsDataURL(file);
+
+      const formData = new FormData();
+      formData.append('groupid', this.groupid);
+      formData.append('backgroundimage', file);
+  
+      this.http.post<any>(this.APIURL + 'update-backgroundimage', formData).subscribe({
+        next: (response: any) => {
+          console.log('Response from server:', response);
+          if (response.message === "done") {
+            alert("Background image updated successfully!");
+          }
+        },
+        error: error => {
+          console.error('There was an error posting the data!', error);
+        }
+      });
+
+
+
+    }
+  }
+
+
+
+
+  onGroupImageSelected(event: Event): void {
+    const file = (event.target as HTMLInputElement).files?.[0];
+
+    this.maingroupimageischanched = true;
+
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.groupimage = reader.result as string;
+      };
+      reader.readAsDataURL(file);
+
+      const formData = new FormData();
+      formData.append('groupid', this.groupid);
+      formData.append('groupmainimage', file);
+  
+      this.http.post<any>(this.APIURL + 'update-groupmainimage', formData).subscribe({
+        next: (response: any) => {
+          console.log('Response from server:', response);
+          if (response.message === "done") {
+            alert("Group image updated successfully!");
+          }
+        },
+        error: error => {
+          console.error('There was an error posting the data!', error);
+        }
+      });
+
+    }
+  }
+
+
+  async updateGroupInformation(groupid: any, groupname: string): Promise<void> {
+    const formData = new FormData();
+    formData.append('groupid', groupid);
+    formData.append('groupname', groupname);
+  
+    this.http.post<any>(this.APIURL + 'update-groupinformation', formData).subscribe({
+      next: (response: any) => {
+        if (response.message === "done") {
+          alert("Group information updated successfully!");
+  
+        }
+      },
+      error: error => {
+        console.error('There was an error posting the data!', error);
+      }
+    });
+  }
+
+
+  updatethegroupname(previousgroupname:string ,groupname:string):void  {
+ this.groupname =  groupname;
+  }
+
+
+
+
+
+
+
 
   selectUser(user: any): void {
 
-    console.log(user);
+ 
  
     const userIndex = this.selecteduserList.findIndex(selected => selected.username === user.username);
 
@@ -85,6 +183,31 @@ export class GroupsComponent implements OnInit{
   }
 
  
+
+  async removegroup(groupid: any): Promise<void> {
+    const confirmation = confirm("Do you need to remove this group?");
+    
+    if (confirmation) {
+      const formData = new FormData();
+      formData.append('groupid', groupid);
+
+      this.http.post<any>(this.APIURL + 'remove-group', formData).subscribe({
+        next: response => {
+          console.log('Response from server:', response);
+          if (response.message === "removed") {
+            this.router.navigate(['/']);
+          }
+        },
+        error: error => {
+          console.error('There was an error posting the data!', error);
+        }
+      });
+    }
+  }
+
+
+
+
 
 
 
@@ -170,19 +293,20 @@ export class GroupsComponent implements OnInit{
     const formData = new FormData();
     formData.append('groupid', this.groupid);
     formData.append('userid', userid);
-
-
+ 
 
 
     
 
     try {
         const response = await this.http.post<any>(`${this.APIURL}get_curruntuser_detail_from_group`, formData).toPromise();
-        console.log('Response from get_curruntuser_detail_from_group endpoint:', response);
+  
      
         
         if (response && response.usertype) {
             this.currunusertype = response.usertype;
+          
+
         } else {
             console.log('No usertype found for the user in this group.');
         }
@@ -601,6 +725,7 @@ async changeusertypemodtouser(user: any, userid: any): Promise<void> {
    this.showfollowersBool = false;
    this.showrequestsBool = false;
    this.showadduserBool = false;
+   this.showsettingsBool = false;
 
   }
 
@@ -609,6 +734,7 @@ async changeusertypemodtouser(user: any, userid: any): Promise<void> {
    this.showfollowersBool = true;
    this.showrequestsBool = false;
    this.showadduserBool = false;
+   this.showsettingsBool = false;
 
   }
 
@@ -617,6 +743,8 @@ async changeusertypemodtouser(user: any, userid: any): Promise<void> {
    this.showfollowersBool = false;
    this.showrequestsBool = true;
    this.showadduserBool = false;
+   this.showsettingsBool = false;
+
   }
 
   adduser():void{
@@ -624,6 +752,17 @@ async changeusertypemodtouser(user: any, userid: any): Promise<void> {
     this.showfollowersBool = false;
     this.showrequestsBool = false;
     this.showadduserBool = true;
+    this.showsettingsBool = false;
+
+  }
+
+
+  settings():void{
+    this.showhomeBool = false;
+    this.showfollowersBool = false;
+    this.showrequestsBool = false;
+    this.showadduserBool = false;
+    this.showsettingsBool = true;
   }
 
 }

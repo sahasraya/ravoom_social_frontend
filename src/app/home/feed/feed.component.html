@@ -6,7 +6,7 @@
 
 
 
-<button (click)="createnewgroup()">create group</button>
+<button (click)="createnewgroup()" *ngIf="this.userid">create group</button>
 
 <div class="group-creation-wrapper" *ngIf="iscreatenewgroupopen">
   <button (click)="closecreatenewgroup()">close</button>
@@ -26,9 +26,9 @@
 
 
 <div class="feed-container">
-  <h1>Feed</h1>
+ 
 
-  <button (click)="openaddpostscreen()">open</button>
+  <button (click)="openaddpostscreen()" *ngIf="this.userid">open</button>
  
   <div class="posts-container">
     <div *ngFor="let post of posts; let i = index">

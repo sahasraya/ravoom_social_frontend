@@ -2,7 +2,7 @@
       <h3>Popular search</h3>
       
       <div class="video-post-holder" *ngIf="showVideoPostsBool" >
-        <div *ngFor="let post of videoPosts" class="main-outer-holder" (click)="nanigatetocommentsscreen(post.postid)">
+        <div *ngFor="let post of videoPosts" class="main-outer-holder" (click)="nanigatetocommentsscreen(post.postid,post.n_or_g)">
           <div class="inner-holder">
             <div class="profile-image-holder">
               <img *ngIf="post.userprofileUrl" [src]="post.userprofileUrl" alt="Profile Image" class="profileimage">
@@ -19,7 +19,7 @@
       </div>
     
       <div class="audio-post-holder" *ngIf="showAudioPostsBool">
-        <div *ngFor="let post of audioPosts" class="main-outer-holder" (click)="nanigatetocommentsscreen(post.postid)">
+        <div *ngFor="let post of audioPosts" class="main-outer-holder" (click)="nanigatetocommentsscreen(post.postid,post.n_or_g)">
           <div class="inner-holder">
             <div class="profile-image-holder">
               <img *ngIf="post.userprofileUrl" [src]="post.userprofileUrl" alt="Profile Image" class="profileimage">
@@ -35,7 +35,7 @@
       </div>
     
       <div class="image-post-holder" *ngIf="showImagePostsBool">
-        <div *ngFor="let post of imagePosts" class="main-outer-holder" (click)="nanigatetocommentsscreen(post.postid)">
+        <div *ngFor="let post of imagePosts" class="main-outer-holder" (click)="nanigatetocommentsscreen(post.postid,post.n_or_g)">
           <div class="inner-holder">
             <div class="profile-image-holder">
               <img *ngIf="post.userprofileUrl" [src]="post.userprofileUrl" alt="Profile Image" class="profileimage">
@@ -51,7 +51,7 @@
       </div>
     
       <div class="text-post-holder" *ngIf="showTextPostsBool">
-        <div *ngFor="let post of textPosts" class="main-outer-holder" (click)="nanigatetocommentsscreen(post.postid)">
+        <div *ngFor="let post of textPosts" class="main-outer-holder" (click)="nanigatetocommentsscreen(post.postid,post.n_or_g)">
           <div class="inner-holder">
             <div class="profile-image-holder">
               <img *ngIf="post.userprofileUrl" [src]="post.userprofileUrl" alt="Profile Image" class="profileimage">
@@ -70,7 +70,7 @@
 
 
       <div class="image-post-holder" *ngIf="showLinkPostsBool">
-        <div *ngFor="let post of linkPosts" class="main-outer-holder" (click)="nanigatetocommentsscreen(post.postid)">
+        <div *ngFor="let post of linkPosts" class="main-outer-holder" (click)="nanigatetocommentsscreen(post.postid,post.n_or_g)">
           <div class="inner-holder">
             <div class="profile-image-holder">
               <img *ngIf="post.userprofileUrl" [src]="post.userprofileUrl" alt="Profile Image" class="profileimage">
