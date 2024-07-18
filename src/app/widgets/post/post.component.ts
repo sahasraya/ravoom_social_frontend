@@ -50,7 +50,14 @@ export class PostComponent implements OnInit {
 
     this.checkisamemberofgroup(this.userid);
 
-   
+    if (this.post.posttype === 'video') {
+      this.videoUrl = this.post.filepath;
+      console.log(this.videoUrl);
+      this.imageUrl = '';
+      this.audioUrl = '';
+    
+  
+    }
   }
 
 
@@ -228,12 +235,6 @@ export class PostComponent implements OnInit {
       this.imageUrl = this.createBlobUrl(this.post.image, 'image/jpeg');
       this.videoUrl = '';
       this.audioUrl = '';
-    } else if (this.post.posttype === 'video') {
-      this.videoUrl = this.post.filepath;
-      this.imageUrl = '';
-      this.audioUrl = '';
-    
-  
     } else if (this.post.posttype === 'audio') {
       this.audioUrl = this.post.filepath;
       this.imageUrl = '';

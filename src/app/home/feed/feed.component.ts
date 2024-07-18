@@ -64,6 +64,7 @@ export class FeedComponent {
         this.offset += this.limit;
         this.loading = false;
         this.cdr.detectChanges();  
+   
       },
       error: (error) => {
         console.error('There was an error!', error);

@@ -14,6 +14,7 @@ import { NotificationComponent } from './home/notification/notification.componen
 import { FollowersFeedComponent } from './home/followers-feed/followers-feed.component';
 import { GroupsComponent } from './home/groups/groups.component';
 import { EmailConfirmationUserSignUpComponent } from './auth/email-confirmation-user-sign-up/email-confirmation-user-sign-up.component';
+import { ResetPasswordComponent } from './home/reset-password/reset-password.component';
 
 export const routes: Routes = [
 
@@ -38,6 +39,12 @@ export const routes: Routes = [
             { path: 'notification', component: NotificationComponent }
         ]
     },
+    {
+        path:"home",component:HomeComponent,children:[
+            { path: 'reset-password', component: ResetPasswordComponent }
+        ]
+    },
+
     {
         path:"home",component:HomeComponent,children:[
             { path: 'comment/:postid/:type', component: CommentComponent }

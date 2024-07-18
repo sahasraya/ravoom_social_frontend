@@ -53,8 +53,6 @@ export class SettingsComponent implements OnInit{
       username: ['', Validators.required],
       emailaddress: ['', [Validators.required, Validators.email]],
       phonenumber: ['', Validators.required],
-      password: ['', Validators.required],
-      reenterpassword: ['', Validators.required],
       profileimage: ['', Validators.required]
     });
   }
@@ -63,41 +61,16 @@ export class SettingsComponent implements OnInit{
     this.userid = this.route.snapshot.paramMap.get('uid');
     this.getUserDetails();
 
-    this.updateForm.get('password')?.valueChanges.subscribe(() => {
-      this.isPasswordFieldFocused = true;
-      this.checkPasswordStrength();
-    });
-
-     this.checkpasswordsaresame(this.updateForm.get('password')?.value , this.updateForm.get('reenterpassword')?.value);
-
+    
+ 
 
 
   }
 
 
-  checkPasswordStrength() {
-    const password = this.updateForm.get('password')?.value;
-    this.passwordConditions.minLength = password.length >= 8;
-    this.passwordConditions.hasNumber = /\d/.test(password);
-    this.passwordConditions.hasLowercase = /[a-z]/.test(password);
-    this.passwordConditions.hasUppercase = /[A-Z]/.test(password);
-    this.passwordConditions.hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
-  }
-  
-  allPasswordConditionsMet(): boolean {
-    return Object.values(this.passwordConditions).every(condition => condition);
-  }
+ 
 
-checkpasswordsaresame(password:string,reenterpassword:string):void{
-  if(password == reenterpassword){
-   
-    this.passwordsaresame = true;
-  }else{
-    this.passwordsaresame = false;
-    return;
-  }
-
-}
+ 
 
 onSubmit(): void {
   if (this.updateForm.valid) {
@@ -112,8 +85,10 @@ onSubmit(): void {
       formData.append('userid', this.userid.toString());
 
       this.http.post(this.APIURL + 'update-user-details', formData).subscribe({
-          next: response => {
-              console.log(response);
+          next: (response:any) => {
+             if(response.message=="User details updated successfully"){
+              alert("User details updated successfully");
+             }
           },
           error: error => {
               console.error('There was an error!', error);

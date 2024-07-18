@@ -220,7 +220,7 @@ console.log(this.linkUrl);
           this.filePreview = null;
           this.selectedFiles = [];
           this.imagePreviews = [];
-          this.addPostForm.get('mediafile')?.reset();
+          this.addPostForm.reset();
           this.postAdded.emit();
           this.closePost.emit();
           
