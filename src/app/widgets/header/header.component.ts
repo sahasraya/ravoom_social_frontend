@@ -14,11 +14,15 @@ export class HeaderComponent implements OnInit{
 
   userid: string = "";
   showSignOutMessage: boolean = false;
+  searchText: string = '';
 
   ngOnInit(): void {
     this.userid = localStorage.getItem('wmd') || '';
   }
 
+  handleSearchText(text: string) {
+    this.searchText = text;
+  }
   logout(): void {
     localStorage.clear();
     this.showSignOutMessage = true;

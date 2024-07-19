@@ -1,13 +1,13 @@
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 import { PostComponent } from '../../widgets/post/post.component';
 
 @Component({
   selector: 'app-search-result-by-enter',
   standalone: true,
-  imports: [CommonModule,PostComponent],
+  imports: [CommonModule,PostComponent,RouterModule],
   templateUrl: './search-result-by-enter.component.html',
   styleUrl: './search-result-by-enter.component.css'
 })
@@ -28,6 +28,7 @@ export class SearchResultByEnterComponent  implements OnInit{
   ImageTextLinkPosts: any[] = [];
   TextLinkPosts: any[] = [];
   UserList: any[] = [];
+  GroupList: any[] = [];
 
   showImagetextLinkPostsBool: boolean = true;
   showAudioPostsBool: boolean = false;
@@ -37,17 +38,57 @@ export class SearchResultByEnterComponent  implements OnInit{
   showVideoPostsBool: boolean = false;
   showTextLinkPostsBool: boolean = false;
   showUserBool: boolean = false;
+  showGroupBool: boolean = false;
 
   linkPreviewData: any = null;
 
   ngOnInit(): void {
-    this.searchtext = this.route.snapshot.paramMap.get('text')!;
-    this.getResult(this.searchtext);
-    this.getImageTextImageLink(this.searchtext);
-    this.getTextLink(this.searchtext);
-    this.getLinkPreview('https://en.wikipedia.org/wiki/Sri_Lanka'); 
-    this.getUser(this.searchtext);
+    this.route.paramMap.subscribe(params => {
+      this.searchtext = params.get('text')!;
+      this.getResult(this.searchtext);
+      this.getImageTextImageLink(this.searchtext);
+      this.getTextLink(this.searchtext);
+      this.getLinkPreview('https://en.wikipedia.org/wiki/Sri_Lanka'); 
+      this.getUser(this.searchtext);
+      this.getGroup(this.searchtext);
+    });
+  
   }
+
+
+   
+
+async getGroup(searchtext: string):Promise<void>{
+    
+  const formData = new FormData();
+  formData.append('searchtext', searchtext);
+  this.http.post<any>(`${this.APIURL}search-enter-press-get-groups`, formData).subscribe({
+    next: response => {
+      this.responseObject = response;
+  
+      this.GroupList = [];
+
+      this.responseObject.forEach((post: any) => {
+        if (post.groupimage) {
+          post.userprofileUrl = this.createBlobUrl(post.groupimage, 'image/jpeg'); 
+        }
+      this.GroupList.push(post);
+      console.log(this.GroupList);
+      });
+
+      
+    },
+    error: (error: HttpErrorResponse) => {
+      console.error('There was an error!', error);
+    }
+  });
+
+}
+
+
+
+
+
 
 
 async getUser(searchtext: string):Promise<void>{
@@ -58,11 +99,7 @@ async getUser(searchtext: string):Promise<void>{
   this.http.post<any>(`${this.APIURL}search-enter-press-get-users`, formData).subscribe({
     next: response => {
       this.responseObject = response;
-
-     
-    
-      
-   
+ 
       this.UserList = [];
 
       this.responseObject.forEach((post: any) => {
@@ -291,6 +328,8 @@ async getUser(searchtext: string):Promise<void>{
     this.showVideoPostsBool = false ;
     this.showTextLinkPostsBool = false;
     this.showUserBool =false;
+    this.showGroupBool= false;
+
 
 
 
@@ -306,6 +345,8 @@ async getUser(searchtext: string):Promise<void>{
     this.showVideoPostsBool = false ;
     this.showTextLinkPostsBool = false;
     this.showUserBool =false;
+    this.showGroupBool= false;
+
 
 
 
@@ -321,6 +362,8 @@ async getUser(searchtext: string):Promise<void>{
     this.showVideoPostsBool = false ;
     this.showTextLinkPostsBool = false;
     this.showUserBool =false;
+    this.showGroupBool= false;
+
 
 
 
@@ -334,6 +377,8 @@ async getUser(searchtext: string):Promise<void>{
     this.showVideoPostsBool = true;
     this.showTextLinkPostsBool = false;
     this.showUserBool =false;
+    this.showGroupBool= false;
+
 
 
   }
@@ -347,6 +392,8 @@ async getUser(searchtext: string):Promise<void>{
     this.showVideoPostsBool = false;
     this.showTextLinkPostsBool = true;
     this.showUserBool =false;
+    this.showGroupBool= false;
+
 
   }
 
@@ -359,8 +406,25 @@ async getUser(searchtext: string):Promise<void>{
     this.showVideoPostsBool = false;
     this.showTextLinkPostsBool = false;
     this.showUserBool =true;
+    this.showGroupBool= false;
 
   }
+
+
+
+  showGroups():void{
+    this.showImagetextLinkPostsBool = false;
+    this.showAudioPostsBool = false;
+    this.showImagePostsBool = false;
+    this.showTextPostsBool = false;
+    this.showLinkPostsBool = false;
+    this.showVideoPostsBool = false;
+    this.showTextLinkPostsBool = false;
+    this.showUserBool =false;
+    this.showGroupBool= true;
+
+  }
+  
  
 
 

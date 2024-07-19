@@ -19,6 +19,7 @@ export class SearchComponent implements OnInit{
   APIURL = 'http://127.0.0.1:8000/';
   showLargerImage: boolean = false;
   user:any=[];
+  group:any=[];
   searchText: string = '';
   isFacoused:boolean = false;
 
@@ -50,23 +51,22 @@ this.isFacoused = true;
 
 
 
- async searchResult():Promise<void> {
-this.isFacoused = false;
- 
+  async searchResult(): Promise<void> {
+    this.isFacoused = false;
+  
     const formData = new FormData();
     formData.append('query', this.searchText);
-
+  
     this.http.post<any>(`${this.APIURL}search-result`, formData).subscribe({
       next: response => {
-        this.user = response;
-        console.log(this.user);
+        this.user = response.users;
+        this.group = response.groups;
       },
       error: (error: HttpErrorResponse) => {
         console.error('There was an error!', error);
       }
     });
   }
-
 
 
   addToLocalStorage(username: string, profileImage: string, userid: any) {

@@ -141,7 +141,6 @@ export class CommentComponent implements OnInit {
       const params = new HttpParams().set('commentid', commentid.toString());
       const response: any = await this.http.get<any>(`${this.APIURL}get_replay_count`, { params }).toPromise();
   
-      // Update the replay count in the specific comment object
       const updatedComments = this.comments.map(comment => {
         if (comment.commentid === commentid) {
           return { ...comment, replayscount: response.replays_count };
@@ -149,7 +148,6 @@ export class CommentComponent implements OnInit {
         return comment;
       });
   
-      // Update the comments array with the new data
       this.comments = updatedComments;
   
     } catch (error) {
@@ -255,7 +253,12 @@ export class CommentComponent implements OnInit {
 
                    }
                   );
+        }else if (this.post.posttype == "video") {
+          const videoBlob = this.convertBase64ToBlob(this.post.post, 'video/mp4');
+          this.post.videoUrl = URL.createObjectURL(videoBlob);
         }
+
+        
 
 
 
@@ -272,7 +275,8 @@ export class CommentComponent implements OnInit {
     this.http.post<any>(`${this.APIURL}get_post`, formData).subscribe({
       next: response => {
         
-        this.post = response;   
+        this.post = response; 
+ 
         if(this.post.posttype == "image"){
           
                   const formDataimage = new FormData();
@@ -286,6 +290,13 @@ export class CommentComponent implements OnInit {
 
                    }
                   );
+        }else if (this.post.posttype == "video") {
+          const videoBlob = this.convertBase64ToBlob(this.post.post, 'video/mp4');
+          this.post.videoUrl = URL.createObjectURL(videoBlob);
+        }
+        else if (this.post.posttype == "audio") {
+          const audioBlob = this.convertBase64ToBlobAudio(this.post.post);
+          this.post.audioUrl = URL.createObjectURL(audioBlob);
         }
 
 
@@ -302,6 +313,26 @@ export class CommentComponent implements OnInit {
 
    
   }
+
+
+  convertBase64ToBlobAudio(base64Data: string): Blob {
+    return this.convertBase64ToBlob(base64Data, 'audio/mpeg');
+  }
+
+  convertBase64ToBlob(base64: string, mimeType: string): Blob {
+    const base64Data = base64.replace(/^data:video\/mp4;base64,/, '');
+    const byteChars = atob(base64Data);
+    const byteNums = new Array(byteChars.length);
+  
+    for (let i = 0; i < byteChars.length; i++) {
+      byteNums[i] = byteChars.charCodeAt(i);
+    }
+  
+    const byteArray = new Uint8Array(byteNums);
+    return new Blob([byteArray], { type: mimeType });
+  }
+
+
 
   showImageSliderMethod(images: string[]): void {
  

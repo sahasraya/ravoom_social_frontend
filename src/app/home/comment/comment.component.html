@@ -60,21 +60,23 @@
 
       <div *ngIf="post.posttype === 'video'" class="post-media">
         <video controls>
-          <source [src]="this.post.filepath" type="video/mp4">
+          <source [src]="post.videoUrl" type="video/mp4">
           Your browser does not support the video tag.
         </video>
       </div>
 
+
+
+
       
 
       
-  <div *ngIf="post.posttype === 'audio'" class="audioholder">
-    <audio   controls>
-      <source [src]="this.post.filepath" type="audio/mpeg">
-      Your browser does not support the audio element.
-    </audio>
-  </div>
-
+      <div *ngIf="post.posttype === 'audio'" class="audioholder">
+        <audio controls>
+          <source [src]="post.audioUrl" type="audio/mpeg">
+          Your browser does not support the audio element.
+        </audio>
+      </div>
   
 
 

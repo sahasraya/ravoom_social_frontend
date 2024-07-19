@@ -39,7 +39,7 @@ export class AddPostGroupComponent {
   showtextpostformbool:boolean =false;
   showimagepostsformbool:boolean =false;
   showlinkpostformbool:boolean =false;
-  isNoImage: boolean = false;
+ 
  
   
   linkPreviewData: any = null;
@@ -78,8 +78,7 @@ export class AddPostGroupComponent {
 
     this.linkPostForm = this.fb.group({
       listPostdescription: ['', Validators.required] ,
-      linkrul: ['', Validators.required] ,
-      img: ['', Validators.required] ,
+      linkrul: ['', Validators.required]  
  
     });
 
@@ -111,7 +110,7 @@ export class AddPostGroupComponent {
     this.linkUrl =link;
 this.getLinkPreview(this.linkUrl);
 
-console.log(this.linkUrl);
+ 
      
   }
 
@@ -123,12 +122,7 @@ console.log(this.linkUrl);
     this.http.post<any>(`${this.APIURL}get-preview`, formData).subscribe({
       next: (data) => {
         this.linkPreviewData = data;
-        this.isNoImage = this.linkPreviewData.img === '';
-        if (this.isNoImage) {
-          this.linkPostForm.controls['img'].setValidators([Validators.required]);
-        } else {
-          this.linkPostForm.controls['img'].clearValidators();
-        }
+         
         this.linkPostForm.controls['img'].updateValueAndValidity();
       },
       error: (error: HttpErrorResponse) => {
@@ -282,6 +276,12 @@ console.log(this.linkUrl);
       formData.append('grouptype', this.grouptype);
       formData.append('groupname', this.groupname);
   
+
+      if (this.linkPreviewData.img) {
+        formData.append('linkimage', this.linkPreviewData.img);
+    } else {
+        formData.append('linkimage', '');  
+    }
  
   
       this.http.post(this.APIURL + 'add-post-link-group', formData).subscribe({

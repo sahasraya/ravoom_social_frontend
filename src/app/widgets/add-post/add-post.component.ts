@@ -85,7 +85,7 @@ export class AddPostComponent {
     this.linkPostForm = this.fb.group({
       listPostdescription: ['', Validators.required] ,
       linkrul: ['', Validators.required] ,
-      img: ['', Validators.required] ,
+   
  
     });
 
@@ -130,12 +130,8 @@ console.log(this.linkUrl);
       next: (data) => {
         this.linkPreviewData = data;
         this.isNoImage = this.linkPreviewData.img === '';
-        if (this.isNoImage) {
-          this.linkPostForm.controls['img'].setValidators([Validators.required]);
-        } else {
-          this.linkPostForm.controls['img'].clearValidators();
-        }
-        this.linkPostForm.controls['img'].updateValueAndValidity();
+         
+    
       },
       error: (error: HttpErrorResponse) => {
         console.error('Error fetching link preview:', error);
@@ -274,9 +270,14 @@ console.log(this.linkUrl);
       formData.append('imagePostdescription', this.linkPostForm.get('listPostdescription')!.value);
       formData.append('thelink', this.linkUrl);
       formData.append('linktitle', this.linkPreviewData.title);
-      formData.append('linkimage', this.linkPreviewData.img);
+      if (this.linkPreviewData.img) {
+        formData.append('linkimage', this.linkPreviewData.img);
+    } else {
+        formData.append('linkimage', '');  
+    }
   
  
+    alert(this.linkPreviewData.title);
   
       this.http.post(this.APIURL + 'add-post-link', formData).subscribe({
         next: response => {

@@ -4,15 +4,26 @@
     (focus)="showSavedUsers()"  (keydown.enter)="handleEnterKeyPress()">
     
     <div *ngIf="user && user.length" class="results-container">
+      <h2>Users</h2>
       <ul class="user-list">
         <li *ngFor="let u of user" class="user-item">
-          <a [routerLink]="['/home/profile', u.userid]" (click)="addToLocalStorage(u.username, 'data:image/jpeg;base64,' + u.profileimage,u.userid)">
+          <a [routerLink]="['/home/profile', u.userid]" (click)="addToLocalStorage(u.username, 'data:image/jpeg;base64,' + u.profileimage, u.userid)">
             <img *ngIf="u.profileimage" [src]="'data:image/jpeg;base64,' + u.profileimage" alt="Profile Image" class="profile-image">
             <h1 class="username">{{ u.username }}</h1>
-         
           </a>
-
-
+        </li>
+      </ul>
+    </div>
+    
+    <div *ngIf="group && group.length" class="results-container">
+      <h2>Groups</h2>
+      <ul class="group-list">
+        <li *ngFor="let group of group" class="group-item">
+          <a [routerLink]="['/home/group', group.groupid]">
+            <img *ngIf="group.groupimage" [src]="'data:image/jpeg;base64,' + group.groupimage" alt="Group Image" class="group-image">
+            <h1 class="groupname">{{ group.groupname }}</h1>
+            <p class="grouptype">{{ group.grouptype }} group</p>
+          </a>
         </li>
       </ul>
     </div>

@@ -5,7 +5,7 @@
            <div class="username-holder">
             <span>
               <a [routerLink]="['/home/profile', post.userid]">{{ post.username }} </a>
-              <span *ngIf="post.groupid != null">&#64; {{ post.groupname }}</span>
+              <span *ngIf="post.groupname != null">&#64; {{ post.groupname }}</span>
    
 
             </span>
@@ -85,12 +85,13 @@
   
 
   <div *ngIf="post.posttype === 'video'" class="videoholder">
-    <!-- <p>{{videoUrl}}</p> -->
-    <video *ngIf="videoUrl" controls (click)="commentOnPost(post.postid,post.n_or_g)">
+    <video *ngIf="videoUrl" controls (click)="commentOnPost(post.postid, post.n_or_g)">
       <source [src]="videoUrl" type="video/mp4">
       Your browser does not support the video tag.
     </video>
   </div>
+
+
 
 
   <div *ngIf="post.posttype === 'link'" class="imageholder">
@@ -104,13 +105,12 @@
   
 
 
-  <div *ngIf="post.posttype === 'audio'" class="audioholder" (click)="commentOnPost(post.postid,post.n_or_g)">
-    <audio *ngIf="audioUrl" controls>
-      <source [src]="audioUrl" type="audio/mpeg">
-      Your browser does not support the audio element.
-    </audio>
-  </div>
-
+ <div *ngIf="post.posttype === 'audio'" class="audioholder" (click)="commentOnPost(post.postid, post.n_or_g)">
+  <audio *ngIf="audioUrl" controls>
+    <source [src]="audioUrl" type="audio/mpeg">
+    Your browser does not support the audio element.
+  </audio>
+</div>
   <div class="active-buttons-holder">
     <button (click)="likePost(post.postid, post.userid,  post.username, post.userprofile,post.n_or_g)">Like</button>
     <span>{{ likes }} Likes</span>

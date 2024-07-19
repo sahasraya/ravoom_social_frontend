@@ -50,19 +50,42 @@ export class PostComponent implements OnInit {
 
     this.checkisamemberofgroup(this.userid);
 
-    if (this.post.posttype === 'video') {
-      this.videoUrl = this.post.filepath;
-      console.log(this.videoUrl);
+      if (this.post.posttype === 'video') {
+      const base64Data = this.post.post;
+    
+
+      try {
+ 
+        const blob = this.convertBase64ToBlob(base64Data, 'video/mp4');
+        this.videoUrl = URL.createObjectURL(blob);
+   
+      } catch (error) {
+        
+      }
+      
       this.imageUrl = '';
       this.audioUrl = '';
-    
-  
     }
+ 
+  }
+
+
+  convertBase64ToBlob(base64: string, mimeType: string): Blob {
+    const base64Data = base64.replace(/^data:video\/mp4;base64,/, '');
+    const byteChars = atob(base64Data);
+    const byteNums = new Array(byteChars.length);
+    
+    for (let i = 0; i < byteChars.length; i++) {
+      byteNums[i] = byteChars.charCodeAt(i);
+    }
+    
+    const byteArray = new Uint8Array(byteNums);
+    return new Blob([byteArray], { type: mimeType });
   }
 
 
 
-
+  
   async checkisamemberofgroup(userid: any) {
     const formData = new FormData();
     formData.append('userid', userid);
@@ -236,7 +259,10 @@ export class PostComponent implements OnInit {
       this.videoUrl = '';
       this.audioUrl = '';
     } else if (this.post.posttype === 'audio') {
-      this.audioUrl = this.post.filepath;
+      const base64Data = this.post.post;
+   
+      const blob = this.convertBase64ToBlobAudio(base64Data);
+      this.audioUrl = URL.createObjectURL(blob);
       this.imageUrl = '';
       this.videoUrl = '';
     }
@@ -300,8 +326,12 @@ export class PostComponent implements OnInit {
 
 
  
-
  
+  
+  convertBase64ToBlobAudio(base64Data: string): Blob {
+    return this.convertBase64ToBlob(base64Data, 'audio/mpeg');
+  }
+
 
  async likePost(postid: number, userid: number, username: string, profileimage: string,normalorgroup:any):Promise<void> {
 
@@ -332,7 +362,7 @@ export class PostComponent implements OnInit {
         this.likes --;
         this.http.post(this.APIURL + "send-notification",formData).subscribe({
           next:(response:any) =>{
-                       console.log(response);
+                  
           }
         });
       }
@@ -351,14 +381,14 @@ export class PostComponent implements OnInit {
         this.likes ++;
         this.http.post(this.APIURL + "send-notification",formData).subscribe({
           next:(response:any) =>{
-                       console.log(response);
+                    
           }
         });
       }else{
         this.likes --;
         this.http.post(this.APIURL + "send-notification",formData).subscribe({
           next:(response:any) =>{
-                       console.log(response);
+                     
           }
         });
       }

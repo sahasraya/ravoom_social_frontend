@@ -6,6 +6,7 @@
 <button (click)="showVideoPosts()">Show viode</button>
 <button (click)="showTextLinkPosts()">Show post</button>
 <button (click)="showUser()">Show user</button>
+<button (click)="showGroups()">Show groups</button>
 
 
 
@@ -297,6 +298,7 @@
 <div *ngIf="showUserBool">
   <div class="user-holder" *ngIf="UserList.length > 0">
     <div *ngFor="let user of UserList" class="main-outer-holder">
+      <a [routerLink]="['/home/profile/', user.userid]">
       <div class="inner-holder">
         <div class="profile-image-holder">
           <img *ngIf="user.userprofileUrl" [src]="user.userprofileUrl" alt="Profile Image" class="profileimage">
@@ -306,15 +308,56 @@
             <p>Phone: {{ user.phonenumber }}</p>
            
   
-            <!-- Add more fields as needed -->
+ 
           </div>
         </div>
       </div>
+     </a>
     </div>
   </div>
   
   <div class="nodatamessage" *ngIf="UserList.length === 0">
     <p>No users found.</p>
+  </div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+<div *ngIf="showGroupBool">
+  <div class="user-holder" *ngIf="GroupList.length > 0">
+ 
+      <div *ngFor="let group of GroupList" class="main-outer-holder">
+        <a [routerLink]="['/home/group', group.groupid]">
+          <div class="inner-holder">
+            <div class="profile-image-holder">
+              <img *ngIf="group.userprofileUrl" [src]="group.userprofileUrl" alt="Profile Image" class="profileimage">
+              <div class="details">
+                <p>Group name : {{ group.groupname }}</p>
+                <p>Type {{ group.grouptype }}</p>
+             
+               
+      
+     
+              </div>
+            </div>
+          </div>
+        </a>
+      </div>
+   
+  </div>
+  
+  <div class="nodatamessage" *ngIf="GroupList.length === 0">
+    <p>No groups found.</p>
   </div>
 
 </div>
