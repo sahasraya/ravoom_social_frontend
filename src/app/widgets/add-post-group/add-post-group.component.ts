@@ -23,7 +23,8 @@ export class AddPostGroupComponent {
   filePreview: string | ArrayBuffer | null = null;
   imagePreviews: string[] = [];
   selectedFiles: File[] = [];
-  
+  durationError: boolean = false;
+  mediaDuration: number | null = null;
 
   selectedColor: string = '';
   linkUrl: string = '';
@@ -309,20 +310,31 @@ this.getLinkPreview(this.linkUrl);
 
 
 
-
   onFileSelected(event: any): void {
     const file: File = event.target.files[0];
     this.selectedFile = file;
 
- 
     if (file) {
       const reader = new FileReader();
       reader.readAsDataURL(file);
       reader.onload = () => {
         this.filePreview = reader.result;
+        this.getMediaDuration(file);
       };
     }
   }
+
+  getMediaDuration(file: File): void {
+    const mediaElement = document.createElement(file.type.startsWith('video') ? 'video' : 'audio');
+    mediaElement.src = URL.createObjectURL(file);
+
+    mediaElement.onloadedmetadata = () => {
+      this.mediaDuration = mediaElement.duration;
+      this.durationError = this.mediaDuration > 30;
+      URL.revokeObjectURL(mediaElement.src);  
+    };
+  }
+  
    removeSelectedFile(): void {
     this.selectedFile = null;
     this.filePreview = null;

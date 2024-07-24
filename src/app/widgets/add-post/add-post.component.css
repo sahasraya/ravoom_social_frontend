@@ -205,13 +205,20 @@
     top: 10px;
     right: 50px;
   }
-
-
-
-
-
-
-
+ 
   .add-preview{
     width: 30%;
   }
+
+  .error-message{
+    background-color: red;
+    border-radius: 5px;
+    padding: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.error-message span{
+color: white;
+text-align: center;
+
+}

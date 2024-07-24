@@ -17,10 +17,12 @@
 
 
 
-  <form  [formGroup]="addPostForm" (ngSubmit)="onSubmit()" *ngIf="showvideoaudioformbool">
+<form  [formGroup]="addPostForm" (ngSubmit)="onSubmit()" *ngIf="showvideoaudioformbool">
 
 
-   
+    <div *ngIf="durationError" class="error-message">
+      <span>This audio or video file should not be more than 30 seconds.</span>
+    </div>
 
 
     <div>
@@ -51,8 +53,10 @@
         </div>
       </ng-container>
     </div>
-  
-    <button type="submit" [disabled]="!addPostForm.valid">Add Post</button>
+    <div *ngIf="mediaDuration">
+      <p>Duration: {{ mediaDuration | number:'1.0-2' }} seconds</p>
+    </div>
+    <button type="submit" [disabled]="!addPostForm.valid || durationError">Add Post</button>
   </form>
   
   

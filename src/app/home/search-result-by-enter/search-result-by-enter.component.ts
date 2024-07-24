@@ -45,7 +45,7 @@ export class SearchResultByEnterComponent  implements OnInit{
   ngOnInit(): void {
     this.route.paramMap.subscribe(params => {
       this.searchtext = params.get('text')!;
-      this.getResult(this.searchtext);
+      // this.getResult(this.searchtext);
       this.getImageTextImageLink(this.searchtext);
       this.getTextLink(this.searchtext);
       this.getLinkPreview('https://en.wikipedia.org/wiki/Sri_Lanka'); 
@@ -73,7 +73,19 @@ async getGroup(searchtext: string):Promise<void>{
           post.userprofileUrl = this.createBlobUrl(post.groupimage, 'image/jpeg'); 
         }
       this.GroupList.push(post);
-      console.log(this.GroupList);
+      if(this.GroupList.length > 0){
+
+        this.showImagetextLinkPostsBool = false;
+        this.showAudioPostsBool = false;
+        this.showImagePostsBool = false;
+        this.showTextPostsBool = false;
+        this.showLinkPostsBool = false;
+        this.showVideoPostsBool = false ;
+        this.showTextLinkPostsBool = false;
+        this.showUserBool =false;
+        this.showGroupBool= true;
+
+      }
       });
 
       
@@ -111,6 +123,18 @@ async getUser(searchtext: string):Promise<void>{
 
   
         this.UserList.push(post);
+
+        if(this.UserList.length > 0){
+          this.showImagetextLinkPostsBool = false;
+          this.showAudioPostsBool = false;
+          this.showImagePostsBool = false;
+          this.showTextPostsBool = false;
+          this.showLinkPostsBool = false;
+          this.showVideoPostsBool = false ;
+          this.showTextLinkPostsBool = false;
+          this.showUserBool =true;
+        }
+
       });
 
       
@@ -163,6 +187,23 @@ async getUser(searchtext: string):Promise<void>{
 
     
           this.TextLinkPosts.push(post);
+
+
+          if(this.TextLinkPosts.length > 0){
+
+            this.showImagetextLinkPostsBool = false;
+            this.showAudioPostsBool = false;
+            this.showImagePostsBool = false;
+            this.showTextPostsBool = false;
+            this.showLinkPostsBool = false;
+            this.showVideoPostsBool = false ;
+            this.showTextLinkPostsBool = true;
+            this.showUserBool =false;
+            this.showGroupBool= false;
+    
+          }
+
+
         });
 
         
@@ -198,6 +239,8 @@ async getUser(searchtext: string):Promise<void>{
 
     
           this.ImageTextLinkPosts.push(post);
+
+    
         });
 
         
@@ -213,7 +256,7 @@ async getUser(searchtext: string):Promise<void>{
     const formData = new FormData();
     formData.append('searchtext', searchtext);
 
-    this.http.post<any>(`${this.APIURL}search-enter-press-result`, formData).subscribe({
+    this.http.post<any>(`${this.APIURL} `, formData).subscribe({
       next: response => {
         this.responseObject = response;
         this.responseObject.forEach((post: any) => {
@@ -225,7 +268,7 @@ async getUser(searchtext: string):Promise<void>{
           }
 
            
-
+         console.log(post.posttype + " aaaaaaaaaaaaaaaaaaaaaa");
           switch (post.posttype) {
             case 'video':
               this.videoPosts.push(post);
@@ -301,6 +344,7 @@ async getUser(searchtext: string):Promise<void>{
     this.showVideoPostsBool = false ;
     this.showTextLinkPostsBool = false;
     this.showUserBool =false;
+    this.showGroupBool= false;
     
   }
 
@@ -313,6 +357,8 @@ async getUser(searchtext: string):Promise<void>{
     this.showVideoPostsBool = false ;
     this.showTextLinkPostsBool = false;
     this.showUserBool =false;
+    this.showGroupBool= false;
+
 
 
 
