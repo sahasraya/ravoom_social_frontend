@@ -80,9 +80,15 @@ export class SignUpComponent implements OnInit{
  togglePasswordVisibility() {
     this.showPassword = !this.showPassword;
   }
-  allPasswordConditionsMet(): boolean {
-    return Object.values(this.passwordConditions).every(condition => condition);
+allPasswordConditionsMet(): boolean {
+  const allConditionsMet = Object.values(this.passwordConditions).every(condition => condition);
+
+  if (!allConditionsMet) {
+    this.signUpForm.get('reenterpassword')?.setValue('');
   }
+
+  return allConditionsMet;
+}
   
   checkPasswordStrength() {
     const password = this.signUpForm.get('password')?.value;
@@ -193,5 +199,15 @@ export class SignUpComponent implements OnInit{
 
   visiblepassword(): void {
     this.showPassword = !this.showPassword;
+  }
+
+  checkpasswordequls(password:string , reenterpassword:string):void{
+
+    if(password == reenterpassword){
+      this.isPasswordFieldFocused = false;
+    }else{
+      this.isPasswordFieldFocused = true;
+
+    }
   }
 }

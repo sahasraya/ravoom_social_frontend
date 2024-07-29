@@ -7,16 +7,23 @@
     
   
     <div>
-      <label for="emailaddress">Email Address:</label>
-      <input id="emailaddress" formControlName="emailaddress" type="email">
+      <label for="emailaddress">Email Address</label>
+      <input id="emailaddress" formControlName="emailaddress" type="email" placeholder="Email address">
     </div>
   
   
   
     <div>
-      <label for="password">Password:</label>
-      <span (click)="visiblepassword()">{{ showPassword ? 'Hide' : 'Show' }}</span>
-      <input [type]="showPassword ? 'text' : 'password'" id="password" formControlName="password">
+      <label for="password">Password</label>
+    
+
+
+      <div class="password-eye-holder">
+        <input [type]="showPassword ? 'text' : 'password'" id="password" formControlName="password"  placeholder="Password" #password>
+        <img src="../../../assets/images/showpassword.png" alt="showpassword" class="eyeimage" *ngIf="!showPassword" (click)="visiblepassword()">
+        <img src="../../../assets/images/hidepassword.png" alt="hidepassword" class="eyeimage" *ngIf="showPassword" (click)="visiblepassword()">
+       </div>
+       
     </div>
   
  
@@ -24,7 +31,10 @@
     <button type="submit" *ngIf="loginForm.valid">Log in</button>
 
 
-  <a routerLink="/auth/sign-up">sign up</a>  
-  <a routerLink="/auth/forget-password">forget password</a>  
+
+    <div class="anckortagholder">
+      <a routerLink="/auth/sign-up">sign up</a>  
+      <a routerLink="/auth/forget-password">forget password</a>  
+    </div>
   </form>
   

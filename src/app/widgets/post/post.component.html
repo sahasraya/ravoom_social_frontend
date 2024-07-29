@@ -4,7 +4,10 @@
     <div class="postownerdetailholder">
            <div class="username-holder">
             <span>
-              <a [routerLink]="['/home/profile', post.userid]">{{ post.username }} </a>
+              <div class="postdetilsholder">
+                <a [routerLink]="['/home/profile', post.userid]" class="username">{{ post.username }} </a>
+              <small >{{ calculateTimeAgo(post.posteddate) }}</small>
+              </div>
               <span *ngIf="post.groupname != null">&#64; {{ post.groupname }}</span>
    
 
@@ -18,24 +21,29 @@
                    
               
                     
-                    <button (click)="toggleDropdown($event, post)" class="dropdown-toggle" *ngIf="this.userid !=''">⋮</button>
+                  
+                    <img src="../../../assets/images/threedots.png" alt=""   (click)="toggleDropdown($event, post)" class="dropdown-toggle" *ngIf="this.userid !=''">
+
                   </div>
                   <div *ngIf="post.showDropdown" class="dropdown-menu">
                     <ul>
-                      <li (click)="removePost(post.postid)" *ngIf="post.userid == this.userid">Delete</li>
-                      <li>Report</li>
+                      <li (click)="removePost(post.postid)" *ngIf="post.userid == this.userid" class="dropdownicons">
+                        <img src="../../../assets/images/delete.png" alt="">
+                        Delete
+                      </li>
+                      <li>  <img src="../../../assets/images/complain.png" alt=""> Report</li>
                     </ul>
                   </div>
 
            </div>
-      <p>{{ calculateTimeAgo(post.posteddate) }}</p>
+  
  
     </div>
 
 
   </div>
-  
-   <small *ngIf="post.groupid != null">{{post.postdescription}}</small>
+ 
+   <small >{{post.postdescription}}</small>
   <div *ngIf="userid != post.userid">
     <h3 *ngIf="post.posttype === 'group'"> {{post.username}} has created a {{post.grouptype}} group. {{post.grouptype === 'private' ? 'Get permission to join.' :'You can join now.'}}</h3>
   </div>
@@ -43,9 +51,9 @@
 
   <h3 *ngIf="userid == post.userid && post.posttype === 'group'">Your group</h3>
  
- 
+  <span *ngIf="post.posttype === 'link'" class="linktext">{{post.filepath}}</span>
 
-
+  <a [href]="post.thelink" target="_blank" class="link-wrapper" *ngIf="post.posttype === 'link'">{{post.thelink}}</a>
 
   <div *ngIf="post.posttype === 'text'" class="textholder">
     <div class="text-holder" [style.background-color]="post.textcolor" (click)="commentOnPost(post.postid,post.n_or_g)">
@@ -95,9 +103,9 @@
 
 
   <div *ngIf="post.posttype === 'link'" class="imageholder">
-    <a [href]="post.thelink" target="_blank" class="link-wrapper">{{post.thelink}}</a>
+   
     <img [src]="post.textbody" alt="" (click)="commentOnPost(post.postid,post.n_or_g)">
-    <h4>{{post.filepath}}</h4>
+    
 </div>
 
 
@@ -116,8 +124,12 @@
     <span>{{ likes }} Likes</span>
 
     <!-- Comment button -->
-    <button (click)="commentOnPost(post.postid,post.n_or_g)">Comment</button>
-    <span>{{ comments }} Comments</span>
+     <span class="comment-button" (click)="commentOnPost(post.postid,post.n_or_g)">
+      <img src="../../../assets/images/comment.png" alt="" > {{ comments }} Comments
+     </span>
+
+ 
+   
  
  <span *ngIf="this.userid !='' && userid != post.userid && post.posttype !='group'">
   <button (click)="iamstartedtofollow(post.userid)"  >{{followButtonText}}</button>

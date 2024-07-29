@@ -1,27 +1,35 @@
 <form [formGroup]="signUpForm" (ngSubmit)="onSubmit()">
-<div [class]="bannerClass" *ngIf="passwordsnotmatching">
+<div [class]="bannerClass"  >
   <span class="bannertext">{{errormessage}}</span>
 </div>
 
     <div>
-      <label for="username">Username:</label>
-      <input id="username" formControlName="username" type="text">
+      <label for="username">Username</label>
+      <input id="username" formControlName="username" type="text" placeholder="Username">
     </div>
   
     <div>
-      <label for="emailaddress">Email Address:</label>
-      <input id="emailaddress" formControlName="emailaddress" type="email">
+      <label for="emailaddress">Email Address</label>
+      <input id="emailaddress" formControlName="emailaddress" type="email" placeholder="Email address">
     </div>
   
     <div>
-      <label for="phonenumber">Phone Number:</label>
-      <input id="phonenumber" formControlName="phonenumber" type="number">
+      <label for="phonenumber">Phone Number</label>
+      <input id="phonenumber" formControlName="phonenumber" type="number" placeholder="Phone number">
     </div>
   
     <div>
-      <label for="password">Password:</label> 
-      <span (click)="togglePasswordVisibility()">{{ showPassword ? 'Hide' : 'Show' }}</span>
-      <input [type]="showPassword ? 'text' : 'password'" id="password" formControlName="password" (input)="checkPasswordStrength()">
+    
+      <label for="password">Password</label> 
+   
+      
+
+      <div class="password-eye-holder">
+      <input [type]="showPassword ? 'text' : 'password'" id="password" formControlName="password" (input)="checkPasswordStrength()" placeholder="Password" #password>
+      <img src="../../../assets/images/showpassword.png" alt="showpassword" class="eyeimage" *ngIf="!showPassword" (click)="togglePasswordVisibility()">
+      <img src="../../../assets/images/hidepassword.png" alt="hidepassword" class="eyeimage" *ngIf="showPassword" (click)="togglePasswordVisibility()">
+     </div>
+     
     </div>
 
  
@@ -54,14 +62,14 @@
 
 
   
-    <div>
-      <label for="reenterpassword">Re-enter Password:</label>
-      <input [type]="showPassword ? 'text' : 'password'" id="reenterpassword" formControlName="reenterpassword">
+    <div *ngIf="allPasswordConditionsMet()">
+      <label for="reenterpassword">Re-enter Password</label>
+      <input [type]="showPassword ? 'text' : 'password'" id="reenterpassword" formControlName="reenterpassword" placeholder="Re enter password" (input)="checkpasswordequls(password.value ,reenterpassword.value)" #reenterpassword>
     </div>
 
-    <div *ngIf="age !== null && age !== 0">
-      <span class="age" [ngClass]="{'red': age < 18, 'green': age >= 18}">
-        {{ age < 18 ? 'Age is less than 18' : 'Age: ' + age }}
+    <div *ngIf="age !== null && age !== 0" [ngClass]="{'agebelow18': age < 18}" >
+      <span class="agebelow18" [ngClass]="{'agebelow18': age < 18}">
+        {{ age < 18 ? 'Age is less than 18' : '' }}
       </span>
     </div>
 
@@ -80,7 +88,7 @@
   
     <button type="submit"  *ngIf="age! > 18 && signUpForm.valid && allPasswordConditionsMet()">Sign Up</button>
 
-    <a routerLink="/auth/log-in">Log in</a>
+    <a routerLink="/auth/log-in" class="logintag">Already have an account</a>
 
 
     

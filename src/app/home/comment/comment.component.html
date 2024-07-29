@@ -5,10 +5,17 @@
         <p class="username">{{ post.username }}</p>
         <p>{{ calculateTimeAgo(post.posteddate) }}</p>
       </div>
+      
     </div>
     <div class="post-body">
-      <p class="post-description">{{ post.postdescription }}</p>
-  
+      <small class="post-description">{{ post.postdescription }}</small>
+      <p class="filepath">{{post.filepath}}</p>
+   
+      <a [href]="post.thelink" target="_blank">{{post.thelink}}</a>
+   
+
+
+
 
 
 
@@ -16,10 +23,9 @@
 
 
       <div *ngIf="post.posttype === 'link'" class="linkholder">
-        <a [href]="post.thelink" target="_blank">{{post.thelink}}</a>
-       
+      
          <img [src]="post.textbody" alt="">
-         <h4>{{post.filepath}}</h4>
+       
     
       </div>
  

@@ -1,4 +1,12 @@
  
+html, body {
+    height: 100%;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f0f0f0; 
+  }
 
 form {
     display: flex;
@@ -13,6 +21,7 @@ form {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    font-family: 'Open Sans', sans-serif;
 }
 
 div {
@@ -37,7 +46,7 @@ input[type="password"] {
 
 button {
     padding: 10px 20px;
-    background-color: blue;
+    background-color: var(--primarycolor);
     color: white;
     border: none;
     border-radius: 5px;
@@ -47,10 +56,14 @@ button {
 }
 
 button:hover {
-    background-color: #007bff;
+    background-color: var(--primary-faded);
+    color: var(--primarycolor);
+    border: 1px solid var(--primarycolor);
 }
 
-
+.anckortagholder{
+    margin-top: 1px;
+}
 
 .error-banner{
     background-color: red;
@@ -64,3 +77,38 @@ color: white;
 text-align: center;
 
 }
+
+
+.password-eye-holder{
+    display: flex;
+    flex-direction: row;
+    
+    align-items: center;
+    justify-content: start;
+  }
+  .eyeimage{
+    width: 30px;
+  margin-left: 10px;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 50%;
+  }
+  .eyeimage:hover{
+    background-color: rgba(128, 128, 128, 0.308);
+  }
+
+
+  .anckortagholder{
+    display: flex;
+    flex-direction: column;
+   
+  }
+
+  .anckortagholder a{
+    text-decoration: none;
+    color: rgb(43,149,236);
+  }
+
+  .anckortagholder a:hover{
+text-decoration: underline;
+  }

@@ -3,7 +3,11 @@
     margin: 0;
     box-sizing: border-box;
 }
-
+body {
+    font-family: 'Open Sans', sans-serif; 
+    margin: 0; 
+    padding: 0; 
+}
 *::before, *::after {
     padding: 0;
     margin: 0;
@@ -13,3 +17,14 @@
 html {
     scroll-behavior: smooth;
 }
+:root {
+    --primarycolor: rgb(43, 149, 236);
+    --primary-faded: rgba(43,149,236, 0.1);
+    --primary-faded-less: rgba(43,149,236, 0.3);
+    --primary-dark: rgb(43,149,236);
+    --primary-darker: rgb(43,149,236);
+    --post-dynamic-width: 80vh;
+    --icon-backgroud-color: rgba(128, 128, 128, 0.308);
+    --icon-hover-backgroud-color: rgba(128, 128, 128, 0.178);
+
+  }
