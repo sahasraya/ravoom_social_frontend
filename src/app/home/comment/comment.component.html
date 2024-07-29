@@ -3,7 +3,7 @@
       <img class="user-profile" [src]="'data:image/jpeg;base64,' + post.userprofile" alt="User Profile Image">
       <div class="user-info">
         <p class="username">{{ post.username }}</p>
-        <p>{{ calculateTimeAgo(post.posteddate) }}</p>
+        <p class="postedtime">{{ calculateTimeAgo(post.posteddate) }}</p>
       </div>
       
     </div>
@@ -100,64 +100,98 @@
 
     
 
-    <form [formGroup]="commentForm" (ngSubmit)="onSubmit(post.postid,post.userid,post.username,post.userprofile)">
-    
   
-        <div>
-        
-          <input type="text" formControlName="commenttext" placeholder="add comment">
-        </div>
-     
-        <button type="submit">add comment</button>
-      </form>
 
       <div class="active-buttons-holder">
         <button (click)="likePost(post.postid, post.userid,  post.username, post.userprofile,post.n_or_g)">Like</button>
         <span>{{ likes }} Likes</span>
     
-        <span>{{ comments.length }} Comments</span>
+  
+
+        <span class="comment-button"  >
+          <img src="../../../assets/images/comment.png" alt="" > {{ comments.length }} Comments
+         </span>
+
       </div>
 
 
 
 
 
-
+  <hr>
       <div *ngIf="!isthelastcomment">
         <h3>Comments</h3>
+
+
+
+        <form [formGroup]="commentForm" (ngSubmit)="onSubmit(post.postid,post.userid,post.username,post.userprofile)">
+    
+  
+          <div class="commentinputholder">
+      
+            <input type="text" formControlName="commenttext" placeholder="Add comment" #commenttext>
+            <button type="submit" *ngIf="commenttext.value"><img src="../../../assets/images/addcomment.png" alt=""></button>
+          </div>
+       
+        
+        </form>
+
+
+
+
         <div *ngFor="let comment of comments" class="comment">
           <div class="comment-header">
             <img *ngIf="comment.imageurl" [src]="'data:image/jpeg;base64,' + comment.imageurl" alt="User Profile Image" class="comment-userprofile">
             <div class="comment-info-holder">
-              <a [routerLink]="['/home/profile', comment.userid]">
-                <p><strong>{{ comment.username }}</strong></p>
+              <a [routerLink]="['/home/profile', comment.userid]" class="commentusername">
+                <p ><strong>{{ comment.username }}</strong></p>
               </a>
-              <p>{{ calculateTimeAgo(comment.commenteddate) }}</p>
+              <small>{{ calculateTimeAgo(comment.commenteddate) }}</small>
             </div>
             <button (click)="toggleDropdown($event, comment)" class="dropdown-toggle">⋮</button>
           </div>
-          <p>{{ comment.text }}</p>
+          <p class="commenttext">{{ comment.text }}</p>
            
 
-          <span (click)="toggleReplayDiv(comment) ">replay {{comment.replayscount ==0 ? "": comment.replayscount}}</span>
+          <span (click)="toggleReplayDiv(comment) " class="replaytext">add replay {{comment.replayscount ==0 ? "": comment.replayscount}}</span>
 
 
 
                     <div class="replay-comment-holder" *ngIf="comment.showReplayDiv">
-                      <p><b>add replay comment</b></p>
+                    
                           <form  [formGroup]="replayCommentForm" (ngSubmit)="addingreplaycomment(post.postid,post.userid,post.username,post.userprofile,comment.commentid,comment.text)">
 
-                             <input type="text" placeholder="add replay" formControlName="replaycomment">
+                  
 
-                          <button type="submit" [disabled]="!replayCommentForm.valid">replay</button>
+                          <div class="commentinputholder">
+      
+                            <input type="text" formControlName="replaycomment" placeholder="Add reply" #replaycommenttext>
+                            <button type="submit"    *ngIf="replaycommenttext.value"><img src="../../../assets/images/addcomment.png" alt=""></button>
+
+                           
+                          </div>
 
 
                           </form>
 
-                             <div *ngFor="let replay of comment.replays"> 
-
-                              <p>{{replay.text}}</p>
-                             </div>
+                        
+                          
+                          <!-- For each replay's user profile image -->
+                          <div *ngFor="let replay of comment.replays">
+                            <div class="replaycomment-outerhodler">
+                              <div class="replaytextholder">
+                              <img *ngIf="replay.userprofileBlobUrl" [src]="replay.userprofileBlobUrl" alt="User Profile">
+                                 <div class="replaytextuserdetailsholder">
+                                  <span class="replaytext-username">{{ replay.username }}</span>
+                                  <span class="replaytext-time">{{ calculateTimeAgo(replay.replayeddate) }}</span>
+                                 </div>
+                             
+                            
+                            </div>
+                            <p class="reply-commenttext">{{ replay.text }}</p>
+                            </div>
+                            
+                          </div>
 
 
 
@@ -195,7 +229,8 @@
       
       
       
-      <div *ngIf="comments.length === 0 || isthelastcomment">
+      <div *ngIf="comments.length === 0 || isthelastcomment" class="nocomments">
+        <img src="../../../assets/images/nocomments.png" alt="">
         <p>No comments available.</p>
       </div>
       

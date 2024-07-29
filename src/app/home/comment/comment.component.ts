@@ -64,44 +64,72 @@ export class CommentComponent implements OnInit {
   }
 
 
-  toggleReplayDiv(comment: any): void {
-    comment.showReplayDiv = !comment.showReplayDiv;
-    if (comment.showReplayDiv) {
-      this.getReplayComments(comment.commentid)
-        .then((replayComments:any) => {
-          comment.replays = replayComments.replaycomments ?? [];
-         
-        })
-        .catch(error => {
-          console.error('Error fetching replay comments:', error);
-          comment.replays = [];
+toggleReplayDiv(comment: any): void {
+  comment.showReplayDiv = !comment.showReplayDiv;
+  if (comment.showReplayDiv) {
+    this.getReplayComments(comment.commentid)
+      .then((replayComments: any) => {
+        comment.replays = replayComments.replaycomments ?? [];
+
+        
+        if (replayComments.userprofile) {
+        
+          comment.userprofileBlobUrl = this.createBlobUrl(replayComments.userprofile, 'image/jpeg');
+          console.log(comment.userprofileBlobUrl); 
+        }
+
+      
+        comment.replays.forEach((replay: any) => {
+          if (replay.userprofile) {
+            replay.userprofileBlobUrl = this.createBlobUrl(replay.userprofile, 'image/jpeg');
+            console.log(replay.userprofileBlobUrl); 
+
+          }
         });
-    }
+      })
+      .catch(error => {
+        console.error('Error fetching replay comments:', error);
+        comment.replays = [];
+      });
   }
+}
 
-  async getReplayComments(commentid: any): Promise<any[]> {
-    const params = new HttpParams().set('commentid', commentid.toString());
-    try {
- 
-      if(this.groupornormalpost=="g"){
-        const response = await this.http.get<any[]>(`${this.APIURL}get_replay_comments_group`, { params }).toPromise();
-      console.log(response);
-      this.replayCommentForm.reset();
-      return response || [];
-
-      }else{
-        const response = await this.http.get<any[]>(`${this.APIURL}get_replay_comments`, { params }).toPromise();
-      console.log(response);
-      this.replayCommentForm.reset();
-
-      return response || [];
-
-      }
-    } catch (error) {
-      console.error('Error fetching replay comments:', error);
-      return [];
+async getReplayComments(commentid: any): Promise<any> {
+  const params = new HttpParams().set('commentid', commentid.toString());
+  try {
+    let response: any;
+    if (this.groupornormalpost === "g") {
+      response = await this.http.get<any>(`${this.APIURL}get_replay_comments_group`, { params }).toPromise();
+    } else {
+      response = await this.http.get<any>(`${this.APIURL}get_replay_comments`, { params }).toPromise();
     }
+
+    if (response.userprofile) {
+      response.userprofileBlobUrl = this.createBlobUrl(response.userprofile, 'image/jpeg');
+      console.log(response.userprofileBlobUrl); // Debugging
+    }
+
+    if (Array.isArray(response.replaycomments)) {
+      response.replaycomments.forEach((replay: any) => {
+        if (replay.userprofile) {
+          replay.userprofileBlobUrl = this.createBlobUrl(replay.userprofile, 'image/jpeg');
+          console.log(replay.userprofileBlobUrl); // Debugging
+        }
+      });
+    }
+
+    this.replayCommentForm.reset();
+
+    return response || {};
+  } catch (error) {
+    console.error('Error fetching replay comments:', error);
+    return {};
   }
+}
+
+
+
+
 
   
   onCloseLargerImage(): void {

@@ -33,7 +33,11 @@
   
   .username {
     font-weight: bold;
-    font-size: 1.2em;
+    font-size: 17px;
+  }
+  .postedtime{
+    font-size: 14px;
+
   }
   
   .user-id {
@@ -84,58 +88,86 @@
   }
   
 
-  /* Style the form container */
-form {
-  display: flex;
-  flex-direction: column;
-  width: 300px;
-  margin: 20px auto;
-  padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 10px;
-  background-color: #f9f9f9;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
+ 
 
-/* Style the input field */
+ 
 input[type="text"] {
   width: 100%;
   padding: 10px;
   margin: 10px 0;
   border: 1px solid #ccc;
-  border-radius: 5px;
+  border-radius: 15px;
   box-sizing: border-box;
   font-size: 16px;
+
 }
 
-/* Style the button */
+.commentusername{
+  font-size: 13px;
+  color: black;
+  text-decoration: none;
+}
+.commentusername:hover{
+  text-decoration: underline;
+}
+.commenttext{
+  opacity: 0.7;
+  font-size: 15px;
+}
+
+.replaytext{
+color: var( --primarycolor);
+font-size: 13px;
+cursor: pointer;
+
+}
+.replaytext:hover{
+text-decoration: underline;
+}
+
 button[type="submit"] {
-  padding: 10px;
-  margin-top: 10px;
-  background-color: #007bff;
-  color: white;
+  padding: 8px;
+  background-color: white;  
+  border-radius: 50%;  
   border: none;
-  border-radius: 5px;
+  margin-left: 5px;
   cursor: pointer;
-  font-size: 16px;
   transition: background-color 0.3s;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);  
+  width: 50px; 
+  height: 50px; 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid var(--primary-faded);
 }
 
-/* Hover effect for the button */
+button[type="submit"] img {
+  width: 15px;  
+  height: 15px;  
+}
+
+
 button[type="submit"]:hover {
-  background-color: #0056b3;
+  box-shadow: 0px 6px 6px rgba(0, 0, 0, 0.3);  
 }
 
-/* Focus effect for input fields */
+.commentinputholder{
+  display: flex;
+  justify-content: center;
+  align-items: start;
+  flex-direction: row;
+}
 input[type="text"]:focus {
   border-color: #007bff;
   outline: none;
 }
 
-/* Additional styling for div containing input */
-div {
-  margin-bottom: 15px;
-}
+ .active-buttons-holder{
+  margin-top: 15px;
+  margin-bottom: 20px;
+ }
+ 
 
 
 .comments-section {
@@ -227,26 +259,26 @@ div {
 
 
 .delete-confirmation-dialog {
-  position: fixed; /* Fixed position to cover the entire viewport */
+  position: fixed; 
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background-color: red; /* Black background */
-  color: white; /* White text */
+  background-color: red;  
+  color: white;  
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   text-align: center;
-  z-index: 1000; /* Ensure it's above other elements */
-  width: 300px; /* Optional: Adjust width as needed */
-  max-width: 80%; /* Optional: Set maximum width */
+  z-index: 1000;  
+  width: 300px;  
+  max-width: 80%;  
 }
 
 .delete-confirmation-dialog p {
   margin: 0 0 10px 0;
 }
 .alert-BG{
-  position: fixed; /* Fixed position to cover the entire viewport */
+  position: fixed; 
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
@@ -260,18 +292,43 @@ div {
   padding: 8px 20px;
   cursor: pointer;
   border: none;
-  background-color: #fff; /* White background */
-  color: #f44336; /* Red text */
+  background-color: #fff; 
+  color: #f44336; 
   border-radius: 4px;
   font-size: 14px;
   transition: background-color 0.3s, color 0.3s;
 }
 
 .delete-confirmation-dialog button:hover {
-  background-color: #f44336; /* Red background on hover */
-  color: #fff; /* White text on hover */
+  background-color: #f44336;  
+  color: #fff; 
 }
+.comment-button{
+  padding: 10px;
+  background-color: var(--icon-backgroud-color);
+  border-radius: 15px;
+  cursor: pointer;
+  margin-left: 10px;
+ 
+ }
+ .comment-button img{
+  width: 20px;
+ }
+ .nocomments{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+ }
 
+ .nocomments img{
+  height: 10vh;
+  margin-bottom: 10px;
+  opacity: 0.5;
+ }
+ .nocomments p{
+  opacity: 0.8;
+ }
 
 
 
@@ -346,7 +403,51 @@ div {
 
 
 .replay-comment-holder{
-  background-color: rgba(128, 128, 128, 0.395);
+  background-color: var(--icon-hover-backgroud-color);
   padding: 10px;
   border-radius: 10px;
+  margin-top: 5px;
+}
+.replaytextholder{
+  display: flex;
+  flex-direction: row;
+  align-items: start;
+}
+.replaytextholder img{
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+}
+.replaytextuserdetailsholder{
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  margin-left: 10px;
+}
+.replaycomment-outerhodler{
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.214);
+ 
+}
+.replaytext-username{
+  font-size: 13px;
+  cursor: pointer;
+}
+.replaytext-username:hover{
+  text-decoration: underline;
+}
+.replaytext-time{
+  font-size: 10px;
+  color: rgba(0, 0, 0, 0.58);
+}
+.reply-commenttext{
+  font-size: 13px;
+  color: rgb(84, 84, 84);
+  padding: 10px;
+  word-wrap: break-word; 
+  overflow-wrap: break-word; 
+  max-width: 100%;  
+  white-space: normal;
 }
