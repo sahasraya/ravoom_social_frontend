@@ -1,13 +1,15 @@
-<button (click)="showTextImageLinkPosts()">Show text image link</button>
-<button (click)="showAudioPosts()">Show Audios</button>
+<div class="navinationbuttonholder">
+  <button (click)="showTextImageLinkPosts()"  [class.selected]="showImagetextLinkPostsBool" class="navigationsbuttons">Text image link</button>
+<button (click)="showAudioPosts()"  [class.selected]="showAudioPostsBool" class="navigationsbuttons">Audios</button>
+<button (click)="showVideoPosts()"  [class.selected]="showVideoPostsBool" class="navigationsbuttons">Viode</button>
+<button (click)="showTextLinkPosts()"  [class.selected]="showTextLinkPostsBool" class="navigationsbuttons">Post</button>
+<button (click)="showUser()"  [class.selected]="showUserBool" class="navigationsbuttons">User</button>
+<button (click)="showGroups()"  [class.selected]="showGroupBool" class="navigationsbuttons">Groups</button>
+</div>
+
 <!-- <button (click)="showImagePosts()">Show Images</button> -->
 <!-- <button (click)="showTextPosts()">Show Texts</button> -->
 <!-- <button (click)="showLinkPosts()">Show Links</button> -->
-<button (click)="showVideoPosts()">Show viode</button>
-<button (click)="showTextLinkPosts()">Show post</button>
-<button (click)="showUser()">Show user</button>
-<button (click)="showGroups()">Show groups</button>
-
 
 
 
@@ -15,7 +17,16 @@
 
 <div class="video-post-holder" *ngIf="showImagetextLinkPostsBool">
  
-  <div *ngFor="let post of ImageTextLinkPosts" class="main-outer-holder">
+
+  <div class="posts-container">
+    <div *ngFor="let post of ImageTextLinkPosts; let i = index">
+      <app-post [post]="post" ></app-post>
+    </div>
+
+    
+  </div>
+
+  <!-- <div *ngFor="let post of ImageTextLinkPosts" class="main-outer-holder">
     <div class="inner-holder">
       <div class="profile-image-holder">
         <img *ngIf="post.userprofileUrl" [src]="post.userprofileUrl" alt="Profile Image" class="profileimage">
@@ -48,11 +59,11 @@
 
    
     <p>{{ post.postdescription }}</p>
-  </div>
+  </div> -->
 
  
   <div class="nodatamessage" *ngIf="ImageTextLinkPosts.length === 0">
-    <p>No posts found.</p>
+    <p>No posts found</p>
   </div>
 
 </div>
@@ -86,7 +97,7 @@
   </div>
 
   <div class="nodatamessage" *ngIf="videoPosts.length==0">
-    <p>no vidoe files found</p>
+    <p>No video files found</p>
   </div>
 
 </div>
@@ -119,7 +130,7 @@
  
   </div>
   <div class="nodatamessage" *ngIf="audioPosts.length==0">
-    <p>no audio files found</p>
+    <p>No audio files found</p>
   </div>
 
 </div>
@@ -246,7 +257,14 @@
 
 <div class="text-link-post-holder" *ngIf="showTextLinkPostsBool">
  
-  <div *ngFor="let post of TextLinkPosts" class="main-outer-holder">
+  <div class="posts-container">
+    <div *ngFor="let post of TextLinkPosts; let i = index">
+      <app-post [post]="post" ></app-post>
+    </div>
+
+    
+  </div>
+  <!-- <div *ngFor="let post of TextLinkPosts" class="main-outer-holder">
     <div class="inner-holder">
       <div class="profile-image-holder">
         <img *ngIf="post.userprofileUrl" [src]="post.userprofileUrl" alt="Profile Image" class="profileimage">
@@ -277,11 +295,11 @@
 
    
     <p>{{ post.postdescription }}</p>
-  </div>
+  </div> -->
 
  
   <div class="nodatamessage" *ngIf="ImageTextLinkPosts.length === 0">
-    <p>No posts foundddddd.</p>
+    <p>No posts found</p>
   </div>
 
 </div>
@@ -295,29 +313,28 @@
 
 
 
-<div *ngIf="showUserBool">
+<div *ngIf="showUserBool" >
   <div class="user-holder" *ngIf="UserList.length > 0">
     <div *ngFor="let user of UserList" class="main-outer-holder">
       <a [routerLink]="['/home/profile/', user.userid]">
-      <div class="inner-holder">
+       
         <div class="profile-image-holder">
           <img *ngIf="user.userprofileUrl" [src]="user.userprofileUrl" alt="Profile Image" class="profileimage">
           <div class="details">
             <p>{{ user.username }}</p>
-            <p>Email: {{ user.emailaddress }}</p>
-            <p>Phone: {{ user.phonenumber }}</p>
+            <small>{{ user.createddate |  date:'longDate' }}</small>
            
   
  
           </div>
         </div>
-      </div>
+      
      </a>
     </div>
   </div>
   
   <div class="nodatamessage" *ngIf="UserList.length === 0">
-    <p>No users found.</p>
+    <p>No users found</p>
   </div>
 
 </div>
@@ -342,8 +359,13 @@
             <div class="profile-image-holder">
               <img *ngIf="group.userprofileUrl" [src]="group.userprofileUrl" alt="Profile Image" class="profileimage">
               <div class="details">
-                <p>Group name : {{ group.groupname }}</p>
-                <p>Type {{ group.grouptype }}</p>
+
+                <div>
+                  <span>{{ group.groupname }}</span>
+                  <small> <b> : {{ group.createdate |  date:'longDate'}} </b></small>
+                </div>
+               
+                <small>{{ group.grouptype }}</small>
              
                
       
@@ -357,7 +379,7 @@
   </div>
   
   <div class="nodatamessage" *ngIf="GroupList.length === 0">
-    <p>No groups found.</p>
+    <p>No groups found</p>
   </div>
 
 </div>

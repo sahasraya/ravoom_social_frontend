@@ -237,8 +237,9 @@ async getUser(searchtext: string):Promise<void>{
             post.postUrl = this.createBlobUrl(post.post, 'image/jpeg'); 
           }
 
-    
+           
           this.ImageTextLinkPosts.push(post);
+          console.log(  this.ImageTextLinkPosts);
 
     
         });
@@ -252,11 +253,11 @@ async getUser(searchtext: string):Promise<void>{
   }
 
 
-  getResult(searchtext: string) {
+  async getResult(searchtext: string):Promise<void> {
     const formData = new FormData();
     formData.append('searchtext', searchtext);
 
-    this.http.post<any>(`${this.APIURL} `, formData).subscribe({
+    this.http.post<any>(`${this.APIURL}search-enter-press-result`, formData).subscribe({
       next: response => {
         this.responseObject = response;
         this.responseObject.forEach((post: any) => {
@@ -268,7 +269,7 @@ async getUser(searchtext: string):Promise<void>{
           }
 
            
-         console.log(post.posttype + " aaaaaaaaaaaaaaaaaaaaaa");
+
           switch (post.posttype) {
             case 'video':
               this.videoPosts.push(post);
@@ -286,6 +287,8 @@ async getUser(searchtext: string):Promise<void>{
               this.linkPosts.push(post);
               break;
           }
+
+          alert(this.videoPosts);
         });
       },
       error: (error: HttpErrorResponse) => {
@@ -293,6 +296,9 @@ async getUser(searchtext: string):Promise<void>{
       }
     });
   }
+
+
+
 
   base64ToBlob(base64: string, contentType: string = ''): Blob {
     try {
