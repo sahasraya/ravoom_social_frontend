@@ -36,7 +36,7 @@ export class PostComponent implements OnInit {
 
   constructor(private cdref: ChangeDetectorRef,private http:HttpClient,private router:Router,@Inject(PLATFORM_ID) private platformId: Object) {}
   ngOnInit(): void {
-     
+       
     this.getpostlikecount();
     this.getpostcommentCount();
     this.getfollowingstatus(this.post.userid);

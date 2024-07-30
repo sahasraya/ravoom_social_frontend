@@ -256,8 +256,27 @@ input[type="text"]:focus {
 .dropdown-menu li:hover {
   background: #f0f0f0;
 }
+.dropdown-menu img {
+  width: 20px;  
+  margin-right: 10px; 
+}
 
-
+.dropdownicons {
+  display: flex;
+  align-items: center;
+}
+.dropdown-toggle{
+  width: 35px;
+  cursor: pointer;
+  padding: 10px;
+  border-radius: 50%;
+  background-color: var(--icon-backgroud-color);
+  }
+  
+  .dropdown-toggle:hover{
+  background-color: var(--icon-hover-backgroud-color);
+  
+  }
 .delete-confirmation-dialog {
   position: fixed; 
   top: 50%;
@@ -337,6 +356,39 @@ input[type="text"]:focus {
 
 
 
+ .closeicon {
+  padding: 15px;
+  width: 50px;
+  background-color: white;
+  border-radius: 50%;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  cursor: pointer;
+  transition: transform 0.5s, background-color 0.5s;  
+}
+
+.closeicon:hover {
+  transform: rotate(90deg); 
+  background-color: rgba(255, 255, 255, 0.644);
+}
+
+
+.nav-button {
+  background-color: rgba(255, 255, 255, 0.8);
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  border-radius: 5px;
+  width: 50px;
+  padding: 15px;
+  border-radius: 50%;
+  transition: transform 0.5s, background-color 0.5s;  
+}
+
+.nav-button:hover {
+  background-color: rgba(255, 255, 255, 1);
+}
 
 
 .image-slider-overlay {
@@ -354,6 +406,8 @@ input[type="text"]:focus {
 
 .image-slider-container {
   position: relative;
+  width: auto;
+  
 }
 
 .slider-image {
@@ -374,17 +428,7 @@ input[type="text"]:focus {
   padding: 10px;
 }
 
-.nav-button {
-  background-color: rgba(255, 255, 255, 0.8);
-  border: none;
-  padding: 5px 10px;
-  cursor: pointer;
-  border-radius: 5px;
-}
 
-.nav-button:hover {
-  background-color: rgba(255, 255, 255, 1);
-}
 
 .close-button {
   position: absolute;

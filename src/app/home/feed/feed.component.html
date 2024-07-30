@@ -1,7 +1,8 @@
 
-<app-header></app-header>
-<app-add-post (postAdded)="onPostAdded()" *ngIf="openaddpostscreenbool" (closePost)="openaddpostscreenbool = false"></app-add-post>
-<app-notification></app-notification>
+<app-header (addPost)="openaddpostscreen()" (uploadPost)="onPostAdded()"></app-header>
+<!-- <app-add-post (postAdded)="onPostAdded()" *ngIf="openaddpostscreenbool" (closePost)="openaddpostscreenbool = false"></app-add-post> -->
+<!-- (postAdded)="onPostAdded()" -->
+<!-- <app-notification></app-notification> -->
 
 
 
@@ -28,7 +29,7 @@
 <div class="feed-container">
  
 
-  <button (click)="openaddpostscreen()" *ngIf="this.userid">open</button>
+ 
  
   <div class="posts-container">
     <div *ngFor="let post of posts; let i = index">
@@ -38,3 +39,6 @@
     
   </div>
 </div>
+
+
+

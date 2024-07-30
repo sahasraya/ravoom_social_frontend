@@ -7,11 +7,42 @@
       
       <a routerLink="/auth/sign-up" *ngIf="userid == ''">sign up</a>
       <a routerLink="/auth/log-in" *ngIf="userid == ''">log in</a>
-      <a routerLink="" *ngIf="userid != ''" (click)="logout()">log out</a>
-      <a routerLink="/home/settings/{{userid}}" *ngIf="userid != ''">settings</a>
-      <a routerLink="/home/profile/{{userid}}" *ngIf="userid != ''">profile</a>
-  
- 
+      <!-- <a routerLink="" *ngIf="userid != ''" (click)="logout()">log out</a> -->
+      <!-- <a routerLink="/home/settings/{{userid}}" *ngIf="userid != ''">settings</a>
+      <a routerLink="/home/profile/{{userid}}" *ngIf="userid != ''">profile</a> -->
+      <app-add-post *ngIf="openaddpostscreenbool"   (closePost)="openaddpostscreenbool = false"></app-add-post>
+
+      <span class="creategroup" (click)="openaddpostscreen()">
+        <img src="../../../assets/images/add.png" alt=""   *ngIf="userid != ''" >
+        create
+
+      </span>
+
+      <img src="../../../assets/images/notification.png" alt="" class="notificationicon" *ngIf="userid != ''" (click)="getNotifications()">
+      <img *ngIf="user?.profileimage" [src]="'data:image/jpeg;base64,' + user?.profileimage" alt="Profile Image"  class="profileimage"  (click)="showdropdown($event)">
+
+      <div *ngIf="dropdownVisible" class="dropdown-menu" (click)="hideDropdown()">
+        <ul>
+          <a routerLink="/home/profile/{{userid}}">
+            <li class="dropdownicons"  >
+              <img src="../../../assets/images/profile.png" alt=""> Profile
+            </li>
+          </a>
+          <a routerLink="/home/settings/{{userid}}">
+            <li class="dropdownicons"  >
+              <img src="../../../assets/images/settings.png" alt=""> Settings
+            </li>
+          </a>
+
+          <li (click)="logout()" class="dropdownicons">
+            <img src="../../../assets/images/logout.png" alt=""> Logout
+          </li>
+        </ul>
+      </div>
+
+
+      <app-notification></app-notification>
+
     </div>
   </div>
   

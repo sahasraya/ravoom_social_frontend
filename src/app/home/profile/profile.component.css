@@ -1,5 +1,8 @@
  
-
+.posts-container{
+  width: var(--post-dynamic-width);
+  margin: 0px auto;
+}
 .profileimage-holder img {
   border-radius: 50%;
   border: 2px solid grey;
@@ -22,11 +25,33 @@
 
 .button-holder{
   margin: 0px auto;
-  width: 80%;
+  width: var(--post-dynamic-width);
  
   display: flex;
-  justify-content: center;
+  justify-content: start;
+ padding-left: 10px;
 }
+
+
+.navigationsbuttons{
+  padding: 10px;
+  border-radius: 20px;
+  background-color: var(--icon-hover-backgroud-color);
+  color: black;
+  border: none;
+  transition: background-color 0.5s, color 0.5s;
+  cursor: pointer;
+
+}
+.navigationsbuttons:hover{
+  background-color: var(--icon-backgroud-color);
+}
+.navigationsbuttons.selected {
+ 
+  background-color: var(--icon-backgroud-color);
+  font-weight: bold;
+}
+
 .button-holder button{
   margin: 5px;
 }

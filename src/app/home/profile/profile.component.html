@@ -4,6 +4,7 @@
     <app-image-larger *ngIf="showLargerImage" [imageUrl]="'data:image/jpeg;base64,' + user?.profileimage" (close)="onCloseLargerImage()"></app-image-larger>
 
     <h1>{{user?.username}}</h1>
+    
     <app-add-post (postAdded)="onPostAdded()" *ngIf="openaddpostscreenbool" (closePost)="openaddpostscreenbool = false"></app-add-post>
 
     </div>
@@ -13,9 +14,9 @@
 
 
     <div class="button-holder">
-      <button (click)="showfeed()">feed</button>
-      <button (click)="showiamfollowinguserlist()">i am following</button>
-      <button (click)="showiamfolloeduserlist()">i am followed</button>
+      <button (click)="showfeed()"  [class.selected]="showfeedBool" class="navigationsbuttons">Feed</button>
+      <button (click)="showiamfollowinguserlist()" [class.selected]="showiamfollowinguserlistBool" class="navigationsbuttons">I am following</button>
+      <button (click)="showiamfolloeduserlist()" [class.selected]="showiamfolloeduserlistBool" class="navigationsbuttons">I am followed</button>
     </div>
 
 
@@ -30,9 +31,10 @@
 
       <div class="posts-container" *ngIf="showiamfolloeduserlistBool">
          
-        <h2>List of Users You Are Followed</h2>
+      
 
         <div class="user-card" *ngFor="let user of iamfolloweduserslist">
+          <h2>List of Users You Are Followed</h2>
           <div class="user-profile">
             <img *ngIf="user.profileImageUrl" [src]="user.profileImageUrl" alt="Profile Image">
             <div class="user-details">
@@ -46,14 +48,22 @@
 
           </div>
         </div>
-        
+        <div class="noiamfollowinguserlist" *ngIf="iamfolloweduserslist.length == 0">
+          <p>You are not followed</p>
+</div>
       </div>
 
 
+
+
+
+
+
       <div class="posts-container" *ngIf="showiamfollowinguserlistBool">
-        <h2>List of Users You Are Following</h2>
+       
         
         <div class="user-card" *ngFor="let user of iamfollowinguserslist">
+          <h2>List of Users You Are Following</h2>
           <div class="user-profile">
             <img *ngIf="user.profileImageUrl" [src]="user.profileImageUrl" alt="Profile Image">
             <div class="user-details">
@@ -72,6 +82,9 @@
 
             
           </div>
+        </div>
+        <div class="noiamfollowinguserlist" *ngIf="iamfollowinguserslist.length == 0">
+                          <p>No following users</p>
         </div>
       </div>
 

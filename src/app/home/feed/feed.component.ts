@@ -36,6 +36,7 @@ export class FeedComponent {
   loading = false;
   iscreatenewgroupopen: boolean = false;
   userid:string = "";
+ 
 
   constructor(private http: HttpClient, private cdr: ChangeDetectorRef) {}
 
@@ -106,6 +107,7 @@ export class FeedComponent {
   }
 
   onPostAdded(): void {
+ 
     this.offset = 0;
     this.posts = [];
     this.getPostsFeed();  

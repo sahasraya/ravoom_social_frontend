@@ -1,9 +1,5 @@
 <div class="group-main-holder" *ngIf="group">
-  <button (click)="showhome()">home</button>
-  <button (click)="showfollowers()">followers</button>
-  <button (click)="showrequests()">requests</button>
-  <button (click)="adduser()">add new user</button>
-  <button (click)="settings()">setings</button>
+
   
 
 
@@ -24,12 +20,26 @@
                       <span (click)="joingroup(group.groupid)">{{btntext}}</span>
                     </div>
                     
-                    <span>{{followerscount}} followers</span>
+                    <small>{{followerscount}} members</small>
                    </div>
     </div>
   
+    <div class="navigation-holder">
+        <button (click)="showhome()"  [class.selected]="showhomeBool" class="navigationsbuttons">Home</button>
+        <button (click)="showfollowers()"  [class.selected]="showfollowersBool" class="navigationsbuttons">Followers</button>
+        <button (click)="showrequests()"  [class.selected]="showrequestsBool" class="navigationsbuttons">Requests</button>
+        <button (click)="adduser()"  [class.selected]="showadduserBool" class="navigationsbuttons">Add new user</button>
+        <button (click)="settings()"  [class.selected]="showsettingsBool" class="navigationsbuttons">Setings</button>
+    </div>
  
+    <div class="posts-wrapper" *ngIf="showhomeBool">
+        <div *ngFor="let post of groupposts; let i = index">
+          <app-post [post]="post"></app-post>
+        </div>
+      </div>
 
+
+      
 
 <app-add-post-group   (postAdded)="onPostAdded()" *ngIf="showaddpostgroup" (closePost)="showaddpostgroup = false"  [groupid]="groupid" [grouptype]="grouptype" [groupname] ="groupname"></app-add-post-group>
   
@@ -39,11 +49,7 @@
   
    
 
-  <div class="posts-wrapper" *ngIf="showhomeBool">
-    <div *ngFor="let post of groupposts; let i = index">
-      <app-post [post]="post"></app-post>
-    </div>
-  </div>
+ 
 
   
   <div class="group-users-holder" *ngIf="showfollowersBool">

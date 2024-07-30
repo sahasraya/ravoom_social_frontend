@@ -1,24 +1,24 @@
 <form [formGroup]="updateForm" (ngSubmit)="onSubmit()">
-  <h3>Update details</h3>
+ 
   <div>
-    <label for="username">Username:</label>
+    <label for="username">Username</label>
     <input id="username" formControlName="username" [value]="user?.username" type="text" placeholder="username">
   </div>
 
   <div>
-    <label for="emailaddress">Email Address:</label>
+    <label for="emailaddress">Email Address</label>
     <input id="emailaddress" formControlName="emailaddress" [value]="user?.emailaddress" type="email" placeholder="Email address">
   </div>
 
   <div>
-    <label for="phonenumber">Phone Number:</label>
+    <label for="phonenumber">Phone Number</label>
     <input id="phonenumber" formControlName="phonenumber" [value]="user?.phonenumber" type="number" placeholder="Phone number">
   </div>
 
   
 
- 
-  <input type="file" class="updatebackgroundimage" (change)="onProfileImageSelected($event)">
+  <label for="mediafile" class="file-input-label">Upload profile</label>
+  <input type="file" class="updatebackgroundimage" id="mediafile" (change)="onProfileImageSelected($event)" style="display: none;">
 
   <div class="image-holder" *ngIf="!isprofileimageselected">
     <img *ngIf="user?.profileimage" [src]="'data:image/jpeg;base64,' + user?.profileimage" alt="Profile Image">

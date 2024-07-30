@@ -3,6 +3,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { log } from 'console';
+import { NotificationService } from './notification.service';
 
 @Component({
   selector: 'app-notification',
@@ -19,12 +20,14 @@ export class NotificationComponent implements OnInit {
   currentUserId: string = ""; 
   opennotificationwindow:boolean=false;
 
-  constructor(private http: HttpClient,private router:Router) {}
+  constructor(private http: HttpClient,private router:Router,private notificationService: NotificationService) {}
 
   ngOnInit(): void {
     this.currentUserId = localStorage.getItem('wmd') || '';
  
-    this.getNotifications();  
+    this.notificationService.getNotificationEvent().subscribe(() => {
+      this.getNotifications();
+    });
   }
 
   async getNotifications(): Promise<void> {
@@ -67,7 +70,7 @@ export class NotificationComponent implements OnInit {
       return postDate.toLocaleDateString();
     }
   }
-  navigatetocommentscreen(postid:any,notificationid:any):void{
+  navigatetocommentscreen(postid:any,notificationid:any,norg:any):void{
 
    
     const formData = new FormData();
@@ -77,7 +80,7 @@ export class NotificationComponent implements OnInit {
       next: response => {
         console.log( response);
         
-        this.router.navigate(['/home/comment', postid])
+        this.router.navigate(['/home/comment', postid,norg])
  
       },
       error: (error: HttpErrorResponse) => {

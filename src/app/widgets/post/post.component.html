@@ -63,6 +63,7 @@
 
   
   <div *ngIf="post.posttype === 'image'" class="imageholder">
+    <span class="numberofimages" *ngIf="post.images.length>1">{{post.images.length}}</span>
     <img   [src]="imageUrl" alt="Post Image"   (click)="commentOnPost(post.postid,post.n_or_g)" />
     <!-- <img   [src]="imageUrl" alt="Post Image" (click)="showImageSliderMethod(post.images)" /> -->
   </div>

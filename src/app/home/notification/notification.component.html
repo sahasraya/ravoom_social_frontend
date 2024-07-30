@@ -1,12 +1,12 @@
-<button (click)="getNotifications()" *ngIf="this.currentUserId">open notification</button>
+<!-- <button (click)="getNotifications()" *ngIf="this.currentUserId">open notification</button> -->
  
 <a routerLink="/home/followers-feed" *ngIf="this.currentUserId">followers feed</a>
 
-<div class="notofication-holder" *ngIf="!opennotificationwindow">
-
+<div class="notofication-holder" *ngIf="!opennotificationwindow && notifications.length>0">
+   
 
 <div class="main-notification-holder" *ngFor="let notification of notifications"  >
-    <div class="profile-inner-holder" *ngIf="notification.notificationtype === 'like'" (click)="navigatetocommentscreen(notification.postid,notification.notificationid)" [ngStyle]="{'background-color': notification.seenstatus === 1 ? 'white' : 'green'}">
+    <div class="profile-inner-holder" *ngIf="notification.notificationtype === 'like'" (click)="navigatetocommentscreen(notification.postid,notification.notificationid,notification.n_or_g)" [ngStyle]="{'background-color': notification.seenstatus === 1 ? 'white' : 'rgba(128, 128, 128, 0.205)'}">
         
         <div class="profile-image-holder">
             <img [src]="'data:image/jpeg;base64,' + notification.profileimage" alt="Profile Image">
@@ -16,19 +16,19 @@
       
         <div class="notification-detail-holder">
             <span class="detail"><b> {{ notification.username }}</b> has liked your post</span>
-            <span class="detail">{{ notification.date | date:'longDate' }}</span>  <span class="detail">{{ calculateTimeAgo(notification.date) }}</span>
+            <span class="detail">{{ notification.date | date:'longDate' }}</span> <small  >{{ calculateTimeAgo(notification.date) }}</small>
        
         </div>
     </div>
     
-    <div class="profile-inner-holder" *ngIf="notification.notificationtype === 'comment'" (click)="navigatetocommentscreen(notification.postid,notification.notificationid)" [ngStyle]="{'background-color': notification.seenstatus === 1 ? 'white' : 'green'}">
+    <div class="profile-inner-holder" *ngIf="notification.notificationtype === 'comment'" (click)="navigatetocommentscreen(notification.postid,notification.notificationid,notification.n_or_g)" [ngStyle]="{'background-color': notification.seenstatus === 1 ? 'white' : 'rgba(128, 128, 128, 0.205)'}">
         <div class="profile-image-holder">
             <img [src]="'data:image/jpeg;base64,' + notification.profileimage" alt="Profile Image">
 
         </div>
         <div class="notification-detail-holder">
             <span class="detail"><b>{{ notification.username }}</b> has commented on your post</span>
-            <span class="detail">{{ notification.date | date:'longDate' }}</span>  <span class="detail">{{ calculateTimeAgo(notification.date) }}</span>
+            <span class="detail">{{ notification.date | date:'longDate' }}</span>  <small  >{{ calculateTimeAgo(notification.date) }}</small>
         </div>
     </div>
 
@@ -39,14 +39,14 @@
 
 
 
-    <div class="profile-inner-holder" *ngIf="notification.notificationtype === 'grouppermission'" (click)="navigatetogroupscreen(notification.postowneruserid ,notification.notificationid,notification.groupid,notification.groupname)" [ngStyle]="{'background-color': notification.seenstatus === 1 ? 'white' : 'green'}">
+    <div class="profile-inner-holder" *ngIf="notification.notificationtype === 'grouppermission'" (click)="navigatetogroupscreen(notification.postowneruserid ,notification.notificationid,notification.groupid,notification.groupname)" [ngStyle]="{'background-color': notification.seenstatus === 1 ? 'white' : 'rgba(128, 128, 128, 0.205)'}">
         <div class="profile-image-holder">
             <img [src]="'data:image/jpeg;base64,' + notification.profileimage" alt="Profile Image">
 
         </div>
         <div class="notification-detail-holder">
             <span class="detail"><b>{{ notification.username }}</b>  {{notification.commenttext}}</span>
-            <span class="detail">{{ notification.date | date:'longDate' }}</span>  <span class="detail">{{ calculateTimeAgo(notification.date) }}</span>
+            <span class="detail">{{ notification.date | date:'longDate' }}</span>  <small  >{{ calculateTimeAgo(notification.date) }}</small>
         </div>
     </div>
 
@@ -56,20 +56,18 @@
 
 
 
-    <div class="profile-inner-holder" *ngIf="notification.notificationtype === 'replaycomment'" (click)="navigatetocommentscreen(notification.postid,notification.notificationid)" [ngStyle]="{'background-color': notification.seenstatus === 1 ? 'white' : 'green'}">
+    <div class="profile-inner-holder" *ngIf="notification.notificationtype === 'replaycomment'" (click)="navigatetocommentscreen(notification.postid,notification.notificationid,notification.n_or_g)" [ngStyle]="{'background-color': notification.seenstatus === 1 ? 'white' : 'rgba(128, 128, 128, 0.205)'}">
         <div class="profile-image-holder">
             <img [src]="'data:image/jpeg;base64,' + notification.profileimage" alt="Profile Image">
 
         </div>
         <div class="notification-detail-holder">
             <span class="detail"><b>{{ notification.username }}</b> replayed to your comment {{ notification.commenttext}} as {{ notification.replaytext}}</span>
-            <span class="detail">{{ notification.date | date:'longDate' }}</span>   <span class="detail">{{ calculateTimeAgo(notification.date) }}</span>
+            <span class="detail">{{ notification.date | date:'longDate' }}</span>  <small  >{{ calculateTimeAgo(notification.date) }}</small>
         </div>
     </div>
 
    
 </div>
-<div class="no-notifications-message" *ngIf="notifications.length == 0">
-    <span>No notification yet!</span>
-</div>
+ 
 </div>

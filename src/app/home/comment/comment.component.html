@@ -16,6 +16,7 @@
 
 
 
+ 
 
 
 
@@ -32,31 +33,33 @@
       <div *ngIf="post.posttype === 'image'" class="post-media">
         <img [src]="'data:image/jpeg;base64,' + post.post" alt="Post Image" (click)="showImageSliderMethod(images)" >
 
-
-        <div *ngIf="showImageSlider" class="image-slider-overlay">
-          <div class="image-slider-container">
-
-      
-     
-            <img [src]="images[currentImageIndex]" alt="Slider Image" class="slider-image" />
-      
-          
-            <div class="navigation-buttons">
-              <button class="nav-button" (click)="previousImage()">Previous</button>
-              <button class="nav-button" (click)="nextImage()">Next</button>
-            </div>
-            
-        
-            <button class="close-button" (click)="closeSlider()">Close</button>
-          </div>
-        </div>
-
+ 
 
         <app-image-larger *ngIf="showLargerImage" [imageUrl]="'data:image/jpeg;base64,' + post.post" (close)="onCloseLargerImage()"></app-image-larger>
 
       </div>
 
+      <div *ngIf="showImageSlider" class="image-slider-overlay">
+        <div class="image-slider-container">
+        
+    
+   
+          <img [src]="images[currentImageIndex]" alt="Slider Image" class="slider-image" />
+    
+        
+          <div class="navigation-buttons" *ngIf="images.length>1">
+            <img src="../../../assets/images/left-arrow.png" alt="" class="nav-button" (click)="previousImage()">
+            <img src="../../../assets/images/right-arrow.png" alt="" class="nav-button" (click)="nextImage()">
 
+        
+          </div>
+          
+         
+        </div>
+
+        <img src="../../../assets/images/close.png" alt="" class="closeicon" (click)="closeSlider()">
+
+      </div>
 
 
 
@@ -148,7 +151,11 @@
               </a>
               <small>{{ calculateTimeAgo(comment.commenteddate) }}</small>
             </div>
-            <button (click)="toggleDropdown($event, comment)" class="dropdown-toggle">⋮</button>
+        
+
+            <img src="../../../assets/images/threedots.png" alt=""   (click)="toggleDropdown($event, comment)" class="dropdown-toggle"  >
+
+
           </div>
           <p class="commenttext">{{ comment.text }}</p>
            
@@ -182,7 +189,11 @@
                               <div class="replaytextholder">
                               <img *ngIf="replay.userprofileBlobUrl" [src]="replay.userprofileBlobUrl" alt="User Profile">
                                  <div class="replaytextuserdetailsholder">
-                                  <span class="replaytext-username">{{ replay.username }}</span>
+                                  <a [routerLink]="['/home/profile', replay.userid]" class="commentusername">
+                                    <span class="replaytext-username">{{ replay.username }}</span>
+                                  </a>
+
+                                  
                                   <span class="replaytext-time">{{ calculateTimeAgo(replay.replayeddate) }}</span>
                                  </div>
                              
@@ -204,8 +215,13 @@
           <div *ngIf="comment.showDropdown" class="dropdown-menu">
             <ul>
             
-              <li (click)="removeComment(comment,comment.commentid)">Delete</li>
-              <li  >Report</li>
+              <li (click)="removeComment(comment,comment.commentid)" *ngIf="post.userid == this.userid" class="dropdownicons">
+                <img src="../../../assets/images/delete.png" alt="">
+                Delete comment
+              </li> 
+              <li>  <img src="../../../assets/images/complain.png" alt=""> Report comment</li>
+
+            
                
             </ul>
           </div>

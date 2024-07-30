@@ -1,17 +1,18 @@
 
 <div class="add-post-main-holder">
 
-  <button class="closebtn" (click)="closeAddPost()">Close</button>
+ 
+  <img src="../../../assets/images/close.png" alt="" class="closeicon" (click)="closeAddPost()">
 
 
 
 
 
   <div class="btn-holder">
-    <button (click)="showvideoaudioform()">add viode or audio post</button>
-  <button (click)="showimagepostsform()">add images post</button>
-  <button (click)="showtextpostform()">add text post</button>
-  <button (click)="showlinkpostform()">add link post</button>
+    <button (click)="showvideoaudioform()" [class.selected]="showvideoaudioformbool" class="navigationsbuttons">Add video or audio</button>
+    <button (click)="showimagepostsform()" [class.selected]="showimagepostsformbool" class="navigationsbuttons">Add image</button>
+    <button (click)="showtextpostform()" [class.selected]="showtextpostformbool" class="navigationsbuttons">Add text</button>
+    <button (click)="showlinkpostform()" [class.selected]="showlinkpostformbool" class="navigationsbuttons">Add link</button>
   </div>
   
 
@@ -32,9 +33,8 @@
     </div>
   
     <div>
-      <label for="mediafile">Media File</label>
-      <input type="file" id="mediafile" (change)="onFileSelected($event)" accept=".mp3, .mp4" formControlName="mediafile" >
-  
+      <input type="file" id="mediafile" (change)="onFileSelected($event)" accept=".mp3, .mp4" formControlName="mediafile" style="display: none;">
+      <label for="mediafile" class="file-input-label">Upload post</label>
   
   
   
@@ -49,14 +49,12 @@
           <video *ngSwitchCase="'video/mp4'" [src]="filePreview" class="video-preview" controls></video>
           <audio *ngSwitchCase="'audio/mpeg'" [src]="filePreview" controls></audio>
           <div *ngSwitchDefault>File preview not available</div>
-          <button type="button" class="close-button" (click)="removeSelectedFile()">X</button>
+         <img src="../../../assets/images/close.png" alt="" class="closeicon" (click)="removeSelectedFile()">
         </div>
       </ng-container>
     </div>
-    <div *ngIf="mediaDuration">
-      <p>Duration: {{ mediaDuration | number:'1.0-2' }} seconds</p>
-    </div>
-    <button type="submit" [disabled]="!addPostForm.valid || durationError">Add Post</button>
+    
+    <button type="submit" [disabled]="!addPostForm.valid || durationError" class="submit-button">Add Post</button>
   </form>
   
   
@@ -73,6 +71,14 @@
   
   
   
+  <div *ngIf="imagePreviews.length > 0" class="image-preview-container">
+    <div *ngFor="let preview of imagePreviews" class="preview-wrapper">
+      <img [src]="preview" alt="Image Preview">
+      <img src="../../../assets/images/close.png" alt="" class="closeicon" (click)="removeImagePreview(preview)">
+
+   
+    </div>
+  </div>
   
   <form  [formGroup]="imagePostForm" (ngSubmit)="onSubmitImag()" *ngIf="showimagepostsformbool">
   
@@ -84,24 +90,20 @@
     </div>
   
   
-    <label for="imagefile">image File</label>
-    <input type="file" id="imagefile" (change)="onImageFileSelected($event)" accept=".jpg, .jpeg, .png" formControlName="imagefile" multiple>
+    <label for="imagefile" class="file-input-label">Upload image</label>
+    <input type="file" id="imagefile" (change)="onImageFileSelected($event)" accept=".jpg, .jpeg, .png" formControlName="imagefile" multiple  style="display: none;">
   
   
-    <div *ngIf="imagePreviews.length > 0" class="image-preview-container">
-      <div *ngFor="let preview of imagePreviews" class="preview-wrapper">
-        <img [src]="preview" alt="Image Preview">
-        <button type="button" class="close-button" (click)="removeImagePreview(preview)">X</button>
-      </div>
-    </div>
+    
   
   
-    <button type="submit" [disabled]="!imagePostForm.valid">Add image Post</button>
+    <button type="submit" [disabled]="!imagePostForm.valid" class="submit-button">Add Image</button>
   
   
   </form>
    
-  <br>
+  
+ 
   
   
   
@@ -151,7 +153,7 @@
       </div>
     </div>
   
-    <button type="submit" [disabled]="!textPostForm.valid">Add Text Post</button>
+    <button type="submit" [disabled]="!textPostForm.valid" class="submit-button">Add Text</button>
   </form>
   
   <br>
@@ -182,13 +184,13 @@
         <h3>{{ linkPreviewData.title }}</h3>
         <p>{{ linkPreviewData.description }}</p>
         <img [src]="linkPreviewData.img" alt="{{ linkPreviewData.title }}">
-        <a [href]="linkPreviewData.url" target="_blank">{{ linkPreviewData.domain }}</a>
+        <!-- <a [href]="linkPreviewData.url" target="_blank">{{ linkPreviewData.domain }}</a> -->
       </div>
 
     </div>
      
   
-    <button type="submit" [disabled]="!linkPostForm.valid">Add link Post</button>
+    <button type="submit" [disabled]="!linkPostForm.valid" class="submit-button">Add link</button>
   </form>
 
 

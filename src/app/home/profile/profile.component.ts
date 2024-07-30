@@ -140,7 +140,7 @@ createBlobUrl(base64: string, contentType: string): string {
       next: response => {
         
         this.user = response;   
-        console.log(this.user);
+  
       },
       error: (error: HttpErrorResponse) => {
         console.error('There was an error!', error);

@@ -1,16 +1,38 @@
 .notofication-holder {
     position: absolute;
-    top: 20px;  
+    top: 100px;  
     right: 20px;  
     background-color: white;  
     border-radius: 10px;  
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);  
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);  
     z-index: 1000; 
     padding: 20px; 
-    max-height: 400px;  
+    max-height: 90vh;  
     overflow-y: auto; 
+    scrollbar-width: thin; 
+    scrollbar-color: rgba(0, 0, 0, 0.3) rgba(0, 0, 0, 0.1);  
 }
 
+.notification-holder::-webkit-scrollbar {
+    width: 10px; 
+  }
+  
+  .notification-holder::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.1); 
+    border-radius: 10px;
+  }
+  
+  .notification-holder::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.3); 
+    border-radius: 10px;
+  }
+  
+
+  .notification-holder::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.3); 
+    border-radius: 10px;  
+    backdrop-filter: blur(10px); 
+  }
 .main-notification-holder {
     display: flex;
     flex-direction: column;
@@ -23,8 +45,14 @@
     display: flex;
     gap: 10px; 
     padding: 5px;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.377);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.164);
+    border-radius: 10px;
+    padding: 5px;
+  cursor: pointer;
+ 
 }
+ 
+ 
 
 .profile-image-holder {
     width: 50px;  
