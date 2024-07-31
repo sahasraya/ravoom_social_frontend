@@ -19,6 +19,66 @@
 
 
 
+.userdetails-holder{
+  display: flex;
+  flex-direction: row;
+  margin: 10px;
+  padding: 10px;
+  align-items: center;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.100);
+ 
+}
+.userdetails-holder img{
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+}
+.userdetails-holder  h2{
+  opacity: 0.8;
+  color: black;
+  margin-left: 10px;
+}
+.posttypeholder{
+  background-color: var(--icon-hover-backgroud-color);
+  width: 100%;
+  max-width: 680px;
+  border-radius: 15px;
+  margin-bottom: 10px;
+}
+.options-holder{
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+ 
+  justify-content: space-around;
+  margin-bottom: 10px;
+}
+.options-holder img{
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: white;
+  border-radius: 50%;
+  padding: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+.option{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+}
+.optionname{
+  margin-top: 2px;
+ 
+}
+
+
+
+
+
+
+
 
 
   

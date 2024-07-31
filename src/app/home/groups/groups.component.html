@@ -14,28 +14,43 @@
                     <h2>{{ groupname }}</h2>
                    
                     <span>{{ group.grouptype }}</span>
-                    <button (click)="addgrouppost()">add post</button>
+            
 
-                    <div class="button-holder" *ngIf="this.currunusertype !='admin'">
-                      <span (click)="joingroup(group.groupid)">{{btntext}}</span>
-                    </div>
+                  
                     
                     <small>{{followerscount}} members</small>
+
+                    <span (click)="addgrouppost()" class="createpostspan">Create post</span>
+
                    </div>
     </div>
   
     <div class="navigation-holder">
         <button (click)="showhome()"  [class.selected]="showhomeBool" class="navigationsbuttons">Home</button>
-        <button (click)="showfollowers()"  [class.selected]="showfollowersBool" class="navigationsbuttons">Followers</button>
-        <button (click)="showrequests()"  [class.selected]="showrequestsBool" class="navigationsbuttons">Requests</button>
-        <button (click)="adduser()"  [class.selected]="showadduserBool" class="navigationsbuttons">Add new user</button>
-        <button (click)="settings()"  [class.selected]="showsettingsBool" class="navigationsbuttons">Setings</button>
+        <button (click)="showfollowers()"  [class.selected]="showfollowersBool" class="navigationsbuttons">Followers ({{userList.length}})</button>
+        <button (click)="showrequests()"  [class.selected]="showrequestsBool" class="navigationsbuttons" *ngIf="groupownerid == userid">Requests ({{userRequests.length}})</button>
+        <button (click)="adduser()"  [class.selected]="showadduserBool" class="navigationsbuttons" *ngIf="groupownerid == userid">Add user</button>
+        <button (click)="settings()"  [class.selected]="showsettingsBool" class="navigationsbuttons" *ngIf="groupownerid == userid">Setings</button>
+
+        <div class="button-holder" *ngIf="this.currunusertype !='admin'">
+            <span (click)="joingroup(group.groupid)">{{btntext}}</span>
+          </div>
+
     </div>
  
+
+
+
+
     <div class="posts-wrapper" *ngIf="showhomeBool">
         <div *ngFor="let post of groupposts; let i = index">
           <app-post [post]="post"></app-post>
         </div>
+
+        <div class="nopostbanner" *ngIf="groupposts.length == 0">
+            <span>No posts yet</span>
+        </div>
+
       </div>
 
 
@@ -43,6 +58,10 @@
 
 <app-add-post-group   (postAdded)="onPostAdded()" *ngIf="showaddpostgroup" (closePost)="showaddpostgroup = false"  [groupid]="groupid" [grouptype]="grouptype" [groupname] ="groupname"></app-add-post-group>
   
+
+
+
+
 
 
  
@@ -62,29 +81,38 @@
                 <img *ngIf="user.profileimageBlobUrl" [src]="user.profileimageBlobUrl" alt="User Profile Image" class="profile-image">
                 <div class="user-details">
                     <div class="user-header">
-                        <span class="username">{{ user.username }}</span>
+                        <div>
+                            <span class="username">{{ user.username }}</span>
+                            <small > <b> : Joined on {{ user.joined_date | date: 'mediumDate' }}</b> </small>
 
-                        <div class="dropdown" [ngClass]="{'open': user.dropdownOpen}" *ngIf="user.usertype !='admin' ">
-                            <span  *ngIf="this.currunusertype !='user'" class="dropdown-toggle" type="button" id="dropdownMenuButton" (click)="toggleDropdown(user)" aria-haspopup="true" aria-expanded="false">
-                                .
-                            </span>
-                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                <a class="dropdown-item" *ngIf="this.currunusertype =='admin' " (click)="changeusertype(user,user.userid , user.username,'admin')">Make as admin</a>
-
-                                <a class="dropdown-item" *ngIf="this.currunusertype =='admin'" (click)="changeusertype(user,user.userid , user.username,'mod')">Make as moderator</a>
-
-                                <a class="dropdown-item" *ngIf="this.currunusertype =='mod'" (click)="changeusertypemodtouser(user,user.userid)">Remove my moderator</a>
-
-
-                                <a class="dropdown-item" *ngIf="this.currunusertype =='admin' || this.currunusertype =='mod'" (click)="changeusertype(user,user.userid , user.username,'user')">Make as User</a>
-                                <a class="dropdown-item" *ngIf="this.currunusertype =='admin'"  (click)="removeuser(user,user.userid)">Remove {{user.username}}</a>
-                            </div>
                         </div>
 
+                       
+
                     </div>
-                    <span class="usertype">{{ user.usertype }}</span>
-                    <span class="joined-date">Joined on {{ user.joined_date | date: 'mediumDate' }}</span>
+                    <small class="usertype">{{ user.usertype }}</small>
+                  
                 </div>
+
+
+                <div class="dropdown" [ngClass]="{'open': user.dropdownOpen}" *ngIf="user.usertype !='admin' ">
+                    <img src="../../../assets/images/threedots.png" alt="" *ngIf="this.currunusertype !='user'" class="dropdown-toggle" type="button" id="dropdownMenuButton" (click)="toggleDropdown(user)" aria-haspopup="true" aria-expanded="false" >
+
+                  
+                   <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                       <a class="dropdown-item" *ngIf="this.currunusertype =='admin' " (click)="changeusertype(user,user.userid , user.username,'admin')">Make as admin</a>
+
+                       <a class="dropdown-item" *ngIf="this.currunusertype =='admin'" (click)="changeusertype(user,user.userid , user.username,'mod')">Make as moderator</a>
+
+                       <a class="dropdown-item" *ngIf="this.currunusertype =='mod'" (click)="changeusertypemodtouser(user,user.userid)">Remove my moderator</a>
+
+
+                       <a class="dropdown-item" *ngIf="this.currunusertype =='admin' || this.currunusertype =='mod'" (click)="changeusertype(user,user.userid , user.username,'user')">Make as User</a>
+                       <a class="dropdown-item" *ngIf="this.currunusertype =='admin'"  (click)="removeuser(user,user.userid)">Remove {{user.username}}</a>
+                   </div>
+               </div>
+
+
             </div>
         </li>
         <li *ngIf="userList.length === 0">No users found</li>
@@ -107,28 +135,39 @@
               <img *ngIf="user.profileimageBlobUrl" [src]="user.profileimageBlobUrl" alt="User Profile Image" class="profile-image">
               <div class="user-details">
                   <div class="user-header">
-                      <span class="username">{{ user.username }}</span>
+                    <div>
+                        <span class="username">{{ user.username }}</span>
+                        <small > <b> : Joined on {{ user.joined_date | date: 'mediumDate' }}</b> </small>
+                    </div>
 
-                      <div class="dropdown" [ngClass]="{'open': user.dropdownOpen}" *ngIf="user.usertype !='admin' ">
-                          <span  *ngIf="this.currunusertype !='user'" class="dropdown-toggle" type="button" id="dropdownMenuButton" (click)="toggleDropdown(user)" aria-haspopup="true" aria-expanded="false">
-                              .
-                          </span>
-                          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
- 
-
-                              <a class="dropdown-item" *ngIf="this.currunusertype =='admin'" (click)="acceptuser(user,user.userid)">Accept {{user.username}}</a>
-                           
-                              <a class="dropdown-item" *ngIf="this.currunusertype =='admin'"  (click)="removeuser(user,user.userid)">Remove {{user.username}}</a>
-                          </div>
-                      </div>
+                      
 
                   </div>
                   <span class="usertype">{{ user.usertype }}</span>
-                  <span class="joined-date">Joined on {{ user.joined_date | date: 'mediumDate' }}</span>
+                
               </div>
+
+              <div class="dropdown" [ngClass]="{'open': user.dropdownOpen}" *ngIf="user.usertype !='admin' ">
+                <img src="../../../assets/images/threedots.png" alt="" *ngIf="this.currunusertype !='user'" class="dropdown-toggle" type="button" id="dropdownMenuButton" (click)="toggleDropdown(user)" aria-haspopup="true" aria-expanded="false">
+
+                 
+                  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+
+
+                      <a class="dropdown-item" *ngIf="this.currunusertype =='admin'" (click)="acceptuser(user,user.userid)">Accept {{user.username}}</a>
+                   
+                      <a class="dropdown-item" *ngIf="this.currunusertype =='admin'"  (click)="removeuser(user,user.userid)">Remove {{user.username}}</a>
+                  </div>
+              </div>
+
           </div>
       </li>
   </ul>
+
+  <div class="nopostbanner" *ngIf="userRequests.length == 0">
+    <span>No requests yet</span>
+</div>
+
 </div>
 
 
@@ -233,19 +272,34 @@
     
 
 
- <div *ngIf="showsettingsBool" class="group-users-holder">
+ <div *ngIf="showsettingsBool" class="group-settings-holder">
     <input type="text" [value]="group.groupname" #groupname (input)="updatethegroupname(group.groupname,groupname.value)">
   
-    <span>Background image</span>
+   
+    <div class="groupsettingimageholder">
     <img [src]="groupbackgroundimage" alt="Group Background Image" class="groupbackgroundimageupdate">
-    <input type="file" class="updatebackgroundimage" (change)="onBackgroundImageSelected($event)">
+    <label for="backgroudimage" class="file-input-label">Update background image</label>
+    <input type="file" class="updatebackgroundimage" id="backgroudimage" (change)="onBackgroundImageSelected($event)" style="display: none;">
+    </div>
   
-    <span>Main group image</span>
+ 
+   <div class="groupsettingimageholder">
     <img [src]="groupimage" alt="Group Image" class="groupimageupdate">
-    <input type="file" class="updategroupimage" (change)="onGroupImageSelected($event)">
+    <label for="groupimage" class="file-input-label">Update group Image</label>
+    <input type="file" class="updategroupimage" id="groupimage" (change)="onGroupImageSelected($event)" style="display: none;">
+   </div>
   
-    <button (click)="removegroup(group.groupid )">Remove group</button>
-    <button (click)="updateGroupInformation(group.groupid ,groupname.value)">Update group information</button>
+    <div class="groupsettingbuttonholder">
+        <span class="removebutton" (click)="removegroup(group.groupid )">     
+             <img src="../../../assets/images/delete.png" alt="">
+            
+            Remove group</span>
+
+        <span class="updategroupinformation" (click)="updateGroupInformation(group.groupid ,groupname.value)">Update information</span>
+     
+ 
+    </div>
+
   </div>
 
 

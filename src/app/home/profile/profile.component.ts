@@ -30,13 +30,17 @@ export class ProfileComponent   {
 
  
   userid: any;
+  limit = 4;
+  offset = 0;
   profileImageUrl: string = '';  
+  postType: string = "";
   APIURL = 'http://127.0.0.1:8000/';
   showLargerImage: boolean = false;
   openaddpostscreenbool: boolean = false;
-   
+  username:string = "";
  
   showfeedBool:boolean = true;
+  loading = false;
   showiamfolloeduserlistBool:boolean = false;
   showiamfollowinguserlistBool:boolean = false;
 
@@ -125,9 +129,10 @@ createBlobUrl(base64: string, contentType: string): string {
 
 
 
-  openaddpostscreen() {
-     this.openaddpostscreenbool = true;
-    }
+openaddpostscreen(type: string): void {
+  this.postType = type;
+  this.openaddpostscreenbool = true;
+}
 
   getUserDetails(): void {
    
@@ -137,9 +142,12 @@ createBlobUrl(base64: string, contentType: string): string {
     formData.append('userid', this.userid.toString());
 
     this.http.post<any>(`${this.APIURL}get_user_details`, formData).subscribe({
-      next: response => {
+      next: (response:any) => {
         
-        this.user = response;   
+        this.user = response; 
+        this.username = response.username;
+   
+
   
       },
       error: (error: HttpErrorResponse) => {
@@ -150,49 +158,65 @@ createBlobUrl(base64: string, contentType: string): string {
   }
 
   getPostsFeed(): void {
+    if (this.loading) return;
+
+    this.loading = true;
     const formDataUser = new FormData();
     formDataUser.append('userid', this.userid.toString());
+    formDataUser.append('limit', this.limit.toString());
+    formDataUser.append('offset', this.offset.toString());
 
-    this.http.post<any>(`${this.APIURL}get_posts_feed_user`, formDataUser).subscribe({
-        next: response => {
-            this.posts = this.processPosts(response);
-            console.log(this.posts);
+    this.http.post<any[]>(`${this.APIURL}get_posts_feed_user`, formDataUser).subscribe({
+        next: (response:any) => {
+             
+
+            this.posts = [...this.posts, ...this.processPosts(response)];
+            this.offset += this.limit;
+            this.loading = false;
+            this.cdref.detectChanges();
+
         },
         error: (error: HttpErrorResponse) => {
             console.error('There was an error!', error);
+            this.loading = false;
         }
     });
 }
 
-
-
+@HostListener('window:scroll', ['$event'])
+onScroll(event: Event): void {
+    const element = document.documentElement;
+    if (element.scrollHeight - element.scrollTop === element.clientHeight) {
+  
+        this.getPostsFeed();
+    }
+}
 
 private processPosts(posts: any[]): any[] {
-  const processedPosts: any[] = [];
-  posts.forEach(post => {
+    const processedPosts: any[] = [];
+    posts.forEach(post => {
+        const existingPost = this.posts.find((p: { postid: any; }) => p.postid === post.postid);
 
+        if (existingPost) {
+            if (post.image) {
+                existingPost.images.push(post.image);
+            }
+        } else {
+            const newPost = {
+                ...post,
+                images: post.posttype === 'image' && post.image ? [post.image] : []
+            };
+            processedPosts.push(newPost);
+        }
+    });
 
-
-    console.log(post.posttype);
-  
-
-    const existingPost = processedPosts.find(p => p.postid === post.postid);
-
-    if (existingPost) {
-      if (post.image) {
-        existingPost.images.push(post.image);
-      }
-    } else {
-      const newPost = {
-        ...post,
-        images: post.posttype === 'image' && post.image ? [post.image] : []
-      };
-      processedPosts.push(newPost);
-    }
-  });
-
-  return processedPosts;
+    return processedPosts;
 }
+
+
+
+
+
 
 
 

@@ -21,6 +21,7 @@ export class PostComponent implements OnInit {
   
   imageUrl: string = '';
   profileImageUrl: string = '';
+  groupImageUrl: string = '';
   videoUrl: string = '';
   audioUrl :string='';
   likes: number = 0;
@@ -293,6 +294,7 @@ export class PostComponent implements OnInit {
  
     
       this.profileImageUrl = this.createBlobUrl(this.post.userprofile, 'image/jpeg');
+      this.groupImageUrl = this.createBlobUrl(this.post.post, 'image/jpeg');
 
       this.audioUrl = '';
       this.imageUrl = '';
@@ -487,34 +489,35 @@ export class PostComponent implements OnInit {
 
 
   async joingroup(grouptype: any, groupid: any, username: string, userid: any): Promise<void> {
- 
     if (grouptype === "public") {
-      this.router.navigate(['home/group', groupid]);
-    } else if (userid == this.userid){
-      this.router.navigate(['home/group', groupid]);
-       
-    }   else {
-      const result = confirm("You have to ask for permission from " + username + " to join this group. Do you need to ask permission?");
-
-      if (result) {
-        const formData = new FormData();
-        formData.append('groupid', groupid);
-        formData.append('groupownerid', userid);
-        formData.append('myuserid', this.userid);
-
-        try {
-          const response = await this.http.post<any>(`${this.APIURL}ask_permission_from_admin_to_join_group`, formData).toPromise();
-          console.log(response.message);
+        this.router.navigate(['home/group', groupid]);
+    } else if (userid == this.userid) {
+        this.router.navigate(['home/group', groupid]);
+    } else {
+     
 
     
-          alert(response.message);
-        } catch (error) {
-          console.error('There was an error!', error);
- 
-          alert('There was an error sending the permission request. Please try again later.');
-        }
-      }
+            const formData = new FormData();
+            formData.append('groupid', groupid);
+            formData.append('groupownerid', userid);
+            formData.append('myuserid', this.userid);
+
+            try {
+                const response = await this.http.post<any>(`${this.APIURL}ask_permission_from_admin_to_join_group`, formData).toPromise();
+                
+                if (response.message === "requestsent") {
+                    alert("Wait till the permission from " + username);
+                } else if (response.message === "requestaccepted") {
+                    this.router.navigate(['home/group', groupid]);
+                } else {
+                    alert(response.message);
+                }
+            } catch (error) {
+                console.error('There was an error!', error);
+                alert('There was an error sending the permission request. Please try again later.');
+            }
+    
     }
-  }
+}
   
 }

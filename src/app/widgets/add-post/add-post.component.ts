@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Inject, Output } from '@angular/core';
+import { Component, EventEmitter, Inject, Input, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'; 
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule, RouterOutlet } from '@angular/router';
@@ -38,6 +38,7 @@ export class AddPostComponent {
   mediaDuration: number | null = null;
   selectedColor: string = '';
   linkUrl: string = '';
+
   
   apiRoute = 'https://opengraph.io/api/1.1/site/:site?app_id=3ec5a83b-4cce-4f5e-8ed7-30f72e7414e7';
           
@@ -55,6 +56,7 @@ export class AddPostComponent {
   linkPreviewData: any = null;
 
   APIURL = 'http://127.0.0.1:8000/';
+  @Input() postType: string = '';
   @Output() postAdded = new EventEmitter<void>();
   @Output() closePost = new EventEmitter<void>();
 
@@ -93,6 +95,7 @@ export class AddPostComponent {
   }
 
   ngOnInit(): void {
+     this.checkposttype(this.postType);
     if (isPlatformBrowser(this.platformId)) {
  
       this.userid = localStorage.getItem('wmd') || '';
@@ -102,6 +105,34 @@ export class AddPostComponent {
 
   }
  
+  checkposttype(postType:string):void{
+
+    if(postType =="v" || postType == "a"){
+      this.showvideoaudioformbool =true;
+      this.showtextpostformbool =false;
+      this.showimagepostsformbool =false;
+      this.showlinkpostformbool = false;
+    }else if(postType =="i"){
+      this.showvideoaudioformbool =false;
+      this.showtextpostformbool =false;
+      this.showimagepostsformbool =true;
+      this.showlinkpostformbool = false;
+    }else if(postType == "t"){
+      this.showvideoaudioformbool =false;
+      this.showtextpostformbool =true;
+      this.showimagepostsformbool =false;
+      this.showlinkpostformbool = false;
+    }else if(postType =="l"){
+      this.showvideoaudioformbool =false;
+      this.showtextpostformbool =false;
+      this.showimagepostsformbool =false;
+      this.showlinkpostformbool = true;
+    }
+
+  }
+
+
+
   gettignLink(linkUrle:any){
     this.linkUrl = linkUrle;
     console.log(linkUrle);
@@ -117,8 +148,7 @@ export class AddPostComponent {
 
     this.linkUrl =link;
 this.getLinkPreview(this.linkUrl);
-
-console.log(this.linkUrl);
+ 
      
   }
 

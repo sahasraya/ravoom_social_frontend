@@ -1,10 +1,21 @@
 
-<app-header (addPost)="openaddpostscreen()" (uploadPost)="onPostAdded()"></app-header>
+<app-header  (uploadPost)="onPostAdded()"></app-header>
 <!-- <app-add-post (postAdded)="onPostAdded()" *ngIf="openaddpostscreenbool" (closePost)="openaddpostscreenbool = false"></app-add-post> -->
 <!-- (postAdded)="onPostAdded()" -->
 <!-- <app-notification></app-notification> -->
 
+<!-- <app-add-post (postAdded)="onPostAdded()" *ngIf="openaddpostscreenbool" (closePost)="openaddpostscreenbool = false"></app-add-post> -->
 
+ 
+
+
+
+<app-add-post 
+  (postAdded)="onPostAdded()" 
+  *ngIf="openaddpostscreenbool" 
+  [postType]="postType" 
+  (closePost)="openaddpostscreenbool = false">
+</app-add-post>
 
 
 <button (click)="createnewgroup()" *ngIf="this.userid">create group</button>
@@ -27,6 +38,47 @@
 
 
 <div class="feed-container">
+
+
+  <div class="posttypeholder">
+            <div class="userdetails-holder">
+              <img *ngIf="user?.profileimage" [src]="'data:image/jpeg;base64,' + user?.profileimage" alt="Profile Image"  class="profileimage" >
+
+              <h2>Hi, {{user.username}}</h2>
+          
+            </div>
+
+          
+            <div class="options-holder">
+              
+              <div class="option" (click)="openaddpostscreen('t')">
+                <img src="../../../assets/images/textpost.png" alt="">
+                <span class="optionname">Text</span>
+              </div>
+
+              <div class="option" (click)="openaddpostscreen('i')">
+                <img src="../../../assets/images/imagepost.png" alt="">
+                <span class="optionname">Image</span>
+              </div>
+
+              <div class="option" (click)="openaddpostscreen('l')">
+                <img src="../../../assets/images/linkpost.png" alt="">
+                <span class="optionname">link</span>
+              </div>
+
+              <div class="option" (click)="openaddpostscreen('v')">
+                <img src="../../../assets/images/videopost.png" alt="">
+                <span class="optionname">Video</span>
+              </div>
+
+              <div class="option" (click)="openaddpostscreen('a')">
+                <img src="../../../assets/images/audiopost.png" alt="">
+                <span class="optionname">Audio</span>
+              </div>
+
+            </div>
+
+  </div>
  
 
  

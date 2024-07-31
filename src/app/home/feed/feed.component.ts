@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, HostListener } from '@angular/core';
 import { AddPostComponent } from '../../widgets/add-post/add-post.component';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
@@ -36,6 +36,9 @@ export class FeedComponent {
   loading = false;
   iscreatenewgroupopen: boolean = false;
   userid:string = "";
+  postType: string = "";
+  user: any;
+
  
 
   constructor(private http: HttpClient, private cdr: ChangeDetectorRef) {}
@@ -43,9 +46,27 @@ export class FeedComponent {
   ngOnInit(): void {
     this.getPostsFeed();
     this.userid = localStorage.getItem('wmd') || '';
+    this.getuserdetails(this.userid);
+
   }
 
+async getuserdetails(userid:string):Promise<void>{
+    const formData = new FormData();
+    formData.append('userid', userid);
 
+    this.http.post<any>(`${this.APIURL}get_user_details`, formData).subscribe({
+      next: (response:any) => {
+        
+        this.user = response;  
+     
+      },
+      error: (error: HttpErrorResponse) => {
+        console.error('There was an error!', error);
+         
+      }
+    });
+  }
+  
   createnewgroup():void{
     this.iscreatenewgroupopen = true;
   }
@@ -96,7 +117,8 @@ export class FeedComponent {
     return processedPosts;
   }
 
-  openaddpostscreen(): void {
+  openaddpostscreen(type: string): void {
+    this.postType = type;
     this.openaddpostscreenbool = true;
   }
 

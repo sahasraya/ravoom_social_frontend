@@ -46,6 +46,7 @@ export class GroupsComponent implements OnInit{
   selecteduserList: any[] = [];
   grouptype:string = "";
   groupname:string = "";
+  groupownerid:string = "";
 
 
 
@@ -300,11 +301,9 @@ export class GroupsComponent implements OnInit{
 
     try {
         const response = await this.http.post<any>(`${this.APIURL}get_curruntuser_detail_from_group`, formData).toPromise();
-  
-     
-        
-        if (response && response.usertype) {
+           if (response && response.usertype) {
             this.currunusertype = response.usertype;
+     
           
 
         } else {
@@ -425,7 +424,7 @@ async changeusertypemodtouser(user: any, userid: any): Promise<void> {
   
      
       if (response.message === 'yes') {
-          this.btntext = "Joined";
+          this.btntext = "Leave group";
       } else {
         this.btntext = "Join now";
 
@@ -490,6 +489,8 @@ async changeusertypemodtouser(user: any, userid: any): Promise<void> {
 
         this.grouptype= this.group.grouptype;
         this.groupname = this.group.groupname;
+        this.groupownerid = this.group.groupownerid;
+      
 
        
         if (this.group.groupimage) {
@@ -612,34 +613,40 @@ async changeusertypemodtouser(user: any, userid: any): Promise<void> {
 
   async joingroup(groupid:any):Promise<void>{
 
-    if(this.btntext =="Joined"){
+    if(this.btntext =="Leave group"){
   
-      this.btntext="Join now";
+     
+
+      const result = confirm("Do you need to leavd the group?");
+      if(result){
+        this.btntext="Join now";
+        const formData = new FormData();
+        formData.append('userid', this.userid);
+        formData.append('groupid', groupid);
+        
+    
+        this.http.post<any>(`${this.APIURL}join-group`, formData).subscribe({
+          next: (response:any) => {
+            console.log (response);
+            this.getGroupDetails(groupid);
+            
+          },
+          error: (error: HttpErrorResponse) => {
+            console.error('Error adding user:', error);
+          }
+        });
+      }
 
     }
     else if(this.btntext=="Join now"){
   
 
-        this.btntext ="Joined";
+        this.btntext ="Leave group";
 
     }
     
 
-    const formData = new FormData();
-    formData.append('userid', this.userid);
-    formData.append('groupid', groupid);
     
-
-    this.http.post<any>(`${this.APIURL}join-group`, formData).subscribe({
-      next: (response:any) => {
-        console.log (response);
-        this.getGroupDetails(groupid);
-        
-      },
-      error: (error: HttpErrorResponse) => {
-        console.error('Error adding user:', error);
-      }
-    });
 
     
   }
