@@ -4,7 +4,9 @@
     (focus)="showSavedUsers()"  (keydown.enter)="handleEnterKeyPress()">
     
     <div *ngIf="user && user.length" class="results-container">
-      <h2>Users</h2>
+      <div class="imageholdersearch">
+        <span>Users <img src="../../../assets/images/search.png" alt="" class="searchresultnormalimage"></span>
+      </div>
       <ul class="user-list">
         <li *ngFor="let u of user" class="user-item">
           <a [routerLink]="['/home/profile', u.userid]" (click)="addToLocalStorage(u.username, 'data:image/jpeg;base64,' + u.profileimage, u.userid)">
@@ -16,13 +18,23 @@
     </div>
     
     <div *ngIf="group && group.length" class="results-container">
-      <h2>Groups</h2>
+      <div class="imageholdersearch">
+        <span>Groups <img src="../../../assets/images/search.png" alt="" class="searchresultnormalimage"></span>
+      </div>
+
+     
       <ul class="group-list">
         <li *ngFor="let group of group" class="group-item">
           <a [routerLink]="['/home/group', group.groupid]">
             <img *ngIf="group.groupimage" [src]="'data:image/jpeg;base64,' + group.groupimage" alt="Group Image" class="group-image">
-            <h1 class="groupname">{{ group.groupname }}</h1>
-            <p class="grouptype">{{ group.grouptype }} group</p>
+           <div class="group-details-holder">
+            <div>
+              <span class="groupename">{{ group.groupname }}</span>
+              <small > : <b>{{ group.createdate |date: 'mediumDate'}}</b></small>
+              
+             </div>
+              <small >{{ group.grouptype }} group</small>
+           </div>
           </a>
         </li>
       </ul>
@@ -63,7 +75,7 @@
             <h1 class="username">{{ u.username }}</h1>
 
           </a>
-          <button (click)="removeFromLocalStorage(u.userid)" class="close-button">X</button>
+          <img src="../../../assets/images/close.png" alt="" (click)="removeFromLocalStorage(u.userid)" class="close-button">  
 
         </li>
       </ul>
@@ -74,7 +86,13 @@
 
  
     <div *ngIf="searchUsers.length == 0 && isFacoused" class="results-container">
-      <p>No recent search</p>
+
+      <div class="norecentsearchbanner">
+        No recent search
+
+        <img src="../../../assets/images/search.png" alt="">
+      </div>
+     
     
        <app-popular-post></app-popular-post>
     </div>

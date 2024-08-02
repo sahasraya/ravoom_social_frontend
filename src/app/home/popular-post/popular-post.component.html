@@ -1,94 +1,148 @@
 <hr>
-      <h3>Popular search</h3>
-      
-      <div class="video-post-holder" *ngIf="showVideoPostsBool" >
-        <div *ngFor="let post of videoPosts" class="main-outer-holder" (click)="nanigatetocommentsscreen(post.postid,post.n_or_g)">
-          <div class="inner-holder">
-            <div class="profile-image-holder">
-              <img *ngIf="post.userprofileUrl" [src]="post.userprofileUrl" alt="Profile Image" class="profileimage">
-              <div class="details">
-              
-                <p>{{ post.username }}</p>
-                 
-                <p>{{ calculateTimeAgo(post.posteddate) }}</p>
-              </div>
-            </div>
-          </div>
-          <video [src]="post.filepath" controls></video>
-        </div>
-      </div>
+<h3 class="Popularsearchtext">Popular search  <img src="../../../assets/images/popular.png" alt=""> </h3>
+
+ 
+
+
+
+
+
+
+<div class="outer-holder" *ngIf="showVideoPostsBool">
+  <div *ngFor="let post of videoPosts" class="main-outer-holder"
+    (click)="nanigatetocommentsscreen(post.postid,post.n_or_g)">
+    <div  class="timeholder">
+      <div class="content-holder">
+        <div class="inner-holder">
+          <div class="profile-image-holder">
+            <img *ngIf="post.userprofileUrl" [src]="post.userprofileUrl" alt="Profile Image" class="profileimage">
+            <span class="usernamepost">{{post.username}}</span> 
+          </div>  
     
-      <div class="audio-post-holder" *ngIf="showAudioPostsBool">
-        <div *ngFor="let post of audioPosts" class="main-outer-holder" (click)="nanigatetocommentsscreen(post.postid,post.n_or_g)">
-          <div class="inner-holder">
-            <div class="profile-image-holder">
-              <img *ngIf="post.userprofileUrl" [src]="post.userprofileUrl" alt="Profile Image" class="profileimage">
-              <div class="details">
-                <p>{{ post.username }}</p>
-                <p>{{ calculateTimeAgo(post.posteddate) }}</p>
-              </div>
-            </div>
-          </div>
-          <p>{{ post.postdescription }}</p>
-          <audio [src]="post.filepath" controls></audio>
-        </div>
+        <p>{{ post.postdescription }}</p>
       </div>
+      <video [src]="post.filepath" controls class="viodefile"></video>
+  
+      </div>
+      <small>{{ calculateTimeAgo(post.posteddate) }}</small>
+    </div>
+</div>
+</div>
+
+
+ 
+
+
+
+
+
+
+
+<div class="outer-holder" *ngIf="showAudioPostsBool">
+  <div *ngFor="let post of audioPosts" class="main-outer-holder"
+    (click)="nanigatetocommentsscreen(post.postid,post.n_or_g)">
+    <div  class="timeholder">
+      <div class="content-holder">
+        <div class="inner-holder">
+          <div class="profile-image-holder">
+            <img *ngIf="post.userprofileUrl" [src]="post.userprofileUrl" alt="Profile Image" class="profileimage">
+            <span class="usernamepost">{{post.username}}</span> 
+          </div>  
     
-      <div class="image-post-holder" *ngIf="showImagePostsBool">
-        <div *ngFor="let post of imagePosts" class="main-outer-holder" (click)="nanigatetocommentsscreen(post.postid,post.n_or_g)">
-          <div class="inner-holder">
-            <div class="profile-image-holder">
-              <img *ngIf="post.userprofileUrl" [src]="post.userprofileUrl" alt="Profile Image" class="profileimage">
-              <div class="details">
-                <p>{{ post.username }}</p>
-                <p>{{ calculateTimeAgo(post.posteddate) }}</p>
-              </div>
-            </div>
-            <img *ngIf="post.postUrl" [src]="post.postUrl" alt="Post Image" class="post">
-          </div>
-          <p>{{ post.postdescription }}</p>
-        </div>
+        <p>{{ post.postdescription }}</p>
       </div>
+     <img src="../../../assets/images/audiopost.png" alt="" class="audioimage">
+  
+      </div>
+      <small>{{ calculateTimeAgo(post.posteddate) }}</small>
+    </div>
+</div>
+</div>
+
+ 
+
+
+
+
+
+
+
+<div class="outer-holder" *ngIf="showImagePostsBool">
+  <div *ngFor="let post of imagePosts" class="main-outer-holder"
+    (click)="nanigatetocommentsscreen(post.postid,post.n_or_g)">
+    <div class="timeholder">
+      <div class="content-holder">
+        <div class="inner-holder">
+          <div class="profile-image-holder">
+            <img *ngIf="post.userprofileUrl" [src]="post.userprofileUrl" alt="Profile Image" class="profileimage">
+            <span class="usernamepost">{{post.username}}</span> 
+          </div>  
     
-      <div class="text-post-holder" *ngIf="showTextPostsBool">
-        <div *ngFor="let post of textPosts" class="main-outer-holder" (click)="nanigatetocommentsscreen(post.postid,post.n_or_g)">
-          <div class="inner-holder">
-            <div class="profile-image-holder">
-              <img *ngIf="post.userprofileUrl" [src]="post.userprofileUrl" alt="Profile Image" class="profileimage">
-              <div class="details">
-                <p>{{ post.username }}</p>
-                <p>{{ calculateTimeAgo(post.posteddate) }}</p>
-              </div>
-            </div>
-          </div>
-          <div class="inner-text-post-holder" [style.background-color]="post.textcolor">
-            <p>{{ post.textbody }}</p>
-          </div>
+        <p>{{ post.postdescription }}</p>
+       
+  
+      </div>
+      <img *ngIf="post.postUrl" [src]="post.postUrl" alt="postUrl Image" class="postimage">
+  
+      </div>
+      <small>{{ calculateTimeAgo(post.posteddate) }}</small>
+    </div>
+</div>
+</div>
+
+
+
+
+
+
+<div class="outer-holder" *ngIf="showTextPostsBool">
+  <div *ngFor="let post of textPosts" class="main-outer-holder"
+    (click)="nanigatetocommentsscreen(post.postid,post.n_or_g)">
+    <div  class="timeholder">
+      <div class="content-holder">
+        <div class="inner-holder">
+          <div class="profile-image-holder">
+            <img *ngIf="post.userprofileUrl" [src]="post.userprofileUrl" alt="Profile Image" class="profileimage">
+            <span class="usernamepost">{{post.username}}</span> 
+          </div>  
+    
+        <p>{{ post.postdescription }}</p>
+      </div>
+      <div class="inner-text-post-holder" [style.background-color]="post.textcolor">
+        <span class="text-post-text">{{ post.textbody }}</span>
+      </div>
+  
+      </div>
+      <small>{{ calculateTimeAgo(post.posteddate) }}</small>
+    </div>
+</div>
+</div>
+
+ 
+
+
+
+<div class="image-post-holder" *ngIf="showLinkPostsBool">
+  <div *ngFor="let post of linkPosts" class="main-outer-holder"
+    (click)="nanigatetocommentsscreen(post.postid,post.n_or_g)">
+    <div class="inner-holder">
+      <div class="profile-image-holder">
+        <img *ngIf="post.userprofileUrl" [src]="post.userprofileUrl" alt="Profile Image" class="profileimage">
+        <div class="details">
+          <p class="usernamepost">{{ post.username }}</p>
+          <p>{{ calculateTimeAgo(post.posteddate) }}</p>
         </div>
       </div>
 
+      <div class="previewdiv">
+        <h3>{{ post.filepath }}</h3>
 
-
-      <div class="image-post-holder" *ngIf="showLinkPostsBool">
-        <div *ngFor="let post of linkPosts" class="main-outer-holder" (click)="nanigatetocommentsscreen(post.postid,post.n_or_g)">
-          <div class="inner-holder">
-            <div class="profile-image-holder">
-              <img *ngIf="post.userprofileUrl" [src]="post.userprofileUrl" alt="Profile Image" class="profileimage">
-              <div class="details">
-                <p>{{ post.username }}</p>
-                <p>{{ calculateTimeAgo(post.posteddate) }}</p>
-              </div>
-            </div>
-            
-            <div  class="previewdiv">
-              <h3>{{ post.filepath }}</h3>
-              
-              <img [src]="post.textbody" alt="{{ post.title }}" class="post">
-              <a [href]="post.thelink" target="_blank">{{ post.thelink }}</a>
-            </div>
-
-
-          </div>
-          <p>{{ post.postdescription }}</p>
-        </div>
+        <img [src]="post.textbody" alt="{{ post.title }}" class="post">
+        <a [href]="post.thelink" target="_blank">{{ post.thelink }}</a>
       </div>
+
+
+    </div>
+    <p>{{ post.postdescription }}</p>
+  </div>
+</div>

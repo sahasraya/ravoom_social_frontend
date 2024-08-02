@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-forget-password',
@@ -44,7 +45,7 @@ export class ForgetPasswordComponent  {
   wrongImage = '../../../assets/images/wrong.png';
 
   
-  constructor(private fb: FormBuilder,private http:HttpClient){
+  constructor(private fb: FormBuilder,private http:HttpClient,private router:Router){
     this.forgetPassword = this.fb.group({
       emailaddress: ['', [Validators.required, Validators.email]],
  
@@ -97,6 +98,10 @@ export class ForgetPasswordComponent  {
     }
 
     
+    routetologinscreen():void{
+      this.router.navigate(['auth/log-in']);
+    }
+
 
   async onSubmitForgetpassword(): Promise<void> {
     const formData = new FormData();

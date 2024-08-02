@@ -30,6 +30,7 @@ export class ProfileComponent   {
 
  
   userid: any;
+  getfrommethoduserid:any;
   limit = 4;
   offset = 0;
   profileImageUrl: string = '';  
@@ -45,6 +46,7 @@ export class ProfileComponent   {
   showiamfollowinguserlistBool:boolean = false;
 
   user: any;
+  userfrommethod:any;
   posts:any=[];
   iamfollowinguserslist: any[] = [];
   iamfolloweduserslist: any[] = [];
@@ -52,25 +54,51 @@ export class ProfileComponent   {
   constructor(private fb: FormBuilder, private http: HttpClient, private route: ActivatedRoute,private cdref: ChangeDetectorRef) { }
 
   ngOnInit(): void {
-    this.userid = this.route.snapshot.paramMap.get('uid');
+
+    this.route.paramMap.subscribe(params => {
+    this.userid = params.get('uid')!;
+    this.getfrommethoduserid = localStorage.getItem('wmd') || '';
     this.getUserDetails();
-    this.getPostsFeed();
+    this.loadInitialData();
     this.getiamfolloinguserlist(this.userid);
     this.getiamfolloeduserlist(this.userid);
-
-     
-
+    this.getuserdetailsFrommethod(this.getfrommethoduserid);
+    });
+ 
 
   }
 
+  loadInitialData(): void {
+    this.posts = [];  
+    this.offset = 0;  
+    this.getPostsFeed();
+  }
+  async getuserdetailsFrommethod(userid:string):Promise<void>{
+    const formData = new FormData();
+    formData.append('userid', userid);
 
-  getiamfolloeduserlist(userid: string): void {
+    this.http.post<any>(`${this.APIURL}get_user_details`, formData).subscribe({
+      next: (response:any) => {
+        
+        this.userfrommethod = response;  
+    
+      },
+      error: (error: HttpErrorResponse) => {
+        console.error('There was an error!', error);
+         
+      }
+    });
+  }
+
+ async getiamfolloeduserlist(userid: string): Promise<void> {
     const formData = new FormData();
     formData.append('userid', userid);
 
     this.http.post<any[]>(`${this.APIURL}get_iamfolloweduserlist`, formData).subscribe({
       next: (response: any[]) => {
         this.iamfolloweduserslist = response;
+
+     
  
         this.iamfolloweduserslist.forEach(user => {
           if (user.profile) {
@@ -85,7 +113,7 @@ export class ProfileComponent   {
   }
 
 
-  getiamfolloinguserlist(userid: string): void {
+ async getiamfolloinguserlist(userid: string): Promise<void> {
     const formData = new FormData();
     formData.append('userid', userid);
 
@@ -103,6 +131,26 @@ export class ProfileComponent   {
         console.error('There was an error!', error);
       }
     });
+  }
+ async getPostsFeed(): Promise<void> {
+    if (this.loading) return;
+    this.loading = true;
+
+    const formDataUser = new FormData();
+    formDataUser.append('userid', this.userid);
+    formDataUser.append('limit', this.limit.toString());
+    formDataUser.append('offset', this.offset.toString());
+
+    try {
+      const response = await this.http.post<any[]>(`${this.APIURL}get_posts_feed_user`, formDataUser).toPromise();
+      this.posts = [...this.posts, ...this.processPosts(response!)];
+      this.offset += this.limit;
+      this.cdref.detectChanges();
+    } catch (error) {
+      console.error('There was an error!', error);
+    } finally {
+      this.loading = false;
+    }
   }
 
  base64ToBlob(base64: string, contentType: string = ''): Blob {
@@ -157,31 +205,7 @@ openaddpostscreen(type: string): void {
     });
   }
 
-  getPostsFeed(): void {
-    if (this.loading) return;
 
-    this.loading = true;
-    const formDataUser = new FormData();
-    formDataUser.append('userid', this.userid.toString());
-    formDataUser.append('limit', this.limit.toString());
-    formDataUser.append('offset', this.offset.toString());
-
-    this.http.post<any[]>(`${this.APIURL}get_posts_feed_user`, formDataUser).subscribe({
-        next: (response:any) => {
-             
-
-            this.posts = [...this.posts, ...this.processPosts(response)];
-            this.offset += this.limit;
-            this.loading = false;
-            this.cdref.detectChanges();
-
-        },
-        error: (error: HttpErrorResponse) => {
-            console.error('There was an error!', error);
-            this.loading = false;
-        }
-    });
-}
 
 @HostListener('window:scroll', ['$event'])
 onScroll(event: Event): void {
@@ -280,6 +304,7 @@ async removeIAMFollowingUser(userid: string): Promise<void> {
 }
 
 toggleDropdown(event: MouseEvent, user: any): void {
+  event.preventDefault();   
   event.stopPropagation();
   this.closeAllDropdowns(user); 
   user.showDropdown = !user.showDropdown;

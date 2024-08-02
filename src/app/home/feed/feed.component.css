@@ -26,7 +26,7 @@
   padding: 10px;
   align-items: center;
   border-bottom: 1px solid rgba(0, 0, 0, 0.100);
- 
+  justify-content: space-between;
 }
 .userdetails-holder img{
   width: 50px;
@@ -49,7 +49,7 @@
   width: 100%;
   display: flex;
   flex-direction: row;
- 
+  padding-top: 10px;
   justify-content: space-around;
   margin-bottom: 10px;
 }
@@ -62,6 +62,50 @@
   padding: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
+.creategroup:hover{
+ 
+  background-color:rgba(255, 255, 255, 0.678);
+}
+.inggerholder-image{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.creategroup{
+  box-shadow: -1px 4px 6px 3px rgba(0, 0, 0, 0.1);
+  padding: 10px;
+  background-color: white;
+  border-radius: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer; 
+  transition: background-color 0.3s ease;
+}
+.creategroup img{
+  width: 20px;
+  margin-right: 5px;
+  height: 20px;
+
+}
+
+.closeicon {
+  padding: 15px;
+  width: 50px;
+  background-color: white;
+  border-radius: 50%;
+  position: absolute;
+  top: 10px;
+  right: 30px;
+  cursor: pointer;
+  transition: transform 0.5s, background-color 0.5s;  
+}
+
+.closeicon:hover {
+  transform: rotate(90deg); 
+  background-color: rgba(255, 255, 255, 0.644);
+}
+
 .option{
   display: flex;
   flex-direction: column;

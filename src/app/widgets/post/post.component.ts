@@ -1,7 +1,7 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { ChangeDetectorRef, Component, EventEmitter, HostListener, Inject, Input, OnInit, Output } from '@angular/core';
-import { Route, Router, RouterModule } from '@angular/router';
+import { ActivatedRoute, Route, Router, RouterModule } from '@angular/router';
 import { ImageLargerComponent } from '../image-larger/image-larger.component';
 import { PLATFORM_ID } from '@angular/core';
 
@@ -31,12 +31,15 @@ export class PostComponent implements OnInit {
   postToBeDeleted: any = null;
   isthelastcomment:boolean=false;
   followButtonText :string = 'Follow';
+  checkuseridtoroutecommentscreen:string = "";
   userid: string = "";
   btntext:string = "";
+  screen:string="";
 
 
-  constructor(private cdref: ChangeDetectorRef,private http:HttpClient,private router:Router,@Inject(PLATFORM_ID) private platformId: Object) {}
+  constructor(private cdref: ChangeDetectorRef,private http:HttpClient,private router:Router,@Inject(PLATFORM_ID) private platformId: Object,private route:ActivatedRoute) {}
   ngOnInit(): void {
+    this.checkuseridtoroutecommentscreen = this.route.snapshot.paramMap.get('uid')!;
        
     this.getpostlikecount();
     this.getpostcommentCount();
@@ -408,12 +411,15 @@ export class PostComponent implements OnInit {
 
   }
 
-  commentOnPost(postid:any,n_or_g: any): void {
-    
-    this.router.navigate([`/home/comment/${postid}/${n_or_g}`]);
-
+  commentOnPost(postid: any, n_or_g: any): void {
+    if (this.checkuseridtoroutecommentscreen != null) {
+      this.screen = "pro";
+      this.router.navigate([`/home/comment/${postid}/${n_or_g}/${this.screen}/${this.checkuseridtoroutecommentscreen}`]);
+    } else {
+      this.screen = "home";
+      this.router.navigate([`/home/comment/${postid}/${n_or_g}/${this.screen}/`]);
+    }
   }
-
 
  
 

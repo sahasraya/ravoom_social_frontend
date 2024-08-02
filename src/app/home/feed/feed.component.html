@@ -18,11 +18,16 @@
 </app-add-post>
 
 
-<button (click)="createnewgroup()" *ngIf="this.userid">create group</button>
+<!-- <button (click)="createnewgroup()" *ngIf="this.userid">create group</button> -->
 
 <div class="group-creation-wrapper" *ngIf="iscreatenewgroupopen">
-  <button (click)="closecreatenewgroup()">close</button>
+  <!-- <button (click)="closecreatenewgroup()">closeddddddddddddd</button> -->
 
+
+
+
+  
+  <img src="../../../assets/images/close.png" alt="" class="closeicon" (click)="closecreatenewgroup()">
 
    <app-create-group></app-create-group>
 
@@ -41,10 +46,21 @@
 
 
   <div class="posttypeholder">
-            <div class="userdetails-holder">
-              <img *ngIf="user?.profileimage" [src]="'data:image/jpeg;base64,' + user?.profileimage" alt="Profile Image"  class="profileimage" >
+            <div class="userdetails-holder" *ngIf="userid !=''">
+              <div class="inggerholder-image">
+                <img *ngIf="user?.profileimage" [src]="'data:image/jpeg;base64,' + user?.profileimage" alt="Profile Image"  class="profileimage" >
 
-              <h2>Hi, {{user.username}}</h2>
+                <h2>Hi, {{user.username}}</h2>
+              </div>
+
+
+              <span class="creategroup" (click)="createnewgroup()">
+                <img src="../../../assets/images/add.png" alt="" *ngIf="userid != ''">
+                group
+        
+              </span>
+
+
           
             </div>
 

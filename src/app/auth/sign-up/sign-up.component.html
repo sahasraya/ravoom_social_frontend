@@ -1,96 +1,150 @@
-<form [formGroup]="signUpForm" (ngSubmit)="onSubmit()">
-<div [class]="bannerClass"  >
-  <span class="bannertext">{{errormessage}}</span>
-</div>
 
-    <div>
-      <label for="username">Username</label>
-      <input id="username" formControlName="username" type="text" placeholder="Username">
+<div class="main-holder-outer">
+
+  <form [formGroup]="signUpForm" (ngSubmit)="onSubmit()">
+    <div [class]="bannerClass"  >
+      <span class="bannertext">{{errormessage}}</span>
     </div>
-  
-    <div>
-      <label for="emailaddress">Email Address</label>
-      <input id="emailaddress" formControlName="emailaddress" type="email" placeholder="Email address">
-    </div>
-  
-    <div>
-      <label for="phonenumber">Phone Number</label>
-      <input id="phonenumber" formControlName="phonenumber" type="number" placeholder="Phone number">
-    </div>
-  
-    <div>
     
-      <label for="password">Password</label> 
-   
+        <div>
+          <label for="username"> <img src="../../../assets/images/username.png" alt="">  Username</label>
+          <input id="username" formControlName="username" type="text" placeholder="Username">
+        </div>
+      
+        <div>
+          <label for="emailaddress"><img src="../../../assets/images/email.png" alt=""> Email Address</label>
+          <input id="emailaddress" formControlName="emailaddress" type="email" placeholder="Email address">
+        </div>
+      
+        <div>
+          <label for="phonenumber"><img src="../../../assets/images/telephone.png" alt=""> Phone Number</label>
+          <input id="phonenumber" formControlName="phonenumber" type="number" placeholder="Phone number">
+        </div>
+      
+        <div>
+        
+          <label for="password"><img src="../../../assets/images/password.png" alt=""> Password</label> 
+       
+          
+    
+          <div class="password-eye-holder">
+          <input [type]="showPassword ? 'text' : 'password'" id="password" formControlName="password" (input)="checkPasswordStrength()" placeholder="Password" #password>
+          <img src="../../../assets/images/showpassword.png" alt="showpassword" class="eyeimage" *ngIf="!showPassword" (click)="togglePasswordVisibility()">
+          <img src="../../../assets/images/hidepassword.png" alt="hidepassword" class="eyeimage" *ngIf="showPassword" (click)="togglePasswordVisibility()">
+         </div>
+         
+        </div>
+    
+     
+        <div class="password-strength-show-panel" *ngIf="isPasswordFieldFocused">
+          <ul>
+            <li>
+              <img [src]="passwordConditions.minLength ? correctImage : wrongImage" alt="status">
+         
+              At least 8 characters
+            </li>
+            <li>
+              <img [src]="passwordConditions.hasNumber ? correctImage : wrongImage" alt="status">
+              At least 1 number
+            </li>
+            <li>
+              <img [src]="passwordConditions.hasLowercase ? correctImage : wrongImage" alt="status">
+              At least 1 lowercase letter
+            </li>
+            <li>
+              <img [src]="passwordConditions.hasUppercase ? correctImage : wrongImage" alt="status">
+              At least 1 uppercase letter
+            </li>
+            <li>
+              <img [src]="passwordConditions.hasSpecialChar ? correctImage : wrongImage" alt="status">
+              At least 1 special symbol
+            </li>
+          </ul>
+        </div>
+    
+    
+    
+      
+        <div *ngIf="allPasswordConditionsMet()">
+          <label for="reenterpassword"> <img src="../../../assets/images/password.png" alt="">Re-enter Password</label>
+          <input [type]="showPassword ? 'text' : 'password'" id="reenterpassword" formControlName="reenterpassword" placeholder="Re enter password" (input)="checkpasswordequls(password.value ,reenterpassword.value)" #reenterpassword>
+        </div>
+    
+        <div *ngIf="age !== null && age !== 0" [ngClass]="{'agebelow18': age < 18}" >
+          <span class="agebelow18" [ngClass]="{'agebelow18': age < 18}">
+            {{ age < 18 ? 'Age is less than 18' : '' }}
+          </span>
+        </div>
+    
+        <div>
+          <label for="birthdate"><img src="../../../assets/images/birthdate.png" alt=""> Birth date</label>
+          <input type="date" id="birthdate" formControlName="birthdate" max="{{ maxDate }}">
+        </div>
+    
+    
+      
+        <div class="form-group">
+            <label for="profileimage">Profile Image</label>
+            <input id="profileimage" type="file" (change)="onFileSelected($event)" class="form-control" accept=".png, .jpg, .jpeg" />
+            <img *ngIf="imagePreview" [src]="imagePreview" alt="Image Preview" class="image-preview" />
+          </div>
+      
+        <button type="submit"  *ngIf="age! > 18 && signUpForm.valid && allPasswordConditionsMet()">Sign Up</button>
+    
+        <a routerLink="/auth/log-in" class="logintag">Log in</a>
+    
+    
+        
+      </form>
+  
       
 
-      <div class="password-eye-holder">
-      <input [type]="showPassword ? 'text' : 'password'" id="password" formControlName="password" (input)="checkPasswordStrength()" placeholder="Password" #password>
-      <img src="../../../assets/images/showpassword.png" alt="showpassword" class="eyeimage" *ngIf="!showPassword" (click)="togglePasswordVisibility()">
-      <img src="../../../assets/images/hidepassword.png" alt="hidepassword" class="eyeimage" *ngIf="showPassword" (click)="togglePasswordVisibility()">
-     </div>
-     
-    </div>
-
- 
-    <div class="password-strength-show-panel" *ngIf="isPasswordFieldFocused">
-      <ul>
-        <li>
-          <img [src]="passwordConditions.minLength ? correctImage : wrongImage" alt="status">
-     
-          At least 8 characters
-        </li>
-        <li>
-          <img [src]="passwordConditions.hasNumber ? correctImage : wrongImage" alt="status">
-          At least 1 number
-        </li>
-        <li>
-          <img [src]="passwordConditions.hasLowercase ? correctImage : wrongImage" alt="status">
-          At least 1 lowercase letter
-        </li>
-        <li>
-          <img [src]="passwordConditions.hasUppercase ? correctImage : wrongImage" alt="status">
-          At least 1 uppercase letter
-        </li>
-        <li>
-          <img [src]="passwordConditions.hasSpecialChar ? correctImage : wrongImage" alt="status">
-          At least 1 special symbol
-        </li>
-      </ul>
-    </div>
 
 
 
-  
-    <div *ngIf="allPasswordConditionsMet()">
-      <label for="reenterpassword">Re-enter Password</label>
-      <input [type]="showPassword ? 'text' : 'password'" id="reenterpassword" formControlName="reenterpassword" placeholder="Re enter password" (input)="checkpasswordequls(password.value ,reenterpassword.value)" #reenterpassword>
-    </div>
-
-    <div *ngIf="age !== null && age !== 0" [ngClass]="{'agebelow18': age < 18}" >
-      <span class="agebelow18" [ngClass]="{'agebelow18': age < 18}">
-        {{ age < 18 ? 'Age is less than 18' : '' }}
-      </span>
-    </div>
-
-    <div>
-      <label for="birthdate">Birth date</label>
-      <input type="date" id="birthdate" formControlName="birthdate" max="{{ maxDate }}">
-    </div>
 
 
-  
-    <div class="form-group">
-        <label for="profileimage">Profile Image</label>
-        <input id="profileimage" type="file" (change)="onFileSelected($event)" class="form-control" accept=".png, .jpg, .jpeg" />
-        <img *ngIf="imagePreview" [src]="imagePreview" alt="Image Preview" class="image-preview" />
+
+
+
+
+
+
+
+
+
+      <div class="image-holder">
+        <img src="../../../assets/images/signupimage.svg" alt="" class="main-image">
+      
+      
+      
+      
+         <div class="text-holder">
+          <h3 class="ravoom-text">Ravoom</h3>
+          <span>Power full social connection</span>
+         </div>
+      
+      
+          <div class="contect-details-holder">
+             <span class="need-help">
+              <img src="../../../assets/images/needhelp.png" alt="">
+              <span class="need-help-text">need help ?</span>
+             </span>
+      
+             <span class="need-help-button">contect</span>
+          </div>
+      
+      
+      
+          <div class="social-icon-holder">
+             <img src="../../../assets/images/fb.png" alt="">
+             <img src="../../../assets/images/instagram.png" alt="">
+          
+          </div>
+      
+      
       </div>
-  
-    <button type="submit"  *ngIf="age! > 18 && signUpForm.valid && allPasswordConditionsMet()">Sign Up</button>
 
-    <a routerLink="/auth/log-in" class="logintag">Already have an account</a>
+      
 
-
-    
-  </form>
-  
+</div>

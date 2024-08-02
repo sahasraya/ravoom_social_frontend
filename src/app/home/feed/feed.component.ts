@@ -66,6 +66,9 @@ async getuserdetails(userid:string):Promise<void>{
       }
     });
   }
+
+  
+
   
   createnewgroup():void{
     this.iscreatenewgroupopen = true;

@@ -1,10 +1,9 @@
 .search-container {
   position: relative;
-  width: 50%;
 }
 
 .search-container input[type="text"] {
-  width: 80%;
+  width: 100%;
   padding: 8px;
   font-size: 16px;
   border: 1px solid #ccc;
@@ -13,15 +12,34 @@
 
 .results-container {
   position: absolute;
-  width: 80%;
+  width: 100%;
   background: #fff;
   border: 1px solid #ccc;
   border-radius: 5px;
-  max-height: 300px;
+  height: 90vh;
   overflow-y: auto;
  
   z-index: 1000;
   margin-top: 10px; 
+}
+.norecentsearchbanner{
+  width: 90%;
+  border-radius: 10px;
+   padding: 10px;
+   background-color: var(--icon-hover-backgroud-color);
+   display: flex;
+   flex-direction: row;
+   justify-content: center;
+   align-items: center;
+ 
+   margin: 10px auto;
+
+}
+
+.norecentsearchbanner img{
+width: 20px;
+height: 20px;
+margin-left: 10px;
 }
 
 .user-list, .group-list {
@@ -31,17 +49,28 @@
 }
 
 .user-item, .group-item {
+  margin: 5px 0px;
   display: flex;
   align-items: center;
- 
+   background-color: #cccccc00;
   padding: 10px;
   border-bottom: 1px solid #eee;
+  cursor: pointer;
+  border-radius: 10px;
+  transition: background-color 0.3s ease;
+}
+.user-item:hover,.group-item:hover{
+background-color: var(--icon-hover-backgroud-color);
 }
 
 .user-item:last-child, .group-item:last-child {
   border-bottom: none;
 }
-
+.username{
+  font-size: 2vh;
+  color: black;
+  opacity: 0.9;
+}
 .profile-image, .group-image {
   width: 40px;
   height: 40px;
@@ -50,10 +79,14 @@
   margin-right: 10px;
 }
 
-.username, .groupname {
-  font-size: 16px;
-  display: block;
-  margin: 0;
+ .group-details-holder{
+  display: flex;
+  flex-direction: column;
+ }
+.group-details-holder .groupename{
+color: black;
+opacity: 0.8;
+font-weight: normal;
 }
 
 .user-item a, .group-item a {
@@ -63,22 +96,46 @@
   color: inherit;
   width: 100%;
 }
-
-.results-container h2 {
-  font-size: 18px;
-  margin: 10px;
-  border-bottom: 1px solid #ccc;
-  padding-bottom: 5px;
+.close-button {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background-color: white;
+  padding: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, width 0.3s ease, height 0.3s ease;
 }
 
+.close-button:hover {
+  width: 29px;
+  height: 29px;
+}
+
+.results-container span {
+  font-size: 18px;
+  font-weight: bold;
+  opacity: 0.8;
+}
+.imageholdersearch{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+  border-bottom: 1px solid #ccc;
+   padding: 10px;
+}
+
+.searchresultnormalimage{
+  width: 15px;
+  height: 15px;
+ 
+}
 .results-container ul {
   padding: 0 10px;
+  
 }
 
-.results-container ul li a:hover {
-  background-color: #f0f0f0;
-  border-radius: 5px;
-}
+ 
 .grouptype{
  
   font-weight: bold;

@@ -1,17 +1,17 @@
 <form [formGroup]="updateForm" (ngSubmit)="onSubmit()">
  
   <div>
-    <label for="username">Username</label>
+    <label for="username"> <img src="../../../assets/images/username.png" alt="">Username</label>
     <input id="username" formControlName="username" [value]="user?.username" type="text" placeholder="username">
   </div>
 
   <div>
-    <label for="emailaddress">Email Address</label>
+    <label for="emailaddress"> <img src="../../../assets/images/email.png" alt="">Email Address</label>
     <input id="emailaddress" formControlName="emailaddress" [value]="user?.emailaddress" type="email" placeholder="Email address">
   </div>
 
   <div>
-    <label for="phonenumber">Phone Number</label>
+    <label for="phonenumber"><img src="../../../assets/images/telephone.png" alt="">Phone Number</label>
     <input id="phonenumber" formControlName="phonenumber" [value]="user?.phonenumber" type="number" placeholder="Phone number">
   </div>
 
@@ -28,6 +28,6 @@
   <img *ngIf="profileimage && isprofileimageselected" [src]="profileimage" alt="Profile Image"  >
 
  
-   <a routerLink="/home/reset-password">reset-password</a>
+   <a routerLink="/home/reset-password" class="resetpassword">reset-password</a>
   <button type="submit"     *ngIf="updateForm.valid ">Update</button>
 </form>

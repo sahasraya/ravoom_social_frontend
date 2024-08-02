@@ -13,6 +13,7 @@ import { Router } from '@angular/router';
 export class PopularPostComponent  implements OnInit{
 
   APIURL = 'http://127.0.0.1:8000/';
+  videoUrl:string = "";
   popularPosts: any[] = [];
   likeCounts: any[] = [];
   imagePosts: any[] = [];
@@ -61,7 +62,17 @@ constructor(private http:HttpClient,private router:Router){}
           } else if (post.posttype === 'audio') {
             this.audioPosts.push(post);
           } else if (post.posttype === 'video') {
+            const base64Data = post.post;
+
+            try {
+              const blob = this.convertBase64ToBlob(base64Data, 'video/mp4');
+              post.filepath = URL.createObjectURL(blob);
+            } catch (error) {
+              console.error('Error converting video post:', error);
+            }
+  
             this.videoPosts.push(post);
+
           } else if (post.posttype === 'text') {
             this.textPosts.push(post);
           }
@@ -85,6 +96,20 @@ constructor(private http:HttpClient,private router:Router){}
       }
     });
   }
+
+  convertBase64ToBlob(base64: string, mimeType: string): Blob {
+    const base64Data = base64.replace(/^data:video\/mp4;base64,/, '');
+    const byteChars = atob(base64Data);
+    const byteNums = new Array(byteChars.length);
+    
+    for (let i = 0; i < byteChars.length; i++) {
+      byteNums[i] = byteChars.charCodeAt(i);
+    }
+    
+    const byteArray = new Uint8Array(byteNums);
+    return new Blob([byteArray], { type: mimeType });
+  }
+
 
 
   calculateTimeAgo(postedDate: string): string {
@@ -142,6 +167,6 @@ constructor(private http:HttpClient,private router:Router){}
   nanigatetocommentsscreen(postdid:any, norg:string):void{
     
  
-    this.router.navigate(['/home/comment', postdid,norg]);
+    this.router.navigate(['/home/comment', postdid,norg,'home']);
   }
 }

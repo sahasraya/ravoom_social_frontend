@@ -14,42 +14,58 @@ form {
     width: 400px;
     margin: 0 auto;
     padding: 20px;
-    background-color: #f0f0f0;
     border: 1px solid #ccc;
-    border-radius: 5px;
+    border-radius: 20px;
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     font-family: 'Open Sans', sans-serif;
+    background: linear-gradient(to bottom, #00008b, var(--primarycolor)); 
 }
 
-div {
-    margin-bottom: 15px;
-}
-
+ 
 label {
     font-weight: bold;
     margin-bottom: 5px;
     display: block;
+    color: white;
+    display: flex;
+    flex-direction: row;
+    margin-top: 15PX;
+}
+label img{
+  width: 30px;
+height: 30px;
+align-items: center;
+padding: 5px;
+border-radius: 50%;
+background-color: white;
+margin-right: 10px;
 }
 
 input[type="email"],
 input[type="text"],
 input[type="password"] {
-    padding: 8px;
-    width: calc(100% - 16px);
-    border: 1px solid #ccc;
-    border-radius: 3px;
-    font-size: 14px;
+  width: 100%;
+  padding: 15px;
+  border-radius: 25px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+ 
+  box-sizing: border-box;
+  font-size: 15px;
+  font-family: 'Open Sans', sans-serif;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;  
 }
 
 button {
-    padding: 10px 20px;
+    padding: 15px 20px;
     background-color: var(--primarycolor);
     color: white;
     border: none;
-    border-radius: 5px;
+    border-radius: 15px;
+    margin-top: 10px;
     cursor: pointer;
     font-size: 16px;
     transition: background-color 0.3s;
@@ -57,8 +73,8 @@ button {
 
 button:hover {
     background-color: var(--primary-faded);
-    color: var(--primarycolor);
-    border: 1px solid var(--primarycolor);
+    color: white;
+    border: 1px solid white;
 }
 
 .anckortagholder{
@@ -87,28 +103,45 @@ text-align: center;
     justify-content: start;
   }
   .eyeimage{
-    width: 30px;
-  margin-left: 10px;
-  cursor: pointer;
-  padding: 5px;
-  border-radius: 50%;
+    width: 35px;
+    margin-left: 10px;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.432);
+    transition: background-color 0.2s;
   }
   .eyeimage:hover{
     background-color: rgba(128, 128, 128, 0.308);
+
   }
 
 
   .anckortagholder{
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
    
   }
 
   .anckortagholder a{
+    color: var(--primarycolor);
+    font-size: 15px;
     text-decoration: none;
-    color: rgb(43,149,236);
+    font-family: 'Open Sans', sans-serif;
+    padding: 8px 15px;
+    position: relative;
+   top: 35px;
+   border-radius: 50px;
+   background-color: white;
+   transition: background-color 0.2s;
+   margin-left: 10px;
+   border: 1px solid rgba(255, 255, 255, 0);
+   box-shadow: -1px 5px 10px 1px rgba(0, 0, 0, 0.2);
+
   }
 
   .anckortagholder a:hover{
-text-decoration: underline;
+    background-color: var(--primarycolor);
+    color: white;
+    border: 1px solid white;
   }

@@ -115,8 +115,8 @@
 
 
  <div *ngIf="post.posttype === 'audio'" class="audioholder" (click)="commentOnPost(post.postid, post.n_or_g)">
-  <audio *ngIf="audioUrl" controls>
-    <source [src]="audioUrl" type="audio/mpeg">
+  <audio *ngIf="audioUrl" controls class="audiofile" (click)="commentOnPost(post.postid, post.n_or_g)">
+    <source [src]="audioUrl" type="audio/mpeg" (click)="commentOnPost(post.postid, post.n_or_g)">
     Your browser does not support the audio element.
   </audio>
 </div>

@@ -24,7 +24,11 @@
   .form-group label {
     font-weight: bold;  
   }
-  
+  .radio-btn-holder{
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+  }
  
   .styled-input {
     border: 1px solid #ccc;  
@@ -92,4 +96,23 @@
     gap: 8px;
   }
   
+  button {
+    padding: 15px 20px;
+    background-color: var(--primarycolor);
+    color: white;
+    border: none;
+    border-radius: 20px;
+    margin-top: 10px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+    border: 1px solid  rgba(255, 255, 255, 0);
+
+}
+
+button:hover {
+    background-color: white;
+    color: var(--primarycolor);
+    border: 1px solid var(--primarycolor);
+}
   

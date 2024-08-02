@@ -5,7 +5,8 @@
 
 .nav-links {
     display: flex;
-    justify-content: flex-end;
+    align-items: center;
+    justify-content: space-between;
     gap: 15px;
 }
 
@@ -123,4 +124,19 @@
   .creategroup img{
     width: 20px;
     margin-right: 5px;
+  }
+
+  .right-side {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+  }
+
+  .header-search {
+    width: 30%;
+  }
+
+  .header-logo {
+    max-width: 100px;
   }

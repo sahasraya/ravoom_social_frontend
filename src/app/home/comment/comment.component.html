@@ -1,4 +1,15 @@
 <div *ngIf="post" class="post-container">
+
+
+  <div [ngSwitch]="fromwhatscreen">
+    <a *ngSwitchCase="'home'" routerLink=''>
+      <img src="../../../assets/images/backarrow.png" alt="" class="backarrow">
+    </a>
+    <a *ngSwitchCase="'pro'" [routerLink]="['/home/profile', checkuseridtoroutecommentscreen]">
+      <img src="../../../assets/images/backarrow.png" alt="" class="backarrow">
+    </a>
+  </div>
+
     <div class="post-header">
       <img class="user-profile" [src]="'data:image/jpeg;base64,' + post.userprofile" alt="User Profile Image">
       <div class="user-info">
@@ -81,7 +92,7 @@
 
       
       <div *ngIf="post.posttype === 'audio'" class="audioholder">
-        <audio controls>
+        <audio controls class="audiofile">
           <source [src]="post.audioUrl" type="audio/mpeg">
           Your browser does not support the audio element.
         </audio>
@@ -187,15 +198,37 @@
                           <div *ngFor="let replay of comment.replays">
                             <div class="replaycomment-outerhodler">
                               <div class="replaytextholder">
-                              <img *ngIf="replay.userprofileBlobUrl" [src]="replay.userprofileBlobUrl" alt="User Profile">
                                  <div class="replaytextuserdetailsholder">
-                                  <a [routerLink]="['/home/profile', replay.userid]" class="commentusername">
-                                    <span class="replaytext-username">{{ replay.username }}</span>
-                                  </a>
+                                    <img *ngIf="replay.userprofileBlobUrl" [src]="replay.userprofileBlobUrl" alt="User Profile">
+
+                                      <div class="usedetilsholder">
+                                        <a [routerLink]="['/home/profile', replay.userid]" class="commentusername">
+                                          <span class="replaytext-username">{{ replay.username }}</span>
+      
+                                        </a>
+
+                                        <span class="replaytext-time">{{ calculateTimeAgo(replay.replayeddate) }}</span>
+
+                                      </div>
 
                                   
-                                  <span class="replaytext-time">{{ calculateTimeAgo(replay.replayeddate) }}</span>
                                  </div>
+                                 <img src="../../../assets/images/threedots.png" alt=""   (click)="toggleDropdown($event, comment)" class="dropdown-toggle"  >
+
+
+                                 <!-- <div *ngIf="comment.showDropdown" class="dropdown-menu">
+                                  <ul>
+                                  
+                                    <li (click)="removeComment(comment,comment.commentid)" *ngIf="post.userid == this.userid" class="dropdownicons">
+                                      <img src="../../../assets/images/delete.png" alt="">
+                                      Delete comment
+                                    </li> 
+                                    <li>  <img src="../../../assets/images/complain.png" alt=""> Report comment</li>
+                      
+                                  
+                                     
+                                  </ul>
+                                </div> -->
                              
                             
                             </div>

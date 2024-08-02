@@ -80,7 +80,7 @@ export class NotificationComponent implements OnInit {
       next: response => {
         console.log( response);
         
-        this.router.navigate(['/home/comment', postid,norg])
+        this.router.navigate(['/home/comment', postid,norg,'home'])
  
       },
       error: (error: HttpErrorResponse) => {

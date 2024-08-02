@@ -23,7 +23,7 @@
 
 
 
-    <div class="posttypeholder">
+    <div class="posttypeholder" *ngIf="userfrommethod.userid == user.userid">
       <div class="userdetails-holder">
         <img *ngIf="user?.profileimage" [src]="'data:image/jpeg;base64,' + user?.profileimage" alt="Profile Image"  class="profileimage" >
 
@@ -71,6 +71,12 @@
           <app-post [post]="post"></app-post>
         </div>
     
+
+        <div class="noiamfollowinguserlist" *ngIf="posts.length == 0">
+          <img src="../../../assets/images/imagepost.png" alt="">
+          <p>No posts</p>
+           </div>
+
         
       </div>
       
@@ -78,31 +84,7 @@
 
 
 
-      
 
-      <div class="posts-container" *ngIf="showiamfolloeduserlistBool">
-         
-      
-
-        <div class="user-card" *ngFor="let user of iamfolloweduserslist">
-          <h2>List of Users You Are Followed</h2>
-          <div class="user-profile">
-            <img *ngIf="user.profileImageUrl" [src]="user.profileImageUrl" alt="Profile Image">
-            <div class="user-details">
-              <p><strong>Username:</strong> {{ user.username }}</p>
-              <p *ngIf="user.date"><strong>Date:</strong> {{ user.date | date: 'mediumDate' }}</p>
-              <p *ngIf="user.date"><strong>Time:</strong> {{ user.date | date: 'shortTime' }}</p>
-         
-            </div>
-            
-
-
-          </div>
-        </div>
-        <div class="noiamfollowinguserlist" *ngIf="iamfolloweduserslist.length == 0">
-          <p>You are not followed</p>
-</div>
-      </div>
 
 
 
@@ -113,31 +95,89 @@
       <div class="posts-container" *ngIf="showiamfollowinguserlistBool">
        
         
+        
         <div class="user-card" *ngFor="let user of iamfollowinguserslist">
-          <h2>List of Users You Are Following</h2>
-          <div class="user-profile">
-            <img *ngIf="user.profileImageUrl" [src]="user.profileImageUrl" alt="Profile Image">
+      
+          <a [routerLink]="['/home/profile', user.otheruserid]" >
+             <div class="user-profile">
+            <img *ngIf="user.profileImageUrl" [src]="user.profileImageUrl" alt="Profile Image" class="userprofileimage">
             <div class="user-details">
-              <p><strong>Username:</strong> {{ user.username }}</p>
-              <p *ngIf="user.date"><strong>Date:</strong> {{ user.date | date: 'mediumDate' }}</p>
-              <p *ngIf="user.date"><strong>Time:</strong> {{ user.date | date: 'shortTime' }}</p>
+             <div>
+               <span> {{ user.username }}</span>
+              <small ><b> : {{ user.date | date: 'mediumDate' }}</b></small>
+
+             </div>
+              <small *ngIf="user.date">{{ user.date | date: 'shortTime' }}</small>
             </div>
 
-            <button (click)="toggleDropdown($event, user)" class="dropdown-toggle">⋮oooooo</button>
+            <img src="../../../assets/images/threedots.png" alt="" (click)="toggleDropdown($event, user)" class="dropdown-toggle">
+            
             <div *ngIf="user.showDropdown" class="dropdown-menu">
               <ul>
-                <li (click)="removeIAMFollowingUser(user.otheruserid)">Unfollow</li>
-                <li>Report</li>
+                <li (click)="removeIAMFollowingUser(user.otheruserid)"> <img src="../../../assets/images/unfollow.png" alt=""> Unfollow</li>
+                <li> <img src="../../../assets/images/complain.png" alt=""> Report</li>
               </ul>
             </div>
 
             
           </div>
+        </a> 
         </div>
+
+
+
+
         <div class="noiamfollowinguserlist" *ngIf="iamfollowinguserslist.length == 0">
                           <p>No following users</p>
         </div>
       </div>
+
+
+
+
+
+
+
+
+      
+
+      <div class="posts-container" *ngIf="showiamfolloeduserlistBool">
+         
+      
+      
+        <div class="user-card" *ngFor="let user of iamfolloweduserslist">
+          <a [routerLink]="['/home/profile', user.otheruserid]" >
+          <div class="user-profile">
+            <img *ngIf="user.profileImageUrl" [src]="user.profileImageUrl" alt="Profile Image" class="userprofileimage">
+            <div class="user-details">
+             <div>
+              <span> {{ user.username }}</span>
+              <small ><b> : {{ user.date | date: 'mediumDate' }}</b></small>
+
+             </div>
+              <small *ngIf="user.date">{{ user.date | date: 'shortTime' }}</small>
+            </div>
+
+             
+
+            
+          </div>
+        </a>
+        </div>
+    
+
+        <div class="noiamfollowinguserlist" *ngIf="iamfolloweduserslist.length == 0">
+          <p>Not followed</p>
+</div>
+      </div>
+
+
+
+
+
+
+
+      
 
 
 

@@ -86,7 +86,12 @@
 
 .audioholder{
   margin-top: 10px;
+  margin-bottom: 10px;
   width: 100%;
+  cursor: pointer;
+  background-color: rgba(150, 150, 150, 0.1);
+  border-radius: 10px;
+  padding: 30px 10px;
 }
 
 
@@ -268,7 +273,9 @@ background-color: var(--icon-hover-backgroud-color);
 width: 100%;
 margin-top: 10px;
 }
-
+.audiofile{
+  width: 100%;
+}
 .text-holder {
 border-radius: 10px;
 height: var(--post-dynamic-width)  ;

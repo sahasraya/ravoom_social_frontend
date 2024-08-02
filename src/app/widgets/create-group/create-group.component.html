@@ -9,26 +9,28 @@
 
 
       <div class="form-group">
-        <label for="groupimage">Select Group Image</label>
+        <label for="groupimage">Group Image</label>
         <input type="file" id="groupimage" (change)="ongroupimageSelected($event)" accept=".jpg, .jpeg, .png" formControlName="groupimage" class="styled-input">
         <img *ngIf="imagePreviewGroupImage" [src]="imagePreviewGroupImage" alt="Image Preview" class="image-preview" />
       </div>
       
       <div class="form-group">
-        <label for="groupbackgroundimage">Select Group Background Image</label>
+        <label for="groupbackgroundimage">Background Image</label>
         <input type="file" id="groupbackgroundimage" (change)="ongroupbackgroundimageSelected($event)" accept=".jpg, .jpeg, .png" formControlName="groupbackgroundimage" class="styled-input">
         <img *ngIf="imagePreviewGroupBackgroundImage" [src]="imagePreviewGroupBackgroundImage" alt="Image Preview" class="image-preview" />
       </div>
       
-      <div class="form-group">
+      <div class="radio-btn-holder">
         <input type="radio" id="public" name="grouptype" value="public" formControlName="grouptype" class="styled-radio">
         <label for="public">Public</label>
-      </div>
-      
-      <div class="form-group">
+
         <input type="radio" id="private" name="grouptype" value="private" formControlName="grouptype" class="styled-radio">
         <label for="private">Private</label>
+
+
       </div>
+      
+ 
 
 
        <!-- <div class="toggle-btn-holder">
@@ -37,7 +39,7 @@
         <label for="over18">Yes</label>
       </div> -->
 
-      <button type="submit" [disabled]="!createGroupFormGroup.valid">Create group {{groupname.value}}</button>
+      <button type="submit" [hidden]="!createGroupFormGroup.valid">Create group {{groupname.value}}</button>
     </div>
   </form>
 

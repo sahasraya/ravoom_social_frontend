@@ -1,105 +1,91 @@
-.results-container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
-    background-color: #f9f9f9;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  }
+.content-holder{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+
   
-  .results-container p {
-    color: #555;
-    text-align: center;
-  }
-  
-  .main-outer-holder {
-    margin-bottom: 20px;
-    padding: 15px;
-    background-color: #fff;
-    border-radius: 10px;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-  }
-  
-  .inner-holder {
-    display: flex;
-    align-items: center;
-    margin-bottom: 10px;
-  }
-  
-  .profile-image-holder {
-    display: flex;
-    align-items: center;
-    margin-right: 10px;
-  }
-  
-  .profileimage {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    object-fit: cover;
-    margin-right: 10px;
-    border: 2px solid #ddd;
-  }
-  
-  .details {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-  }
-  
-  .details p {
-    margin: 0;
-    color: #333;
-  }
-  
-  .details p:first-child {
-    font-weight: bold;
-    font-size: 1.1em;
-  }
-  
-  .details p:last-child {
-    font-size: 0.9em;
-    color: #888;
-  }
-  
-  .video-post-holder video {
-    max-width: 100%;
-    height: auto;
-    max-height: 200px;  
-    border-radius: 10px;
-    margin-top: 10px;
-  }
-  
-  .audio-post-holder audio {
-    width: 100%;
-    margin-top: 10px;
-  }
-  
-  .audio-post-holder p {
-    margin-top: 10px;
-    color: #333;
-  }
-  
-  .image-post-holder img.post {
-    max-width: 100%;
-    height: auto;
-    border-radius: 10px;
-    margin-top: 10px;
-  }
-  
-  .text-post-holder .inner-text-post-holder {
-    padding: 15px;
-    border-radius: 10px;
-    margin-top: 10px;
-  }
-  
-  .text-post-holder .inner-text-post-holder p {
-    margin: 0;
-    color: #333;
-  }
-  
-  
-  
-  
-  
-  
+
+}
+.timeholder{
+  display: flex;
+  flex-direction: column;
+  background-color: var(--icon-hover-backgroud-color);
+  transition: background-color 0.3s;
+  border-radius: 15px;
+  cursor: pointer;
+  padding: 10px;
+  margin: 10px;
+}
+.timeholder:hover{
+  background-color: var(--icon-backgroud-color);
+}
+
+.inner-holder{
+  display: flex;
+  flex-direction: column;
+}
+
+.profile-image-holder{
+  display: flex;
+  flex-direction: row;
+}
+.profile-image-holder span{
+color: black;
+}
+
+.profileimage{
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+.postimage,.viodefile{
+  width: 10vh;
+  height: 10vh;
+  border-radius: 15px;
+}
+.audioimage{
+  width: 10vh;
+  height: 10vh;
+  border-radius: 50%;
+  background-color: white;
+  padding: 15px;
+}
+.text-post-text{
+  margin: 0;
+  color: white;
+  text-align: center;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: bold;
+  font-size: 20px;
+  padding: 10px;
+  word-wrap: break-word;  
+  max-width: 100%; 
+}
+.usernamepost{
+  color: black;
+  font-weight: bold;
+  opacity: 0.8;
+}
+.inner-text-post-holder{
+  width: 10vh;
+  height: 10vh;
+  border-radius: 15px;
+   overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.inner-text-post-holder span{
+  color: white;
+  font-size: 1.3vh;
+}
+.Popularsearchtext{
+  margin: 5px 15px;
+}
+
+.Popularsearchtext img{
+  width: 17px;
+}
+

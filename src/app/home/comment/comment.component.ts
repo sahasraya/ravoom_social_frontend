@@ -30,8 +30,11 @@ export class CommentComponent implements OnInit {
   currentImageIndex: number = 0;
   showImageSlider: boolean = false;
   sliderImages: string[] = [];
+  fromwhatscreen:string="";
   groupornormalpost:any;
   userid:string = "";
+  checkuseridtoroutecommentscreen:string = "";
+
   constructor(private route:ActivatedRoute,private http:HttpClient,private fb: FormBuilder,private router:Router){
     this.commentForm = this.fb.group({
       commenttext: ['', [Validators.required]],
@@ -48,11 +51,13 @@ export class CommentComponent implements OnInit {
   ngOnInit(): void {
     this.postid = this.route.snapshot.paramMap.get('postid');
     this.groupornormalpost = this.route.snapshot.paramMap.get('type');
+    this.fromwhatscreen = this.route.snapshot.paramMap.get('screen')!;
  
    this.getPostData();
    this.getComments();
    this.getpostlikecount();
    this.userid = localStorage.getItem('wmd') || '';
+   this.checkuseridtoroutecommentscreen =this.route.snapshot.paramMap.get('uid') || '';
  
   }
 

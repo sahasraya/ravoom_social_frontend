@@ -49,12 +49,12 @@ export const routes: Routes = [
 
     
 
-
     {
-        path:"home",component:HomeComponent,children:[
-            { path: 'comment/:postid/:type', component: CommentComponent }
+        path: "home", component: HomeComponent, children: [
+          { path: 'comment/:postid/:type/:screen/:uid', component: CommentComponent },
+          { path: 'comment/:postid/:type/:screen', component: CommentComponent } 
         ]
-    },
+      },
     {
         path:"home",component:HomeComponent,children:[
             { path: 'settings/:uid', component: SettingsComponent }

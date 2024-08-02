@@ -6,7 +6,7 @@ form {
   width: 600px;
   margin: 0 auto;
   padding: 20px;
-  background-color: #f0f0f0;
+  background: linear-gradient(to bottom, var(--primarycolor), #00008b);
   border: 1px solid #ccc;
   border-radius: 10px;
   margin-top: 15px;
@@ -18,9 +18,20 @@ form {
   }
   
   label {
-    display: block;
-    margin-bottom: 5px;
+ 
     font-weight: bold;
+    color: white;
+    display: flex;
+    flex-direction: row;
+  }
+  label img{
+    width: 30px;
+height: 30px;
+align-items: center;
+padding: 5px;
+border-radius: 50%;
+background-color: white;
+margin-right: 10px;
   }
   
   input[type="text"],
@@ -30,29 +41,68 @@ form {
   input[type="file"] {
     width: 100%;
     padding: 15px;
+    border-radius: 25px;
     margin-top: 5px;
-    border: none;
-    border-radius: 15px;
+    border: 1px solid #ccc;
+   
     box-sizing: border-box;
+    font-size: 15px;
+    font-family: 'Open Sans', sans-serif;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;  
    
   }
   
+  input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+input[type="number"]:focus,
+input[type="date"]:focus
+ {
+  border-color: #0400fc; 
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);  
+  outline: none;  
+}
+
   
-  button {
-    width: 100%;
-    padding: 10px;
-    border: none;
-    border-radius: 5px;
-    background-color: #4CAF50;
-    color: white;
-    font-size: 16px;
-    cursor: pointer;
-    margin-top: 10px;
-  }
+button {
+  padding: 15px 20px;
+  background-color: white;
+  color: var(--primarycolor);
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s;
+  margin-top: 10px;
+  border: 1px solid rgba(255, 255, 255, 0);
+
+}
+.resetpassword{
+  color: var(--primarycolor);
+  font-size: 15px;
+  text-decoration: none;
+  font-family: 'Open Sans', sans-serif;
+  padding: 8px 15px;
+  position: relative;
+  text-align: center;
+  width: 30%;
+ border-radius: 50px;
+ background-color: white;
+ transition: background-color 0.2s;
+ box-shadow: -1px 5px 10px 1px rgba(0, 0, 0, 0.2);
+}
+.resetpassword:hover{
+  background-color: var(--primarycolor);
+  color: white;
+}
+
+button:hover {
+  background-color: #ffffff00;
+  color:var(--primarycolor);
+  border: 1px solid white;
+}
   
-  button:hover {
-    background-color: #45a049;
-  }
+  
   
   .image-preview {
     margin-top: 10px;
@@ -83,19 +133,20 @@ form {
 
   .file-input-label {
     display: inline-block;
-    padding: 10px 20px;
+    padding: 15px 20px;
     width: 100%;
     border: 1px solid #ccc;
-    border-radius: 20px;
+    border-radius: 30px;
     background-color: var(--primary-dark);
     color: white;
     cursor: pointer;
     transition: background-color 0.5s, color 0.5s;
+    margin-bottom: 10px;
   }
   
   .file-input-label:hover {
     background-color: var(--primary-faded);
-    color: black;
+    color: white;
   }
   .image-holder {
     width: 100%;
