@@ -56,7 +56,7 @@
   <a [href]="post.thelink" target="_blank" class="link-wrapper" *ngIf="post.posttype === 'link'">{{post.thelink}}</a>
 
   <div *ngIf="post.posttype === 'text'" class="textholder">
-    <div class="text-holder" [style.background-color]="post.textcolor" (click)="commentOnPost(post.postid,post.n_or_g)">
+    <div class="text-holder" [style.background-color]="post.textcolor" (click)="commentOnPost($event,post.postid,post.n_or_g)">
       <p class="text-post-text">{{ post.textbody }}</p>
     </div>
   </div>
@@ -64,7 +64,7 @@
   
   <div *ngIf="post.posttype === 'image'" class="imageholder">
     <span class="numberofimages" *ngIf="post.images.length>1">{{post.images.length}}</span>
-    <img   [src]="imageUrl" alt="Post Image"   (click)="commentOnPost(post.postid,post.n_or_g)" />
+    <img   [src]="imageUrl" alt="Post Image"   (click)="commentOnPost($event,post.postid,post.n_or_g)" />
     <!-- <img   [src]="imageUrl" alt="Post Image" (click)="showImageSliderMethod(post.images)" /> -->
   </div>
 
@@ -94,7 +94,7 @@
   
 
   <div *ngIf="post.posttype === 'video'" class="videoholder">
-    <video *ngIf="videoUrl" controls (click)="commentOnPost(post.postid, post.n_or_g)">
+    <video *ngIf="videoUrl" controls (click)="commentOnPost($event,post.postid, post.n_or_g)">
       <source [src]="videoUrl" type="video/mp4">
       Your browser does not support the video tag.
     </video>
@@ -105,7 +105,7 @@
 
   <div *ngIf="post.posttype === 'link'" class="imageholder">
    
-    <img [src]="post.textbody" alt="" (click)="commentOnPost(post.postid,post.n_or_g)">
+    <img [src]="post.textbody" alt="" (click)="commentOnPost($event,post.postid,post.n_or_g)">
     
 </div>
 
@@ -114,9 +114,9 @@
   
 
 
- <div *ngIf="post.posttype === 'audio'" class="audioholder" (click)="commentOnPost(post.postid, post.n_or_g)">
-  <audio *ngIf="audioUrl" controls class="audiofile" (click)="commentOnPost(post.postid, post.n_or_g)">
-    <source [src]="audioUrl" type="audio/mpeg" (click)="commentOnPost(post.postid, post.n_or_g)">
+ <div *ngIf="post.posttype === 'audio'" class="audioholder" (click)="commentOnPost($event,post.postid, post.n_or_g)">
+  <audio *ngIf="audioUrl" controls class="audiofile" (click)="commentOnPost($event,post.postid, post.n_or_g)">
+    <source [src]="audioUrl" type="audio/mpeg" (click)="commentOnPost($event,post.postid, post.n_or_g)">
     Your browser does not support the audio element.
   </audio>
 </div>
@@ -125,7 +125,7 @@
     <span>{{ likes }} Likes</span>
 
     <!-- Comment button -->
-     <span class="comment-button" (click)="commentOnPost(post.postid,post.n_or_g)">
+     <span class="comment-button" (click)="commentOnPost($event,post.postid,post.n_or_g)">
       <img src="../../../assets/images/comment.png" alt="" > {{ comments }} Comments
      </span>
 

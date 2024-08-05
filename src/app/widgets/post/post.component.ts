@@ -411,7 +411,8 @@ export class PostComponent implements OnInit {
 
   }
 
-  commentOnPost(postid: any, n_or_g: any): void {
+  commentOnPost(event: MouseEvent,postid: any, n_or_g: any): void {
+    event.preventDefault();
     if (this.checkuseridtoroutecommentscreen != null) {
       this.screen = "pro";
       this.router.navigate([`/home/comment/${postid}/${n_or_g}/${this.screen}/${this.checkuseridtoroutecommentscreen}`]);
