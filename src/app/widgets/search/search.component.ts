@@ -50,7 +50,12 @@ this.isFacoused = true;
 
 
 
-
+  clearSearch(): void {
+    this.searchText = '';
+    this.user = [];
+    this.group = [];
+  }
+  
   async searchResult(): Promise<void> {
     this.isFacoused = false;
   

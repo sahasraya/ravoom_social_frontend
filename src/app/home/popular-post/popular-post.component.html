@@ -68,6 +68,7 @@
 
 
 <div class="outer-holder" *ngIf="showImagePostsBool">
+  
   <div *ngFor="let post of imagePosts" class="main-outer-holder"
     (click)="nanigatetocommentsscreen(post.postid,post.n_or_g)">
     <div class="timeholder">
@@ -146,3 +147,39 @@
     <p>{{ post.postdescription }}</p>
   </div>
 </div>
+
+
+
+
+
+
+
+
+<div class="outer-holder" *ngIf="showGroupPostsBool">
+  
+  <div *ngFor="let post of groupPosts" class="main-outer-holder"
+    (click)="nanigatetogroupscreen(post.groupid )">
+    <div class="timeholder">
+      <div class="content-holder">
+        <div class="inner-holder">
+          <div class="profile-image-holder">
+            <img *ngIf="post.userprofileUrl" [src]="post.userprofileUrl" alt="Profile Image" class="profileimage">
+            <span class="usernamepost">{{post.username}}</span> 
+          </div>  
+    
+        <p>{{ post.posttype }} post</p>
+       
+  
+      </div>
+ 
+      <img *ngIf="post.postUrl" [src]="post.postUrl" alt="groupimagepost Image" class="postimage">
+  
+      </div>
+      <small>{{ calculateTimeAgo(post.posteddate) }}</small>
+    </div>
+</div>
+</div>
+
+
+
+ 

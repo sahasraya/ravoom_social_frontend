@@ -169,7 +169,7 @@ async getUser(searchtext: string):Promise<void>{
     formData.append('searchtext', searchtext);
 
     this.http.post<any>(`${this.APIURL}search-enter-press-result-link-text`, formData).subscribe({
-      next: response => {
+      next: (response:any) => {
         this.responseObject = response;
       
         
@@ -189,6 +189,9 @@ async getUser(searchtext: string):Promise<void>{
           this.TextLinkPosts.push(post);
 
 
+         
+
+
           if(this.TextLinkPosts.length > 0){
 
             this.showImagetextLinkPostsBool = false;
@@ -206,7 +209,7 @@ async getUser(searchtext: string):Promise<void>{
 
         });
 
-        
+     
       },
       error: (error: HttpErrorResponse) => {
         console.error('There was an error!', error);
@@ -221,35 +224,70 @@ async getUser(searchtext: string):Promise<void>{
     formData.append('searchtext', searchtext);
 
     this.http.post<any>(`${this.APIURL}search-enter-press-result-image-link-text`, formData).subscribe({
-      next: response => {
-        this.responseObject = response;
+      next: (response:any) => {
+        this.responseObject =   [...this.responseObject, ...this.processPosts(response)];
+
+      
         
         
      
         this.ImageTextLinkPosts = [];
 
         this.responseObject.forEach((post: any) => {
-          if (post.userprofile) {
-            post.userprofileUrl = this.createBlobUrl(post.userprofile, 'image/jpeg'); 
-          }
-
-          if (post.post) {
-            post.postUrl = this.createBlobUrl(post.post, 'image/jpeg'); 
-          }
-
            
           this.ImageTextLinkPosts.push(post);
-          console.log(  this.ImageTextLinkPosts);
+
+
+          if(this.ImageTextLinkPosts.length > 0){
+
+            this.showImagetextLinkPostsBool = true;
+            this.showAudioPostsBool = false;
+            this.showImagePostsBool = false;
+            this.showTextPostsBool = false;
+            this.showLinkPostsBool = false;
+            this.showVideoPostsBool = false ;
+            this.showTextLinkPostsBool = false;
+            this.showUserBool =false;
+            this.showGroupBool= false;
+    
+          }
+        
 
     
         });
-
         
       },
+
+
       error: (error: HttpErrorResponse) => {
         console.error('There was an error!', error);
       }
     });
+
+ 
+  }
+
+
+  private processPosts(posts: any[]): any[] {
+    const processedPosts: any[] = [];
+    posts.forEach(post => {
+   
+      const existingPost = processedPosts.find(p => p.postid === post.postid);
+
+      if (existingPost) {
+        if (post.image) {
+          existingPost.images.push(post.image);
+        }
+      } else {
+        const newPost = {
+          ...post,
+          images: post.posttype === 'image' && post.image ? [post.image] : []
+        };
+        processedPosts.push(newPost);
+      }
+    });
+
+    return processedPosts;
   }
 
 

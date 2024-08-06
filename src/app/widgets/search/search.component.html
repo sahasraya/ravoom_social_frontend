@@ -1,46 +1,50 @@
 <div class="search-container" (click)="stopPropagation($event)">
+  <div class="search-box">
+    <img src="../../../assets/images/search.png" alt="search icon" class="search-icon" width="25">
+    <input type="text" placeholder="Search here..." [(ngModel)]="searchText" (input)="searchResult()"
+      (focus)="showSavedUsers()" (keydown.enter)="handleEnterKeyPress()" #searchvalue>
+      <img src="../../../assets/images/close.png" alt="" class="closeiconsearch" *ngIf="searchText" (click)="clearSearch()">
+  </div>
 
-    <input type="text" placeholder="Search here..." [(ngModel)]="searchText" (input)="searchResult()" 
-    (focus)="showSavedUsers()"  (keydown.enter)="handleEnterKeyPress()">
-    
-    <div *ngIf="user && user.length" class="results-container">
-      <div class="imageholdersearch">
-        <span>Users <img src="../../../assets/images/search.png" alt="" class="searchresultnormalimage"></span>
-      </div>
-      <ul class="user-list">
-        <li *ngFor="let u of user" class="user-item">
-          <a [routerLink]="['/home/profile', u.userid]" (click)="addToLocalStorage(u.username, 'data:image/jpeg;base64,' + u.profileimage, u.userid)">
-            <img *ngIf="u.profileimage" [src]="'data:image/jpeg;base64,' + u.profileimage" alt="Profile Image" class="profile-image">
-            <h1 class="username">{{ u.username }}</h1>
-          </a>
-        </li>
-      </ul>
+  <div *ngIf="user && user.length" class="results-container">
+    <div class="imageholdersearch">
+      <span>Users <img src="../../../assets/images/search.png" alt="" class="searchresultnormalimage"></span>
     </div>
-    
-    <div *ngIf="group && group.length" class="results-container">
-      <div class="imageholdersearch">
-        <span>Groups <img src="../../../assets/images/search.png" alt="" class="searchresultnormalimage"></span>
-      </div>
+    <ul class="user-list">
+      <li *ngFor="let u of user" class="user-item">
+        <a [routerLink]="['/home/profile', u.userid]"
+          (click)="addToLocalStorage(u.username, 'data:image/jpeg;base64,' + u.profileimage, u.userid)">
+          <img *ngIf="u.profileimage" [src]="'data:image/jpeg;base64,' + u.profileimage" alt="Profile Image"
+            class="profile-image">
+          <h1 class="username">{{ u.username }}</h1>
+        </a>
+      </li>
+    </ul>
+  </div>
 
-     
-      <ul class="group-list">
-        <li *ngFor="let group of group" class="group-item">
-          <a [routerLink]="['/home/group', group.groupid]">
-            <img *ngIf="group.groupimage" [src]="'data:image/jpeg;base64,' + group.groupimage" alt="Group Image" class="group-image">
-           <div class="group-details-holder">
+  <div *ngIf="group && group.length" class="results-container">
+    <div class="imageholdersearch">
+      <span>Groups <img src="../../../assets/images/search.png" alt="" class="searchresultnormalimage"></span>
+    </div>
+
+
+    <ul class="group-list">
+      <li *ngFor="let group of group" class="group-item">
+        <a [routerLink]="['/home/group', group.groupid]">
+          <img *ngIf="group.groupimage" [src]="'data:image/jpeg;base64,' + group.groupimage" alt="Group Image"
+            class="group-image">
+          <div class="group-details-holder">
             <div>
               <span class="groupename">{{ group.groupname }}</span>
-              <small > : <b>{{ group.createdate |date: 'mediumDate'}}</b></small>
-              
-             </div>
-              <small >{{ group.grouptype }} group</small>
-           </div>
-          </a>
-        </li>
-      </ul>
-    </div>
-  
- 
+              <small> : <b>{{ group.createdate |date: 'mediumDate'}}</b></small>
+
+            </div>
+            <small>{{ group.grouptype }} group</small>
+          </div>
+        </a>
+      </li>
+    </ul>
+  </div>
 
 
 
@@ -65,39 +69,41 @@
 
 
 
-    
 
-    <div *ngIf="searchUsers.length > 0 && isFacoused" class="results-container">
-      <ul class="user-list">
-        <li *ngFor="let u of searchUsers" class="user-item">
-          <a [routerLink]="['/home/profile', u.userid]">
-            <img *ngIf="u.profileimage" [src]="u.profileimage" alt="Profile Image" class="profile-image">
-            <h1 class="username">{{ u.username }}</h1>
 
-          </a>
-          <img src="../../../assets/images/close.png" alt="" (click)="removeFromLocalStorage(u.userid)" class="close-button">  
 
-        </li>
-      </ul>
-      
-      <app-popular-post></app-popular-post>
-     
-    </div>
 
- 
-    <div *ngIf="searchUsers.length == 0 && isFacoused" class="results-container">
+  <div *ngIf="searchUsers.length > 0 && isFacoused" class="results-container">
+    <ul class="user-list">
+      <li *ngFor="let u of searchUsers" class="user-item">
+        <a [routerLink]="['/home/profile', u.userid]">
+          <img *ngIf="u.profileimage" [src]="u.profileimage" alt="Profile Image" class="profile-image">
+          <h1 class="username">{{ u.username }}</h1>
 
-      <div class="norecentsearchbanner">
-        No recent search
+        </a>
+        <img src="../../../assets/images/close.png" alt="" (click)="removeFromLocalStorage(u.userid)"
+          class="close-button">
 
-        <img src="../../../assets/images/search.png" alt="">
-      </div>
-     
-    
-       <app-popular-post></app-popular-post>
-    </div>
-    
+      </li>
+    </ul>
 
+    <app-popular-post></app-popular-post>
 
   </div>
-  
+
+
+  <div *ngIf="searchUsers.length == 0 && isFacoused" class="results-container">
+
+    <div class="norecentsearchbanner">
+      No recent search
+
+      <img src="../../../assets/images/search.png" alt="">
+    </div>
+
+
+    <app-popular-post></app-popular-post>
+  </div>
+
+
+
+</div>

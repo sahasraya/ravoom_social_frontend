@@ -21,11 +21,13 @@ export class PopularPostComponent  implements OnInit{
   videoPosts: any[] = [];
   textPosts: any[] = [];
   linkPosts: any[] = [];
+  groupPosts: any[] = [];
   showImagePostsBool: boolean = false;
   showAudioPostsBool: boolean = false;
   showVideoPostsBool: boolean = false;
   showTextPostsBool: boolean = false;
   showLinkPostsBool: boolean = false;
+  showGroupPostsBool: boolean = false;
 
 
 
@@ -50,6 +52,7 @@ constructor(private http:HttpClient,private router:Router){}
         this.videoPosts = [];
         this.textPosts = [];
         this.linkPosts = [];
+        this.groupPosts = [];
   
         this.popularPosts.forEach(post => {
           if (post.userprofile) {
@@ -80,6 +83,13 @@ constructor(private http:HttpClient,private router:Router){}
             this.linkPosts.push(post);
            
           }
+          else if (post.posttype === 'group') {
+            post.postUrl = this.createBlobUrl(post.post, 'image/jpeg');
+
+            this.groupPosts.push(post);
+           
+          }
+
         });
   
         this.showImagePostsBool = this.imagePosts.length > 0;
@@ -87,6 +97,7 @@ constructor(private http:HttpClient,private router:Router){}
         this.showVideoPostsBool = this.videoPosts.length > 0;
         this.showTextPostsBool = this.textPosts.length > 0;
         this.showLinkPostsBool = this.linkPosts.length > 0;
+        this.showGroupPostsBool = this.groupPosts.length > 0;
   
         console.log("Popular Posts:", this.popularPosts);
         console.log("Like Counts:", this.likeCounts);
@@ -168,5 +179,12 @@ constructor(private http:HttpClient,private router:Router){}
     
  
     this.router.navigate(['/home/comment', postdid,norg,'home']);
+  }
+
+
+  nanigatetogroupscreen(groupid:any):void{
+    
+ 
+    this.router.navigate(['/home/group', groupid]);
   }
 }

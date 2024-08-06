@@ -225,12 +225,7 @@ input[type="text"]:focus {
   flex-grow: 1;
 }
 
-.dropdown-toggle {
-  background: none;
-  border: none;
-  font-size: 24px;
-  cursor: pointer;
-}
+
 
 .dropdown-menu {
   position: absolute;
@@ -242,39 +237,44 @@ input[type="text"]:focus {
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   z-index: 1000;
 }
-
-.dropdown-menu ul {
+.dropdown-menu-replay-comment{
+  position: absolute;
+  right: 0;
+  top: 30px;
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+}
+.dropdown-menu ul,.dropdown-menu-replay-comment ui {
   list-style: none;
   padding: 0;
   margin: 0;
 }
 
-.dropdown-menu li {
+.dropdown-menu li ,.dropdown-menu-replay-comment li{
   padding: 10px;
   cursor: pointer;
   display: flex;
   align-items: center;
 }
 
-.dropdown-menu li:hover {
+.dropdown-menu li:hover ,.dropdown-menu-replay-comment li:hover{
   background: #f0f0f0;
 }
-.dropdown-menu img {
+.dropdown-menu img ,.dropdown-menu-replay-comment img{
   width: 20px;  
   margin-right: 10px; 
 }
-
+.replatcommentholder{
+  position: relative;
+}
 .dropdownicons {
   display: flex;
   align-items: center;
 }
-.dropdown-toggle{
-  width: 35px;
-  cursor: pointer;
-  padding: 10px;
-  border-radius: 50%;
-  background-color: var(--icon-backgroud-color);
-  }
+
   .audioholder{
     margin-top: 10px;
     margin-bottom: 10px;
@@ -288,9 +288,23 @@ input[type="text"]:focus {
   .audiofile{
     width: 100%;
   }
+  .dropdown-toggle{
+    width: 35px;
+    cursor: pointer;
+    padding: 10px;
+    border-radius: 50%;
+    background-color: var(--icon-backgroud-color);
+    }
+  
   .dropdown-toggle:hover{
   background-color: var(--icon-hover-backgroud-color);
   
+  }
+  .dropdown-toggle {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
   }
 .delete-confirmation-dialog {
   position: fixed; 

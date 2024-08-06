@@ -71,6 +71,7 @@ export class PostComponent implements OnInit {
       this.audioUrl = '';
     }
  
+    console.log(this.post);
   }
 
 
@@ -260,8 +261,11 @@ export class PostComponent implements OnInit {
      
    
       this.imageUrl = this.createBlobUrl(this.post.image, 'image/jpeg');
+ 
       this.videoUrl = '';
       this.audioUrl = '';
+
+ 
     } else if (this.post.posttype === 'audio') {
       const base64Data = this.post.post;
    
@@ -294,6 +298,7 @@ export class PostComponent implements OnInit {
     }
 
     else if (this.post.posttype === 'group') {
+    
  
     
       this.profileImageUrl = this.createBlobUrl(this.post.userprofile, 'image/jpeg');

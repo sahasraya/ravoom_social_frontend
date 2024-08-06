@@ -102,30 +102,30 @@ toggleReplayDiv(comment: any): void {
 async getReplayComments(commentid: any): Promise<any> {
   const params = new HttpParams().set('commentid', commentid.toString());
   try {
-    let response: any;
+    let responsereplaycomment: any;
     if (this.groupornormalpost === "g") {
-      response = await this.http.get<any>(`${this.APIURL}get_replay_comments_group`, { params }).toPromise();
+      responsereplaycomment = await this.http.get<any>(`${this.APIURL}get_replay_comments_group`, { params }).toPromise();
     } else {
-      response = await this.http.get<any>(`${this.APIURL}get_replay_comments`, { params }).toPromise();
+      responsereplaycomment = await this.http.get<any>(`${this.APIURL}get_replay_comments`, { params }).toPromise();
     }
 
-    if (response.userprofile) {
-      response.userprofileBlobUrl = this.createBlobUrl(response.userprofile, 'image/jpeg');
-      console.log(response.userprofileBlobUrl); // Debugging
+    if (responsereplaycomment.userprofile) {
+      responsereplaycomment.userprofileBlobUrl = this.createBlobUrl(responsereplaycomment.userprofile, 'image/jpeg');
+    
     }
 
-    if (Array.isArray(response.replaycomments)) {
-      response.replaycomments.forEach((replay: any) => {
+    if (Array.isArray(responsereplaycomment.replaycomments)) {
+      responsereplaycomment.replaycomments.forEach((replay: any) => {
         if (replay.userprofile) {
           replay.userprofileBlobUrl = this.createBlobUrl(replay.userprofile, 'image/jpeg');
-          console.log(replay.userprofileBlobUrl); // Debugging
+          console.log(replay.userprofileBlobUrl);  
         }
       });
     }
 
     this.replayCommentForm.reset();
 
-    return response || {};
+    return responsereplaycomment || {};
   } catch (error) {
     console.error('Error fetching replay comments:', error);
     return {};
@@ -134,6 +134,30 @@ async getReplayComments(commentid: any): Promise<any> {
 
 
 
+toggleReplaycommentDropdown(event: MouseEvent, replay: any): void {
+  event.stopPropagation();
+ 
+  this.comments.forEach(comment => {
+    comment.replays.forEach((r: { showDropdown: boolean; }) => {
+      if (r !== replay) {
+        r.showDropdown = false;
+      }
+    });
+  });
+ 
+  replay.showDropdown = !replay.showDropdown;
+}
+
+
+toggleDropdown(event: MouseEvent, comment: any): void {
+  event.stopPropagation();
+  this.comments.forEach(c => {
+    if (c !== comment) {
+      c.showDropdown = false;
+    }
+  });
+  comment.showDropdown = !comment.showDropdown;
+}
 
 
   
@@ -572,7 +596,7 @@ async getReplayComments(commentid: any): Promise<any> {
   
             this.http.post(this.APIURL + "send-notification",formData).subscribe({
               next:(response:any) =>{
-                           console.log(response);
+                         
             this.replayCommentForm.reset();
   
               }
@@ -615,7 +639,7 @@ async getReplayComments(commentid: any): Promise<any> {
   
             this.http.post(this.APIURL + "send-notification",formData).subscribe({
               next:(response:any) =>{
-                           console.log(response);
+                        
             this.replayCommentForm.reset();
   
               }
@@ -734,15 +758,12 @@ async getReplayComments(commentid: any): Promise<any> {
   
 
 
-  toggleDropdown(event: MouseEvent, comment: any): void {
-    event.stopPropagation();
-    this.comments.forEach(c => {
-      if (c !== comment) {
-        c.showDropdown = false;
-      }
-    });
-    comment.showDropdown = !comment.showDropdown;
-  }
+
+
+
+
+
+
 
  
 
@@ -760,6 +781,38 @@ async getReplayComments(commentid: any): Promise<any> {
     this.deleteingcommentid= commentID;
   }
 
+
+  async removeReplayComment(relaycomment: any, replaycommentID: any): Promise<void> {
+    const result = confirm("Do you want to remove this replay?");
+    if (result) {
+      const formData = new FormData();
+      formData.append('commentreplayid', replaycommentID);
+  
+      try {
+        const response = await this.http.post<any>(`${this.APIURL}remove_replay_comment`, formData).toPromise();
+  
+        if (response.message === "deleted") {
+       
+          this.comments.forEach(comment => {
+            if (comment.replays) {
+              comment.replays = comment.replays.filter((replay: any) => replay.commentreplayid !== replaycommentID);
+              // Decrement the replay count
+              if (comment.replayscount) {
+                comment.replayscount--;
+              }
+            }
+          });
+  
+          console.log('Replay comment deleted successfully');
+        }
+      } catch (error) {
+        console.error('Error removing replay comment:', error);
+      }
+    }else{
+      relaycomment.showDropdown = false;
+      
+    }
+  }
 
 
   removeCommentYes(comment: any) {

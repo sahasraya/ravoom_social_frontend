@@ -195,7 +195,7 @@
                         
                           
                           <!-- For each replay's user profile image -->
-                          <div *ngFor="let replay of comment.replays">
+                          <div *ngFor="let replay of comment.replays" class="replatcommentholder">
                             <div class="replaycomment-outerhodler">
                               <div class="replaytextholder">
                                  <div class="replaytextuserdetailsholder">
@@ -213,22 +213,22 @@
 
                                   
                                  </div>
-                                 <img src="../../../assets/images/threedots.png" alt=""   (click)="toggleDropdown($event, comment)" class="dropdown-toggle"  >
+                                 <img src="../../../assets/images/threedots.png" alt=""   (click)="toggleReplaycommentDropdown($event, replay)" class="dropdown-toggle"  >
 
 
-                                 <!-- <div *ngIf="comment.showDropdown" class="dropdown-menu">
+                                 <div *ngIf="replay.showDropdown" class="dropdown-menu-replay-comment">
                                   <ul>
                                   
-                                    <li (click)="removeComment(comment,comment.commentid)" *ngIf="post.userid == this.userid" class="dropdownicons">
+                                    <li  (click)="removeReplayComment(replay,replay.commentreplayid )"  *ngIf="post.userid == this.userid" class="dropdownicons">
                                       <img src="../../../assets/images/delete.png" alt="">
-                                      Delete comment
+                                      Delete replay
                                     </li> 
                                     <li>  <img src="../../../assets/images/complain.png" alt=""> Report comment</li>
                       
                                   
                                      
                                   </ul>
-                                </div> -->
+                                </div>
                              
                             
                             </div>
