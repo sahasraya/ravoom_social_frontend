@@ -1,19 +1,15 @@
-
-<app-header  (uploadPost)="onPostAdded()"></app-header>
+<app-header (uploadPost)="onPostAdded()"></app-header>
 <!-- <app-add-post (postAdded)="onPostAdded()" *ngIf="openaddpostscreenbool" (closePost)="openaddpostscreenbool = false"></app-add-post> -->
 <!-- (postAdded)="onPostAdded()" -->
 <!-- <app-notification></app-notification> -->
 
 <!-- <app-add-post (postAdded)="onPostAdded()" *ngIf="openaddpostscreenbool" (closePost)="openaddpostscreenbool = false"></app-add-post> -->
 
- 
 
 
 
-<app-add-post 
-  (postAdded)="onPostAdded()" 
-  *ngIf="openaddpostscreenbool" 
-  [postType]="postType" 
+
+<app-add-post (postAdded)="onPostAdded()" *ngIf="openaddpostscreenbool" [postType]="postType"
   (closePost)="openaddpostscreenbool = false">
 </app-add-post>
 
@@ -26,16 +22,16 @@
 
 
 
-  
+
   <img src="../../../assets/images/close.png" alt="" class="closeicon" (click)="closecreatenewgroup()">
 
-   <app-create-group></app-create-group>
-
-  
+  <app-create-group></app-create-group>
 
 
 
-  
+
+
+
 </div>
 
 
@@ -45,68 +41,66 @@
 <div class="feed-container">
 
 
-  <div class="posttypeholder">
-            <div class="userdetails-holder" *ngIf="userid !=''">
-              <div class="inggerholder-image">
-                <img *ngIf="user?.profileimage" [src]="'data:image/jpeg;base64,' + user?.profileimage" alt="Profile Image"  class="profileimage" >
+  <div class="posttypeholder" *ngIf="userid !=''">
+    <div class="userdetails-holder" >
+      <div class="inggerholder-image">
+        <img *ngIf="user?.profileimage" [src]="'data:image/jpeg;base64,' + user?.profileimage" alt="Profile Image"
+          class="profileimage">
 
-                <h2>Hi, {{user.username}}</h2>
-              </div>
-
-
-              <span class="creategroup" (click)="createnewgroup()">
-                <img src="../../../assets/images/add.png" alt="" *ngIf="userid != ''">
-                group
-        
-              </span>
+        <h2>Hi, {{user.username}}</h2>
+      </div>
 
 
-          
-            </div>
+      <span class="creategroup" (click)="createnewgroup()">
+        <img src="../../../assets/images/add.png" alt="" *ngIf="userid != ''">
+        group
 
-          
-            <div class="options-holder">
-              
-              <div class="option" (click)="openaddpostscreen('t')">
-                <img src="../../../assets/images/textpost.png" alt="">
-                <span class="optionname">Text</span>
-              </div>
+      </span>
 
-              <div class="option" (click)="openaddpostscreen('i')">
-                <img src="../../../assets/images/imagepost.png" alt="">
-                <span class="optionname">Image</span>
-              </div>
 
-              <div class="option" (click)="openaddpostscreen('l')">
-                <img src="../../../assets/images/linkpost.png" alt="">
-                <span class="optionname">link</span>
-              </div>
 
-              <div class="option" (click)="openaddpostscreen('v')">
-                <img src="../../../assets/images/videopost.png" alt="">
-                <span class="optionname">Video</span>
-              </div>
+    </div>
 
-              <div class="option" (click)="openaddpostscreen('a')">
-                <img src="../../../assets/images/audiopost.png" alt="">
-                <span class="optionname">Audio</span>
-              </div>
 
-            </div>
+    <div class="options-holder">
+
+      <div class="option" (click)="openaddpostscreen('t')">
+        <div class="icon-wrapper"><img src="../../../assets/images/textpost.png" alt=""></div> 
+        <span class="optionname">Text</span>
+      </div>
+
+      <div class="option" (click)="openaddpostscreen('i')">
+        <div class="icon-wrapper">  <img src="../../../assets/images/imagepost.png" alt=""></div> 
+        <span class="optionname">Image</span>
+      </div>
+
+      <div class="option" (click)="openaddpostscreen('l')">
+        <div class="icon-wrapper"><img src="../../../assets/images/linkpost.png" alt=""></div>
+        <span class="optionname">link</span>
+      </div>
+
+      <div class="option" (click)="openaddpostscreen('v')">
+      <div  class="icon-wrapper">    <img src="../../../assets/images/videopost.png" alt=""></div>
+        <span class="optionname">Video</span>
+      </div>
+
+      <div class="option" (click)="openaddpostscreen('a')">
+      <div class="icon-wrapper">  <img src="../../../assets/images/audiopost.png" alt=""></div>
+        <span class="optionname">Audio</span>
+      </div>
+
+    </div>
 
   </div>
- 
 
- 
- 
+
+
+
   <div class="posts-container">
     <div *ngFor="let post of posts; let i = index">
       <app-post [post]="post" (delete)="handlePostDelete(i)"></app-post>
     </div>
 
-    
+
   </div>
 </div>
-
-
-

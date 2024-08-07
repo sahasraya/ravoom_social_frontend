@@ -12,7 +12,6 @@
     display: flex;
     align-items: center;
     margin-bottom: 20px;
-    background-color: rgba(128, 128, 128, 0.164);
     padding: 10px;
     border-radius: 10px;
   }
@@ -514,10 +513,10 @@ input[type="text"]:focus {
 }
 
 .replay-comment-holder{
-  background-color: var(--icon-hover-backgroud-color);
   padding: 10px;
-  border-radius: 10px;
   margin-top: 5px;
+  border-top: 1px solid #ccc;
+
 }
 .replaytextholder{
   display: flex;

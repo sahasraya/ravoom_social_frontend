@@ -105,6 +105,9 @@
 .active-buttons-holder{
   margin-top: 15px;
   margin-bottom: 10px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }
 
 .imageholder img {
@@ -118,7 +121,11 @@
   background-color: var(--icon-backgroud-color);
   border-radius: 15px;
   cursor: pointer;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
   margin-left: 10px;
+  gap: 2px;
  
  }
  .comment-button img{

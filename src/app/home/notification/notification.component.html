@@ -1,12 +1,20 @@
 <!-- <button (click)="getNotifications()" *ngIf="this.currentUserId">open notification</button> -->
  
-<a routerLink="/home/followers-feed" *ngIf="this.currentUserId">followers feed</a>
+ 
 
-<div class="notofication-holder" *ngIf="!opennotificationwindow && notifications.length>0">
+<div class="notofication-holder" *ngIf="opennotificationwindow" >
    
+ 
+
+<div class="nonotifications-banner" *ngIf="notifications.length == 0">
+    
+    <img src="../../../assets/images/notification.png" alt="">
+    <p>No notifications yet</p>
+</div>
+
 
 <div class="main-notification-holder" *ngFor="let notification of notifications"  >
-    <div class="profile-inner-holder" *ngIf="notification.notificationtype === 'like'" (click)="navigatetocommentscreen(notification.postid,notification.notificationid,notification.n_or_g)" [ngStyle]="{'background-color': notification.seenstatus === 1 ? 'white' : 'rgba(128, 128, 128, 0.205)'}">
+    <div class="profile-inner-holder" *ngIf="notification.notificationtype === 'like'" (click)="navigatetocommentscreen(notification.postid,notification.notificationid,notification.n_or_g)" [ngStyle]="{'background-color': notification.seenstatus === 1 ? 'white' : 'rgba(128, 128, 128, 0.178)'}">
         
         <div class="profile-image-holder">
             <img [src]="'data:image/jpeg;base64,' + notification.profileimage" alt="Profile Image">
@@ -21,7 +29,7 @@
         </div>
     </div>
     
-    <div class="profile-inner-holder" *ngIf="notification.notificationtype === 'comment'" (click)="navigatetocommentscreen(notification.postid,notification.notificationid,notification.n_or_g)" [ngStyle]="{'background-color': notification.seenstatus === 1 ? 'white' : 'rgba(128, 128, 128, 0.205)'}">
+    <div class="profile-inner-holder" *ngIf="notification.notificationtype === 'comment'" (click)="navigatetocommentscreen(notification.postid,notification.notificationid,notification.n_or_g)" [ngStyle]="{'background-color': notification.seenstatus === 1 ? 'white' : 'rgba(128, 128, 128, 0.178)'}">
         <div class="profile-image-holder">
             <img [src]="'data:image/jpeg;base64,' + notification.profileimage" alt="Profile Image">
 
@@ -39,7 +47,7 @@
 
 
 
-    <div class="profile-inner-holder" *ngIf="notification.notificationtype === 'grouppermission'" (click)="navigatetogroupscreen(notification.postowneruserid ,notification.notificationid,notification.groupid,notification.groupname)" [ngStyle]="{'background-color': notification.seenstatus === 1 ? 'white' : 'rgba(128, 128, 128, 0.205)'}">
+    <div class="profile-inner-holder" *ngIf="notification.notificationtype === 'grouppermission'" (click)="navigatetogroupscreen(notification.postowneruserid ,notification.notificationid,notification.groupid,notification.groupname)" [ngStyle]="{'background-color': notification.seenstatus === 1 ? 'white' : 'rgba(128, 128, 128, 0.178)'}">
         <div class="profile-image-holder">
             <img [src]="'data:image/jpeg;base64,' + notification.profileimage" alt="Profile Image">
 
@@ -56,7 +64,7 @@
 
 
 
-    <div class="profile-inner-holder" *ngIf="notification.notificationtype === 'replaycomment'" (click)="navigatetocommentscreen(notification.postid,notification.notificationid,notification.n_or_g)" [ngStyle]="{'background-color': notification.seenstatus === 1 ? 'white' : 'rgba(128, 128, 128, 0.205)'}">
+    <div class="profile-inner-holder" *ngIf="notification.notificationtype === 'replaycomment'" (click)="navigatetocommentscreen(notification.postid,notification.notificationid,notification.n_or_g)" [ngStyle]="{'background-color': notification.seenstatus === 1 ? 'white' : 'rgba(128, 128, 128, 0.178)'}">
         <div class="profile-image-holder">
             <img [src]="'data:image/jpeg;base64,' + notification.profileimage" alt="Profile Image">
 

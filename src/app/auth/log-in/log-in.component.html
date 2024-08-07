@@ -21,8 +21,8 @@
   
         <div class="password-eye-holder">
           <input [type]="showPassword ? 'text' : 'password'" id="password" formControlName="password"  placeholder="Password" #password>
-          <img src="../../../assets/images/showpassword.png" alt="showpassword" class="eyeimage" *ngIf="!showPassword" (click)="visiblepassword()">
-          <img src="../../../assets/images/hidepassword.png" alt="hidepassword" class="eyeimage" *ngIf="showPassword" (click)="visiblepassword()">
+          <img src="../../../assets/images/showpassword.png" alt="showpassword" class="eyeimage" *ngIf="!showPassword && showPasswordToggle" (click)="visiblepassword()" [hidden]="!password">
+          <img src="../../../assets/images/hidepassword.png" alt="hidepassword" class="eyeimage" *ngIf="showPassword && showPasswordToggle" (click)="visiblepassword()">
          </div>
          
       </div>

@@ -47,7 +47,7 @@ export class FollowersFeedComponent {
     this.http.get<any[]>(url).subscribe({
       next: (res) => {
         this.posts = [...this.posts, ...this.processPosts(res)];
-        console.log("Received posts:", this.posts);
+   
         this.offset += this.limit;
         this.loading = false;
         this.cdr.detectChanges();  

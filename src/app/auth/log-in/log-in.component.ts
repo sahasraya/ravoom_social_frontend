@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'; 
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule, RouterOutlet } from '@angular/router';
@@ -19,14 +19,18 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
   templateUrl: './log-in.component.html',
   styleUrl: './log-in.component.css'
 })
-export class LogInComponent {
+export class LogInComponent implements OnInit {
 
   loginForm: FormGroup;
   showinvalidcredentioalsbanner:boolean = false;
   showPassword: boolean = false;
   loginmessage:string = "";
+  showPasswordToggle: boolean = false;
 
   APIURL = 'http://127.0.0.1:8000/';
+
+
+  
   constructor(private fb: FormBuilder,private http:HttpClient,private router:Router){
     this.loginForm = this.fb.group({
       emailaddress: ['', [Validators.required, Validators.email]],
@@ -37,6 +41,15 @@ export class LogInComponent {
 
     
   }
+  ngOnInit(): void {
+    this.loginForm.get('password')!.valueChanges.subscribe(value => {
+      this.showPasswordToggle = value.length > 0;
+    });
+  }
+
+
+
+  
   onSubmit(): void {
     if (this.loginForm.valid) {
       const formData = new FormData();

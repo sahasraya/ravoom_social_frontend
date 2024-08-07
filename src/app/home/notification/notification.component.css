@@ -1,13 +1,17 @@
 .notofication-holder {
     position: absolute;
-    top: 100px;  
+    display: flex;
+ 
+ 
+    flex-direction: column;
+    top: 70px;  
     right: 20px;  
     background-color: white;  
     border-radius: 10px;  
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);  
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);  
     z-index: 1000; 
     padding: 20px; 
-    max-height: 90vh;  
+    height: 90vh;  
     overflow-y: auto; 
     scrollbar-width: thin; 
     scrollbar-color: rgba(0, 0, 0, 0.3) rgba(0, 0, 0, 0.1);  
@@ -45,7 +49,7 @@
     display: flex;
     gap: 10px; 
     padding: 5px;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.164);
+  
     border-radius: 10px;
     padding: 5px;
   cursor: pointer;
@@ -99,4 +103,19 @@
 .profile-inner-holder.comment {
     background-color: #e0e0e0;  
     padding: 10px;  
+}
+
+
+.nonotifications-banner{
+  width: 90%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.nonotifications-banner img{
+  width: 40vh;
+  opacity: 0.8;
+  padding: 40px;
+ 
 }

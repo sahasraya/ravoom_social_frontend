@@ -3,13 +3,19 @@
   
 
 
-    <div *ngIf="group.groupbackgroundimage" class="groupbackgroundimage">
+    <div *ngIf="group.groupbackgroundimage" class="groupbackgroundimage" (click)="onImageClick()">
         <img [src]="groupbackgroundimage" alt="Group Background Image" class="groupbackgroundimage">
       </div>
 
  
+      <app-image-larger *ngIf="showLargerImage" [imageUrl]="'data:image/jpeg;base64,' + group?.groupbackgroundimage" (close)="onCloseLargerImage()"></app-image-larger>
+
+
     <div *ngIf="group.groupimage" class="groupimageholder">
-      <img [src]="groupimage" alt="Group Image" class="groupimage">
+      <img [src]="groupimage" alt="Group Image" class="groupimage" (click)="onSmallGroupImageImageClick()">
+      <app-image-larger *ngIf="showSmallergroupLargerImage" [imageUrl]="'data:image/jpeg;base64,' + group?.groupimage" (close)="onCloseSmallergroupimageLargerImage()"></app-image-larger>
+
+
                    <div class="detail-holder">
                     <h2>{{ groupname }}</h2>
                    
@@ -27,7 +33,7 @@
   
     <div class="navigation-holder">
         <button (click)="showhome()"  [class.selected]="showhomeBool" class="navigationsbuttons">Home</button>
-        <button (click)="showfollowers()"  [class.selected]="showfollowersBool" class="navigationsbuttons">Followers ({{userList.length}})</button>
+        <button (click)="showfollowers()"  [class.selected]="showfollowersBool" class="navigationsbuttons">Followers ({{userList.length -1}})</button>
         <button (click)="showrequests()"  [class.selected]="showrequestsBool" class="navigationsbuttons" *ngIf="groupownerid == userid">Requests ({{userRequests.length}})</button>
         <button (click)="adduser()"  [class.selected]="showadduserBool" class="navigationsbuttons" *ngIf="groupownerid == userid">Add user</button>
         <button (click)="settings()"  [class.selected]="showsettingsBool" class="navigationsbuttons" *ngIf="groupownerid == userid">Setings</button>

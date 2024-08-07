@@ -9,15 +9,15 @@
 .timeholder{
   display: flex;
   flex-direction: column;
-  background-color: var(--icon-hover-backgroud-color);
+  border-bottom: 1px solid #ccc;
   transition: background-color 0.3s;
-  border-radius: 15px;
   cursor: pointer;
   padding: 10px;
   margin: 10px;
 }
 .timeholder:hover{
-  background-color: var(--icon-backgroud-color);
+  background-color: var(--icon-hover-backgroud-color);
+  border-radius: 15px;
 }
 
 .inner-holder{

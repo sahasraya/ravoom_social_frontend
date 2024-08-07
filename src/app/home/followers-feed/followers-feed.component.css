@@ -1,0 +1,12 @@
+.posts-container {
+    width: 100%;
+    max-width: 680px;
+  }
+
+  .feed-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+  }
+  

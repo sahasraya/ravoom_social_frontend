@@ -3,11 +3,13 @@
 
   <div class="nav-links">
     <img src="../../../assets/images/crabber_header.png" alt="logo" width="100" class="header-logo">
+
+
     <app-search class="header-search"> </app-search>
-   
+
     <div class="right-side">
-      <a routerLink="/auth/sign-up"  *ngIf="userid == ''">sign up</a>
-      <a routerLink="/auth/log-in"  *ngIf="userid == ''">log in</a>
+      <a routerLink="/auth/sign-up" *ngIf="userid == ''" class="signuplogin">sign up</a>
+      <a routerLink="/auth/log-in" *ngIf="userid == ''" class="signuplogin">log in</a>
       <!-- <a routerLink="" *ngIf="userid != ''" (click)="logout()">log out</a> -->
       <!-- <a routerLink="/home/settings/{{userid}}" *ngIf="userid != ''">settings</a>
       <a routerLink="/home/profile/{{userid}}" *ngIf="userid != ''">profile</a> -->
@@ -18,11 +20,22 @@
         create
 
       </span> -->
+      <a routerLink=""><img src="../../../assets/images/globe.png" alt="" class="globelicon"  *ngIf="userid != ''"></a>
+      <a routerLink="/home/followers-feed"><img src="../../../assets/images/home.png" alt="" class="homeicon"  *ngIf="userid != ''"></a>
 
       <img src="../../../assets/images/notification.png" alt="" class="notificationicon" *ngIf="userid != ''"
         (click)="getNotifications()">
-      <img *ngIf="user?.profileimage" [src]="'data:image/jpeg;base64,' + user?.profileimage" alt="Profile Image"
-        class="profileimage" (click)="showdropdown($event)">
+
+        <div class="profileimage-container" (click)="showdropdown($event)">
+          <img *ngIf="user?.profileimage" [src]="'data:image/jpeg;base64,' + user?.profileimage" alt="Profile Image" class="profileimage">
+          <div class="green-dot"></div>
+        </div>
+
+       
+
+
+
+
 
       <div *ngIf="dropdownVisible" class="dropdown-menu" (click)="hideDropdown()">
         <ul>

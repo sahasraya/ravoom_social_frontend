@@ -16,11 +16,11 @@
 }
 
 .image-larger-container img {
-  max-width: 80%;
-  max-height: 80vh;
+ 
+  height: 60vh;
   border: 1px solid #ccc;
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
-  border-radius: 5px;
+  border-radius: 10px;
 }
 
 .navigation-buttons {

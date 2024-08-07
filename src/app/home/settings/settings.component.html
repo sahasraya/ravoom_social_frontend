@@ -1,17 +1,17 @@
 <form [formGroup]="updateForm" (ngSubmit)="onSubmit()">
  
   <div>
-    <label for="username"> <img src="../../../assets/images/username.png" alt="">Username</label>
+    <label for="username">  <div class="icon-wrapper"><img src="../../../assets/images/username.png" alt=""></div>Username</label>
     <input id="username" formControlName="username" [value]="user?.username" type="text" placeholder="username">
   </div>
 
   <div>
-    <label for="emailaddress"> <img src="../../../assets/images/email.png" alt="">Email Address</label>
+    <label for="emailaddress">  <div class="icon-wrapper"><img src="../../../assets/images/email.png" alt=""></div>Email Address</label>
     <input id="emailaddress" formControlName="emailaddress" [value]="user?.emailaddress" type="email" placeholder="Email address">
   </div>
 
   <div>
-    <label for="phonenumber"><img src="../../../assets/images/telephone.png" alt="">Phone Number</label>
+    <label for="phonenumber"> <div class="icon-wrapper"><img src="../../../assets/images/telephone.png" alt=""></div>Phone Number</label>
     <input id="phonenumber" formControlName="phonenumber" [value]="user?.phonenumber" type="number" placeholder="Phone number">
   </div>
 

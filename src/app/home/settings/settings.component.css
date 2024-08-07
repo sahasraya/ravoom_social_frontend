@@ -6,7 +6,6 @@ form {
   width: 600px;
   margin: 0 auto;
   padding: 20px;
-  background: linear-gradient(to bottom, var(--primarycolor), #00008b);
   border: 1px solid #ccc;
   border-radius: 10px;
   margin-top: 15px;
@@ -20,19 +19,11 @@ form {
   label {
  
     font-weight: bold;
-    color: white;
+    color: black;
     display: flex;
     flex-direction: row;
   }
-  label img{
-    width: 30px;
-height: 30px;
-align-items: center;
-padding: 5px;
-border-radius: 50%;
-background-color: white;
-margin-right: 10px;
-  }
+  
   
   input[type="text"],
   input[type="email"],
@@ -66,17 +57,24 @@ input[type="date"]:focus
   
 button {
   padding: 15px 20px;
-  background-color: white;
-  color: var(--primarycolor);
+  background-color: var(--primary-dark);
+  color: white;
   border: none;
-  border-radius: 25px;
+  border-radius: 15px;
+  margin-top: 10px;
   cursor: pointer;
   font-size: 16px;
   transition: background-color 0.3s;
-  margin-top: 10px;
-  border: 1px solid rgba(255, 255, 255, 0);
+  border: 1px solid white;
 
 }
+
+button:hover {
+  background-color: var(--primary-faded);
+  color: var(--primary-dark);
+  border: 1px solid var(--primary-dark);
+}
+
 .resetpassword{
   color: var(--primarycolor);
   font-size: 15px;
@@ -96,11 +94,7 @@ button {
   color: white;
 }
 
-button:hover {
-  background-color: #ffffff00;
-  color:var(--primarycolor);
-  border: 1px solid white;
-}
+
   
   
   
@@ -142,11 +136,13 @@ button:hover {
     cursor: pointer;
     transition: background-color 0.5s, color 0.5s;
     margin-bottom: 10px;
+    text-align: center;
   }
   
   .file-input-label:hover {
     background-color: var(--primary-faded);
-    color: white;
+  color: var(--primary-dark);
+  border: 1px solid var(--primary-dark);
   }
   .image-holder {
     width: 100%;
@@ -159,6 +155,24 @@ button:hover {
     border-radius: 10px;
     display: block;  
   }
+
+
+  .icon-wrapper {
+    width: 30px;
+    height: 30px;
+    background-color:var(--icon-hover-backgroud-color);
+    border-radius: 50%;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 10px;
+  }
+  
+  .icon-wrapper img {
+    max-width: 100%;
+  }
+  
 
 
 

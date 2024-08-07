@@ -185,11 +185,12 @@ width: 20vh;
   margin-left: 10px;
 }
 .posttypeholder{
-  background-color: var(--icon-hover-backgroud-color);
    width: var(--post-dynamic-width);
   border-radius: 15px;
   margin-bottom: 10px;
-  margin: 0px auto;
+  margin: 5px auto;
+  border: 1px solid #ccc;
+
 }
 .options-holder{
   width: 100%;
@@ -199,25 +200,37 @@ width: 20vh;
   justify-content: space-around;
   margin-bottom: 10px;
 }
-.options-holder img{
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  background-color: white;
-  border-radius: 50%;
-  padding: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
+ 
 .option{
   display: flex;
   flex-direction: column;
   align-items: center;
   cursor: pointer;
+  font-size: 15px;
+  margin-bottom: 5px;
 }
 .optionname{
   margin-top: 2px;
  
 }
+
+.icon-wrapper {
+  width: 30px;
+  height: 30px;
+  background-color:var(--icon-hover-backgroud-color);
+  border-radius: 50%;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 10px;
+  margin: 0px auto;
+}
+
+.icon-wrapper img {
+  max-width: 100%;
+}
+
 
 
  

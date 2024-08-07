@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, HostListener, OnInit } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { log } from 'console';
 import { NotificationService } from './notification.service';
@@ -19,8 +19,12 @@ export class NotificationComponent implements OnInit {
   notifications: any[] = [];
   currentUserId: string = ""; 
   opennotificationwindow:boolean=false;
+  initialClick: boolean = false;
+  limit = 5;
+  offset = 0;
+  loading = false;
 
-  constructor(private http: HttpClient,private router:Router,private notificationService: NotificationService) {}
+  constructor(private http: HttpClient,private router:Router,private notificationService: NotificationService,private cdref: ChangeDetectorRef,private eRef: ElementRef) {}
 
   ngOnInit(): void {
     this.currentUserId = localStorage.getItem('wmd') || '';
@@ -32,6 +36,7 @@ export class NotificationComponent implements OnInit {
 
   async getNotifications(): Promise<void> {
     this.opennotificationwindow = !this.opennotificationwindow;
+    this.initialClick = true;
     const formData = new FormData();
     formData.append('userid', this.currentUserId);
 
@@ -123,5 +128,22 @@ export class NotificationComponent implements OnInit {
 }
 
 
+@HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent): void {
+    const target = event.target as HTMLElement;
 
+    if (this.initialClick) {
+      this.initialClick = false;
+      return;
+    }
+
+    if (this.opennotificationwindow && !this.eRef.nativeElement.contains(target)) {
+      this.closeAllDropdowns();
+    }
+  }
+
+  closeAllDropdowns(): void {
+    this.opennotificationwindow = false;
+    this.cdref.detectChanges();
+  }
 }

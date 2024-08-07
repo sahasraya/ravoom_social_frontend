@@ -7,11 +7,12 @@ import { PostComponent } from '../../widgets/post/post.component';
 import { PLATFORM_ID } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { warn } from 'node:console';
+import { ImageLargerComponent } from '../../widgets/image-larger/image-larger.component';
 
 @Component({
   selector: 'app-groups',
   standalone: true,
-  imports: [CommonModule,AddPostGroupComponent,PostComponent,FormsModule],
+  imports: [CommonModule,AddPostGroupComponent,PostComponent,FormsModule,ImageLargerComponent],
   templateUrl: './groups.component.html',
   styleUrl: './groups.component.css'
 })
@@ -35,6 +36,8 @@ export class GroupsComponent implements OnInit{
   isstarttoseachrallusers:boolean=false;
   BGimagechanched:boolean=false;
   maingroupimageischanched:boolean=false;
+  showLargerImage: boolean = false;
+  showSmallergroupLargerImage: boolean = false;
   limit = 5;
   offset = 0;
   loading = false;
@@ -71,6 +74,26 @@ export class GroupsComponent implements OnInit{
  
    
   }
+
+
+  onImageClick(): void {
+    this.showLargerImage = true;
+  }
+
+  onSmallGroupImageImageClick(): void {
+    this.showSmallergroupLargerImage = true;
+  }
+
+  
+   
+  onCloseLargerImage(): void {
+    this.showLargerImage = false;
+  }
+
+  onCloseSmallergroupimageLargerImage(): void {
+    this.showSmallergroupLargerImage = false;
+  }
+
 
   onBackgroundImageSelected(event: Event): void {
     const file = (event.target as HTMLInputElement).files?.[0];

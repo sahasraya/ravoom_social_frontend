@@ -8,31 +8,22 @@
   width: 80%;
   margin: 0px auto;
   height: 100VH;
-  background-color: var(--primary-faded);
  
   padding: 0px 15px;
 }
 .main-holder-outer form{
 width: 50%;
-background: linear-gradient(to bottom, var(--primarycolor), #00008b); 
+border: 1px solid #ccc;
 border-radius: 20PX;
 padding: 15px;
 }
 .main-holder-outer form label{
-  color: white;
+  color: black;
   display: flex;
   flex-direction: row;
+  align-items: center;
 }
-.main-holder-outer form label img{
-width: 30px;
-height: 30px;
-align-items: center;
-padding: 5px;
-border-radius: 50%;
-background-color: white;
-margin-right: 10px;
-}
-
+ 
  .image-holder{
   border-radius: 10px;
   display: flex;
@@ -279,7 +270,7 @@ button:hover {
   display: flex;
   align-items: center;
   margin: 5px 0;
-  color: white;
+  color: black;
 }
 
 .password-strength-show-panel li img {
@@ -305,7 +296,21 @@ button:hover {
   color: white;
 }
 
+.icon-wrapper {
+  width: 30px;
+  height: 30px;
+  background-color:var(--icon-hover-backgroud-color);
+  border-radius: 50%;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 10px;
+}
 
+.icon-wrapper img {
+  max-width: 100%;
+}
 
 
 

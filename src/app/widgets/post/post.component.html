@@ -125,7 +125,7 @@
     <span>{{ likes }} Likes</span>
 
     <!-- Comment button -->
-     <span class="comment-button" (click)="commentOnPost($event,post.postid,post.n_or_g)">
+     <span class="comment-button" (click)="commentOnPost($event,post.postid,post.n_or_g)" *ngIf="post.posttype != 'group'">
       <img src="../../../assets/images/comment.png" alt="" > {{ comments }} Comments
      </span>
 

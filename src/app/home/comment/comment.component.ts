@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
-import { Component, HostListener, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, HostListener, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ImageLargerComponent } from '../../widgets/image-larger/image-larger.component';
@@ -8,15 +8,15 @@ import { ImageLargerComponent } from '../../widgets/image-larger/image-larger.co
 @Component({
   selector: 'app-comment',
   standalone: true,
-  imports: [CommonModule,ReactiveFormsModule,ImageLargerComponent,RouterModule],
+  imports: [CommonModule, ReactiveFormsModule, ImageLargerComponent, RouterModule],
   templateUrl: './comment.component.html',
   styleUrl: './comment.component.css'
 })
 export class CommentComponent implements OnInit {
 
-  postid:any ;
+  postid: any;
   post: any;
-  images:any;
+  images: any;
   APIURL = 'http://127.0.0.1:8000/';
   commentForm: FormGroup;
   replayCommentForm: FormGroup;
@@ -24,26 +24,32 @@ export class CommentComponent implements OnInit {
   likes: number = 0;
   showLargerImage: boolean = false;
   commentToBeDeleted: any = null;
-  deleteingcommentid:any;
-  isthelastcomment:boolean=false;
+  deleteingcommentid: any;
+  isthelastcomment: boolean = false;
+  isthelastcommentloading: boolean = false;
 
   currentImageIndex: number = 0;
   showImageSlider: boolean = false;
   sliderImages: string[] = [];
-  fromwhatscreen:string="";
-  groupornormalpost:any;
-  userid:string = "";
-  checkuseridtoroutecommentscreen:string = "";
+  fromwhatscreen: string = "";
+  groupornormalpost: any;
+  userid: string = "";
+  checkuseridtoroutecommentscreen: string = "";
 
-  constructor(private route:ActivatedRoute,private http:HttpClient,private fb: FormBuilder,private router:Router){
+
+  limit = 5;
+  offset = 0;
+  loading = false;
+
+  constructor(private route: ActivatedRoute, private http: HttpClient, private fb: FormBuilder, private router: Router,private cdr:ChangeDetectorRef) {
     this.commentForm = this.fb.group({
       commenttext: ['', [Validators.required]],
-     
+
     });
 
     this.replayCommentForm = this.fb.group({
       replaycomment: ['', [Validators.required]],
-     
+
     });
 
   }
@@ -52,137 +58,137 @@ export class CommentComponent implements OnInit {
     this.postid = this.route.snapshot.paramMap.get('postid');
     this.groupornormalpost = this.route.snapshot.paramMap.get('type');
     this.fromwhatscreen = this.route.snapshot.paramMap.get('screen')!;
- 
-   this.getPostData();
-   this.getComments();
-   this.getpostlikecount();
-   this.userid = localStorage.getItem('wmd') || '';
-   this.checkuseridtoroutecommentscreen =this.route.snapshot.paramMap.get('uid') || '';
- 
+
+    this.getPostData();
+    this.getComments();
+    this.getpostlikecount();
+    this.userid = localStorage.getItem('wmd') || '';
+    this.checkuseridtoroutecommentscreen = this.route.snapshot.paramMap.get('uid') || '';
+
   }
 
 
 
   onImageClick(): void {
     this.showLargerImage = true;
- 
+
   }
 
 
-toggleReplayDiv(comment: any): void {
-  comment.showReplayDiv = !comment.showReplayDiv;
-  if (comment.showReplayDiv) {
-    this.getReplayComments(comment.commentid)
-      .then((replayComments: any) => {
-        comment.replays = replayComments.replaycomments ?? [];
+  toggleReplayDiv(comment: any): void {
+    comment.showReplayDiv = !comment.showReplayDiv;
+    if (comment.showReplayDiv) {
+      this.getReplayComments(comment.commentid)
+        .then((replayComments: any) => {
+          comment.replays = replayComments.replaycomments ?? [];
 
-        
-        if (replayComments.userprofile) {
-        
-          comment.userprofileBlobUrl = this.createBlobUrl(replayComments.userprofile, 'image/jpeg');
-          console.log(comment.userprofileBlobUrl); 
-        }
 
-      
-        comment.replays.forEach((replay: any) => {
+          if (replayComments.userprofile) {
+
+            comment.userprofileBlobUrl = this.createBlobUrl(replayComments.userprofile, 'image/jpeg');
+            console.log(comment.userprofileBlobUrl);
+          }
+
+
+          comment.replays.forEach((replay: any) => {
+            if (replay.userprofile) {
+              replay.userprofileBlobUrl = this.createBlobUrl(replay.userprofile, 'image/jpeg');
+              console.log(replay.userprofileBlobUrl);
+
+            }
+          });
+        })
+        .catch(error => {
+          console.error('Error fetching replay comments:', error);
+          comment.replays = [];
+        });
+    }
+  }
+
+  async getReplayComments(commentid: any): Promise<any> {
+    const params = new HttpParams().set('commentid', commentid.toString());
+    try {
+      let responsereplaycomment: any;
+      if (this.groupornormalpost === "g") {
+        responsereplaycomment = await this.http.get<any>(`${this.APIURL}get_replay_comments_group`, { params }).toPromise();
+      } else {
+        responsereplaycomment = await this.http.get<any>(`${this.APIURL}get_replay_comments`, { params }).toPromise();
+      }
+
+      if (responsereplaycomment.userprofile) {
+        responsereplaycomment.userprofileBlobUrl = this.createBlobUrl(responsereplaycomment.userprofile, 'image/jpeg');
+
+      }
+
+      if (Array.isArray(responsereplaycomment.replaycomments)) {
+        responsereplaycomment.replaycomments.forEach((replay: any) => {
           if (replay.userprofile) {
             replay.userprofileBlobUrl = this.createBlobUrl(replay.userprofile, 'image/jpeg');
-            console.log(replay.userprofileBlobUrl); 
-
+            console.log(replay.userprofileBlobUrl);
           }
         });
-      })
-      .catch(error => {
-        console.error('Error fetching replay comments:', error);
-        comment.replays = [];
-      });
+      }
+
+      this.replayCommentForm.reset();
+
+      return responsereplaycomment || {};
+    } catch (error) {
+      console.error('Error fetching replay comments:', error);
+      return {};
+    }
   }
-}
 
-async getReplayComments(commentid: any): Promise<any> {
-  const params = new HttpParams().set('commentid', commentid.toString());
-  try {
-    let responsereplaycomment: any;
-    if (this.groupornormalpost === "g") {
-      responsereplaycomment = await this.http.get<any>(`${this.APIURL}get_replay_comments_group`, { params }).toPromise();
-    } else {
-      responsereplaycomment = await this.http.get<any>(`${this.APIURL}get_replay_comments`, { params }).toPromise();
-    }
 
-    if (responsereplaycomment.userprofile) {
-      responsereplaycomment.userprofileBlobUrl = this.createBlobUrl(responsereplaycomment.userprofile, 'image/jpeg');
-    
-    }
 
-    if (Array.isArray(responsereplaycomment.replaycomments)) {
-      responsereplaycomment.replaycomments.forEach((replay: any) => {
-        if (replay.userprofile) {
-          replay.userprofileBlobUrl = this.createBlobUrl(replay.userprofile, 'image/jpeg');
-          console.log(replay.userprofileBlobUrl);  
+  toggleReplaycommentDropdown(event: MouseEvent, replay: any): void {
+    event.stopPropagation();
+
+    this.comments.forEach(comment => {
+      comment.replays.forEach((r: { showDropdown: boolean; }) => {
+        if (r !== replay) {
+          r.showDropdown = false;
         }
       });
-    }
+    });
 
-    this.replayCommentForm.reset();
-
-    return responsereplaycomment || {};
-  } catch (error) {
-    console.error('Error fetching replay comments:', error);
-    return {};
+    replay.showDropdown = !replay.showDropdown;
   }
-}
 
 
-
-toggleReplaycommentDropdown(event: MouseEvent, replay: any): void {
-  event.stopPropagation();
- 
-  this.comments.forEach(comment => {
-    comment.replays.forEach((r: { showDropdown: boolean; }) => {
-      if (r !== replay) {
-        r.showDropdown = false;
+  toggleDropdown(event: MouseEvent, comment: any): void {
+    event.stopPropagation();
+    this.comments.forEach(c => {
+      if (c !== comment) {
+        c.showDropdown = false;
       }
     });
-  });
- 
-  replay.showDropdown = !replay.showDropdown;
-}
+    comment.showDropdown = !comment.showDropdown;
+  }
 
 
-toggleDropdown(event: MouseEvent, comment: any): void {
-  event.stopPropagation();
-  this.comments.forEach(c => {
-    if (c !== comment) {
-      c.showDropdown = false;
-    }
-  });
-  comment.showDropdown = !comment.showDropdown;
-}
 
-
-  
   onCloseLargerImage(): void {
     this.showLargerImage = false;
   }
 
   async getpostlikecount(): Promise<void> {
-    if ( this.postid) {
-       
+    if (this.postid) {
+
       const params = new HttpParams().set('postid', this.postid.toString());
-   
+
       try {
-        if(this.groupornormalpost == "g"){
+        if (this.groupornormalpost == "g") {
           const response: any = await this.http.get<any>(`${this.APIURL}get_like_count_group`, { params }).toPromise();
-       
+
           if (response.like_count !== undefined) {
             this.likes = response.like_count;
           }
-        }else{
+        } else {
           const response: any = await this.http.get<any>(`${this.APIURL}get_like_count`, { params }).toPromise();
-       
-        if (response.like_count !== undefined) {
-          this.likes = response.like_count;
-        }
+
+          if (response.like_count !== undefined) {
+            this.likes = response.like_count;
+          }
         }
       } catch (error) {
         console.error('There was an error!', error);
@@ -197,178 +203,179 @@ toggleDropdown(event: MouseEvent, comment: any): void {
     try {
       const params = new HttpParams().set('commentid', commentid.toString());
       const response: any = await this.http.get<any>(`${this.APIURL}get_replay_count`, { params }).toPromise();
-  
+
       const updatedComments = this.comments.map(comment => {
         if (comment.commentid === commentid) {
           return { ...comment, replayscount: response.replays_count };
         }
         return comment;
       });
-  
+
       this.comments = updatedComments;
-  
+
     } catch (error) {
       console.error('Error fetching replay count:', error);
     }
   }
-  
+
 
 
   async getComments(): Promise<void> {
-    
-    const params = new HttpParams().set('postid', this.postid.toString());
+    if (this.isthelastcommentloading || this.loading) return;
 
- 
+    this.loading = true;
 
-    if(this.groupornormalpost == "g"){
+    const params = new HttpParams()
+      .set('postid', this.postid.toString())
+      .set('limit', this.limit.toString())
+      .set('offset', this.offset.toString());
 
-      this.http.get<any>(`${this.APIURL}get_comments_group`, { params }).subscribe({
-        next: (response: any) => {
-          if (response.comments) {
-            this.comments = response.comments.map((comment: any) => {
-              this.isthelastcomment = false;
-  
-              return {
-                username: comment.username,
-                text: comment.text,
-                commenteddate: new Date(comment.commenteddate),
-                imageurl:    comment.profileimage  ,
-                userid:    comment.userid  ,
-                commentid:    comment.commentid  
-              };
-            });
-            this.comments.forEach(comment => {
-             const replaycount=  this.getnumberofreplays(comment.commentid);
-              
-  
-            });
-            
-            
+    const apiUrl = this.groupornormalpost === "g" 
+      ? `${this.APIURL}get_comments_group`
+      : `${this.APIURL}get_comments`;
+
+    this.http.get<any>(apiUrl, { params }).subscribe({
+      next: (response: any) => {
+        if (response.comments) {
+          const newComments = response.comments.map((comment: any) => ({
+            username: comment.username,
+            text: comment.text,
+            commenteddate: new Date(comment.commenteddate),
+            imageurl: comment.profileimage,
+            userid: comment.userid,
+            commentid: comment.commentid
+          }));
+
+          if (newComments.length < this.limit) {
+            this.isthelastcommentloading = true;
+          
           }
-        },
-        error: (error: any) => {
-          console.error('There was an error!', error);
-        }
-      });
 
-    }else{
-      this.http.get<any>(`${this.APIURL}get_comments`, { params }).subscribe({
-        next: (response: any) => {
-          if (response.comments) {
-            this.comments = response.comments.map((comment: any) => {
-              this.isthelastcomment = false;
-  
-              return {
-                username: comment.username,
-                text: comment.text,
-                commenteddate: new Date(comment.commenteddate),
-                imageurl:    comment.profileimage  ,
-                userid:    comment.userid  ,
-                commentid:    comment.commentid  
-              };
-            });
-            this.comments.forEach(comment => {
-             const replaycount=  this.getnumberofreplays(comment.commentid);
-              
-  
-            });
-            
-            
-          }
-        },
-        error: (error: any) => {
-          console.error('There was an error!', error);
+          this.comments.push(...newComments);
+          this.offset += this.limit;
         }
-      });
+        this.loading = false;
+        this.cdr.detectChanges();
+      },
+      error: (error: HttpErrorResponse) => {
+        console.error('There was an error!', error);
+        this.loading = false;
+      }
+    });
+  }
+
+  @HostListener('window:scroll', ['$event'])
+  onScroll(event: Event): void {
+    const element = document.documentElement;
+    if (element.scrollHeight - element.scrollTop === element.clientHeight) {
+      this.getComments();
     }
   }
- 
-  
-  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   getPostData(): void {
- 
+
     const formData = new FormData();
     formData.append('postid', this.postid);
- 
-  if(this.groupornormalpost == "g"){
 
-    this.http.post<any>(`${this.APIURL}get_post_group`, formData).subscribe({
-      next: response => {
-        
-        this.post = response;   
-        if(this.post.posttype == "image"){
-    
-          
-                  const formDataimage = new FormData();
-                  formDataimage.append('postid', this.postid);
-                   this.http.post<any>(`${this.APIURL}get_images_group`,formDataimage).subscribe({
-                    next:imageResponse  =>{
-                      this.images = imageResponse.map((img: any) => this.createBlobUrl(img.image, 'image/jpeg'));
+    if (this.groupornormalpost == "g") {
 
-        
-                    }
+      this.http.post<any>(`${this.APIURL}get_post_group`, formData).subscribe({
+        next: response => {
 
-                   }
-                  );
-        }else if (this.post.posttype == "video") {
-          const videoBlob = this.convertBase64ToBlob(this.post.post, 'video/mp4');
-          this.post.videoUrl = URL.createObjectURL(videoBlob);
+          this.post = response;
+          if (this.post.posttype == "image") {
+
+
+            const formDataimage = new FormData();
+            formDataimage.append('postid', this.postid);
+            this.http.post<any>(`${this.APIURL}get_images_group`, formDataimage).subscribe({
+              next: imageResponse => {
+                this.images = imageResponse.map((img: any) => this.createBlobUrl(img.image, 'image/jpeg'));
+
+
+              }
+
+            }
+            );
+          } else if (this.post.posttype == "video") {
+            const videoBlob = this.convertBase64ToBlob(this.post.post, 'video/mp4');
+            this.post.videoUrl = URL.createObjectURL(videoBlob);
+          }
+
+
+
+
+
+        },
+        error: (error: HttpErrorResponse) => {
+          console.error('There was an error!', error);
+
         }
-
-        
-
+      });
 
 
-      },
-      error: (error: HttpErrorResponse) => {
-        console.error('There was an error!', error);
-         
-      }
-    });
+    } else {
+
+      this.http.post<any>(`${this.APIURL}get_post`, formData).subscribe({
+        next: response => {
+
+          this.post = response;
+
+          if (this.post.posttype == "image") {
+
+            const formDataimage = new FormData();
+            formDataimage.append('postid', this.postid);
+            this.http.post<any>(`${this.APIURL}get_images`, formDataimage).subscribe({
+              next: imageResponse => {
+                this.images = imageResponse.map((img: any) => this.createBlobUrl(img.image, 'image/jpeg'));
 
 
-  }else{
+              }
 
-    this.http.post<any>(`${this.APIURL}get_post`, formData).subscribe({
-      next: response => {
-        
-        this.post = response; 
- 
-        if(this.post.posttype == "image"){
-          
-                  const formDataimage = new FormData();
-                  formDataimage.append('postid', this.postid);
-                   this.http.post<any>(`${this.APIURL}get_images`,formDataimage).subscribe({
-                    next:imageResponse  =>{
-                      this.images = imageResponse.map((img: any) => this.createBlobUrl(img.image, 'image/jpeg'));
+            }
+            );
+          } else if (this.post.posttype == "video") {
+            const videoBlob = this.convertBase64ToBlob(this.post.post, 'video/mp4');
+            this.post.videoUrl = URL.createObjectURL(videoBlob);
+          }
+          else if (this.post.posttype == "audio") {
+            const audioBlob = this.convertBase64ToBlobAudio(this.post.post);
+            this.post.audioUrl = URL.createObjectURL(audioBlob);
+          }
 
-        
-                    }
 
-                   }
-                  );
-        }else if (this.post.posttype == "video") {
-          const videoBlob = this.convertBase64ToBlob(this.post.post, 'video/mp4');
-          this.post.videoUrl = URL.createObjectURL(videoBlob);
+
+        },
+        error: (error: HttpErrorResponse) => {
+          console.error('There was an error!', error);
+
         }
-        else if (this.post.posttype == "audio") {
-          const audioBlob = this.convertBase64ToBlobAudio(this.post.post);
-          this.post.audioUrl = URL.createObjectURL(audioBlob);
-        }
+      });
+
+    }
 
 
 
-      },
-      error: (error: HttpErrorResponse) => {
-        console.error('There was an error!', error);
-         
-      }
-    });
-
-  }
-
-
-   
   }
 
 
@@ -380,11 +387,11 @@ toggleDropdown(event: MouseEvent, comment: any): void {
     const base64Data = base64.replace(/^data:video\/mp4;base64,/, '');
     const byteChars = atob(base64Data);
     const byteNums = new Array(byteChars.length);
-  
+
     for (let i = 0; i < byteChars.length; i++) {
       byteNums[i] = byteChars.charCodeAt(i);
     }
-  
+
     const byteArray = new Uint8Array(byteNums);
     return new Blob([byteArray], { type: mimeType });
   }
@@ -392,7 +399,7 @@ toggleDropdown(event: MouseEvent, comment: any): void {
 
 
   showImageSliderMethod(images: string[]): void {
- 
+
     this.currentImageIndex = 0;
     this.showImageSlider = true;
     this.sliderImages = images;
@@ -405,7 +412,7 @@ toggleDropdown(event: MouseEvent, comment: any): void {
       this.currentImageIndex = this.sliderImages.length - 1;
     }
   }
-  
+
   nextImage(): void {
     if (this.currentImageIndex < this.sliderImages.length - 1) {
       this.currentImageIndex++;
@@ -413,11 +420,11 @@ toggleDropdown(event: MouseEvent, comment: any): void {
       this.currentImageIndex = 0;
     }
   }
-  
+
   closeSlider(): void {
     this.showImageSlider = false;
   }
- base64ToBlob(base64: string, contentType: string = ''): Blob {
+  base64ToBlob(base64: string, contentType: string = ''): Blob {
     const byteCharacters = atob(base64);
     const byteArrays = [];
 
@@ -451,7 +458,7 @@ toggleDropdown(event: MouseEvent, comment: any): void {
 
   onSubmit(postid: any, userid: any, username: string, userprofile: any): void {
 
-    if (this.userid == ''){
+    if (this.userid == '') {
       this.router.navigate(['/auth/log-in']);
       return;
     }
@@ -464,34 +471,42 @@ toggleDropdown(event: MouseEvent, comment: any): void {
       });
       const myuserid: string | null = localStorage.getItem('wmd');
       formData.append('postid', postid);
-      formData.append('userid', userid);
+      formData.append('userid', this.userid);
       formData.append('username', username);
       formData.append('userprofile', userprofile);
 
-      if(this.groupornormalpost =="g"){
+      if (this.groupornormalpost == "g") {
 
         this.http.post(this.APIURL + 'add_comment_group', formData).subscribe({
           next: (response: any) => {
             this.getComments();
-            
-  
-            formData.append('profileimage', userprofile);
-            formData.append('notificationtype', 'comment');
-            formData.append('currentuserid', myuserid!);
-            formData.append('commenttext', this.commentForm.get('commenttext')?.value);
-            formData.append('replytext', ".");
-  
-  
-  
-            this.http.post(this.APIURL + "send-notification",formData).subscribe({
-              next:(response:any) =>{
-                           console.log(response);
-  
-                           this.commentForm.reset();
-              }
-            });
-            
-  
+
+
+            if (userid == this.userid) {
+              this.commentForm.reset();
+
+              return;
+            } else {
+               formData.append('userid', userid);
+
+              formData.append('profileimage', userprofile);
+              formData.append('notificationtype', 'comment');
+              formData.append('currentuserid', myuserid!);
+              formData.append('commenttext', this.commentForm.get('commenttext')?.value);
+              formData.append('replytext', ".");
+
+
+
+              this.http.post(this.APIURL + "send-notification", formData).subscribe({
+                next: (response: any) => {
+
+
+                  this.commentForm.reset();
+                }
+              });
+            }
+
+
             console.log('Comment added successfully:', response);
           },
           error: error => {
@@ -499,29 +514,36 @@ toggleDropdown(event: MouseEvent, comment: any): void {
           }
         });
 
-      }else{
+      } else {
         this.http.post(this.APIURL + 'add_comment', formData).subscribe({
           next: (response: any) => {
             this.getComments();
-            
-  
-            formData.append('profileimage', userprofile);
-            formData.append('notificationtype', 'comment');
-            formData.append('currentuserid', myuserid!);
-            formData.append('commenttext', this.commentForm.get('commenttext')?.value);
-            formData.append('replytext', ".");
-  
-  
-  
-            this.http.post(this.APIURL + "send-notification",formData).subscribe({
-              next:(response:any) =>{
-                           console.log(response);
-  
-                           this.commentForm.reset();
-              }
-            });
-            
-  
+
+
+
+            if (userid == this.userid) {
+              this.commentForm.reset();
+              return;
+            } else {
+              formData.append('userid', userid);
+              formData.append('profileimage', userprofile);
+              formData.append('notificationtype', 'comment');
+              formData.append('currentuserid', myuserid!);
+              formData.append('commenttext', this.commentForm.get('commenttext')?.value);
+              formData.append('replytext', ".");
+
+
+
+              this.http.post(this.APIURL + "send-notification", formData).subscribe({
+                next: (response: any) => {
+
+
+                  this.commentForm.reset();
+                }
+              });
+            }
+
+
             console.log('Comment added successfully:', response);
           },
           error: error => {
@@ -530,13 +552,12 @@ toggleDropdown(event: MouseEvent, comment: any): void {
         });
       }
 
-      
+
     }
   }
 
 
 
-  
 
 
 
@@ -544,110 +565,126 @@ toggleDropdown(event: MouseEvent, comment: any): void {
 
 
 
-  addingreplaycomment(postid: any, userid: any, username: string, userprofile: any,commentid:any,commenttext:string): void {
 
 
-    
-    if (this.userid == ''){
+
+
+  addingreplaycomment(postid: any, userid: any, username: string, userprofile: any, commentid: any, commenttext: string): void {
+
+
+
+    if (this.userid == '') {
       this.router.navigate(['/auth/log-in']);
       return;
     }
-    
+
     if (this.replayCommentForm.valid) {
-      
+
       const formData = new FormData();
- 
-    
-      
+
+
+
       formData.append('postid', postid);
       formData.append('commentid', commentid);
-      formData.append('userid', userid);
+      formData.append('userid', this.userid);
       formData.append('username', username);
       formData.append('userprofile', userprofile);
       formData.append('replytext', this.replayCommentForm.get('replaycomment')!.value);
- 
-     
 
-      if(this.groupornormalpost =="g"){
+
+
+      if (this.groupornormalpost == "g") {
         this.http.post(this.APIURL + 'add_replay_comment_group', formData).subscribe({
           next: (response: any) => {
-           
-  
+
+
             this.getReplayComments(commentid).then((replayComments: any) => {
               const commentToUpdate = this.comments.find((c: any) => c.commentid === commentid);
               if (commentToUpdate) {
                 commentToUpdate.replays = replayComments.replaycomments ?? [];
               }
             });
-            
+
             const commentToUpdate = this.comments.find((c: any) => c.commentid === commentid);
-          if (commentToUpdate) {
-            commentToUpdate.replayscount = (commentToUpdate.replayscount || 0) + 1;
-          }
-  
-  
-           const myuserid: string | null = localStorage.getItem('wmd');
-  
-            formData.append('profileimage', userprofile);
-            formData.append('notificationtype', 'replaycomment');
-            formData.append('currentuserid', myuserid!);
-            formData.append('commenttext', commenttext);
-  
-  
-            this.http.post(this.APIURL + "send-notification",formData).subscribe({
-              next:(response:any) =>{
-                         
-            this.replayCommentForm.reset();
-  
-              }
-            });
-  
-  
-  
-  
+            if (commentToUpdate) {
+              commentToUpdate.replayscount = (commentToUpdate.replayscount || 0) + 1;
+            }
+
+
+            if (userid == this.userid) {
+              this.replayCommentForm.reset();
+              return;
+            } else {
+              const myuserid: string | null = localStorage.getItem('wmd');
+              formData.append('userid', userid);
+              formData.append('profileimage', userprofile);
+              formData.append('notificationtype', 'replaycomment');
+              formData.append('currentuserid', myuserid!);
+              formData.append('commenttext', commenttext);
+
+
+              this.http.post(this.APIURL + "send-notification", formData).subscribe({
+                next: (response: any) => {
+
+                  this.replayCommentForm.reset();
+
+                }
+              });
+            }
+
+
+
+
+
             console.log('Comment added successfully:', response);
           },
           error: error => {
             console.error('There was an error!', error);
           }
         });
-      }else{
+      } else {
         this.http.post(this.APIURL + 'add_replay_comment', formData).subscribe({
           next: (response: any) => {
-           
-  
+
+
             this.getReplayComments(commentid).then((replayComments: any) => {
               const commentToUpdate = this.comments.find((c: any) => c.commentid === commentid);
               if (commentToUpdate) {
                 commentToUpdate.replays = replayComments.replaycomments ?? [];
               }
             });
-            
+
             const commentToUpdate = this.comments.find((c: any) => c.commentid === commentid);
-          if (commentToUpdate) {
-            commentToUpdate.replayscount = (commentToUpdate.replayscount || 0) + 1;
-          }
-  
-  
-           const myuserid: string | null = localStorage.getItem('wmd');
-  
-            formData.append('profileimage', userprofile);
-            formData.append('notificationtype', 'replaycomment');
-            formData.append('currentuserid', myuserid!);
-            formData.append('commenttext', commenttext);
-  
-  
-            this.http.post(this.APIURL + "send-notification",formData).subscribe({
-              next:(response:any) =>{
-                        
-            this.replayCommentForm.reset();
-  
-              }
-            });
-  
-  
-  
-  
+            if (commentToUpdate) {
+              commentToUpdate.replayscount = (commentToUpdate.replayscount || 0) + 1;
+            }
+
+
+            if (userid == this.userid) {
+              this.replayCommentForm.reset();
+              return;
+            } else {
+              const myuserid: string | null = localStorage.getItem('wmd');
+              formData.append('userid', userid);
+
+              formData.append('profileimage', userprofile);
+              formData.append('notificationtype', 'replaycomment');
+              formData.append('currentuserid', myuserid!);
+              formData.append('commenttext', commenttext);
+
+
+              this.http.post(this.APIURL + "send-notification", formData).subscribe({
+                next: (response: any) => {
+
+                  this.replayCommentForm.reset();
+
+                }
+              });
+            }
+
+
+
+
             console.log('Comment added successfully:', response);
           },
           error: error => {
@@ -661,79 +698,79 @@ toggleDropdown(event: MouseEvent, comment: any): void {
 
 
 
-  likePost(postid: number, userid: number, username: string, profileimage: string,normalorgroup:any): void {
+  likePost(postid: number, userid: number, username: string, profileimage: string, normalorgroup: any): void {
 
 
-    
-    if (this.userid == ''){
+
+    if (this.userid == '') {
       this.router.navigate(['/auth/log-in']);
       return;
     }
-    
+
     const formData = new FormData();
     formData.append('postid', postid.toString());
     formData.append('userid', userid.toString());
-    formData.append('currentuserid', this.userid);  
+    formData.append('currentuserid', this.userid);
     formData.append('username', username);
-    formData.append('commenttext', '.');  
+    formData.append('commenttext', '.');
     formData.append('notificationtype', 'like');
     formData.append('replytext', ".");
     formData.append('profileimage', profileimage);
 
-   
 
-    if(normalorgroup =="g"){
+
+    if (normalorgroup == "g") {
       this.http.post(this.APIURL + 'add_post_like_group', formData).subscribe({
         next: (response: any) => {
-        if(response.message == "no"){
-  
-          this.likes ++;
-           
-        }else{
-          this.likes --;
-          this.http.post(this.APIURL + "send-notification",formData).subscribe({
-            next:(response:any) =>{
-                         console.log(response);
-            }
-          });
-        }
-           
+          if (response.message == "no") {
+
+            this.likes++;
+
+          } else {
+            this.likes--;
+            this.http.post(this.APIURL + "send-notification", formData).subscribe({
+              next: (response: any) => {
+                console.log(response);
+              }
+            });
+          }
+
           // Handle success response
         },
         error: error => {
           console.error('There was an error!', error);
         }
       });
-     }else{
+    } else {
       this.http.post(this.APIURL + 'add_post_like', formData).subscribe({
         next: (response: any) => {
-        if(response.message == "no"){
-  
-          this.likes ++;
-          this.http.post(this.APIURL + "send-notification",formData).subscribe({
-            next:(response:any) =>{
-                         console.log(response);
-            }
-          });
-        }else{
-          this.likes --;
-          this.http.post(this.APIURL + "send-notification",formData).subscribe({
-            next:(response:any) =>{
-                         console.log(response);
-            }
-          });
-        }
-           
+          if (response.message == "no") {
+
+            this.likes++;
+            this.http.post(this.APIURL + "send-notification", formData).subscribe({
+              next: (response: any) => {
+                console.log(response);
+              }
+            });
+          } else {
+            this.likes--;
+            this.http.post(this.APIURL + "send-notification", formData).subscribe({
+              next: (response: any) => {
+                console.log(response);
+              }
+            });
+          }
+
           // Handle success response
         },
         error: error => {
           console.error('There was an error!', error);
         }
       });
-     }
-}
+    }
+  }
 
-   calculateTimeAgo(postedDate: string): string {
+  calculateTimeAgo(postedDate: string): string {
     const now = new Date();
     const postDate = new Date(postedDate);
     const diffInMs = now.getTime() - postDate.getTime();
@@ -755,7 +792,6 @@ toggleDropdown(event: MouseEvent, comment: any): void {
     }
   }
 
-  
 
 
 
@@ -765,7 +801,8 @@ toggleDropdown(event: MouseEvent, comment: any): void {
 
 
 
- 
+
+
 
   confirmDeleteComment(comment: any): void {
     this.commentToBeDeleted = comment;
@@ -775,10 +812,10 @@ toggleDropdown(event: MouseEvent, comment: any): void {
     this.commentToBeDeleted = false;
   }
 
-  removeComment(comment: any,commentID:any): void {
-   
+  removeComment(comment: any, commentID: any): void {
+
     this.commentToBeDeleted = true;
-    this.deleteingcommentid= commentID;
+    this.deleteingcommentid = commentID;
   }
 
 
@@ -787,60 +824,59 @@ toggleDropdown(event: MouseEvent, comment: any): void {
     if (result) {
       const formData = new FormData();
       formData.append('commentreplayid', replaycommentID);
-  
+
       try {
         const response = await this.http.post<any>(`${this.APIURL}remove_replay_comment`, formData).toPromise();
-  
+
         if (response.message === "deleted") {
-       
+
           this.comments.forEach(comment => {
             if (comment.replays) {
               comment.replays = comment.replays.filter((replay: any) => replay.commentreplayid !== replaycommentID);
-              // Decrement the replay count
               if (comment.replayscount) {
                 comment.replayscount--;
               }
             }
           });
-  
+
           console.log('Replay comment deleted successfully');
         }
       } catch (error) {
         console.error('Error removing replay comment:', error);
       }
-    }else{
+    } else {
       relaycomment.showDropdown = false;
-      
+
     }
   }
 
 
   removeCommentYes(comment: any) {
     const params = new HttpParams().set('commentid', this.deleteingcommentid.toString());
-  
+
     this.http.get<any>(`${this.APIURL}delete_comment`, { params }).subscribe({
       next: (response: any) => {
-      if(this.comments.length == 1){
-              this.isthelastcomment = true;
-              this.commentToBeDeleted = false;
-              this.comments.length = 0;
-       
-              this.getComments();  
-              return;
-      }
-      this.isthelastcomment = false;
-       this.commentToBeDeleted = false;
-       
-        this.getComments();   
+        if (this.comments.length == 1) {
+          this.isthelastcomment = true;
+          this.commentToBeDeleted = false;
+          this.comments.length = 0;
+
+          this.getComments();
+          return;
+        }
+        this.isthelastcomment = false;
+        this.commentToBeDeleted = false;
+
+        this.getComments();
       },
       error: (error: HttpErrorResponse) => {
         console.error('There was an error!', error);
       }
     });
-  
-    
+
+
   }
- 
+
 
   @HostListener('document:click', ['$event'])
   closeAllDropdowns(event: MouseEvent): void {
