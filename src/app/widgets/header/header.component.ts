@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, HostListener, OnInit, Output } from '@angular/core';
+import { Component, ElementRef, EventEmitter, HostListener, OnInit, Output, Renderer2, ViewChild } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { SearchComponent } from '../search/search.component';
 import { NotificationService } from '../../home/notification/notification.service';
@@ -25,14 +25,82 @@ export class HeaderComponent implements OnInit{
   searchText: string = '';
   user: any;
   dropdownVisible: boolean = false;
+  showtheonlinestatusindicator:boolean = false;
   private openDropdown: HTMLElement | null = null;
+  @ViewChild('mainlogo', { static: true }) mainLogo!: ElementRef;
  
-  constructor(private notificationService: NotificationService,private http:HttpClient) {}
+  constructor(private notificationService: NotificationService,private http:HttpClient,private renderer: Renderer2) {}
 
   ngOnInit(): void {
     this.userid = localStorage.getItem('wmd') || '';
     this.getuserdetails(this.userid);
+
+
+    this.renderer.listen('window', 'load', () => {
+      if (this.mainLogo.nativeElement.offsetWidth > 0 && this.mainLogo.nativeElement.offsetHeight > 0) {
+         this.updateOnlineStatus(this.userid);
+      }
+    });
+
+    this.renderer.listen('document', 'visibilitychange', () => {
+      if (document.visibilityState === 'hidden') {
+         this.updatethehiddenvisibility(this.userid);
+      } else if (document.visibilityState === 'visible') {
+        
+        if (this.mainLogo.nativeElement.offsetWidth > 0 && this.mainLogo.nativeElement.offsetHeight > 0) {
+          this.updateOnlineStatus(this.userid);
+        }
+      }
+    });
+
+
   }
+async updatethehiddenvisibility(userid:any){
+  const formData = new FormData();
+  
+  if (userid) {
+    formData.append('userid', userid);
+
+    this.http.post(this.APIURL + 'update_online_status_hidden', formData).subscribe({
+      next: (response: any) => {
+        console.log(response.message);
+        this.showtheonlinestatusindicator=false;
+      },
+      error: error => {
+        console.error('There was an error posting the data!', error);
+      }
+    });
+  } else {
+    console.error('User ID is not available in session storage.');
+  }
+}
+
+
+
+  async updateOnlineStatus(userid: any): Promise<void> {
+    const formData = new FormData();
+  
+    if (userid) {
+      formData.append('userid', userid);
+  
+      this.http.post(this.APIURL + 'update_online_status', formData).subscribe({
+        next: (response: any) => {
+        console.log(response.message);
+
+          this.showtheonlinestatusindicator=true;
+
+        },
+        error: error => {
+          console.error('There was an error posting the data!', error);
+        }
+      });
+    } else {
+      console.error('User ID is not available in session storage.');
+    }
+  }
+
+
+
 
   openaddpostscreen(): void {
     this.openaddpostscreenbool = true;

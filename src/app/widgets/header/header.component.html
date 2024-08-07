@@ -2,7 +2,7 @@
 
 
   <div class="nav-links">
-    <img src="../../../assets/images/crabber_header.png" alt="logo" width="100" class="header-logo">
+    <img src="../../../assets/images/crabber_header.png" alt="logo" width="100" class="header-logo" #mainlogo>
 
 
     <app-search class="header-search"> </app-search>
@@ -26,9 +26,9 @@
       <img src="../../../assets/images/notification.png" alt="" class="notificationicon" *ngIf="userid != ''"
         (click)="getNotifications()">
 
-        <div class="profileimage-container" (click)="showdropdown($event)">
+        <div class="profileimage-container" (click)="showdropdown($event)"  >
           <img *ngIf="user?.profileimage" [src]="'data:image/jpeg;base64,' + user?.profileimage" alt="Profile Image" class="profileimage">
-          <div class="green-dot"></div>
+          <div class="green-dot" *ngIf="userid != '' && showtheonlinestatusindicator"></div>
         </div>
 
        
