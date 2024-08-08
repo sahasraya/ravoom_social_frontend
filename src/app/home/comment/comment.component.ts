@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
-import { ChangeDetectorRef, Component, HostListener, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ImageLargerComponent } from '../../widgets/image-larger/image-larger.component';
@@ -26,8 +26,7 @@ export class CommentComponent implements OnInit {
   commentToBeDeleted: any = null;
   deleteingcommentid: any;
   isthelastcomment: boolean = false;
-  isthelastcommentloading: boolean = false;
-
+  isthelastcommentLoaing:boolean=false;
   currentImageIndex: number = 0;
   showImageSlider: boolean = false;
   sliderImages: string[] = [];
@@ -35,13 +34,13 @@ export class CommentComponent implements OnInit {
   groupornormalpost: any;
   userid: string = "";
   checkuseridtoroutecommentscreen: string = "";
+  numberofcomments:any;
 
-
-  limit = 5;
-  offset = 0;
+  limit = 20;  
+  offset = 0; 
   loading = false;
 
-  constructor(private route: ActivatedRoute, private http: HttpClient, private fb: FormBuilder, private router: Router,private cdr:ChangeDetectorRef) {
+  constructor(private route: ActivatedRoute, private http: HttpClient, private fb: FormBuilder, private router: Router) {
     this.commentForm = this.fb.group({
       commenttext: ['', [Validators.required]],
 
@@ -65,9 +64,27 @@ export class CommentComponent implements OnInit {
     this.userid = localStorage.getItem('wmd') || '';
     this.checkuseridtoroutecommentscreen = this.route.snapshot.paramMap.get('uid') || '';
 
+
+    this.getpostcommentCount(this.postid);
+
   }
 
 
+  async getpostcommentCount(postid:any): Promise<void> {
+ 
+      const params = new HttpParams().set('postid', postid.toString());
+ 
+      try {
+        const response: any = await this.http.get<any>(`${this.APIURL}get_comments_count`, { params }).toPromise();
+
+        if (response.comment_count !== undefined) {
+           this.numberofcomments= response.comment_count;
+        }
+      } catch (error) {
+        console.error('There was an error!', error);
+      }
+    
+  }
 
   onImageClick(): void {
     this.showLargerImage = true;
@@ -140,18 +157,27 @@ export class CommentComponent implements OnInit {
 
 
 
-  toggleReplaycommentDropdown(event: MouseEvent, replay: any): void {
+  toggleReplaycommentDropdown(event: MouseEvent, comment: any, replay: any): void {
     event.stopPropagation();
-
-    this.comments.forEach(comment => {
-      comment.replays.forEach((r: { showDropdown: boolean; }) => {
+  
+    if (!this.comments || !Array.isArray(this.comments)) {
+      console.error('Comments are undefined or not an array');
+      return;
+    }
+  
+    this.comments.forEach(c => {
+      if (!c.replays || !Array.isArray(c.replays)) {
+        return;
+      }
+  
+      c.replays.forEach((r: { showDropdownReplay: boolean; }) => {
         if (r !== replay) {
-          r.showDropdown = false;
+          r.showDropdownReplay = false;
         }
       });
     });
-
-    replay.showDropdown = !replay.showDropdown;
+ 
+    replay.showDropdownReplay = !replay.showDropdownReplay;
   }
 
 
@@ -220,70 +246,51 @@ export class CommentComponent implements OnInit {
 
 
 
-  async getComments(): Promise<void> {
-    if (this.isthelastcommentloading || this.loading) return;
-
-    this.loading = true;
+  async getComments(loadMore: boolean = false): Promise<void> {
+    if (!loadMore) {
+        this.offset = 0;  
+    }
 
     const params = new HttpParams()
-      .set('postid', this.postid.toString())
-      .set('limit', this.limit.toString())
-      .set('offset', this.offset.toString());
+        .set('postid', this.postid.toString())
+        .set('limit', '10')
+        .set('offset', this.offset.toString());
 
-    const apiUrl = this.groupornormalpost === "g" 
-      ? `${this.APIURL}get_comments_group`
-      : `${this.APIURL}get_comments`;
+    const url = this.groupornormalpost == "g" 
+        ? `${this.APIURL}get_comments_group` 
+        : `${this.APIURL}get_comments`;
 
-    this.http.get<any>(apiUrl, { params }).subscribe({
-      next: (response: any) => {
-        if (response.comments) {
-          const newComments = response.comments.map((comment: any) => ({
-            username: comment.username,
-            text: comment.text,
-            commenteddate: new Date(comment.commenteddate),
-            imageurl: comment.profileimage,
-            userid: comment.userid,
-            commentid: comment.commentid
-          }));
+    this.http.get<any>(url, { params }).subscribe({
+        next: (response: any) => {
+            if (response.comments) {
+                const newComments = response.comments.map((comment: any) => ({
+                    username: comment.username,
+                    text: comment.text,
+                    commenteddate: new Date(comment.commenteddate),
+                    imageurl: comment.profileimage,
+                    userid: comment.userid,
+                    commentid: comment.commentid
+                }));
 
-          if (newComments.length < this.limit) {
-            this.isthelastcommentloading = true;
-          
-          }
+               
+                this.isthelastcommentLoaing = newComments.length == 10;
+ 
 
-          this.comments.push(...newComments);
-          this.offset += this.limit;
+                if (loadMore) {
+                    this.comments = [...this.comments, ...newComments];  
+                } else {
+                    this.comments = newComments;  
+                }
+
+                this.offset += 10; 
+            }
+        },
+        error: (error: any) => {
+            console.error('There was an error!', error);
         }
-        this.loading = false;
-        this.cdr.detectChanges();
-      },
-      error: (error: HttpErrorResponse) => {
-        console.error('There was an error!', error);
-        this.loading = false;
-      }
     });
-  }
-
-  @HostListener('window:scroll', ['$event'])
-  onScroll(event: Event): void {
-    const element = document.documentElement;
-    if (element.scrollHeight - element.scrollTop === element.clientHeight) {
-      this.getComments();
-    }
-  }
-
-
-
-
-
-
-
-
-
-
-
-
-
+}
+  
 
 
 
@@ -480,14 +487,14 @@ export class CommentComponent implements OnInit {
         this.http.post(this.APIURL + 'add_comment_group', formData).subscribe({
           next: (response: any) => {
             this.getComments();
-
+            this.numberofcomments ++;
 
             if (userid == this.userid) {
               this.commentForm.reset();
 
               return;
             } else {
-               formData.append('userid', userid);
+              formData.append('userid', userid);
 
               formData.append('profileimage', userprofile);
               formData.append('notificationtype', 'comment');
@@ -519,19 +526,24 @@ export class CommentComponent implements OnInit {
           next: (response: any) => {
             this.getComments();
 
+            this.numberofcomments ++;
 
-
+        
             if (userid == this.userid) {
               this.commentForm.reset();
               return;
             } else {
+            
               formData.append('userid', userid);
+
               formData.append('profileimage', userprofile);
               formData.append('notificationtype', 'comment');
-              formData.append('currentuserid', myuserid!);
+              formData.append('currentuserid', this.userid);
               formData.append('commenttext', this.commentForm.get('commenttext')?.value);
               formData.append('replytext', ".");
 
+            
+                
 
 
               this.http.post(this.APIURL + "send-notification", formData).subscribe({
@@ -566,12 +578,9 @@ export class CommentComponent implements OnInit {
 
 
 
-
-
-
   addingreplaycomment(postid: any, userid: any, username: string, userprofile: any, commentid: any, commenttext: string): void {
 
-
+ 
 
     if (this.userid == '') {
       this.router.navigate(['/auth/log-in']);
@@ -611,27 +620,27 @@ export class CommentComponent implements OnInit {
             }
 
 
-            if (userid == this.userid) {
+            if(userid == this.userid){
               this.replayCommentForm.reset();
               return;
-            } else {
+            }else{
               const myuserid: string | null = localStorage.getItem('wmd');
-              formData.append('userid', userid);
+
               formData.append('profileimage', userprofile);
               formData.append('notificationtype', 'replaycomment');
               formData.append('currentuserid', myuserid!);
               formData.append('commenttext', commenttext);
-
-
+  
+  
               this.http.post(this.APIURL + "send-notification", formData).subscribe({
                 next: (response: any) => {
-
+  
                   this.replayCommentForm.reset();
-
+  
                 }
               });
             }
-
+           
 
 
 
@@ -660,24 +669,23 @@ export class CommentComponent implements OnInit {
             }
 
 
-            if (userid == this.userid) {
+            if(userid == this.userid){
               this.replayCommentForm.reset();
               return;
-            } else {
+            }else{
               const myuserid: string | null = localStorage.getItem('wmd');
-              formData.append('userid', userid);
 
               formData.append('profileimage', userprofile);
               formData.append('notificationtype', 'replaycomment');
               formData.append('currentuserid', myuserid!);
               formData.append('commenttext', commenttext);
-
-
+  
+  
               this.http.post(this.APIURL + "send-notification", formData).subscribe({
                 next: (response: any) => {
-
+  
                   this.replayCommentForm.reset();
-
+  
                 }
               });
             }
@@ -697,16 +705,12 @@ export class CommentComponent implements OnInit {
 
 
 
-
-  likePost(postid: number, userid: number, username: string, profileimage: string, normalorgroup: any): void {
-
-
-
-    if (this.userid == '') {
+  likePost(postid: number, userid: any, username: string, profileimage: string, normalorgroup: string): void {
+    if (!this.userid) {
       this.router.navigate(['/auth/log-in']);
       return;
     }
-
+  
     const formData = new FormData();
     formData.append('postid', postid.toString());
     formData.append('userid', userid.toString());
@@ -716,58 +720,34 @@ export class CommentComponent implements OnInit {
     formData.append('notificationtype', 'like');
     formData.append('replytext', ".");
     formData.append('profileimage', profileimage);
-
-
-
-    if (normalorgroup == "g") {
-      this.http.post(this.APIURL + 'add_post_like_group', formData).subscribe({
-        next: (response: any) => {
-          if (response.message == "no") {
-
-            this.likes++;
-
-          } else {
-            this.likes--;
-            this.http.post(this.APIURL + "send-notification", formData).subscribe({
-              next: (response: any) => {
-                console.log(response);
-              }
-            });
-          }
-
-          // Handle success response
-        },
-        error: error => {
-          console.error('There was an error!', error);
+  
+    const url = normalorgroup === "g" ? 'add_post_like_group' : 'add_post_like';
+    this.http.post(`${this.APIURL}${url}`, formData).subscribe({
+      next: (response: any) => {
+        if (response.message === "no") {
+          this.likes++;
+        } else {
+          this.likes--;
         }
-      });
-    } else {
-      this.http.post(this.APIURL + 'add_post_like', formData).subscribe({
-        next: (response: any) => {
-          if (response.message == "no") {
-
-            this.likes++;
-            this.http.post(this.APIURL + "send-notification", formData).subscribe({
-              next: (response: any) => {
-                console.log(response);
-              }
-            });
-          } else {
-            this.likes--;
-            this.http.post(this.APIURL + "send-notification", formData).subscribe({
-              next: (response: any) => {
-                console.log(response);
-              }
-            });
-          }
-
-          // Handle success response
-        },
-        error: error => {
-          console.error('There was an error!', error);
+  
+        if(userid == this.userid){
+                return;
+        }else{
+          this.http.post(`${this.APIURL}send-notification`, formData).subscribe({
+            next: (response: any) => {
+    
+            },
+            error: error => {
+              console.error('Error sending notification', error);
+            }
+          });
         }
-      });
-    }
+        
+      },
+      error: error => {
+        console.error('Error liking post', error);
+      }
+    });
   }
 
   calculateTimeAgo(postedDate: string): string {
@@ -856,6 +836,8 @@ export class CommentComponent implements OnInit {
 
     this.http.get<any>(`${this.APIURL}delete_comment`, { params }).subscribe({
       next: (response: any) => {
+        this.numberofcomments --;
+
         if (this.comments.length == 1) {
           this.isthelastcomment = true;
           this.commentToBeDeleted = false;

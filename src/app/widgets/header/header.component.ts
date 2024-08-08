@@ -25,7 +25,7 @@ export class HeaderComponent implements OnInit{
   searchText: string = '';
   user: any;
   dropdownVisible: boolean = false;
-  showtheonlinestatusindicator:boolean = false;
+  showtheonlinestatusindicator:boolean = true;
   private openDropdown: HTMLElement | null = null;
   @ViewChild('mainlogo', { static: true }) mainLogo!: ElementRef;
  
@@ -37,9 +37,8 @@ export class HeaderComponent implements OnInit{
 
 
     this.renderer.listen('window', 'load', () => {
-      if (this.mainLogo.nativeElement.offsetWidth > 0 && this.mainLogo.nativeElement.offsetHeight > 0) {
-         this.updateOnlineStatus(this.userid);
-      }
+      this.updateOnlineStatus(this.userid);
+
     });
 
     this.renderer.listen('document', 'visibilitychange', () => {
@@ -63,8 +62,9 @@ async updatethehiddenvisibility(userid:any){
 
     this.http.post(this.APIURL + 'update_online_status_hidden', formData).subscribe({
       next: (response: any) => {
-        console.log(response.message);
+ 
         this.showtheonlinestatusindicator=false;
+   
       },
       error: error => {
         console.error('There was an error posting the data!', error);
@@ -79,15 +79,16 @@ async updatethehiddenvisibility(userid:any){
 
   async updateOnlineStatus(userid: any): Promise<void> {
     const formData = new FormData();
-  
+ 
     if (userid) {
       formData.append('userid', userid);
   
       this.http.post(this.APIURL + 'update_online_status', formData).subscribe({
         next: (response: any) => {
-        console.log(response.message);
+ 
 
           this.showtheonlinestatusindicator=true;
+   
 
         },
         error: error => {

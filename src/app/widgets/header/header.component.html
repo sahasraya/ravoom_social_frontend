@@ -4,7 +4,7 @@
   <div class="nav-links">
     <img src="../../../assets/images/crabber_header.png" alt="logo" width="100" class="header-logo" #mainlogo>
 
-
+ 
     <app-search class="header-search"> </app-search>
 
     <div class="right-side">
@@ -23,8 +23,15 @@
       <a routerLink=""><img src="../../../assets/images/globe.png" alt="" class="globelicon"  *ngIf="userid != ''"></a>
       <a routerLink="/home/followers-feed"><img src="../../../assets/images/home.png" alt="" class="homeicon"  *ngIf="userid != ''"></a>
 
-      <img src="../../../assets/images/notification.png" alt="" class="notificationicon" *ngIf="userid != ''"
-        (click)="getNotifications()">
+  
+        <span class="notification-icon-holder">
+          <img src="../../../assets/images/notification.png" alt="" class="notificationicon" *ngIf="userid != ''"
+             (click)="getNotifications()">
+        <div class="notification-indicator"  ></div>
+        </span>
+     
+
+
 
         <div class="profileimage-container" (click)="showdropdown($event)"  >
           <img *ngIf="user?.profileimage" [src]="'data:image/jpeg;base64,' + user?.profileimage" alt="Profile Image" class="profileimage">

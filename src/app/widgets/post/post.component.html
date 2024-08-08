@@ -1,6 +1,13 @@
 <div *ngIf="!post.deleted" class="post">
   <div class="post-header">
-    <img *ngIf="profileImageUrl" [src]="profileImageUrl" alt="User Profile Image" class="profile-image" />
+ 
+ 
+    <div *ngIf="profileImageUrl" class="profile-image-container">
+      <img *ngIf="profileImageUrl" [src]="profileImageUrl" alt="User Profile Image" class="profile-image"  />
+      <div class="green-dot" *ngIf="onlinestatus"></div>
+    </div>
+
+
     <div class="postownerdetailholder">
            <div class="username-holder">
             <span>

@@ -123,7 +123,7 @@
   
 
         <span class="comment-button"  >
-          <img src="../../../assets/images/comment.png" alt="" > {{ comments.length }} Comments
+          <img src="../../../assets/images/comment.png" alt="" > {{ numberofcomments }} Comments
          </span>
 
       </div>
@@ -213,17 +213,18 @@
 
                                   
                                  </div>
-                                 <img src="../../../assets/images/threedots.png" alt=""   (click)="toggleReplaycommentDropdown($event, replay)" class="dropdown-toggle"  >
+                            
+                                 <img src="../../../assets/images/threedots.png" alt=""   (click)="toggleReplaycommentDropdown($event, comment, replay)" class="dropdown-toggle"  >
 
 
-                                 <div *ngIf="replay.showDropdown" class="dropdown-menu-replay-comment">
+                                 <div *ngIf="replay.showDropdownReplay" class="dropdown-menu-replay-comment">
                                   <ul>
                                   
-                                    <li  (click)="removeReplayComment(replay,replay.commentreplayid )"  *ngIf="post.userid == this.userid" class="dropdownicons">
+                                    <li  (click)="removeReplayComment(replay,replay.commentreplayid )"  *ngIf="replay.userid == userid" class="dropdownicons">
                                       <img src="../../../assets/images/delete.png" alt="">
                                       Delete replay
                                     </li> 
-                                    <li>  <img src="../../../assets/images/complain.png" alt=""> Report comment</li>
+                                    <li>  <img src="../../../assets/images/complain.png" alt=""> Report replay</li>
                       
                                   
                                      
@@ -248,7 +249,7 @@
           <div *ngIf="comment.showDropdown" class="dropdown-menu">
             <ul>
             
-              <li (click)="removeComment(comment,comment.commentid)" *ngIf="post.userid == this.userid" class="dropdownicons">
+              <li (click)="removeComment(comment,comment.commentid)" *ngIf="comment.userid == this.userid" class="dropdownicons">
                 <img src="../../../assets/images/delete.png" alt="">
                 Delete comment
               </li> 
@@ -261,8 +262,9 @@
         </div>
 
 
-     <h1 *ngIf="loading">loading...</h1>
-     <p class="lastcommenttext" *ngIf="isthelastcommentloading">End of comments</p>
+        <span *ngIf="isthelastcommentLoaing" (click)="getComments(true)" class="load-more-btn">
+          Load More
+        </span>
 
 
       </div>
@@ -293,7 +295,7 @@
       
     
   </div>
-  <div *ngIf="!post">
+  <div *ngIf="!post" class="loadingpostdata">
     <p>Loading post data...</p>
   </div>
 

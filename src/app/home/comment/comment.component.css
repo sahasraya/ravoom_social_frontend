@@ -379,9 +379,33 @@ input[type="text"]:focus {
   opacity: 0.8;
  }
 
+ .loadingpostdata {
+  position: fixed;
+  width: 100%;  /* Full width */
+  height: 100vh;  /* Full height */
+  background-color: rgba(0, 0, 0, 0.137);
+  top: 0px;
+  left: 0px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
+.load-more-btn{
+  background-color: var(--primary-dark);
+  border-radius: 20px;
+  color: white;
+  cursor: pointer;
+  font-size: 11px;
+  padding: 5px;
+  transition: background-color 0.3s;
+}
 
-
+.load-more-btn:hover{
+  background-color: var(--primary-faded);
+    color: var(--primary-dark);
+ 
+}
 
  .backarrow{
   width: 40px;
