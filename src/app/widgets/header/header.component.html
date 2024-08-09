@@ -27,11 +27,12 @@
         <span class="notification-icon-holder">
           <img src="../../../assets/images/notification.png" alt="" class="notificationicon" *ngIf="userid != ''"
              (click)="getNotifications()">
-        <div class="notification-indicator"  ></div>
+            
+        <div class="notification-indicator" *ngIf="user.notificationstatus == 1" ></div>
         </span>
      
 
-
+    
 
         <div class="profileimage-container" (click)="showdropdown($event)"  >
           <img *ngIf="user?.profileimage" [src]="'data:image/jpeg;base64,' + user?.profileimage" alt="Profile Image" class="profileimage">

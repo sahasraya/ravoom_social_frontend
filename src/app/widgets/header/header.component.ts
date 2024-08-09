@@ -6,11 +6,12 @@ import { NotificationService } from '../../home/notification/notification.servic
 import { NotificationComponent } from '../../home/notification/notification.component';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { AddPostComponent } from '../add-post/add-post.component';
+import { MatTooltip, MatTooltipModule } from '@angular/material';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule,RouterModule,SearchComponent,NotificationComponent,AddPostComponent],
+  imports: [CommonModule,RouterModule,SearchComponent,NotificationComponent,AddPostComponent,MatTooltipModule],
   templateUrl: './header.component.html',
   styleUrl: './header.component.css'
 })
@@ -119,9 +120,34 @@ async updatethehiddenvisibility(userid:any){
       this.openDropdown = target;
     }
   }
+
+
+  async updatenotificationseenstatus(userid: any) {
+ 
+    const formData = new FormData();
+    formData.append('userid', userid);
+  
+    this.http.post<any>(`${this.APIURL}update_notification_status`, formData).subscribe({
+      next: (response: any) => {
+        if (response.message === "User details updated successfully") {
+           this.getuserdetails(this.userid);
+        } else {
+          alert(response.message);
+        }
+      },
+      error: (error: HttpErrorResponse) => {
+        console.error('There was an error!', error);
+      }
+    });
+  }
+
+
   onPostAdded(): void {
     this.uploadPost.emit();
   }
+
+
+
 
   hideDropdown(): void {
     this.dropdownVisible = false;
@@ -159,6 +185,8 @@ async updatethehiddenvisibility(userid:any){
   }
 
   getNotifications(): void {
+    this.updatenotificationseenstatus(this.userid);
+
     this.notificationService.triggerNotification();
   }
 

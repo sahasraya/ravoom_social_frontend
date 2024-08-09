@@ -15,8 +15,8 @@
 
     <div class="button-holder">
       <button (click)="showfeed()"  [class.selected]="showfeedBool" class="navigationsbuttons">Feed</button>
-      <button (click)="showiamfollowinguserlist()" [class.selected]="showiamfollowinguserlistBool" class="navigationsbuttons">I am following</button>
-      <button (click)="showiamfolloeduserlist()" [class.selected]="showiamfolloeduserlistBool" class="navigationsbuttons">I am followed</button>
+      <button (click)="showiamfollowinguserlist()" [class.selected]="showiamfollowinguserlistBool" class="navigationsbuttons">I am following ({{iamfollowinguserslist.length}})</button>
+      <button (click)="showiamfolloeduserlist()" [class.selected]="showiamfolloeduserlistBool" class="navigationsbuttons">I am followed ({{iamfolloweduserslist.length}})</button>
     </div>
 
 
