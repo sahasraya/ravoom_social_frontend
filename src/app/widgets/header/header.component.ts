@@ -6,12 +6,12 @@ import { NotificationService } from '../../home/notification/notification.servic
 import { NotificationComponent } from '../../home/notification/notification.component';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { AddPostComponent } from '../add-post/add-post.component';
-import { MatTooltip, MatTooltipModule } from '@angular/material';
+ 
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule,RouterModule,SearchComponent,NotificationComponent,AddPostComponent,MatTooltipModule],
+  imports: [CommonModule,RouterModule,SearchComponent,NotificationComponent,AddPostComponent],
   templateUrl: './header.component.html',
   styleUrl: './header.component.css'
 })
