@@ -19,6 +19,7 @@ export class SearchResultByEnterComponent  implements OnInit{
   searchtext: string = '';
   APIURL = 'http://127.0.0.1:8000/';
   responseObject: any = [];
+  responseObjectTextImageLink: any = [];
 
   videoPosts: any[] = [];
   audioPosts: any[] = [];
@@ -168,6 +169,8 @@ async getUser(searchtext: string):Promise<void>{
     const formData = new FormData();
     formData.append('searchtext', searchtext);
 
+ 
+
     this.http.post<any>(`${this.APIURL}search-enter-press-result-link-text`, formData).subscribe({
       next: (response:any) => {
         this.responseObject = response;
@@ -222,20 +225,20 @@ async getUser(searchtext: string):Promise<void>{
   async getImageTextImageLink(searchtext: string) {
     const formData = new FormData();
     formData.append('searchtext', searchtext);
-
+ 
     this.http.post<any>(`${this.APIURL}search-enter-press-result-image-link-text`, formData).subscribe({
       next: (response:any) => {
-        this.responseObject =   [...this.responseObject, ...this.processPosts(response)];
+    
+        this.responseObjectTextImageLink = [...this.responseObjectTextImageLink, ...this.processPosts(response)];
+        console.log(this.responseObjectTextImageLink);
 
-      
-        
-        
-     
-        this.ImageTextLinkPosts = [];
+       this.ImageTextLinkPosts = [];
 
-        this.responseObject.forEach((post: any) => {
+        this.responseObjectTextImageLink.forEach((post: any) => {
            
           this.ImageTextLinkPosts.push(post);
+
+          
 
 
           if(this.ImageTextLinkPosts.length > 0){
@@ -270,6 +273,7 @@ async getUser(searchtext: string):Promise<void>{
 
   private processPosts(posts: any[]): any[] {
     const processedPosts: any[] = [];
+  
     posts.forEach(post => {
    
       const existingPost = processedPosts.find(p => p.postid === post.postid);

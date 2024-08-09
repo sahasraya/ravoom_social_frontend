@@ -35,6 +35,8 @@ export class ReporttingComponent implements OnInit{
   ngOnInit(): void {
    if(this.type =="postreport"){
      this.reporttype="post";
+   }else if(this.type =="comment"){
+    this.reporttype="comment";
    }
   }
 

@@ -19,7 +19,7 @@
  
 
   <div class="posts-container"> 
-    
+ 
     <div *ngFor="let post of ImageTextLinkPosts; let i = index">
       <app-post [post]="post" ></app-post>
     </div>
@@ -30,41 +30,7 @@
       <p>No posts found</p>
     </div>
   </div>
-
-  <!-- <div *ngFor="let post of ImageTextLinkPosts" class="main-outer-holder">
-    <div class="inner-holder">
-      <div class="profile-image-holder">
-        <img *ngIf="post.userprofileUrl" [src]="post.userprofileUrl" alt="Profile Image" class="profileimage">
-        <div class="details">
-          <p>{{ post.username }}</p>
-          <p>{{ calculateTimeAgo(post.posteddate) }}</p>
-        </div>
-      </div>
-
-  
-      <ng-container *ngIf="post.posttype === 'image'">
-        <img *ngIf="post.postUrl" [src]="post.postUrl" alt="Post Image" class="post">
-      </ng-container>
-
-      <ng-container *ngIf="post.posttype === 'text'">
-        <div class="inner-text-post-holder" [style.background-color]="post.textcolor">
-          <p>{{ post.textbody }}</p>
-        </div>
-      </ng-container>
-
-      <ng-container *ngIf="post.posttype === 'link'">
-        <div class="previewdiv">
-          <h3>{{ post.filepath }}</h3>
-          <img *ngIf="post.textbody" [src]="post.textbody" alt="{{ post.title }}" class="post">
-          <a [href]="post.thelink" target="_blank">{{ post.thelink }}</a>
-        </div>
-      </ng-container>
-
-    </div>
-
-   
-    <p>{{ post.postdescription }}</p>
-  </div> -->
+ 
 
  
   

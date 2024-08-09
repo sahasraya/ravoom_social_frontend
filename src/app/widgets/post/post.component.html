@@ -1,12 +1,12 @@
 <div *ngIf="!post.deleted" class="post">
 
-   <div class="reporting-screen" *ngIf="showreportscreenBool">
+   <div class="reporting-screen" *ngIf="showreportscreenBool" >
     <img src="../../../assets/images/close.png" alt="" class="closeicon" (click)="closeReportScreen()">
     <app-reportting [type]="postreport"></app-reportting>
    </div>
 
   <div class="post-header">
- 
+
  
     <div *ngIf="profileImageUrl" class="profile-image-container">
       <img *ngIf="profileImageUrl" [src]="profileImageUrl" alt="User Profile Image" class="profile-image"  />
@@ -61,7 +61,7 @@
     <h3 *ngIf="post.posttype === 'group'"> {{post.username}} has created a {{post.grouptype}} group. {{post.grouptype === 'private' ? 'Get permission to join.' :'You can join now.'}}</h3>
   </div>
 
-
+ 
   <h3 *ngIf="userid == post.userid && post.posttype === 'group'">Your group</h3>
  
   <span *ngIf="post.posttype === 'link'" class="linktext">{{post.filepath}}</span>

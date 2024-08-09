@@ -66,11 +66,31 @@ export class PostComponent implements OnInit {
      
 
     this.renderer.listen('window', 'load', () => {
-      this.checkTheOnlineStatus(this.post.userid);
+      
 
     });
-    this.checkTheOnlineStatus(this.post.userid);
+    if(this.userid !=''){
+      this.checkTheOnlineStatus(this.post.userid);
+
+    }
+
+
+    window.addEventListener('beforeunload', this.saveScrollPosition);
+  const savedPosition = localStorage.getItem('scrollPosition');
+  console.log(savedPosition);
+  if (savedPosition) {
+    window.scrollTo(0, parseInt(savedPosition, 10));
   }
+
+  }
+
+
+saveScrollPosition = () => {
+  const scrollPosition = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
+  localStorage.setItem('scrollPosition', scrollPosition.toString());
+}
+
+ 
 
 
 
@@ -342,6 +362,8 @@ export class PostComponent implements OnInit {
   }
 
   ngOnDestroy(): void {
+  // window.removeEventListener('beforeunload', this.saveScrollPosition);
+
     if (this.imageUrl) {
       URL.revokeObjectURL(this.imageUrl);
     }
@@ -440,6 +462,12 @@ export class PostComponent implements OnInit {
 
   commentOnPost(event: MouseEvent, postid: any, n_or_g: any): void {
     event.preventDefault();
+
+    const scrollPosition = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
+ 
+    localStorage.setItem('scrollPosition', scrollPosition.toString());
+
+
     if (this.checkuseridtoroutecommentscreen != null) {
       this.screen = "pro";
       this.router.navigate([`/home/comment/${postid}/${n_or_g}/${this.screen}/${this.checkuseridtoroutecommentscreen}`]);

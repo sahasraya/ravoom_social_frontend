@@ -152,11 +152,21 @@
        
         
         </form>
+ 
 
-
-
+        <div class="reporting-screen" *ngIf="showreportscreenBool" >
+          <img src="../../../assets/images/close.png" alt="" class="closeicon" (click)="closeReportScreen()">
+          <app-reportting [type]="comment"></app-reportting>
+         </div>
+         
 
         <div *ngFor="let comment of comments" class="comment">
+
+          
+        
+
+
+
           <div class="comment-header">
             <img *ngIf="comment.imageurl" [src]="'data:image/jpeg;base64,' + comment.imageurl" alt="User Profile Image" class="comment-userprofile">
             <div class="comment-info-holder">
@@ -173,6 +183,12 @@
           </div>
           <p class="commenttext">{{ comment.text }}</p>
            
+
+
+        
+
+
+
 
           <span (click)="toggleReplayDiv(comment) " class="replaytext">add replay {{comment.replayscount ==0 ? "": comment.replayscount}}</span>
 
@@ -256,7 +272,7 @@
                 <img src="../../../assets/images/delete.png" alt="">
                 Delete comment
               </li> 
-              <li>  <img src="../../../assets/images/complain.png" alt=""> Report comment</li>
+              <li (click)="showreportscreen()">  <img src="../../../assets/images/complain.png" alt="" > Report comment</li>
 
             
                

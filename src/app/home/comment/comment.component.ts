@@ -4,11 +4,12 @@ import { Component, HostListener, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ImageLargerComponent } from '../../widgets/image-larger/image-larger.component';
+import { ReporttingComponent } from '../../widgets/reportting/reportting.component';
 
 @Component({
   selector: 'app-comment',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, ImageLargerComponent, RouterModule],
+  imports: [CommonModule, ReactiveFormsModule, ImageLargerComponent, RouterModule,ReporttingComponent],
   templateUrl: './comment.component.html',
   styleUrl: './comment.component.css'
 })
@@ -29,12 +30,14 @@ export class CommentComponent implements OnInit {
   isthelastcommentLoaing:boolean=false;
   currentImageIndex: number = 0;
   showImageSlider: boolean = false;
+  showreportscreenBool:boolean=false;
   sliderImages: string[] = [];
   fromwhatscreen: string = "";
   groupornormalpost: any;
   userid: string = "";
   checkuseridtoroutecommentscreen: string = "";
   numberofcomments:any;
+  comment="comment";
 
   limit = 20;  
   offset = 0; 
@@ -866,5 +869,15 @@ export class CommentComponent implements OnInit {
       comment.showDropdown = false;
     });
   }
+
+
+  showreportscreen():void{
+    this.showreportscreenBool=true;
+ 
+    }
+    closeReportScreen():void{
+    this.showreportscreenBool=false;
+  
+    }
 
 }

@@ -93,11 +93,12 @@ this.isFacoused = true;
 
 
   handleEnterKeyPress() {
-
+ 
     if(this.searchText.trim() !=""){
       const query = this.searchText;
 
       this.searchResult();
+ 
  
       this.router.navigate(['/home/result', query]);
 
