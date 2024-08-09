@@ -1,4 +1,10 @@
 <div *ngIf="!post.deleted" class="post">
+
+   <div class="reporting-screen" *ngIf="showreportscreenBool">
+    <img src="../../../assets/images/close.png" alt="" class="closeicon" (click)="closeReportScreen()">
+    <app-reportting [type]="postreport"></app-reportting>
+   </div>
+
   <div class="post-header">
  
  
@@ -38,7 +44,7 @@
                         <img src="../../../assets/images/delete.png" alt="">
                         Delete
                       </li>
-                      <li>  <img src="../../../assets/images/complain.png" alt=""> Report</li>
+                      <li (click)="showreportscreen()">  <img src="../../../assets/images/complain.png" alt=""> Report</li>
                     </ul>
                   </div>
 

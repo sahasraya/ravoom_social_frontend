@@ -1,0 +1,301 @@
+<div class="container">
+    <div class="main-content">
+        <div class="details-holder" *ngIf="!showSecondPage">
+            <h1 >Report</h1>
+            <p >Why are you reporting this {{reporttype }} ?</p>
+            <p >If someone is in immediate danger, get help before reporting to Ravoom. Don't wait.</p>
+        </div>
+       
+
+        <form class="report-form" *ngIf="!showSecondPage">
+            <label>
+                <input type="radio" name="reason" value="nudity" (change)="chackradiovalue($event)">
+                <span class="custom-radio"></span>
+                Nudity or sexual activity
+            </label>
+            <label>
+                <input type="radio" name="reason" value="bullying" (change)="chackradiovalue($event)">
+                <span class="custom-radio"></span>
+                Bullying or harassment
+            </label>
+            <label>
+                <input type="radio" name="reason" value="self-injury" (change)="chackradiovalue($event)">
+                <span class="custom-radio"></span>
+                Suicide, self-injury or eating disorders
+            </label>
+            <label>
+                <input type="radio" name="reason" value="violence" (change)="chackradiovalue($event)">
+                <span class="custom-radio"></span>
+                Violence, hate or exploitation
+            </label>
+            <label>
+                <input type="radio" name="reason" value="restricted-items" (change)="chackradiovalue($event)">
+                <span class="custom-radio"></span>
+                Selling or promoting restricted items
+            </label>
+            <label>
+                <input type="radio" name="reason" value="scam" (change)="chackradiovalue($event)">
+                <span class="custom-radio"></span>
+                Scam, fraud or impersonation
+            </label>
+            <label>
+                <input type="radio" name="reason" value="spam" (change)="chackradiovalue($event)">
+                <span class="custom-radio"></span>
+                Spam
+            </label>
+            <label>
+                <input type="radio" name="reason" value="false-info" (change)="chackradiovalue($event)">
+                <span class="custom-radio"></span>
+                False information
+            </label>
+            <label>
+                <input type="radio" name="reason" value="intellectual-property" (change)="chackradiovalue($event)">
+                <span class="custom-radio"></span>
+                Intellectual property
+            </label>
+            <label>
+                <input type="radio" name="reason" value="not-see" (change)="chackradiovalue($event)">
+                <span class="custom-radio"></span>
+                I don't want to see this
+            </label>
+        </form>
+
+        <form [formGroup]="reportFormGroup" (ngSubmit)="onreportsubmit()" *ngIf="showSecondPage" class="secondsscreenform">
+            
+            <img src="../../../assets/images/backarrow.png" alt="" class="backarrow" (click)="goback()">
+            <div class="details-holder"  >
+              
+              
+                <p >If someone is in immediate danger, get help before reporting to Facebook. Don't wait.</p>
+            </div>
+
+            <h3>Which best describes the problem?</h3>
+     
+                <div *ngIf="showNudityBool">
+                    <label>
+                        <input type="radio" name="reason" value="Sharing_private_or_sexual_images" (change)="chackradiovalueoption($event)">
+                        <span class="custom-radio"></span>
+                        Sharing private or sexual images
+                    </label>
+                    <label>
+                        <input type="radio" name="reason" value="Sexual_exploitation" (change)="chackradiovalueoption($event)">
+                        <span class="custom-radio"></span>
+                        Sexual exploitation
+                    </label>
+                    <label>
+                        <input type="radio" name="reason" value="Adult_nudity_or_sexual_activity" (change)="chackradiovalueoption($event)">
+                        <span class="custom-radio"></span>
+                        Adult nudity or sexual activity
+                    </label>
+                    <label>
+                        <input type="radio" name="reason" value="Child_nudity" (change)="chackradiovalueoption($event)">
+                        <span class="custom-radio"></span>
+                        Child nudity
+                    </label>
+                </div>
+
+         
+                <div *ngIf="showBullyingBool">
+                    <label>
+                        <input type="radio" name="reason" value="Sharing_private_or_sexual_images" (change)="chackradiovalueoption($event)">
+                        <span class="custom-radio"></span>
+                        Sharing private or sexual images
+                    </label>
+                    <label>
+                        <input type="radio" name="reason" value="Bullying_or_unwanted_contact" (change)="chackradiovalueoption($event)">
+                        <span class="custom-radio"></span>
+                        Bullying or unwanted contact
+                    </label>
+                    <label>
+                        <input type="radio" name="reason" value="Spam" (change)="chackradiovalueoption($event)">
+                        <span class="custom-radio"></span>
+                        Spam
+                    </label>
+                   
+                </div>
+                
+        
+
+
+
+
+
+
+
+                <div *ngIf="showSelfInjuryBool">
+                    <label>
+                        <input type="radio" name="reason" value="Sucide_or_self_injury" (change)="chackradiovalueoption($event)">
+                        <span class="custom-radio"></span>
+                        Sucide or self-injury
+                    </label>
+                    <label>
+                        <input type="radio" name="reason" value="Eating_disorder" (change)="chackradiovalueoption($event)">
+                        <span class="custom-radio"></span>
+                        Eating disorder
+                    </label>
+                   
+                   
+                </div>
+
+
+
+
+
+
+
+                <div *ngIf="showViolenceBool">
+                    <label>
+                        <input type="radio" name="reason" value="Credible_threat_to_safety" (change)="chackradiovalueoption($event)">
+                        <span class="custom-radio"></span>
+                        Credible threat to safety
+                    </label>
+                    <label>
+                        <input type="radio" name="reason" value="Someone_is_being_exploited" (change)="chackradiovalueoption($event)">
+                        <span class="custom-radio"></span>
+                        Someone is being exploited
+                    </label>
+                     <label>
+                        <input type="radio" name="reason" value="Seems_like_terrorism" (change)="chackradiovalueoption($event)">
+                        <span class="custom-radio"></span>
+                        Seems like terrorism
+                    </label>
+                    <label>
+                        <input type="radio" name="reason" value="Calling_for_violence" (change)="chackradiovalueoption($event)">
+                        <span class="custom-radio"></span>
+                        Calling for violence
+                    </label>
+                    <label>
+                        <input type="radio" name="reason" value="Seems_like_organised_crime" (change)="chackradiovalueoption($event)">
+                        <span class="custom-radio"></span>
+                        Seems like organised crime
+                    </label>
+                    <label>
+                        <input type="radio" name="reason" value="Promoting_hate" (change)="chackradiovalueoption($event)">
+                        <span class="custom-radio"></span>
+                        Promoting hate
+                    </label>
+                    <label>
+                        <input type="radio" name="reason" value="Showing_violence,_death_or_severe_injury" (change)="chackradiovalueoption($event)">
+                        <span class="custom-radio"></span>
+                        Showing violence, death or severe injury
+                    </label>
+                    <label>
+                        <input type="radio" name="reason" value="Child_abuse" (change)="chackradiovalueoption($event)">
+                        <span class="custom-radio"></span>
+                        Child abuse
+                    </label>
+                    <label>
+                        <input type="radio" name="reason" value="Animal_abuse" (change)="chackradiovalueoption($event)">
+                        <span class="custom-radio"></span>
+                        Animal abuse
+                    </label>
+                   
+                </div>
+
+
+
+
+
+
+
+                <div *ngIf="showRestrictedItemsBool">
+                    <label>
+                        <input type="radio" name="reason" value="Drugs" (change)="chackradiovalueoption($event)">
+                        <span class="custom-radio"></span>
+                        Drugs
+                    </label>
+                    <label>
+                        <input type="radio" name="reason" value="Weapons" (change)="chackradiovalueoption($event)">
+                        <span class="custom-radio"></span>
+                        Weapons
+                    </label>
+                    <label>
+                        <input type="radio" name="reason" value="Animals" (change)="chackradiovalueoption($event)">
+                        <span class="custom-radio"></span>
+                        Animals
+                    </label>
+
+                   
+                   
+                </div>
+
+
+
+        
+
+
+
+
+
+                <div *ngIf="showScamBool">
+                    <label>
+                        <input type="radio" name="reason" value="Fraud_or_scam" (change)="chackradiovalueoption($event)">
+                        <span class="custom-radio"></span>
+                        Fraud or scam
+                    </label>
+                    <label>
+                        <input type="radio" name="reason" value="Pretending_to_be_a_business" (change)="chackradiovalueoption($event)">
+                        <span class="custom-radio"></span>
+                        Pretending to be a business
+                    </label>
+                    
+
+                   
+                   
+                </div>
+
+
+
+
+                <div *ngIf="showSpamBool">
+                    <label>
+                        <input type="radio" name="reason" value="Seem_as_spam" (change)="chackradiovalueoption($event)">
+                        <span class="custom-radio"></span>
+                        Seem as spam
+                    </label>          
+                </div>
+
+
+
+
+                <div *ngIf="showFalseInfoBool">
+                    <label>
+                        <input type="radio" name="reason" value="False_information" (change)="chackradiovalueoption($event)">
+                        <span class="custom-radio"></span>
+                        False information
+                    </label>          
+                </div>
+
+
+
+                <div *ngIf="showIntellectualPropertyBool">
+                    <label>
+                        <input type="radio" name="reason" value="Intellectual_Property" (change)="chackradiovalueoption($event)">
+                        <span class="custom-radio"></span>
+                        Intellectual Property
+                    </label>          
+                </div>
+
+
+
+                <div *ngIf="showNotSeeBool">
+                    <label>
+                        <input type="radio" name="reason" value="Not_like_to_see_this" (change)="chackradiovalueoption($event)">
+                        <span class="custom-radio"></span>
+                        Not like to see this
+                    </label>          
+                </div>
+
+
+
+
+ 
+
+
+
+
+
+            <button type="submit"  *ngIf="secondScreenOptioValueSelected" class="submit-button">Submit</button>
+        </form>
+    </div>
+</div>

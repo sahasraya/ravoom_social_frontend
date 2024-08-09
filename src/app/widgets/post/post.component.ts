@@ -4,11 +4,12 @@ import { ChangeDetectorRef, Component, EventEmitter, HostListener, Inject, Input
 import { ActivatedRoute, Route, Router, RouterModule } from '@angular/router';
 import { ImageLargerComponent } from '../image-larger/image-larger.component';
 import { PLATFORM_ID } from '@angular/core';
+import { ReporttingComponent } from '../reportting/reportting.component';
 
 @Component({
   selector: 'app-post',
   standalone: true,
-  imports: [CommonModule, RouterModule, PostComponent, ImageLargerComponent],
+  imports: [CommonModule, RouterModule, PostComponent, ImageLargerComponent,ReporttingComponent],
   templateUrl: './post.component.html',
   styleUrl: './post.component.css'
 })
@@ -18,7 +19,7 @@ export class PostComponent implements OnInit {
   @Output() delete = new EventEmitter<void>();
 
 
-
+  postreport = 'postreport'; 
   imageUrl: string = '';
   profileImageUrl: string = '';
   groupImageUrl: string = '';
@@ -30,6 +31,7 @@ export class PostComponent implements OnInit {
   showLargerImage: boolean = false;
   postToBeDeleted: any = null;
   isthelastcomment: boolean = false;
+  showreportscreenBool:boolean=false;
   onlinestatus:boolean=true;
   followButtonText: string = 'Follow';
   checkuseridtoroutecommentscreen: string = "";
@@ -552,4 +554,11 @@ export class PostComponent implements OnInit {
     }
   }
 
+  showreportscreen():void{
+  this.showreportscreenBool=true;
+  }
+  closeReportScreen():void{
+  this.showreportscreenBool=false;
+
+  }
 }
