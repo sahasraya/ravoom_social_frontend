@@ -77,7 +77,6 @@ export class PostComponent implements OnInit {
 
     window.addEventListener('beforeunload', this.saveScrollPosition);
   const savedPosition = localStorage.getItem('scrollPosition');
-  console.log(savedPosition);
   if (savedPosition) {
     window.scrollTo(0, parseInt(savedPosition, 10));
   }
@@ -550,7 +549,23 @@ saveScrollPosition = () => {
   }
 
 
+  navigatetouser():void{
+ 
+    // const scrollPosition = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
+ 
+    // localStorage.setItem('scrollPosition', scrollPosition.toString());
+
+ this.router.navigate([`/home/profile/${this.post.userid}`]);
+  }
+
+
+
   async joingroup(grouptype: any, groupid: any, username: string, userid: any): Promise<void> {
+
+    const scrollPosition = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
+ 
+    localStorage.setItem('scrollPosition', scrollPosition.toString());
+
     if (grouptype === "public") {
       this.router.navigate(['home/group', groupid]);
     } else if (userid == this.userid) {

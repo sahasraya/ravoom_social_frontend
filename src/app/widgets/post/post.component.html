@@ -18,7 +18,7 @@
            <div class="username-holder">
             <span>
               <div class="postdetilsholder">
-                <a [routerLink]="['/home/profile', post.userid]" class="username">{{ post.username }} </a>
+                <a  class="username" (click)="navigatetouser()">{{ post.username }} </a>
               <small >{{ calculateTimeAgo(post.posteddate) }}</small>
               </div>
               <span *ngIf="post.groupname != null">&#64; {{ post.groupname }}</span>

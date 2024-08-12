@@ -75,6 +75,7 @@ export class SignUpComponent implements OnInit{
       this.checkPasswordStrength();
     });
 
+    this.checkTheLocalStorageValues();
   }
 
  togglePasswordVisibility() {
@@ -181,7 +182,16 @@ allPasswordConditionsMet(): boolean {
             localStorage.setItem('www', '34');
             localStorage.setItem('reload', 'false');
 
+
+            localStorage.removeItem('username');
+            localStorage.removeItem('emailaddress');
+            localStorage.removeItem('phonenumber');
+
+
             this.signUpForm.reset();
+            this.isPasswordFieldFocused = false;
+            this.signUpForm.patchValue({ profileimage: null });
+            this.imagePreview = null;
 
             this.passwordsnotmatching=true;
             this.bannerClass = 'good-banner';
@@ -208,6 +218,48 @@ allPasswordConditionsMet(): boolean {
     }else{
       this.isPasswordFieldFocused = true;
 
+    }
+  }
+
+  resetform(e: Event): void {
+    e.preventDefault(); 
+    localStorage.clear();
+    this.signUpForm.reset();  
+    this.isPasswordFieldFocused = false;
+     this.signUpForm.patchValue({
+    username: '',
+    emailaddress: '',
+    phonenumber: '',
+    birthdate: '',
+    profileimage: null  
+  });
+    this.signUpForm.patchValue({ profileimage: null });
+    this.imagePreview = null;
+  }
+
+  checkTheLocalStorageValues(): void {
+    this.signUpForm.get('username')?.setValue(localStorage.getItem('username') || '');
+    this.signUpForm.get('emailaddress')?.setValue(localStorage.getItem('emailaddress') || '');
+    this.signUpForm.get('phonenumber')?.setValue(localStorage.getItem('phonenumber') || '');
+  }
+  
+  goToSignUpScreen(): void {
+ 
+    if (
+      this.signUpForm.get('username')?.value != ""   ||  this.signUpForm.get('emailaddress')?.value != "" || this.signUpForm.get('phonenumber')?.value != ""
+    ) {
+      const result = confirm("Do you need to navigate?");
+      if (result) {
+        localStorage.setItem('username', this.signUpForm.get('username')?.value);
+        localStorage.setItem('emailaddress', this.signUpForm.get('emailaddress')?.value);
+        localStorage.setItem('phonenumber', this.signUpForm.get('phonenumber')?.value);
+  
+        this.router.navigate(['/auth/log-in']);
+      }
+
+    } else {
+      this.router.navigate(['/auth/log-in']);
+      
     }
   }
 }

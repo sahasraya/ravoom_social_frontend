@@ -1,7 +1,14 @@
 
 <div class="main-holder-outer">
 
+
+
   <form [formGroup]="signUpForm" (ngSubmit)="onSubmit()">
+
+
+    <img src="../../../assets/images/reset.png" alt="" class="reset-icon" (click)="resetform($event)" title="reset this form">
+
+
     <div [class]="bannerClass"  >
       <span class="bannertext">{{errormessage}}</span>
     </div>
@@ -80,7 +87,14 @@
     
       
         <div *ngIf="allPasswordConditionsMet()">
-          <label for="reenterpassword"> <img src="../../../assets/images/password.png" alt="">Re-enter Password</label>
+          <label for="reenterpassword">
+            
+            <div class="icon-wrapper">
+              <img src="../../../assets/images/password.png" alt="">
+            </div>  Re-enter Password
+          
+          
+          </label>
           <input [type]="showPassword ? 'text' : 'password'" id="reenterpassword" formControlName="reenterpassword" placeholder="Re enter password" (input)="checkpasswordequls(password.value ,reenterpassword.value)" #reenterpassword>
         </div>
     
@@ -110,7 +124,7 @@
       
         <button type="submit"  *ngIf="age! > 18 && signUpForm.valid && allPasswordConditionsMet()">Sign Up</button>
     
-        <a routerLink="/auth/log-in" class="logintag">Log in</a>
+        <a  class="logintag" (click)="goToSignUpScreen()">Log in</a>
     
     
         

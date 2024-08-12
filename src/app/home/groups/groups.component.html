@@ -1,7 +1,10 @@
 <div class="group-main-holder" *ngIf="group">
 
   
-
+      
+<a routerLink='' class="gobackatag">
+    <img src="../../../assets/images/backarrow.png" alt="" class="backarrow" >  
+</a>
 
     <div *ngIf="group.groupbackgroundimage" class="groupbackgroundimage" (click)="onImageClick()">
         <img [src]="groupbackgroundimage" alt="Group Background Image" class="groupbackgroundimage">

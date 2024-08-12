@@ -24,15 +24,15 @@
       <app-post [post]="post" ></app-post>
     </div>
 
-    <div class="nodatamessage" *ngIf="ImageTextLinkPosts.length === 0">
-      <img src="../../../assets/images/imagepost.png" alt="">
-  
-      <p>No posts found</p>
-    </div>
+   
   </div>
  
 
- 
+  <div class="nodatamessage" *ngIf="ImageTextLinkPosts.length === 0">
+    <img src="../../../assets/images/imagepost.png" alt="">
+
+    <p>No posts found</p>
+  </div>
   
 
 </div>
@@ -231,6 +231,7 @@
 
 
 <div class="text-link-post-holder" *ngIf="showTextLinkPostsBool">
+  
  
   <div class="posts-container">
    
@@ -240,12 +241,12 @@
       <app-post [post]="post" ></app-post>
     </div>
 
-    <div class="nodatamessage" *ngIf="TextLinkPosts.length === 0">
-      <img src="../../../assets/images/imagepost.png" alt="">
   
-      <p>No posts found</p>
-    </div>
   </div>
+
+ 
+
+
   <!-- <div *ngFor="let post of TextLinkPosts" class="main-outer-holder">
     <div class="inner-holder">
       <div class="profile-image-holder">
@@ -284,7 +285,11 @@
   
 </div>
 
+<div class="nodatamessage" *ngIf="TextLinkPosts.length === 0 && showTextLinkPostsBool"  >
+  <img src="../../../assets/images/imagepost.png" alt="">
 
+  <p>No posts found</p>
+</div>
 
 
 
@@ -361,6 +366,7 @@
   </div>
   
   <div class="nodatamessage" *ngIf="GroupList.length === 0">
+    <img src="../../../assets/images/group.png" alt="">
     <p>No groups found</p>
   </div>
 

@@ -81,7 +81,7 @@ async getuserdetails(userid:string):Promise<void>{
   getPostsFeed(): void {
     if (this.loading) return;
  
- 
+
 
     this.loading = true;
     this.http.get<any[]>(`${this.APIURL}get_posts_feed?limit=${this.limit}&offset=${this.offset}`).subscribe({
@@ -143,6 +143,7 @@ async getuserdetails(userid:string):Promise<void>{
   onScroll(event: Event): void {
     const element = document.documentElement;
     if (element.scrollHeight - element.scrollTop === element.clientHeight) {
+      localStorage.removeItem('scrollPosition');
       this.getPostsFeed();
     }
   }

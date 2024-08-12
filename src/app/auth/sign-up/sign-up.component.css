@@ -8,7 +8,6 @@
   width: 80%;
   margin: 0px auto;
   height: 100VH;
- 
   padding: 0px 15px;
 }
 .main-holder-outer form{
@@ -16,6 +15,7 @@ width: 50%;
 border: 1px solid #ccc;
 border-radius: 20PX;
 padding: 15px;
+position: relative;
 }
 .main-holder-outer form label{
   color: black;
@@ -118,10 +118,36 @@ border-radius: 50%;
 background-color: rgba(255, 255, 255, 0.432);
 transition: background-color 0.2s;
 }
-.eyeimage:hover{
+.eyeimage:hover,.reset-icon:hover{
   background-color: rgba(128, 128, 128, 0.308);
 }
 
+.reset-icon{
+  top: 10px;
+  right: 10px;
+  width: 30px;
+  position: absolute;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.432);
+  transition: background-color 0.2s;
+}
+
+.close-icon{
+  width: 30px;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 50%;
+  background-color: rgb(255, 255, 255);
+  transition: background-color 0.2s;
+  transition: background-color 0.2s;
+
+}
+.close-icon:hover{
+  background-color: rgba(255, 255, 255, 0.699);
+
+}
 .error-banner {
   position: sticky;
   top: 20px;  
@@ -212,6 +238,7 @@ button {
   font-size: 16px;
   cursor: pointer;
   margin-top: 10px;
+  transition: border-color 0.3s ease;  
 }
 
 button:hover {
@@ -289,6 +316,7 @@ button:hover {
  background-color: white;
  transition: background-color 0.2s;
  box-shadow: -1px 5px 10px 1px rgba(0, 0, 0, 0.2);
+ cursor: pointer;
 
 }
 .logintag:hover{

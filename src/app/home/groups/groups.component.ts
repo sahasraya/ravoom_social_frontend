@@ -1,7 +1,7 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { ChangeDetectorRef, Component, HostListener, Inject, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { AddPostGroupComponent } from '../../widgets/add-post-group/add-post-group.component';
 import { PostComponent } from '../../widgets/post/post.component';
 import { PLATFORM_ID } from '@angular/core';
@@ -12,7 +12,7 @@ import { ImageLargerComponent } from '../../widgets/image-larger/image-larger.co
 @Component({
   selector: 'app-groups',
   standalone: true,
-  imports: [CommonModule,AddPostGroupComponent,PostComponent,FormsModule,ImageLargerComponent],
+  imports: [CommonModule,AddPostGroupComponent,PostComponent,FormsModule,ImageLargerComponent,RouterModule],
   templateUrl: './groups.component.html',
   styleUrl: './groups.component.css'
 })
@@ -127,8 +127,8 @@ export class GroupsComponent implements OnInit{
   }
 
 
-
-
+ 
+  
   onGroupImageSelected(event: Event): void {
     const file = (event.target as HTMLInputElement).files?.[0];
 

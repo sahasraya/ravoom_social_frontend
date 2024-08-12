@@ -331,11 +331,38 @@ input[type="file"] {
   }
  .button-holder span{
    padding: 10px 15px;
-   background-color: blue;
+   background-color: var(--primarycolor);
    color: white;
    cursor: pointer;
    border-radius: 15px;
+   transition: background-color 0.3s;
  }
+.gobackatag{
+  cursor: pointer;
+  position: absolute;
+  top: 10px;
+  left: -80px;
+}
+ .button-holder span:hover{
+ background-color: var(--primary-faded);
+ color: var(--primarycolor);
+ }
+ .backarrow{
+  width: 40px;
+  height: 40px;
+  padding: 5px;
+  border-radius: 50%;
+  background-color: var(--icon-hover-backgroud-color);
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  transition: background-color 0.3s;
+  cursor: pointer;
+}
+.backarrow:hover{
+  background-color: var(--icon-backgroud-color);
+
+}
  
 
 

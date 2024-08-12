@@ -225,12 +225,13 @@ async getUser(searchtext: string):Promise<void>{
   async getImageTextImageLink(searchtext: string) {
     const formData = new FormData();
     formData.append('searchtext', searchtext);
+    this.responseObjectTextImageLink = [];
  
     this.http.post<any>(`${this.APIURL}search-enter-press-result-image-link-text`, formData).subscribe({
       next: (response:any) => {
     
         this.responseObjectTextImageLink = [...this.responseObjectTextImageLink, ...this.processPosts(response)];
-        console.log(this.responseObjectTextImageLink);
+ 
 
        this.ImageTextLinkPosts = [];
 

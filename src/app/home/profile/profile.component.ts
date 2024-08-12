@@ -63,6 +63,7 @@ export class ProfileComponent   {
     this.getiamfolloinguserlist(this.userid);
     this.getiamfolloeduserlist(this.userid);
     this.getuserdetailsFrommethod(this.getfrommethoduserid);
+ 
     });
  
 
