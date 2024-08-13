@@ -25,14 +25,22 @@
 
     <div class="posttypeholder" *ngIf="userfrommethod.userid == user.userid">
       <div class="userdetails-holder">
-        <img *ngIf="user?.profileimage" [src]="'data:image/jpeg;base64,' + user?.profileimage" alt="Profile Image"  class="profileimage" >
+            <div class="inner-userdetails-holder">
+              <img *ngIf="user?.profileimage" [src]="'data:image/jpeg;base64,' + user?.profileimage" alt="Profile Image"  class="profileimage" >
 
-        <h2>Hi, {{username}}</h2>
-    
+              <h2>Hi, {{username}}</h2>
+
+            </div>
+        <span class="creategroup"  (click)="toggleOptionsSelecter($event)">
+       
+          Ravoom it
+  
+        </span>
       </div>
 
-    
-      <div class="options-holder">
+      
+
+      <div class="options-holder" *ngIf="showoptionsmenu">
 
         <div class="option" (click)="openaddpostscreen('t')">
           <div class="icon-wrapper"><img src="../../../assets/images/textpost.png" alt=""></div> 

@@ -25,13 +25,15 @@ position: relative;
 }
  
  .image-holder{
-  border-radius: 10px;
+ height: 100vh;
   display: flex;
   flex-direction: column;
-  width: 50%;
+ 
   padding: 10px;
  }
-
+ .image-holder img{
+  object-fit: contain;
+ }
  .text-holder{
   display: flex;
   flex-direction: column;
@@ -40,66 +42,18 @@ position: relative;
 font-size: 3vh;
 color: black;
  }
- .text-holder span{
-  color: black;
-  opacity: 0.7;
- }
-
-.contect-details-holder{
-display: flex;
-flex-direction: row;
-margin-top: 50px;
-}
-
-.need-help{
-  display: flex;
-  flex-direction: row;
- 
-  align-items: center;
-}
-.need-help img{
- width: 20px;
- height: 20px;
- margin-right: 10px;
-}
-.social-icon-holder{
-  display: flex;
-  flex-direction: row;
-  width: 20%;
- margin-top: 20px;
  
 
-}
-.need-help-button{
-padding: 10px;
-border-radius: 50px;
-border: 2px solid var(--primarycolor);
-cursor: pointer;
-margin-left: 10px;
-transition: background-color 0.3s;
-}
-.need-help-button:hover{
-  background-color:var(--primarycolor);
-  color: white;
-}
+ 
 
-.social-icon-holder img{
-  width: 30px;
-  margin: 2px;
-  height: 30px;
-  cursor: pointer;
-}
-
- .image-holder {
-width: 50%;
- }
+ 
+ 
+ 
 
  .main-image{
   display: block;
   margin: 0px auto;
   width: 50vh;
-  height: 40vh;
-  text-align: center;
  }
 
 .password-eye-holder{
@@ -224,10 +178,13 @@ input[type="password"]:focus,
 input[type="number"]:focus,
 input[type="date"]:focus,
 input[type="file"]:focus {
-  border-color: #0400fc; 
+  border-color:var(--primarycolor); 
   box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);  
   outline: none;  
 }
+
+
+
 button {
   width: 100%;
   padding: 10px;

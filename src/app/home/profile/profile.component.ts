@@ -41,6 +41,7 @@ export class ProfileComponent   {
   username:string = "";
  
   showfeedBool:boolean = true;
+  showoptionsmenu:boolean=false;
   loading = false;
   showiamfolloeduserlistBool:boolean = false;
   showiamfollowinguserlistBool:boolean = false;
@@ -176,6 +177,14 @@ createBlobUrl(base64: string, contentType: string): string {
 }
 
 
+
+toggleOptionsSelecter(e:Event):void{
+  e.preventDefault();
+  e.stopPropagation();
+
+  this.showoptionsmenu=!this.showoptionsmenu;
+
+}
 
 
 openaddpostscreen(type: string): void {

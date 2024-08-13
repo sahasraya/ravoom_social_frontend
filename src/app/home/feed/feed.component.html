@@ -9,7 +9,19 @@
 
 
 
-<app-add-post (postAdded)="onPostAdded()" *ngIf="openaddpostscreenbool" [postType]="postType"
+<div class="main-outer-holder">
+
+
+
+  <div class="left-user-holder">
+    <app-feedscreen-user-list></app-feedscreen-user-list>
+  </div>
+
+
+
+
+
+  <app-add-post (postAdded)="onPostAdded()" *ngIf="openaddpostscreenbool" [postType]="postType"
   (closePost)="openaddpostscreenbool = false">
 </app-add-post>
 
@@ -40,6 +52,7 @@
 
 <div class="feed-container">
 
+  
 
   <div class="posttypeholder" *ngIf="userid !=''">
     <div class="userdetails-holder" >
@@ -51,18 +64,28 @@
       </div>
 
 
-      <span class="creategroup" (click)="createnewgroup()">
-        <img src="../../../assets/images/add.png" alt="" *ngIf="userid != ''">
-        group
+      <div class="button-holder-inner">
+        <span class="creategroup" (click)="toggleOptionsSelecter($event)" >
+       
+          Ravoom it
+  
+        </span>
+  
+  
+        <span class="creategroup" (click)="createnewgroup()">
+          <img src="../../../assets/images/add.png" alt=""  >
+          group
+  
+        </span>
 
-      </span>
+      </div>
 
 
 
     </div>
 
 
-    <div class="options-holder">
+    <div class="options-holder" *ngIf="showoptionsmenu">
 
       <div class="option" (click)="openaddpostscreen('t')">
         <div class="icon-wrapper"><img src="../../../assets/images/textpost.png" alt=""></div> 
@@ -103,4 +126,23 @@
 
 
   </div>
+</div>
+
+
+
+
+<div class="right-group-holder">
+
+
+<app-feedscreen-group-list></app-feedscreen-group-list>
+
+   
+
+
+</div>
+
+
+
+
+
 </div>

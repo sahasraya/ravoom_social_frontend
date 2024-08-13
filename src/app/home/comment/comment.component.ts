@@ -70,6 +70,7 @@ export class CommentComponent implements OnInit {
 
     this.getpostcommentCount(this.postid);
 
+
   }
 
 
@@ -321,6 +322,7 @@ export class CommentComponent implements OnInit {
             this.http.post<any>(`${this.APIURL}get_images_group`, formDataimage).subscribe({
               next: imageResponse => {
                 this.images = imageResponse.map((img: any) => this.createBlobUrl(img.image, 'image/jpeg'));
+             
 
 
               }
@@ -358,7 +360,7 @@ export class CommentComponent implements OnInit {
             this.http.post<any>(`${this.APIURL}get_images`, formDataimage).subscribe({
               next: imageResponse => {
                 this.images = imageResponse.map((img: any) => this.createBlobUrl(img.image, 'image/jpeg'));
-
+        
 
               }
 

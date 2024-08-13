@@ -146,7 +146,7 @@
    
  
  <span *ngIf="this.userid !='' && userid != post.userid && post.posttype !='group'">
-  <button (click)="iamstartedtofollow(post.userid)"  >{{followButtonText}}</button>
+  <span (click)="iamstartedtofollow(post.userid)" class="comment-button"  >{{followButtonText}}</span>
 
  </span>
 

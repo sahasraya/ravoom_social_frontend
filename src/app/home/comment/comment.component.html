@@ -44,7 +44,13 @@
     
       </div>
  
-      <div *ngIf="post.posttype === 'image'" class="post-media">
+      <div *ngIf="post.posttype === 'image'" class="image-post-media">
+
+        <span class="numberofimages"  >{{images.length}}</span>
+
+
+
+
         <img [src]="'data:image/jpeg;base64,' + post.post" alt="Post Image" (click)="showImageSliderMethod(images)" >
 
  

@@ -8,6 +8,8 @@ import { PostComponent } from '../../widgets/post/post.component';
 import { NotificationComponent } from '../notification/notification.component';
 import { CreateGroupComponent } from '../../widgets/create-group/create-group.component';
 import { HeaderComponent } from '../../widgets/header/header.component';
+import { FeedscreenUserListComponent } from '../../widgets/feedscreen-user-list/feedscreen-user-list.component';
+import { FeedscreenGroupListComponent } from '../../widgets/feedscreen-group-list/feedscreen-group-list.component';
 
 
 @Component({
@@ -21,7 +23,9 @@ import { HeaderComponent } from '../../widgets/header/header.component';
     PostComponent,
     NotificationComponent,
     CreateGroupComponent,
-    HeaderComponent
+    HeaderComponent,
+    FeedscreenUserListComponent,
+    FeedscreenGroupListComponent,
   ],
   templateUrl: './feed.component.html',
   styleUrl: './feed.component.css'
@@ -35,6 +39,7 @@ export class FeedComponent {
   offset = 0;
   loading = false;
   iscreatenewgroupopen: boolean = false;
+  showoptionsmenu:boolean=false;  
   userid:string = "";
   postType: string = "";
   user: any;
@@ -77,6 +82,17 @@ async getuserdetails(userid:string):Promise<void>{
     this.iscreatenewgroupopen = false;
 
   }
+
+
+  toggleOptionsSelecter(e:Event):void{
+    e.preventDefault();
+    e.stopPropagation();
+
+    this.showoptionsmenu=!this.showoptionsmenu;
+
+  }
+
+
 
   getPostsFeed(): void {
     if (this.loading) return;
