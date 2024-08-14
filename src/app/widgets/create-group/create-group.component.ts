@@ -69,6 +69,10 @@ export class CreateGroupComponent implements OnInit{
 
 
 
+
+
+ 
+
   ongroupimageSelected(event: any): void {
     const file = event.target.files[0];
     if (file) {

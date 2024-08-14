@@ -1,21 +1,54 @@
 
-<div class="feed-container">
 
-  <div class="posts-container">
-    <div *ngFor="let post of posts; let i = index">
-      <app-post [post]="post" (delete)="handlePostDelete(i)"></app-post>
+<div class="main-outer-holder">
+
+
+
+  <div class="left-user-holder">
+    <app-feedscreen-user-list></app-feedscreen-user-list>
+  </div>
+
+
+
+
+
+
+  <div class="feed-container">
+
+    <div class="posts-container">
+      <div *ngFor="let post of posts; let i = index">
+        <app-post [post]="post" (delete)="handlePostDelete(i)"></app-post>
+      </div>
+  
+      
     </div>
+  
+  
+  
+  
+    <div class="nofollowers-banner" *ngIf="posts.length == 0">
+  
+  
+          <p>No followers yet</p>
+    </div>
+  </div>
 
+
+  <div class="right-group-holder">
+
+
+    <app-feedscreen-group-list></app-feedscreen-group-list>
     
-  </div>
+       
+    
+    
+    </div>
+    
 
 
-
-
-  <div class="nofollowers-banner" *ngIf="posts.length == 0">
-
-
-        <p>No followers yet</p>
-  </div>
 </div>
+
+
+
+
 

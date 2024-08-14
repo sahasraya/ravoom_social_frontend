@@ -4,12 +4,14 @@ import { ChangeDetectorRef, Component, HostListener, Inject } from '@angular/cor
 import { PLATFORM_ID } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { PostComponent } from '../../widgets/post/post.component';
+import { FeedscreenGroupListComponent } from '../../widgets/feedscreen-group-list/feedscreen-group-list.component';
+import { FeedscreenUserListComponent } from '../../widgets/feedscreen-user-list/feedscreen-user-list.component';
 
 
 @Component({
   selector: 'app-followers-feed',
   standalone: true,
-  imports: [CommonModule,RouterModule,PostComponent],
+  imports: [CommonModule,RouterModule,PostComponent, FeedscreenGroupListComponent,FeedscreenUserListComponent],
   templateUrl: './followers-feed.component.html',
   styleUrl: './followers-feed.component.css'
 })
@@ -47,7 +49,7 @@ export class FollowersFeedComponent {
     this.http.get<any[]>(url).subscribe({
       next: (res) => {
         this.posts = [...this.posts, ...this.processPosts(res)];
-   
+        console.log(this.posts);
         this.offset += this.limit;
         this.loading = false;
         this.cdr.detectChanges();  
@@ -105,6 +107,8 @@ export class FollowersFeedComponent {
   onScroll(event: Event): void {
     const element = document.documentElement;
     if (element.scrollHeight - element.scrollTop === element.clientHeight) {
+      localStorage.removeItem('scrollPosition');
+
       this.getFollowersPostsFeed();
     }
   }

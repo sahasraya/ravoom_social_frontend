@@ -1,45 +1,22 @@
-   <div class="heading-holder">
+<div class="heading-holder">
     <span>User list</span>
-   </div>
+</div>
 
 
 
-   <div class="inner-group-holder">
-    <a routerLink="#">
-     <div class="group">
-   
-       <img src="../../../assets/images/birthdate.png" alt="" class="img">
+<div class="inner-group-holder">
 
-  
-    
-
-    <div class="group-details-holder">
-        <span class="group-name">group name</span>
-        <small class="groupe-members">10</small>
+    <a *ngFor="let user of userList"   >
+    <div class="group">
+        <img [src]="user.profileimageUrl" alt="user Image" class="img">
+        <div class="group-details-holder">
+             <div class="group-type-holder">
+                <span class="group-name">{{ user.username }}</span>
+         
+             </div>
+         
+        </div>
     </div>
-
-
-   </div>
-    </a>
-
-
-    <a routerLink="#">
-     <div class="group">
-   
-       <img src="../../../assets/images/birthdate.png" alt="" class="img">
-
-  
-    
-
-    <div class="group-details-holder">
-        <span class="group-name">group name</span>
-        <small class="groupe-members">10</small>
-    </div>
-
-
-   </div>
-    </a>
-
-
+</a>
 
 </div>

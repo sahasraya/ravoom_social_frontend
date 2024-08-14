@@ -3,40 +3,19 @@
    </div>
 
         <div class="inner-group-holder">
-             <a routerLink="#">
-              <div class="group">
             
-                <img src="../../../assets/images/birthdate.png" alt="" class="img">
-
-           
-             
-
-             <div class="group-details-holder">
-                 <span class="group-name">group name</span>
-                 <small class="groupe-members">10</small>
-             </div>
-
-
-            </div>
-             </a>
-
-
-             <a routerLink="#">
-              <div class="group">
-            
-                <img src="../../../assets/images/birthdate.png" alt="" class="img">
-
-           
-             
-
-             <div class="group-details-holder">
-                 <span class="group-name">group name</span>
-                 <small class="groupe-members">10</small>
-             </div>
-
-
-            </div>
-             </a>
+            <a *ngFor="let group of populargrouplist"  (click) ="navigatetogroup(group.grouptype,group.groupid,group.groupownerid,group.groupname)">
+                <div class="group">
+                    <img [src]="group.groupImageUrl" alt="Group Image" class="img">
+                    <div class="group-details-holder">
+                         <div class="group-type-holder">
+                            <span class="group-name">&#64; {{ group.groupname }}</span>
+                            <small>( {{ group.grouptype }} )</small>
+                         </div>
+                        <small class="groupe-members">{{ group.members }} members</small>
+                    </div>
+                </div>
+            </a>
 
 
 

@@ -636,6 +636,11 @@ async changeusertypemodtouser(user: any, userid: any): Promise<void> {
 
   async joingroup(groupid:any):Promise<void>{
 
+       const formData = new FormData();
+        formData.append('userid', this.userid);
+        formData.append('groupid', groupid);
+
+
     if(this.btntext =="Leave group"){
   
      
@@ -643,9 +648,7 @@ async changeusertypemodtouser(user: any, userid: any): Promise<void> {
       const result = confirm("Do you need to leavd the group?");
       if(result){
         this.btntext="Join now";
-        const formData = new FormData();
-        formData.append('userid', this.userid);
-        formData.append('groupid', groupid);
+        
         
     
         this.http.post<any>(`${this.APIURL}join-group`, formData).subscribe({
@@ -665,6 +668,18 @@ async changeusertypemodtouser(user: any, userid: any): Promise<void> {
   
 
         this.btntext ="Leave group";
+
+        this.http.post<any>(`${this.APIURL}join-group`, formData).subscribe({
+          next: (response:any) => {
+            console.log (response);
+            this.getGroupDetails(groupid);
+            
+          },
+          error: (error: HttpErrorResponse) => {
+            console.error('Error adding user:', error);
+          }
+        });
+        
 
     }
     
