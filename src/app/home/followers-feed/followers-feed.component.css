@@ -41,3 +41,44 @@
     -ms-overflow-style: none;  
   margin-right: 1rem;
   }
+
+  .nofollowers-banner{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .nofollower-inner-holder{
+    width: 90%;
+    height: 30vh;
+
+    border-radius: 15px;
+    background-color: var(--icon-hover-backgroud-color);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 15px;
+  }
+  .addfollowersbtn{
+    width: 30%;
+    padding: 10px;
+    border: 1px solid rgb(43,149,236);
+    border-radius: 20px;
+    background-color: var(--primary-dark);
+
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background-color 0.3s ease;  
+  }
+.addfollowersbtn:hover{
+  background-color: rgba(43,149,236, 0.1);
+  color: rgb(43,149,236);
+  border: 1px solid rgb(43,149,236);
+}
+
+
+
+

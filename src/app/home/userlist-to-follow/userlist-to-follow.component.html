@@ -1,0 +1,23 @@
+<div class="userlist-wrapper">
+
+    <div *ngFor="let user of users ; let i = index" class="user-holder">
+        <img [src]=" user.profileimageUrl" alt="profile image of {{ user.username }}">
+  
+        <div class="user-details-holder">
+          <span class="username"><b>{{ user.username }}</b></span>
+      
+          <button class="followbutton" (click)="iamstartedtofollow(user.userid, i)">
+            {{ user.followButtonText }}
+          </button>
+        </div>
+      </div>
+
+
+   
+
+
+    
+
+    
+
+</div>

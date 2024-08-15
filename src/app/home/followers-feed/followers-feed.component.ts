@@ -6,12 +6,13 @@ import { RouterModule } from '@angular/router';
 import { PostComponent } from '../../widgets/post/post.component';
 import { FeedscreenGroupListComponent } from '../../widgets/feedscreen-group-list/feedscreen-group-list.component';
 import { FeedscreenUserListComponent } from '../../widgets/feedscreen-user-list/feedscreen-user-list.component';
+import { UserlistToFollowComponent } from '../userlist-to-follow/userlist-to-follow.component';
 
 
 @Component({
   selector: 'app-followers-feed',
   standalone: true,
-  imports: [CommonModule,RouterModule,PostComponent, FeedscreenGroupListComponent,FeedscreenUserListComponent],
+  imports: [CommonModule,RouterModule,PostComponent, FeedscreenGroupListComponent,FeedscreenUserListComponent,UserlistToFollowComponent],
   templateUrl: './followers-feed.component.html',
   styleUrl: './followers-feed.component.css'
 })
@@ -26,6 +27,7 @@ export class FollowersFeedComponent {
   offset = 0;
   loading = false;
   userid: string = "";
+  showtheuserlisttofollowBool:boolean = false;
 
   constructor(private http: HttpClient, private cdr: ChangeDetectorRef,@Inject(PLATFORM_ID) private platformId: Object) {}
 
@@ -64,6 +66,14 @@ export class FollowersFeedComponent {
 
 
   }
+
+
+
+  showtheuserlisttofollow():void{
+   this.showtheuserlisttofollowBool=true;
+  }
+
+
 
   private processPosts(posts: any[]): any[] {
     const processedPosts: any[] = [];

@@ -24,12 +24,21 @@
     </div>
   
   
+ 
   
   
     <div class="nofollowers-banner" *ngIf="posts.length == 0">
   
   
-          <p>No followers yet</p>
+          <div class="nofollower-inner-holder" *ngIf="!showtheuserlisttofollowBool">
+            <p>No followers yet</p>
+            <button class="addfollowersbtn" (click)="showtheuserlisttofollow()">add followers</button>
+          </div>
+
+
+              
+<app-userlist-to-follow *ngIf="showtheuserlisttofollowBool"></app-userlist-to-follow>
+
     </div>
   </div>
 

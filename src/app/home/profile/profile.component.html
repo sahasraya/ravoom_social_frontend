@@ -9,7 +9,7 @@
 
     </div>
 
-    <button (click)="openaddpostscreen('i')">open</button>
+    <!-- <button (click)="openaddpostscreen('i')">open</button> -->
 
 
 
@@ -23,7 +23,7 @@
 
 
 
-    <div class="posttypeholder" *ngIf="userfrommethod.userid == user.userid">
+    <div class="posttypeholder" *ngIf="userfrommethod?.userid && userfrommethod.userid == user.userid">
       <div class="userdetails-holder">
             <div class="inner-userdetails-holder">
               <img *ngIf="user?.profileimage" [src]="'data:image/jpeg;base64,' + user?.profileimage" alt="Profile Image"  class="profileimage" >
@@ -70,6 +70,13 @@
       </div>
 
 </div>
+
+
+
+
+
+
+
 
 
 
@@ -122,7 +129,7 @@
             
             <div *ngIf="user.showDropdown" class="dropdown-menu">
               <ul>
-                <li (click)="removeIAMFollowingUser(user.otheruserid)"> <img src="../../../assets/images/unfollow.png" alt=""> Unfollow</li>
+                <li (click)="removeIAMFollowingUser($event,user.otheruserid)"> <img src="../../../assets/images/unfollow.png" alt=""> Unfollow</li>
                 <li> <img src="../../../assets/images/complain.png" alt=""> Report</li>
               </ul>
             </div>
@@ -137,6 +144,7 @@
 
         <div class="noiamfollowinguserlist" *ngIf="iamfollowinguserslist.length == 0">
                           <p>No following users</p>
+                          <button class="addfollowersbtn" (click)="showtheuserlisttofollow()" *ngIf="getfrommethoduserid !='' ">add followers</button>
         </div>
       </div>
 

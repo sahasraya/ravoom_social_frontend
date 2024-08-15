@@ -1,0 +1,74 @@
+.user-holder {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #ced4da;
+  border-radius: 10px;
+  padding: 5px;
+  margin: 5px;
+  overflow: hidden;  
+  position: relative; 
+}
+
+.user-holder img {
+  border-radius: 10px;
+  object-fit: cover;
+  height: 250px;
+  width: 220px;
+  transition: transform 0.3s ease-in-out, filter 0.3s ease-in-out;
+}
+
+.user-holder:hover img {
+  transform: scale(1.05); 
+  filter: brightness(0.7);  
+}
+
+.user-holder::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 100%;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0));
+  z-index: 1;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.user-holder:hover::before {
+  opacity: 1;
+}
+
+.user-details-holder {
+  display: flex;
+  flex-direction: column;
+  margin: 10px;
+  z-index: 2;  
+}
+
+.followbutton {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid rgba(43, 149, 236, 0);
+  border-radius: 5px;
+  background-color: rgb(43,149,236);
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: background-color 0.3s ease, transform 0.3s ease-in-out;  
+}
+
+.followbutton:hover {
+  background-color: rgba(43,149,236, 0.1);
+  color: rgb(43,149,236);
+  border: 1px solid rgb(43,149,236);
+  transform: translateY(-3px);  
+}
+
+.userlist-wrapper {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+}

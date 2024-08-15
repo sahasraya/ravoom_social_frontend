@@ -2,7 +2,7 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { HttpClient, HttpClientModule, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { ChangeDetectorRef, Component, HostListener, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ActivatedRoute, RouterModule, RouterOutlet } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule, RouterOutlet } from '@angular/router';
 import { PostComponent } from '../../widgets/post/post.component';
 import { AddPostComponent } from '../../widgets/add-post/add-post.component';
 import { ImageLargerComponent } from '../../widgets/image-larger/image-larger.component';
@@ -52,18 +52,25 @@ export class ProfileComponent   {
   iamfollowinguserslist: any[] = [];
   iamfolloweduserslist: any[] = [];
 
-  constructor(private fb: FormBuilder, private http: HttpClient, private route: ActivatedRoute,private cdref: ChangeDetectorRef) { }
+  constructor(private fb: FormBuilder, private http: HttpClient, private route: ActivatedRoute,private cdref: ChangeDetectorRef,private router:Router) { }
 
   ngOnInit(): void {
 
     this.route.paramMap.subscribe(params => {
     this.userid = params.get('uid')!;
     this.getfrommethoduserid = localStorage.getItem('wmd') || '';
-    this.getUserDetails();
     this.loadInitialData();
-    this.getiamfolloinguserlist(this.userid);
-    this.getiamfolloeduserlist(this.userid);
-    this.getuserdetailsFrommethod(this.getfrommethoduserid);
+   
+    if(this.userid !=''){
+      this.getUserDetails();
+      this.getiamfolloinguserlist(this.userid);
+      this.getiamfolloeduserlist(this.userid);
+      this.getuserdetailsFrommethod(this.getfrommethoduserid);
+    }else{
+      this.iamfollowinguserslist = [];
+      this.iamfolloweduserslist= [];
+      this.userfrommethod = null;
+    }
  
     });
  
@@ -91,6 +98,11 @@ export class ProfileComponent   {
       }
     });
   }
+  showtheuserlisttofollow():void{
+    this.router.navigate(['/home/userlist-to-follow'])
+  }
+
+
 
  async getiamfolloeduserlist(userid: string): Promise<void> {
     const formData = new FormData();
@@ -221,6 +233,7 @@ openaddpostscreen(type: string): void {
 onScroll(event: Event): void {
     const element = document.documentElement;
     if (element.scrollHeight - element.scrollTop === element.clientHeight) {
+      localStorage.removeItem('scrollPosition');
   
         this.getPostsFeed();
     }
@@ -290,7 +303,9 @@ showiamfolloeduserlist():void{
 
 
  
-async removeIAMFollowingUser(userid: string): Promise<void> {
+async removeIAMFollowingUser(e:Event, userid: string): Promise<void> {
+  e.preventDefault();
+  e.stopPropagation();
  
   const result = confirm("Do you want to remove this follower?");
   if (result) {
@@ -301,7 +316,6 @@ async removeIAMFollowingUser(userid: string): Promise<void> {
     this.http.post<any>(`${this.APIURL}remove-user-from-iamfollowing`, formData).subscribe({
         next: (response: any) => {
             if (response.message === "removed") {
-              alert('User removed');
               this.getiamfolloinguserlist(this.userid);
               this.getiamfolloeduserlist(this.userid);
             }

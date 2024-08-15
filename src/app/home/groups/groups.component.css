@@ -309,8 +309,13 @@ input[type="file"] {
     display: block;
     color: #333;
 }
-
-.dropdown-item:hover {
+.dropdown-item-remove{
+  padding: 8px 16px;
+  text-decoration: none;
+  display: block;
+  color:red;
+}
+.dropdown-item:hover,.dropdown-item-remove:hover {
     background-color: #f1f1f1;
     cursor: pointer;
 }

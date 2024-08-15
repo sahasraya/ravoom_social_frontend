@@ -33,7 +33,9 @@ export class HeaderComponent implements OnInit{
 
   ngOnInit(): void {
     this.userid = localStorage.getItem('wmd') || '';
-    this.getuserdetails(this.userid);
+    if(this.userid !=''){
+      this.getuserdetails(this.userid);
+    }
 
 
     this.renderer.listen('window', 'load', () => {
@@ -62,6 +64,7 @@ async updatethehiddenvisibility(userid:any){
 
     this.http.post(this.APIURL + 'update_online_status_hidden', formData).subscribe({
       next: (response: any) => {
+    
  
         this.showtheonlinestatusindicator=false;
    
@@ -159,9 +162,28 @@ async updatethehiddenvisibility(userid:any){
   }
 
   getNotifications(): void {
+    this.updatingusernotificationseenstatus();
     this.notificationService.triggerNotification();
   }
 
+  async updatingusernotificationseenstatus(): Promise<void> {
+    const formData = new FormData();
+    formData.append('userid', this.userid.toString());
+
+    this.http.post<any>(`${this.APIURL}update_user_notification_seen_status`, formData).subscribe({
+        next: (response: any) => {
+     
+            if (response.message === "seen") {
+                this.getuserdetails(this.userid);
+            } else {
+                console.error('Unexpected response message:', response.message);
+            }
+        },
+        error: (error: HttpErrorResponse) => {
+            console.error('There was an error!', error);
+        }
+    });
+}
 
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent): void {

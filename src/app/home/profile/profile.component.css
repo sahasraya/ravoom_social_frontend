@@ -6,10 +6,11 @@
 .user-details-hodler img {
   border-radius: 50%;
   border: 2px solid grey;
-  width: 350px;  
-  height: 350px; 
+  width: 250px;  
+  height: 250px; 
   object-fit: cover;  
   margin-bottom: 10px; 
+  margin-top: 15px;
 }
 .user-details-hodler{
   margin: 0px auto;
@@ -168,9 +169,9 @@ width: 20vh;
   z-index: 1000;
 }
 .dropdown-menu img{
-  width: 25px;
+  width: 20px;
   margin-right: 5px;
-  height: 25px;
+  height: 20px;
 }
 .dropdown-menu ul {
   list-style: none;
@@ -266,6 +267,27 @@ width: 20vh;
 .icon-wrapper img {
   max-width: 100%;
 }
+
+
+.addfollowersbtn{
+  width: 30%;
+  padding: 10px;
+  border: 1px solid rgb(43,149,236);
+  border-radius: 20px;
+  background-color: var(--primary-dark);
+
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: background-color 0.3s ease;  
+}
+.addfollowersbtn:hover{
+background-color: rgba(43,149,236, 0.1);
+color: rgb(43,149,236);
+border: 1px solid rgb(43,149,236);
+}
+
 
 
 

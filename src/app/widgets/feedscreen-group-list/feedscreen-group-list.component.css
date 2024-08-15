@@ -56,4 +56,37 @@
     flex-direction: row;
     gap: 3px;
   }
+  .searchgroupinput{
+    width: 100%;
+    padding: 15px;
+    border-radius: 25px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+    font-size: 15px;
+    font-family: 'Open Sans', sans-serif;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;  
+  }
+  .searchgroupinput:focus{
+    border-color:var(--primarycolor); 
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);  
+    outline: none; 
+  }
+  .nogroupfound-banner{
   
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    margin: 0 auto;
+    border-radius: 15px;
+    align-items: center;
+    background-color: var(--icon-hover-backgroud-color);
+    padding: 10px;
+  }
+  .nogroupfound-banner span{
+    word-wrap: break-word;  
+    max-width: 100%; 
+    text-align: center;
+  }

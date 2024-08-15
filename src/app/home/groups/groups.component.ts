@@ -587,26 +587,42 @@ async changeusertypemodtouser(user: any, userid: any): Promise<void> {
 
 
 
-  async removeuser(user: any,userid: any):Promise<void>{
-    const formData = new FormData();
-    formData.append('userid', userid);
-    formData.append('groupid', this.groupid);
-    
+  async removeuser(user: any,userid: any,username:string):Promise<void>{
 
-    this.http.post<any>(`${this.APIURL}remove-user-from-group`, formData).subscribe({
-      next: (response:any) => {
-        this.getGroupDetails(this.groupid);
-        this.toggleDropdown(user);
-        
-      },
-      error: (error: HttpErrorResponse) => {
-        console.error('Error adding user:', error);
-      }
-    });
+    const result = confirm("Do you need to remove " + username);
+    if(result){
+      const formData = new FormData();
+      formData.append('userid', userid);
+      formData.append('groupid', this.groupid);
+      
+  
+      this.http.post<any>(`${this.APIURL}remove-user-from-group`, formData).subscribe({
+        next: (response:any) => {
+          this.getGroupDetails(this.groupid);
+          this.toggleDropdown(user);
+          
+        },
+        error: (error: HttpErrorResponse) => {
+          console.error('Error adding user:', error);
+        }
+      });
+    }
+
+
+
+
+    
 
   }
 
 
+  // @HostListener('document:click', ['$event'])
+  // closeAllDropdowns(event?: MouseEvent): void {
+  //   this.post.showDropdown = false;
+  //   this.cdref.detectChanges();
+  // }
+
+  
 
   async acceptuser(user: any, userid: any): Promise<void> {
     const formData = new FormData();

@@ -16,6 +16,7 @@ import { GroupsComponent } from './home/groups/groups.component';
 import { EmailConfirmationUserSignUpComponent } from './auth/email-confirmation-user-sign-up/email-confirmation-user-sign-up.component';
 import { ResetPasswordComponent } from './home/reset-password/reset-password.component';
 import { ForgetPasswordComponent } from './auth/forget-password/forget-password.component';
+import { UserlistToFollowComponent } from './home/userlist-to-follow/userlist-to-follow.component';
 
 export const routes: Routes = [
 
@@ -66,6 +67,12 @@ export const routes: Routes = [
             { path: 'profile/:uid', component: ProfileComponent }
         ]
     },
+    {
+        path:"home",component:HomeComponent,children:[
+            { path: 'userlist-to-follow', component: UserlistToFollowComponent }
+        ]
+    },
+
     {
         path:"home",component:HomeComponent,children:[
             { path: 'result/:text', component: SearchResultByEnterComponent }

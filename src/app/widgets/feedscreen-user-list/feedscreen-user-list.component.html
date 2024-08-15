@@ -5,9 +5,12 @@
 
 
 <div class="inner-group-holder">
+    <input type="text" [(ngModel)]="userSearchText" placeholder="search user" (input)="filterTheusers()" class="searchgroupinput">
 
-    <a *ngFor="let user of userList"   >
-    <div class="group">
+    <span class="seemoreuserbutton" (click)="navigatetolisttofollowuserscreen()" *ngIf="userid !=''">more</span>
+
+    <a *ngFor="let user of userList"  >
+    <div class="group" (click)="navigatetouser(user.userid)">
         <img [src]="user.profileimageUrl" alt="user Image" class="img">
         <div class="group-details-holder">
              <div class="group-type-holder">
@@ -18,5 +21,12 @@
         </div>
     </div>
 </a>
+
+
+<div class="nogroupfound-banner" *ngIf="userList.length ==0">
+    <span>no user found</span>
+</div>
+
+
 
 </div>

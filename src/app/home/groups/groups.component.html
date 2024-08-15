@@ -117,7 +117,7 @@
 
 
                        <a class="dropdown-item" *ngIf="this.currunusertype =='admin' || this.currunusertype =='mod'" (click)="changeusertype(user,user.userid , user.username,'user')">Make as User</a>
-                       <a class="dropdown-item" *ngIf="this.currunusertype =='admin'"  (click)="removeuser(user,user.userid)">Remove {{user.username}}</a>
+                       <a class="dropdown-item" *ngIf="this.currunusertype =='admin'"  (click)="removeuser(user,user.userid,user.username)">Remove {{user.username}}</a>
                    </div>
                </div>
 
@@ -165,7 +165,7 @@
 
                       <a class="dropdown-item" *ngIf="this.currunusertype =='admin'" (click)="acceptuser(user,user.userid)">Accept {{user.username}}</a>
                    
-                      <a class="dropdown-item" *ngIf="this.currunusertype =='admin'"  (click)="removeuser(user,user.userid)">Remove {{user.username}}</a>
+                      <a class="dropdown-item-remove" *ngIf="this.currunusertype =='admin'"  (click)="removeuser(user,user.userid,user.username)">Remove {{user.username}}</a>
                   </div>
               </div>
 
