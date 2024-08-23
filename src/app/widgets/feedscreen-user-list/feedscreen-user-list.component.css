@@ -19,7 +19,7 @@
     opacity: 0.8;
   }
   .inner-group-holder{
-    padding: 10px;
+ 
     margin-left: 10px;
     margin-right: 10px;
   }
@@ -102,3 +102,92 @@
      color: var(--primarycolor);
 
   }
+
+  .options-holder {
+    display: flex;
+    flex-direction: row;
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 10px;
+    transition: background-color 0.3s;
+  }
+  .options-holder:hover{
+    background-color: var(--icon-hover-backgroud-color);
+  }
+  .options-holder img{
+    width: 25px;
+    margin-right: 10px;
+    
+  }
+  .videos{
+    height: 200px;
+    border-radius: 10px;
+  }
+
+
+  .backarrow {
+    width: 40px;
+    height: 40px;
+    padding: 5px;
+    border-radius: 50%;
+    background-color: var(--icon-hover-backgroud-color);
+    position: relative;
+    left: 5px;
+    transition: background-color 0.3s;
+    cursor: pointer;
+    top: -2px;
+  }
+  .morevidoeicon{
+    margin-left: 15px;
+    width: 40px;
+    height: 40px;
+    padding: 5px;
+    border-radius: 50%;
+    background-color: var(--icon-hover-backgroud-color);
+    position: relative;
+    left: 5px;
+    transition: background-color 0.3s;
+    cursor: pointer;
+    top: -2px;
+  }
+  .backarrow:hover,.morevidoeicon:hover{
+    background-color: var(--icon-backgroud-color);
+  
+  }
+  .btn-holder{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    margin-bottom: 10px;
+  }
+
+  .viode-holder {
+    padding-top: 15px;
+    overflow-y: auto;  
+    overflow-x: auto;  
+    height: 100vh;
+    position: relative;
+  }
+  
+ 
+  .viode-holder::-webkit-scrollbar {
+    width: 5px;  
+    height: 5px;  
+  }
+  
+  .viode-holder::-webkit-scrollbar-thumb {
+    background: var(--icon-hover-backgroud-color); 
+    border-radius: 10px;  
+  }
+  
+  .viode-holder::-webkit-scrollbar-track {
+    background: transparent;  
+  }
+  
+  /* For Firefox */
+  .viode-holder {
+    scrollbar-width: thin; 
+    scrollbar-color: var(--icon-hover-backgroud-color) transparent;  
+  }
+
+ 

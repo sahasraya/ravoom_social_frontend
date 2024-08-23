@@ -17,6 +17,7 @@ import { EmailConfirmationUserSignUpComponent } from './auth/email-confirmation-
 import { ResetPasswordComponent } from './home/reset-password/reset-password.component';
 import { ForgetPasswordComponent } from './auth/forget-password/forget-password.component';
 import { UserlistToFollowComponent } from './home/userlist-to-follow/userlist-to-follow.component';
+import { VideoSliderComponent } from './home/video-slider/video-slider.component';
 
 export const routes: Routes = [
 
@@ -47,6 +48,13 @@ export const routes: Routes = [
             { path: 'reset-password', component: ResetPasswordComponent }
         ]
     },
+
+    {
+        path:"home",component:HomeComponent,children:[
+            { path: 'slider', component: VideoSliderComponent }
+        ]
+    },
+
 
     
 

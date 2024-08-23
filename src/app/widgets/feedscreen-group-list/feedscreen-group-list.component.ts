@@ -16,7 +16,7 @@ export class FeedscreenGroupListComponent implements OnInit {
   APIURL = 'http://127.0.0.1:8000/';
   populargrouplist:any;
   userid:string="";
-  groupSearchText:string="";
+ 
 
 
   constructor(private http:HttpClient,private router:Router){}
@@ -49,30 +49,7 @@ export class FeedscreenGroupListComponent implements OnInit {
 
 
 
-
-async filterTheGroups(): Promise<void> {
-  const formData = new FormData();
-  formData.append('query', this.groupSearchText);
-
-  this.http.post<any>(`${this.APIURL}search-group-result`, formData).subscribe({
-    next: (response: any) => {
-      this.populargrouplist = response.groups;
-     
-
-      this.populargrouplist.forEach((group:any) => {
-        if (group.groupimage) {
-          group.groupImageUrl = this.createBlobUrl(group.groupimage, 'image/jpeg');
-        }
-      });
-
-      
-     
-    },
-    error: (error: HttpErrorResponse) => {
-      console.error('There was an error!', error);
-    }
-  });
-}
+ 
 
 
   base64ToBlob(base64: string, contentType: string = ''): Blob {

@@ -1,32 +1,76 @@
-<div class="heading-holder">
+<!-- <div class="heading-holder">
     <span>User list</span>
-</div>
+</div> -->
 
 
 
-<div class="inner-group-holder">
-    <input type="text" [(ngModel)]="userSearchText" placeholder="search user" (input)="filterTheusers()" class="searchgroupinput">
+<div class="inner-group-holder"    >
+ 
 
-    <span class="seemoreuserbutton" (click)="navigatetolisttofollowuserscreen()" *ngIf="userid !=''">more</span>
+ 
 
-    <a *ngFor="let user of userList"  >
-    <div class="group" (click)="navigatetouser(user.userid)">
-        <img [src]="user.profileimageUrl" alt="user Image" class="img">
-        <div class="group-details-holder">
-             <div class="group-type-holder">
-                <span class="group-name">{{ user.username }}</span>
+    <div class="userholder"  *ngIf="showuserBool">
+        <a *ngFor="let user of userList"  >
+            <div class="group" (click)="navigatetouser(user.userid)">
+                <img [src]="user.profileimageUrl" alt="user Image" class="img">
+                <div class="group-details-holder">
+                     <div class="group-type-holder">
+                        <span class="group-name">{{ user.username }}</span>
+                 
+                     </div>
+                 
+                </div>
          
-             </div>
+        
+            </div>
          
-        </div>
+        
+        </a>
     </div>
-</a>
-
-
-<div class="nogroupfound-banner" *ngIf="userList.length ==0">
-    <span>no user found</span>
-</div>
 
 
 
+
+
+
+
+
+
+
+<div class="options-holder" (click)="showvideos($event)" *ngIf="!showvideosBool">
+    <img src="../../../assets/images/videopost.png" alt="">
+    <span>viodes</span>
+ </div>
+
+
+
+
+
+ 
+
+ 
+<div class="viode-holder"  *ngIf="showvideosBool"   #videoHolder  >
+
+
+    <div class="btn-holder">
+        <img src="../../../assets/images/backarrow.png" alt="" class="backarrow" (click)="gobackfromviodes($event)">
+        <img src="../../../assets/images/morevideos.png" alt="" class="morevidoeicon" (click)="gotovideoslider($event)">
+    </div>
+
+
+    <div *ngFor="let video of videoList" class="video-container">
+        <video *ngIf="video.videoUrl" controls class="videos">
+          <source [src]="video.videoUrl" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
+      </div>
+    
+ </div>
+
+
+
+
+
+
+ 
 </div>

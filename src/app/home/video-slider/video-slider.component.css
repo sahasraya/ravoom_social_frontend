@@ -1,0 +1,52 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;  
+}
+
+.main-scroller-holder {
+  height: 100vh; 
+  width: 100%; 
+  overflow-y: scroll; 
+  scroll-snap-type: y mandatory;  
+  scrollbar-width: thin;  
+  margin: 0 auto;  
+}
+
+.innerholder {
+  height: 100%; 
+}
+
+.screen {
+  height: 100vh; 
+  width: 100%;  
+  scroll-snap-align: start; 
+  display: flex; 
+  justify-content: center;  
+  align-items: center; 
+  padding: 50px;
+}
+
+.video {
+  height: 80%;  
+  width: auto;  
+  max-width: 100%;  
+  border-radius: 10px;
+  
+}
+
+.main-scroller-holder::-webkit-scrollbar {
+  width: 5px;  
+}
+
+.main-scroller-holder::-webkit-scrollbar-track {
+  background: #f1f1f1;  
+}
+
+.main-scroller-holder::-webkit-scrollbar-thumb {
+  background: #888;  
+}
+
+.main-scroller-holder::-webkit-scrollbar-thumb:hover {
+  background: #555;  
+}

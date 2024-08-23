@@ -4,7 +4,6 @@
    </div>
 
         <div class="inner-group-holder">
-            <input type="text" [(ngModel)]="groupSearchText" placeholder="search group" (input)="filterTheGroups()" class="searchgroupinput">
             
             <a *ngFor="let group of populargrouplist"  (click) ="navigatetogroup(group.grouptype,group.groupid,group.groupownerid,group.groupname)">
                 <div class="group">
@@ -19,9 +18,7 @@
                 </div>
             </a>
 
-            <div class="nogroupfound-banner" *ngIf="populargrouplist.length ==0">
-                  <span>no group found</span>
-            </div>
+          
 
 
 

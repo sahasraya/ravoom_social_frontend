@@ -1,0 +1,13 @@
+<div class="main-scroller-holder" #videoHolder>
+    <div class="innerholder">
+      <div class="screen" *ngFor="let video of videoList; let i = index">
+        <video *ngIf="video.videoUrl" #videoElement controls class="video" [attr.id]="'video' + i">
+          <source [src]="video.videoUrl" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
+      </div>
+    </div>
+  </div>
+
+
+  
