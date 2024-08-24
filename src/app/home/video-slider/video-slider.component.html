@@ -1,13 +1,46 @@
 <div class="main-scroller-holder" #videoHolder>
-    <div class="innerholder">
-      <div class="screen" *ngFor="let video of videoList; let i = index">
-        <video *ngIf="video.videoUrl" #videoElement controls class="video" [attr.id]="'video' + i">
-          <source [src]="video.videoUrl" type="video/mp4">
-          Your browser does not support the video tag.
-        </video>
+  <a routerLink="/">
+    <img src="../../../assets/images/close.png" alt="" class="closeicon">
+  </a>
+
+  <div class="innerholder">
+    <div class="screen" *ngFor="let video of videoList; let i = index">
+ 
+      <div class="profile-container" *ngIf="!(getthecommentsBool && selectedPostId === video.postid)">
+        <img [src]="video.profileImageUrl" alt="User Profile Image" class="profile-image">
+        <div class="postdetails">
+          <p>{{video.username}}</p>
+          <small>{{ calculateTimeAgo(video.posteddate) }}</small>
+        </div>
+
       </div>
+
+ 
+      <div class="viode-inner-holder" *ngIf="!(getthecommentsBool && selectedPostId === video.postid)">
+        <span class="viodediscription">{{video.postdescription}}</span>
+
+                 <div class="inner1-holder">
+                  <video *ngIf="video.videoUrl" #videoElement controls class="video" [attr.id]="'video' + i">
+                    <source [src]="video.videoUrl" type="video/mp4">
+                    Your browser does not support the video tag.
+                  </video>
+          
+                  <div class="functions-btn-holder">
+                    
+          
+                    <div class="icon-wrapper" (click)="getthecomments($event, video.postid)">
+                      <img src="../../../assets/images/comment.png" alt="">
+                    </div>
+          
+                   
+                  </div>
+
+                 </div>
+      </div>
+ 
+         <div class="commentscreen-holder">
+          <app-comment *ngIf="getthecommentsBool && selectedPostId === video.postid" [postid]="selectedPostId"></app-comment>
+         </div>
     </div>
   </div>
-
-
-  
+</div>

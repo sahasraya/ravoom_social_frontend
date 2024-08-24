@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, HostListener, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ImageLargerComponent } from '../../widgets/image-larger/image-larger.component';
@@ -14,8 +14,11 @@ import { ReporttingComponent } from '../../widgets/reportting/reportting.compone
   styleUrl: './comment.component.css'
 })
 export class CommentComponent implements OnInit {
+  @Input() postid: string | null = null;
 
-  postid: any;
+
+  
+ 
   post: any;
   images: any;
   APIURL = 'http://127.0.0.1:8000/';
@@ -57,7 +60,9 @@ export class CommentComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.postid = this.route.snapshot.paramMap.get('postid');
+    if (!this.postid) {
+      this.postid = this.route.snapshot.paramMap.get('postid');
+    }
     this.groupornormalpost = this.route.snapshot.paramMap.get('type');
     this.fromwhatscreen = this.route.snapshot.paramMap.get('screen')!;
 
@@ -256,7 +261,7 @@ export class CommentComponent implements OnInit {
     }
 
     const params = new HttpParams()
-        .set('postid', this.postid.toString())
+        .set('postid', this.postid!.toString())
         .set('limit', '10')
         .set('offset', this.offset.toString());
 
@@ -306,7 +311,7 @@ export class CommentComponent implements OnInit {
   getPostData(): void {
 
     const formData = new FormData();
-    formData.append('postid', this.postid);
+    formData.append('postid', this.postid!);
 
     if (this.groupornormalpost == "g") {
 
@@ -318,7 +323,7 @@ export class CommentComponent implements OnInit {
 
 
             const formDataimage = new FormData();
-            formDataimage.append('postid', this.postid);
+            formDataimage.append('postid', this.postid!);
             this.http.post<any>(`${this.APIURL}get_images_group`, formDataimage).subscribe({
               next: imageResponse => {
                 this.images = imageResponse.map((img: any) => this.createBlobUrl(img.image, 'image/jpeg'));
@@ -356,7 +361,7 @@ export class CommentComponent implements OnInit {
           if (this.post.posttype == "image") {
 
             const formDataimage = new FormData();
-            formDataimage.append('postid', this.postid);
+            formDataimage.append('postid', this.postid!);
             this.http.post<any>(`${this.APIURL}get_images`, formDataimage).subscribe({
               next: imageResponse => {
                 this.images = imageResponse.map((img: any) => this.createBlobUrl(img.image, 'image/jpeg'));

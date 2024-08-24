@@ -8,6 +8,7 @@
     margin-top: 10px;
     width: 100%;
     max-width: 400px;
+    margin: 0 auto;
   }
   
  
@@ -258,6 +259,7 @@ input[type="text"]:focus {
   border-radius: 20px;
   background-color: var(--primary-dark);
   color: white;
+  text-align: center;
   cursor: pointer;
   transition: background-color 0.5s, color 0.5s;
 }

@@ -397,6 +397,16 @@ max-width: 100%;
   background-color: rgba(255, 255, 255, 0.644);
 }
 
+.postdiscription{
+  max-width: 680px;
+  display: block;  
+  
+  word-wrap: break-word;  
+  overflow-wrap: break-word;  
+  white-space: normal;
+  margin-bottom: 10px;
+}
+
 
  
 

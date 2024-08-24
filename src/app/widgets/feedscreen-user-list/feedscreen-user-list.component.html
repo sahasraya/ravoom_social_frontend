@@ -54,7 +54,7 @@
 
     <div class="btn-holder">
         <img src="../../../assets/images/backarrow.png" alt="" class="backarrow" (click)="gobackfromviodes($event)">
-        <img src="../../../assets/images/morevideos.png" alt="" class="morevidoeicon" (click)="gotovideoslider($event)">
+        <img src="../../../assets/images/morevideos.png" alt="" class="morevidoeicon" (click)="gotovideoslider($event)" *ngIf="!noviodeposts">
     </div>
 
 
@@ -65,6 +65,16 @@
         </video>
       </div>
     
+
+        
+     <div class="no-viode-posts-banner" *ngIf="noviodeposts">
+
+        <img src="../../../assets/images/videopost.png" alt="">
+        <span>No videos yet !</span>
+
+     </div>
+
+
  </div>
 
 

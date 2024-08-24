@@ -1,8 +1,4 @@
-html, body {
-  margin: 0;
-  padding: 0;
-  overflow: hidden;  
-}
+ 
 
 .main-scroller-holder {
   height: 100vh; 
@@ -19,23 +15,25 @@ html, body {
 
 .screen {
   height: 100vh; 
-  width: 100%;  
+  width: 70%;  
   scroll-snap-align: start; 
   display: flex; 
   justify-content: center;  
   align-items: center; 
   padding: 50px;
+  flex-direction: column;
+  margin: 0 auto;
 }
 
 .video {
-  height: 80%;  
+   
   width: auto;  
   max-width: 100%;  
   border-radius: 10px;
   
 }
 
-.main-scroller-holder::-webkit-scrollbar {
+.main-scroller-holder::-webkit-scrollbar  {
   width: 5px;  
 }
 
@@ -50,3 +48,124 @@ html, body {
 .main-scroller-holder::-webkit-scrollbar-thumb:hover {
   background: #555;  
 }
+
+
+.closeicon {
+  padding: 15px;
+  width: 50px;
+  background-color: var(--icon-backgroud-color);
+  border-radius: 50%;
+  position: absolute;
+  top: 100px;
+  right: 20px;
+  cursor: pointer;
+  transition: transform 0.5s, background-color 0.5s;  
+}
+
+ 
+
+
+.closeicon:hover {
+  transform: rotate(90deg); 
+  background-color:var(--icon-hover-backgroud-color);
+}
+
+
+.profile-container{
+  display: flex;
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.profile-container img{
+  border-radius: 50%;
+  width: 80px;
+  height: 80px;
+}
+.postdetails{
+  display: flex;
+  flex-direction: column;
+  margin-left: 15px;
+
+}
+
+.postdetails p{
+  color: black;
+  font-weight: bold;
+}
+
+.viode-inner-holder{
+  display: flex;
+  flex-direction: column;
+ 
+}
+
+ .inner1-holder{
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  margin: 0 auto;
+  justify-content: center;
+ 
+  align-items: flex-end;
+ }
+
+
+.functions-btn-holder{
+  display: flex;
+  gap: 5px;
+  flex-direction: column;
+  padding: 10px;
+  height: 50%;
+  justify-content: flex-end;
+}
+
+
+.icon-wrapper {
+  width: 50px;
+  height: 50px;
+  background-color: var(--icon-hover-backgroud-color);
+  border-radius: 50%;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 10px;
+  padding: 10px;
+  transition: transform 0.5s, background-color 0.5s;  
+cursor: pointer;
+}
+
+.icon-wrapper img {
+  max-width: 100%;
+}
+
+.icon-wrapper:hover{
+  background-color:var(--icon-backgroud-color);
+}
+.commentscreen-holder {
+  overflow-y: scroll;  
+  width:max-content;  
+  scrollbar-width: none; 
+  -ms-overflow-style: none; 
+}
+ 
+.commentscreen-holder::-webkit-scrollbar {
+  display: none;  
+}
+
+.viodediscription{
+  max-width: 60vw;
+  display: block;  
+  
+  word-wrap: break-word;  
+  overflow-wrap: break-word;  
+  white-space: normal;
+  margin-bottom: 10px;
+}
+
+ 
+
+
+
+ 

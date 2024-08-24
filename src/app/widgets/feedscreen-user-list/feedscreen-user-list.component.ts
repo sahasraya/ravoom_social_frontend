@@ -25,6 +25,7 @@ export class FeedscreenUserListComponent  implements OnInit{
   videoList:any[] = [];
   userid:string="";
   videoUrl:string ="";
+  noviodeposts:boolean =false;
   offset = 0;
   limit = 5;
   isLoading = false;
@@ -118,18 +119,30 @@ export class FeedscreenUserListComponent  implements OnInit{
     this.isLoading = true;
     this.http.get<any[]>(`${this.APIURL}get_all_video_posts?limit=${this.limit}&offset=${this.offset}`).subscribe({
       next: (response: any[]) => {
-        const processedVideos = response.map(video => {
-          if (video.post) {
-            const base64Data = video.post;
-            const blob = this.convertBase64ToBlob(base64Data, 'video/mp4');
-            video.videoUrl = URL.createObjectURL(blob);
-          }
-          return video;
-        });
+        
+        if(response.length === 0){
+           this.noviodeposts = true;
+        }else{
+          this.noviodeposts = false;
+
+
+          const processedVideos = response.map(video => {
+       
+            if (video.post) {
+              const base64Data = video.post;
+              const blob = this.convertBase64ToBlob(base64Data, 'video/mp4');
+              video.videoUrl = URL.createObjectURL(blob);
+            }
+            return video;
+          });
+
+          this.videoList = [...this.videoList, ...processedVideos];
+          this.offset += this.limit;
+          this.isLoading = false;
+
+        }
   
-        this.videoList = [...this.videoList, ...processedVideos];
-        this.offset += this.limit;
-        this.isLoading = false;
+       
       },
       error: (error: HttpErrorResponse) => {
         console.error('There was an error!', error);

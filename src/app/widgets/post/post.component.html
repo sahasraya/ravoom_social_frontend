@@ -56,7 +56,7 @@
 
   </div>
  
-   <small >{{post.postdescription}}</small>
+   <small class="postdiscription">{{post.postdescription}}</small>
   <div *ngIf="userid != post.userid">
     <h3 *ngIf="post.posttype === 'group'"> {{post.username}} has created a {{post.grouptype}} group. {{post.grouptype === 'private' ? 'Get permission to join.' :'You can join now.'}}</h3>
   </div>

@@ -106,7 +106,7 @@
   .options-holder {
     display: flex;
     flex-direction: row;
-    padding: 10px;
+    padding: 15px;
     cursor: pointer;
     border-radius: 10px;
     transition: background-color 0.3s;
@@ -184,10 +184,29 @@
     background: transparent;  
   }
   
-  /* For Firefox */
+ 
   .viode-holder {
     scrollbar-width: thin; 
     scrollbar-color: var(--icon-hover-backgroud-color) transparent;  
+  }
+
+  .no-viode-posts-banner{
+    width: 90%;
+    margin: 0 auto;
+    border-radius: 10px;
+    background-color: var(--icon-hover-backgroud-color);
+    display: flex;
+    flex-direction: column;
+    padding: 15px;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .no-viode-posts-banner img{
+    width: 50px;
+
+  }
+  .no-viode-posts-banner span{
+    margin-top: 10px;
   }
 
  
