@@ -45,6 +45,25 @@
 
 
 
+ <div class="options-holder" (click)="showlinks($event)"  *ngIf="!showlinksBool">
+    <img src="../../../assets/images/imagepost.png" alt="">
+    <span>links</span>
+ </div>
+
+
+
+
+ <div class="options-holder" (click)="showtexts($event)"  *ngIf="!showtextsBool">
+    <img src="../../../assets/images/textpost.png" alt="">
+    <span>texts</span>
+ </div>
+
+
+
+
+
+
+
 
  
 
@@ -76,6 +95,98 @@
 
 
  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ <div class="viode-holder"  *ngIf="showlinksBool"   #linkHolder  >
+
+
+    <div class="btn-holder">
+        <img src="../../../assets/images/backarrow.png" alt="" class="backarrow" (click)="gobackfromviodes($event)">
+    </div>
+
+<!-- (click)="commentOnPost($event,post.postid,post.n_or_g)" -->
+
+    <div *ngFor="let link of linkList" class="link-container" >
+  <img [src]="link.textbody" alt="link Image">
+</div>
+    
+
+        
+     <div class="no-viode-posts-banner" *ngIf="noviodeposts">
+
+        <img src="../../../assets/images/linkpost.png" alt="">
+        <span>No links yet !</span>
+
+     </div>
+
+
+ </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ <div class="viode-holder"  *ngIf="showtextsBool"   #textHolder  >
+
+
+    <div class="btn-holder">
+        <img src="../../../assets/images/backarrow.png" alt="" class="backarrow" (click)="gobackfromviodes($event)">
+    </div>
+
+ 
+
+    <div *ngFor="let text of textList" class="link-container">
+        <div class="text-holder" [style.background-color]="text.textcolor" (click)="commentOnPost($event,text.postid,text.n_or_g)" >
+            <p class="text-post-text">{{ text.textbody }}</p>
+          </div>
+</div>
+    
+
+        
+     <div class="no-viode-posts-banner" *ngIf="noviodeposts">
+
+        <img src="../../../assets/images/linkpost.png" alt="">
+        <span>No links yet !</span>
+
+     </div>
+
+
+ </div>
+
 
 
 

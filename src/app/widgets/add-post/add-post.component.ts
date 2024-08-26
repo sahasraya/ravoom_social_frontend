@@ -308,7 +308,7 @@ this.getLinkPreview(this.linkUrl);
     }
   
  
-    alert(this.linkPreviewData.title);
+    
   
       this.http.post(this.APIURL + 'add-post-link', formData).subscribe({
         next: response => {

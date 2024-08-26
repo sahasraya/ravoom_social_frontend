@@ -18,23 +18,38 @@ export class FeedscreenUserListComponent  implements OnInit{
  
 
   @ViewChild('videoHolder') videoHolder!: ElementRef<HTMLDivElement>;
+  @ViewChild('linkHolder') linkHolder!: ElementRef<HTMLDivElement>;
+  @ViewChild('textHolder') textHolder!: ElementRef<HTMLDivElement>;
 
 
   
   userList:any;
   videoList:any[] = [];
+  linkList:any[] = [];
+  textList:any[] = [];
   userid:string="";
+  screen:string="";
   videoUrl:string ="";
   noviodeposts:boolean =false;
   offset = 0;
+  offsetlink = 0;
+  offsettext = 0;
   limit = 5;
+  limitlink = 5;
+  limittext = 5;
   isLoading = false;
+  isLoadingForLink = false;
+  isLoadingForText = false;
 
 
   showvideosBool:boolean = false;
+  showlinksBool:boolean = false;
+  showtextsBool:boolean = false;
   showuserBool:boolean = true;
 
   private scrollListener!: () => void;
+  private scrollListenerForLinks!: () => void;
+  private scrollListenerForTexts!: () => void;
 
 
 
@@ -48,11 +63,17 @@ export class FeedscreenUserListComponent  implements OnInit{
       
         this.getUserList();
         this.getAllVideoPosts();
+        this.getLinksPosts();
+        this.getTextsPosts();
       }else{
    
 
         this.userList=[];
         this.getAllVideoPosts();
+        this.getLinksPosts();
+        this.getTextsPosts();
+
+
       }
  
   }
@@ -62,13 +83,50 @@ export class FeedscreenUserListComponent  implements OnInit{
  
       this.attachScrollListener();
     }
+
+    if (this.showlinksBool) {
+ 
+      this.attachScrollListenerForLinks();
+    }
+
+    if (this.showtextsBool) {
+ 
+      this.attachScrollListenerForTexts();
+    }
+
+
+    
   }
+
+
+
+
+
+
+
+
+
+
 
   ngOnDestroy(): void {
  
     if (this.videoHolder && this.scrollListener) {
       this.videoHolder.nativeElement.removeEventListener('scroll', this.scrollListener);
     }
+
+
+    if (this.linkHolder && this.scrollListenerForLinks) {
+      this.linkHolder.nativeElement.removeEventListener('scroll', this.scrollListenerForLinks);
+    }
+    if (this.textHolder && this.scrollListenerForTexts) {
+      this.textHolder.nativeElement.removeEventListener('scroll', this.scrollListenerForTexts);
+    }
+
+
+
+
+
+
   }
 
   private attachScrollListener(): void {
@@ -82,6 +140,97 @@ export class FeedscreenUserListComponent  implements OnInit{
  
     }
   }
+
+
+
+
+
+
+
+  private attachScrollListenerForLinks(): void {
+    if (this.linkHolder && this.linkHolder.nativeElement) {
+  
+      if (this.scrollListenerForLinks) {
+        this.linkHolder.nativeElement.removeEventListener('scroll', this.scrollListenerForLinks);
+      }
+      this.scrollListenerForLinks = () => this.onScrollForLinks();
+      this.linkHolder.nativeElement.addEventListener('scroll', this.scrollListenerForLinks);
+ 
+    }
+  }
+
+
+
+
+
+  private attachScrollListenerForTexts(): void {
+    if (this.textHolder && this.textHolder.nativeElement) {
+  
+      if (this.scrollListenerForTexts) {
+        this.textHolder.nativeElement.removeEventListener('scroll', this.scrollListenerForTexts);
+      }
+      this.scrollListenerForTexts = () => this.onScrollForTexts();
+      this.textHolder.nativeElement.addEventListener('scroll', this.scrollListenerForTexts);
+ 
+    }
+  }
+
+
+
+
+
+
+
+
+
+
+  onScrollForLinks(): void {
+    if (!this.linkHolder) {
+ 
+      return;
+    }
+
+    const element = this.linkHolder.nativeElement;
+    const scrollTop = element.scrollTop;
+    const scrollHeight = element.scrollHeight;
+    const offsetHeight = element.offsetHeight;
+
+   
+    if ((scrollTop + offsetHeight) >= scrollHeight && !this.isLoading) {
+      this.getLinksPosts();
+    
+    }
+  }
+
+
+
+  onScrollForTexts(): void {
+    if (!this.textHolder) {
+ 
+      return;
+    }
+
+    const element = this.textHolder.nativeElement;
+    const scrollTop = element.scrollTop;
+    const scrollHeight = element.scrollHeight;
+    const offsetHeight = element.offsetHeight;
+
+   
+    if ((scrollTop + offsetHeight) >= scrollHeight && !this.isLoading) {
+ 
+      this.getTextsPosts();
+    
+    }
+  }
+
+
+
+
+
+
+
+
+
 
  
   onScroll(): void {
@@ -102,6 +251,15 @@ export class FeedscreenUserListComponent  implements OnInit{
     }
   }
 
+
+
+
+
+
+
+
+
+  
  
 
   navigatetouser(userid:any):void{
@@ -154,6 +312,127 @@ export class FeedscreenUserListComponent  implements OnInit{
 
 
  
+
+
+
+
+
+
+
+
+
+
+  async getLinksPosts(): Promise<void> {
+    this.isLoadingForLink = true;   
+
+    this.http.get<any[]>(`${this.APIURL}get_all_link_posts?limit=${this.limitlink}&offset=${this.offsetlink}`).subscribe({
+      next: (response: any[]) => {
+        const processedLinks = response.map(link => {
+    
+     
+            link.textbody = link.textbody;   
+              return link;
+        });
+
+        processedLinks.forEach(link => {
+          if (!this.linkList.some(existingLink => existingLink.postid === link.postid)) {
+              this.linkList.push(link);
+          }
+      });
+
+  
+      if (processedLinks.length > 0) {
+          this.offsetlink += this.limitlink;
+      }
+
+        
+
+        this.linkList = [...this.linkList, ...processedLinks];   
+        this.offset += this.limit;    
+        this.isLoadingForLink = false; 
+      },
+      error: (error: HttpErrorResponse) => {
+        console.error('There was an error!', error);
+        this.isLoadingForLink = false;   
+      }
+    });
+  }
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  async getTextsPosts(): Promise<void> {
+    if (this.isLoadingForText) return;
+  
+    this.isLoadingForText = true;
+  
+    this.http.get<any[]>(`${this.APIURL}get_all_text_posts?limit=${this.limittext}&offset=${this.offsettext}`).subscribe({
+      next: (response: any[]) => {
+        const processedLinks = response.map(text => {
+          text.textbody = text.textbody;
+          text.textcolor = text.textcolor;
+          text.n_or_g = text.n_or_g;
+          text.postid = text.postid;
+          return text;
+        });
+  
+      
+        processedLinks.forEach(text => {
+          if (!this.textList.some(existingLink => existingLink.posteddate === text.posteddate)) {
+            this.textList.push(text);
+          }
+        });
+  
+   
+        if (processedLinks.length > 0) {
+          this.offsettext += this.limittext;
+        }
+  
+        this.isLoadingForText = false;
+      },
+      error: (error: HttpErrorResponse) => {
+        console.error('There was an error!', error);
+        this.isLoadingForText = false;
+      }
+    });
+  }
+
+
+
+
+
+
+  commentOnPost(event: MouseEvent, postid: any, n_or_g: any): void {
+    event.preventDefault();
+
+    const scrollPosition = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
+ 
+    localStorage.setItem('scrollPosition', scrollPosition.toString());
+
+
+    this.screen = "home";
+    this.router.navigate([`/home/comment/${postid}/${n_or_g}/${this.screen}/`]);
+  }
+
+
+  
+
+
+
+
 
 
 
@@ -245,15 +524,45 @@ export class FeedscreenUserListComponent  implements OnInit{
 
    this.showvideosBool=true;
    this.showuserBool= false;
+   this.showlinksBool= false;
+   this.showtextsBool= false;
  
   }
+
+  showlinks(e:Event):void{
+    e.preventDefault();
+    e.stopPropagation();
+
+   this.showvideosBool=false;
+   this.showuserBool= false;
+   this.showlinksBool= true;
+   this.showtextsBool= false;
+ 
+  }
+
+
+  showtexts(e:Event):void{
+    e.preventDefault();
+    e.stopPropagation();
+
+   this.showvideosBool=false;
+   this.showuserBool= false;
+   this.showlinksBool= false;
+   this.showtextsBool= true;
+  }
+
+
+
 
   gobackfromviodes(e:Event):void{
     e.preventDefault();
     e.stopPropagation();
 
    this.showvideosBool=false;
+   this.showlinksBool= false;
+   this.showtextsBool= false;
    this.showuserBool= true;
+   
  
   }
 

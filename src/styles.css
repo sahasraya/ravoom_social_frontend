@@ -24,6 +24,7 @@ html {
     --primary-dark: rgb(43,149,236);
     --primary-darker: rgb(43,149,236);
     --post-dynamic-width: 80vh;
+    --user-left-hoder-post-dynamic-width: 35vh;
     --icon-backgroud-color: rgba(128, 128, 128, 0.308);
     --icon-hover-backgroud-color: rgba(128, 128, 128, 0.178);
 
