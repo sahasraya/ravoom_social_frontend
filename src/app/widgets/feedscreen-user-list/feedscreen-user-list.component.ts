@@ -323,41 +323,36 @@ export class FeedscreenUserListComponent  implements OnInit{
 
 
   async getLinksPosts(): Promise<void> {
-    this.isLoadingForLink = true;   
+    if (this.isLoadingForLink) return;
+
+    this.isLoadingForLink = true;
 
     this.http.get<any[]>(`${this.APIURL}get_all_link_posts?limit=${this.limitlink}&offset=${this.offsetlink}`).subscribe({
-      next: (response: any[]) => {
-        const processedLinks = response.map(link => {
-    
-     
-            link.textbody = link.textbody;   
-              return link;
-        });
+        next: (response: any[]) => {
+            const processedLinks = response.map(link => {
+                link.textbody = link.textbody;
+                return link;
+            });
 
-        processedLinks.forEach(link => {
-          if (!this.linkList.some(existingLink => existingLink.postid === link.postid)) {
-              this.linkList.push(link);
-          }
-      });
+            const newLinks = processedLinks.filter(link => 
+                !this.linkList.some(existingLink => existingLink.postid === link.postid)
+            );
 
-  
-      if (processedLinks.length > 0) {
-          this.offsetlink += this.limitlink;
-      }
+            this.linkList = [...this.linkList, ...newLinks];
 
-        
+            if (newLinks.length > 0) {
+                this.offsetlink += this.limitlink;
+            }
 
-        this.linkList = [...this.linkList, ...processedLinks];   
-        this.offset += this.limit;    
-        this.isLoadingForLink = false; 
-      },
-      error: (error: HttpErrorResponse) => {
-        console.error('There was an error!', error);
-        this.isLoadingForLink = false;   
-      }
+            this.isLoadingForLink = false;
+        },
+        error: (error: HttpErrorResponse) => {
+            console.error('There was an error!', error);
+            this.isLoadingForLink = false;
+        }
     });
-  }
- 
+}
+
 
 
 
