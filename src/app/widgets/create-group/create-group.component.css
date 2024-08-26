@@ -1,4 +1,5 @@
  
+ 
 .create-new-group-holder {
     background-color: white; 
     border-radius: 15px;  
@@ -10,6 +11,7 @@
     flex-direction: column;  
     gap: 15px; 
     text-align: center;  
+ 
   }
   
  
@@ -31,19 +33,22 @@
   }
  
   .styled-input {
-    border: 1px solid #ccc;  
-    border-radius: 10px;  
-    padding: 10px; 
-    width: 100%;  
-    max-width: 300px;  
-    outline: none; 
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);  
-    transition: box-shadow 0.3s ease, border-color 0.3s ease; 
+    width: 100%;
+    padding: 15px;
+    border-radius: 25px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+   
+    box-sizing: border-box;
+    font-size: 15px;
+    font-family: 'Open Sans', sans-serif;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;  
   }
   
   .styled-input:focus {
-    border-color: #007bff;  
-    box-shadow: 0 4px 8px rgba(0, 123, 255, 0.2); 
+    border-color:var(--primarycolor); 
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);  
+    outline: none;  
   }
  
   .styled-radio {
@@ -96,7 +101,7 @@
     gap: 8px;
   }
   
-  button {
+ button {
     padding: 15px 20px;
     background-color: var(--primarycolor);
     color: white;
@@ -105,14 +110,8 @@
     margin-top: 10px;
     cursor: pointer;
     font-size: 16px;
-    transition: background-color 0.3s;
-    border: 1px solid  rgba(255, 255, 255, 0);
-
+    transition: background-color 0.3s, color 0.3s, border 0.3s;
+    border: 1px solid rgba(255, 255, 255, 0);
 }
 
-button:hover {
-    background-color: white;
-    color: var(--primarycolor);
-    border: 1px solid var(--primarycolor);
-}
-  
+ 
