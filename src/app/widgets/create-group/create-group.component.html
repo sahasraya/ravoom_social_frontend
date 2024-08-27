@@ -9,16 +9,39 @@
 
 
       <div class="form-group">
-        <label for="groupimage">Group Image</label>
-        <input type="file" id="groupimage" (change)="ongroupimageSelected($event)" accept=".jpg, .jpeg, .png" formControlName="groupimage" class="styled-input">
+        
+        <label for="groupimage" class="uploadgroupimage">
+          <img src="../../../assets/images/uplaod.png" alt="" *ngIf="!imagePreviewGroupImage" class="uploadicon">
+          <span *ngIf="!imagePreviewGroupImage">Group Image</span>
+
+          
         <img *ngIf="imagePreviewGroupImage" [src]="imagePreviewGroupImage" alt="Image Preview" class="image-preview" />
+
+        </label>
+        <input type="file" id="groupimage" (change)="ongroupimageSelected($event)" accept=".jpg, .jpeg, .png" formControlName="groupimage" class="styled-input" style="display: none;">
       </div>
+
+
+
+
+
       
       <div class="form-group">
-        <label for="groupbackgroundimage">Background Image</label>
-        <input type="file" id="groupbackgroundimage" (change)="ongroupbackgroundimageSelected($event)" accept=".jpg, .jpeg, .png" formControlName="groupbackgroundimage" class="styled-input">
-        <img *ngIf="imagePreviewGroupBackgroundImage" [src]="imagePreviewGroupBackgroundImage" alt="Image Preview" class="image-preview" />
+        <label for="groupbackgroundimage" class="uploadgroupimage">
+
+
+          <img src="../../../assets/images/uplaod.png" alt="" *ngIf="!imagePreviewGroupBackgroundImage" class="uploadicon">
+          <span *ngIf="!imagePreviewGroupBackgroundImage">Backgroud Image</span>
+          <img *ngIf="imagePreviewGroupBackgroundImage" [src]="imagePreviewGroupBackgroundImage" alt="Image Preview" class="image-preview" />
+
+        </label>
+        <input type="file" id="groupbackgroundimage" (change)="ongroupbackgroundimageSelected($event)" accept=".jpg, .jpeg, .png" formControlName="groupbackgroundimage" class="styled-input" style="display: none;">
       </div>
+
+
+
+
+
       
       <div class="radio-btn-holder">
         <input type="radio" id="public" name="grouptype" value="public" formControlName="grouptype" class="styled-radio">
