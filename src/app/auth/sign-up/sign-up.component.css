@@ -187,15 +187,16 @@ input[type="file"]:focus {
 
 button {
   width: 100%;
-  padding: 10px;
-  border: none;
-  border-radius: 5px;
-  background-color: rgb(43,149,236);
+  display: inline-block;
+  padding: 15px 20px;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  background-color: var(--primary-dark);
   color: white;
-  font-size: 16px;
   cursor: pointer;
-  margin-top: 10px;
-  transition: border-color 0.3s ease;  
+  transition: background-color 0.5s, color 0.5s;
+  margin-top: 20px; 
+  font-size: 20px;  
 }
 
 button:hover {

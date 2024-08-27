@@ -21,6 +21,7 @@ export class ResetPasswordComponent implements OnInit{
   codeissent:boolean=false;
   showpasswordresetoptions:boolean =false;
   isPasswordFieldFocused: boolean = false;
+  showthesubmitbutton: boolean = false;
 
   userid:string = "";
   message:string="";
@@ -178,6 +179,10 @@ async onSubmitsentcode(): Promise<void> {
         this.codeissent = false;
         this.showinvalidcredentioalsbanner = false;
         this.showpasswordresetoptions=true;
+        this.showthesubmitbutton = true
+
+
+
 
       } else if (response.message === "expired") {
         this.showinvalidcredentioalsbanner = true;

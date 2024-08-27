@@ -39,19 +39,23 @@ form {
     box-sizing: border-box;
     font-size: 15px;
     font-family: 'Open Sans', sans-serif;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;  
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;    
    
   }
   
   input[type="text"]:focus,
-input[type="email"]:focus,
+
 input[type="password"]:focus,
 input[type="number"]:focus,
 input[type="date"]:focus
  {
-  border-color: #0400fc; 
+  border-color:var(--primarycolor); 
   box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);  
-  outline: none;  
+  outline: none;    
+}
+input[type="email"]:focus{
+   
+  outline: none; 
 }
 
   
@@ -150,10 +154,12 @@ button:hover {
   }
   
   .image-holder img {
-    width: 100%;
-    height: auto;
-    border-radius: 10px;
-    display: block;  
+    width: 250px;
+    height: 250px;
+    border-radius: 50%;
+    display: block; 
+    margin: 0px auto; 
+    object-fit: cover;
   }
 
 

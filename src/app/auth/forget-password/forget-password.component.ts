@@ -20,6 +20,7 @@ export class ForgetPasswordComponent  {
 
   showinvalidcredentioalsbanner:boolean=false;
   codeissent:boolean=false;
+  hidesubmitbutton:boolean=false;
   codeiscorrect:boolean = false;  
   isPasswordFieldFocused: boolean = false;
 
@@ -126,8 +127,13 @@ export class ForgetPasswordComponent  {
           this.forgetpasswordtid=response.forgetpasswordtid;
           this.startCountdown();
           this.codeissent=true;
+          this.hidesubmitbutton=true;
           this.userid=response.userid;
           this.emailaddress = response.emailaddress;
+
+
+
+
       
             
 
@@ -157,7 +163,7 @@ export class ForgetPasswordComponent  {
   
         this.http.post(this.APIURL + 'check-code-submit-forget-password', formData).subscribe({
           next: (response: any) => {
-            console.log(response);
+        
             if(response.message == "notmatched"){
 
               this.showinvalidcredentioalsbanner= true;
@@ -169,6 +175,9 @@ export class ForgetPasswordComponent  {
             }else if(response.message=="matched"){
               this.codeiscorrect=true;
               this.codeissent=false;
+              if (this.countdownInterval) {
+                clearInterval(this.countdownInterval);
+              }
             }
           },
           error: error => {
@@ -185,6 +194,8 @@ export class ForgetPasswordComponent  {
  
     this.startCountdown();
     this.showinvalidcredentioalsbanner=false;
+    this.codeissent = true;
+    this.onSubmitForgetpassword();
  
   
   
@@ -258,6 +269,8 @@ export class ForgetPasswordComponent  {
          this.forgetPassword.reset();
           this.codeiscorrect=false;
          this.isPasswordFieldFocused=false;
+         this.hidesubmitbutton=true;
+
      
       },
       error: error => {
