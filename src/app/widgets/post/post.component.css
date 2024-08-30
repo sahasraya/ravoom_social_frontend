@@ -149,7 +149,18 @@
   border-radius: 50%;
   border: 2px solid white;  
 }
- 
+.dot-blue {
+  height: 18px;
+  width: 18px;
+  background-color: #ffffff;
+  border-radius: 50%;
+  border-width: 2px;
+  border-style: solid;
+  border-color: #00bcd4;
+  display: inline-block;
+}
+
+
  .comment-button{
   padding: 10px;
   background-color: var(--icon-backgroud-color);

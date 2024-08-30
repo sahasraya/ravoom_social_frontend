@@ -76,6 +76,10 @@ export class SignUpComponent implements OnInit{
     });
 
     this.checkTheLocalStorageValues();
+
+    
+
+
   }
 
  togglePasswordVisibility() {

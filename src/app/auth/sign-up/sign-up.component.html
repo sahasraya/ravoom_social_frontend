@@ -11,7 +11,11 @@
   
   
      <div class="text-holder">
-      <img src="../../../assets/images/crabber_header.png" alt="" class="main-image">
+
+      <a routerLink="/">
+        <img src="../../../assets/images/crabber_header.png" alt="" class="main-image">
+      </a>
+
       <h3 class="ravoom-text">Sign up</h3>
     
      </div>
@@ -39,6 +43,26 @@
     <div [class]="bannerClass"  >
       <span class="bannertext">{{errormessage}}</span>
     </div>
+    
+
+    <div class="form-group">
+      <label for="profileimage" *ngIf="!imagePreview">
+         <div class="profileimahehodler">
+          <img src="../../../assets/images/profile-user.png" alt="" class="selectprofileimageicon">
+          <div class="cam-icon-wrapper">
+            <img src="../../../assets/images/camera.png" alt="camera" class="camicon">
+          </div>
+          
+         </div>
+      </label>
+      <input id="profileimage" type="file" (change)="onFileSelected($event)" class="form-control" accept=".png, .jpg, .jpeg" style="display: none;" />
+
+      <label for="profileimage">
+        <img *ngIf="imagePreview" [src]="imagePreview" alt="Image Preview" class="image-preview"   />
+      </label>
+    </div>
+
+
     
         <div>
           <label for="username"> 
@@ -143,11 +167,7 @@
     
     
       
-        <div class="form-group">
-            <label for="profileimage">Profile Image</label>
-            <input id="profileimage" type="file" (change)="onFileSelected($event)" class="form-control" accept=".png, .jpg, .jpeg" />
-            <img *ngIf="imagePreview" [src]="imagePreview" alt="Image Preview" class="image-preview" />
-          </div>
+       
       
         <button type="submit"  *ngIf="age! > 18 && signUpForm.valid && allPasswordConditionsMet()">Sign Up</button>
     

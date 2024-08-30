@@ -20,7 +20,8 @@ export class CreateGroupComponent implements OnInit{
 
   APIURL = 'http://127.0.0.1:8000/';
   userid: string = "";
-
+  groupmessageexsisteornot:string ="";
+  groupmessageColor:string="white";
 
   constructor(private fb :FormBuilder,private http:HttpClient,@Inject(PLATFORM_ID) private platformId: Object,private router:Router){
 
@@ -111,6 +112,29 @@ export class CreateGroupComponent implements OnInit{
 
 
  
+  async checkgroupnamealreadytaken(groupname: string): Promise<void> {
+    if(groupname ===''){
+      this.groupmessageexsisteornot="";
+      return;
+    }
+    const formData = new FormData();
+    formData.append('groupname', groupname);
+  
+    this.http.post(this.APIURL + 'check_groupname_exsist_or_not_group', formData).subscribe({
+      next: (response: any) => {
+        if(response.message === "yes") {
+          this.groupmessageexsisteornot = "name is taken";
+          this.groupmessageColor = 'red';
+        } else {
+           this.groupmessageexsisteornot="good to use";
+           this.groupmessageColor = 'green';
+        }
+      },
+      error: (error: any) => {
+        console.error('There was an error!', error);
+      }
+    });
+  }
 
 
 }

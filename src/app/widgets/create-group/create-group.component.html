@@ -3,8 +3,11 @@
 
         <div class="form-group">
             <label for="groupimage">Group name</label>
-            <input type="text" id="groupname"    formControlName="groupname" class="styled-input" placeholder="Group name" #groupname>
-           
+            <input type="text" id="groupname"    formControlName="groupname" class="styled-input" placeholder="Group name" #groupname
+            
+             (input)="checkgroupnamealreadytaken(groupname.value)"
+            >
+           <span class="groupmessage" [style.color]="groupmessageColor"><b>{{groupmessageexsisteornot}}</b></span>
           </div>
 
 
@@ -62,7 +65,7 @@
         <label for="over18">Yes</label>
       </div> -->
 
-      <button type="submit" [hidden]="!createGroupFormGroup.valid">Create group {{groupname.value}}</button>
+      <button type="submit" [hidden]="!createGroupFormGroup.valid || groupmessageexsisteornot==='name is taken'">Create group {{groupname.value}}</button>
     </div>
   </form>
 
