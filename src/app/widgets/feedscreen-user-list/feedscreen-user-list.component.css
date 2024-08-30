@@ -213,11 +213,89 @@
     display: flex;
     flex-direction: column;
   }
-  .link-container img{
+  .linkimagepreview{
     margin: 5px 0px;
     border-radius: 10px;
   }
 
+  .text-user-details-holder{
+    display: flex;
+    flex-direction: row;
+   
+    width: 100%;
+ 
+  }
+  .image-user-details-holder{
+position: absolute;
+display: flex;
+    flex-direction: row;
+   
+    width: 100%;
+    padding-left: 15px;
+    padding-top: 5px;
+
+  }
+
+  .post-image{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 15px;
+  }
+  .text-container{
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+  .text-holder::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0)); /* Black to transparent gradient */
+    pointer-events: none;  
+    border-radius: 15px;
+}
+.green-dot {
+  position: absolute;
+  top: 3px;
+  right: 0px;
+  width: 10px;  
+  height: 10px;
+  background-color: rgb(0, 219, 0); 
+  border-radius: 50%;
+  border: 2px solid white;  
+}
+.indicater-holder{
+  position: relative;
+}
+
+  .inner-details,.link-inner-details{
+    display: flex;
+    flex-direction: column;
+    margin-left: 10px;
+    justify-content: center;
+   
+  }
+  .inner-details span,.inner-details small{
+    color: white;
+    z-index: 5;
+
+  }
+  .link-inner-details span,.link-inner-details small{
+    color:black;
+    z-index: 5;
+
+  }
+
+  .text-profile-image{
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    z-index: 5;
+  }
 
   .text-holder {
     border-radius: 10px;
@@ -229,17 +307,35 @@
     padding: 10px;
     margin: 5px 0;
     cursor: pointer;
+    flex-direction: column;
     position: relative; 
     transition:  box-shadow 0.3s ease;
+    justify-content: flex-start;
+}
+.image-holder{
+  border-radius: 10px;
+    height: var(--user-left-hoder-post-dynamic-width);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #333;
+    margin: 5px 0;
+    cursor: pointer;
+    flex-direction: column;
+    position: relative; 
+    transition:  box-shadow 0.3s ease;
+    justify-content: flex-start;
+ 
 }
 
-.text-holder:hover {
+.text-holder:hover ,.image-holder:hover{
   
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5); 
 }
     
     .text-post-text {
-    margin: 0;
+
+margin-top: 15px;
     color: white;
     text-align: center;
     font-family: Arial, Helvetica, sans-serif;
@@ -247,6 +343,7 @@
     font-size: 20px;
     word-wrap: break-word;  
     max-width: 100%; 
+    z-index: 5;
     }
 
  

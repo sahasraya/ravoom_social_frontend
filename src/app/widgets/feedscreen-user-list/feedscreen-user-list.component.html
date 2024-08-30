@@ -61,6 +61,24 @@
 
 
 
+ <div class="options-holder" (click)="showimages($event)"  *ngIf="!showimagesBool">
+    <img src="../../../assets/images/imagepost.png" alt="">
+    <span>images</span>
+ </div>
+
+
+
+ <div class="options-holder" (click)="showvoices($event)"  *ngIf="!showvoicesBool">
+    <img src="../../../assets/images/audiopost.png" alt="">
+    <span>voices</span>
+ </div>
+
+
+
+
+
+
+
 
 
 
@@ -86,7 +104,8 @@
     
 
         
-     <div class="no-viode-posts-banner" *ngIf="noviodeposts">
+     <div class="no-viode-posts-banner" *ngIf="!noviodeposts">
+ 
 
         <img src="../../../assets/images/videopost.png" alt="">
         <span>No videos yet !</span>
@@ -120,13 +139,31 @@
 
 <!-- (click)="commentOnPost($event,post.postid,post.n_or_g)" -->
 
-    <div *ngFor="let link of linkList" class="link-container" >
-  <img [src]="link.textbody" alt="link Image">
+ <div *ngFor="let link of linkList" class="link-container" >
+
+    <div class="text-user-details-holder">
+ 
+        <div class="indicater-holder">
+          <img *ngIf="link.profileimage" [src]="link.profileimage" alt="Profile Image" class="text-profile-image">
+          <div class="green-dot" *ngIf="link.onlinestatus == 1" ></div>
+        </div>
+
+      <div class="link-inner-details">
+          <span><b>{{link.username}}</b></span>
+          <small>{{calculateTimeAgo(link.posteddate)}}  </small>
+      </div>
+  </div>
+
+
+  <img [src]="link.textbody" alt="link Image" class="linkimagepreview">
 </div>
     
 
+
+
+
         
-     <div class="no-viode-posts-banner" *ngIf="noviodeposts">
+     <div class="no-viode-posts-banner" *ngIf="linkList.length ===0">
 
         <img src="../../../assets/images/linkpost.png" alt="">
         <span>No links yet !</span>
@@ -152,12 +189,7 @@
 
 
 
-
-
-
-
-
-
+ 
 
 
  <div class="viode-holder"  *ngIf="showtextsBool"   #textHolder  >
@@ -169,15 +201,37 @@
 
  
 
-    <div *ngFor="let text of textList" class="link-container">
+
+
+
+    <div *ngFor="let text of textList" class="text-container">
         <div class="text-holder" [style.background-color]="text.textcolor" (click)="commentOnPost($event,text.postid,text.n_or_g)" >
+          
+            <div class="text-user-details-holder">
+            
+                  <div class="indicater-holder">
+                    <img *ngIf="text.profileimage" [src]="text.profileimage" alt="Profile Image" class="text-profile-image">
+                    <div class="green-dot" *ngIf="text.onlinestatus == 1" ></div>
+                  </div>
+
+                <div class="inner-details">
+                    <span><b>{{text.username}}</b></span>
+                    <small>{{calculateTimeAgo(text.posteddate)}}  </small>
+                </div>
+            </div>
+              
+
             <p class="text-post-text">{{ text.textbody }}</p>
           </div>
 </div>
     
 
+
+
+
+
         
-     <div class="no-viode-posts-banner" *ngIf="noviodeposts">
+     <div class="no-viode-posts-banner" *ngIf="textList.length ===0">
 
         <img src="../../../assets/images/linkpost.png" alt="">
         <span>No links yet !</span>
@@ -186,6 +240,78 @@
 
 
  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+ 
+
+ <div class="viode-holder"  *ngIf="showimagesBool"   #imageHolder  >
+
+
+    <div class="btn-holder">
+        <img src="../../../assets/images/backarrow.png" alt="" class="backarrow" (click)="gobackfromviodes($event)">
+    </div>
+
+ 
+
+
+
+
+    <div *ngFor="let image of imageList" class="text-container">
+        <div class="image-holder" [style.background-color]="image.textcolor"   >
+          
+            <div class="image-user-details-holder">
+            
+                  <div class="indicater-holder">
+                    <img *ngIf="image.profileimage" [src]="image.profileimage" alt="Profile Image" class="text-profile-image">
+                    <div class="green-dot" *ngIf="image.onlinestatus == 1" ></div>
+                  </div>
+
+                <div class="inner-details">
+                    <span><b>{{image.username}}</b></span>
+                    <small>{{calculateTimeAgo(image.posteddate)}}  </small>
+                </div>
+            </div>
+              
+
+            <img *ngIf="image.post" [src]="image.post" alt="Profile Image" class="post-image">
+          
+          </div>
+</div>
+    
+
+
+
+
+
+        
+     <div class="no-viode-posts-banner" *ngIf="imageList.length ===0">
+
+        <img src="../../../assets/images/linkpost.png" alt="">
+        <span>No images yet !</span>
+
+     </div>
+
+
+ </div>
+
 
 
 

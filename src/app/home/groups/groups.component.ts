@@ -69,8 +69,11 @@ export class GroupsComponent implements OnInit{
     
     this.joinedornottothegroup(this.userid,this.groupid);
     this.getnumberofgroupfollowers(this.groupid);
-    this.getCurrunUserDetailsOfGroup(this.userid);
-    this.getcurruntuserisfolloweduserlidt(this.userid);
+   
+    if(this.userid !=''){
+      this.getCurrunUserDetailsOfGroup(this.userid);
+      this.getcurruntuserisfolloweduserlidt(this.userid);
+    }
  
    
   }
@@ -317,25 +320,29 @@ export class GroupsComponent implements OnInit{
     const formData = new FormData();
     formData.append('groupid', this.groupid);
     formData.append('userid', userid);
+
  
+ 
+    this.http.post(this.APIURL + 'get_curruntuser_detail_from_group', formData).subscribe({
+      next: (response:any) => {
+        this.currunusertype = response.usertype || 'user';
+       
+  
+
+        
+      },
+      error: error => {
+        console.error('There was an error!', error);
+      }
+    });
+
+
+
 
 
     
 
-    try {
-        const response = await this.http.post<any>(`${this.APIURL}get_curruntuser_detail_from_group`, formData).toPromise();
-           if (response && response.usertype) {
-            this.currunusertype = response.usertype;
-     
-          
-
-        } else {
-            console.log('No usertype found for the user in this group.');
-        }
-
-    } catch (error) {
-        console.error('There was an error!', error);
-    }
+   
 }
 
   

@@ -1,55 +1,220 @@
 .file-preview-container {
-    position: relative;
-    display: inline-block;
-    border: 2px solid #d3d3d3;  
-    border-radius: 8px; 
-    padding: 10px;
-    background-color: #f9f9f9; 
-    margin-top: 10px;
-    width: 100%;
-    max-width: 400px;
-  }
-  
-  .preview-wrapper {
-    position: relative;
-  }
-  
-  img, video, audio {
-    width: 100%;
-    border-radius: 8px;  
-  }
-  
-  .close-button {
-    position: absolute;
-    top: 5px;
-    right: 5px;
-    background: white;
-    border: 1px solid #d3d3d3;  
-    border-radius: 50%;  
-    padding: 5px 10px;
-    cursor: pointer;
-    font-size: 14px;
-  }
-  
-  input::placeholder {
-    color: #a9a9a9; 
-    opacity: 1;
-  }
-  
-  input[type="text"] {
-    border: 1px solid #d3d3d3;  
-    border-radius: 4px; 
-    padding: 8px;
-    width: 100%;
-    box-sizing: border-box;
-  }
+  position: relative;
+  display: inline-block;
+  border: 2px solid #d3d3d3;  
+  border-radius: 8px; 
+  padding: 10px;
+  background-color: #f9f9f9; 
+  margin-top: 10px;
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
+}
 
 
-  .error-message{
-    background-color: red;
-    border-radius: 5px;
-    padding: 10px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+
+img, video, audio {
+  width: 100%;
+  border-radius: 8px;  
+}
+
+
+input::placeholder {
+  color: #a9a9a9; 
+  opacity: 1;
+}
+
+input[type="text"] {
+  border: 1px solid #d3d3d3;  
+  border-radius: 4px; 
+  padding: 8px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+
+
+
+
+form {
+
+  width: 25%;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  overflow: scroll;
+
+}
+
+
+form::-webkit-scrollbar,
+.image-preview-container::-webkit-scrollbar {
+  display: none;
+}
+
+form,
+.image-preview-container {
+  scrollbar-width: none;  
+  -ms-overflow-style: none;  
+}
+
+input[type="text"] {
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+button {
+  padding: 0.5rem;
+  border: none;
+  border-radius: 4px;
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+}
+
+button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+
+.colorpalletholder {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.colorpalletholder span {
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid transparent;
+}
+
+.color-red {
+  background-color: #f50505;
+}
+
+.color-green {
+  background-color: #04ba28;
+}
+
+.color-blue {
+  background-color: #0407ba;
+}
+
+.color-purple {
+  background-color: #7404ba;
+}
+
+.color-pink {
+  background-color: #ba04a8;
+}
+
+
+.colorpalletholder .selected {
+  border: 2px solid black;
+}
+
+
+.preview-window {
+  margin-top: 1rem;
+}
+
+.inner-preview {
+  border: 1px solid #ddd;
+  padding: 1rem;
+  width: 100%;
+  border-radius: 10px;
+  background-color: black;  
+  word-wrap: break-word; 
+  overflow-wrap: break-word;  
+  white-space: normal;  
+}
+
+.inner-preview h4 {
+
+  color: white;
+  text-align: center;
+  font-weight: bold;
+  margin: 0;
+  overflow: hidden;  
+  text-overflow: ellipsis; 
+  word-wrap: break-word;  
+  overflow-wrap: break-word;
+}
+
+.thebodyoftext {
+  margin-bottom: 1rem;
+}
+
+#textPostbody {
+  width: 100%;  
+  padding: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-sizing: border-box; 
+  font-size: 1rem;
+  line-height: 1.5; 
+  margin-top: 10px;
+  transition: height 0.2s ease;  
+}
+
+#textPostbody:focus {
+  border-color: #007bff;  
+  outline: none; 
+}
+
+
+
+
+
+
+
+.add-post-main-holder {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: white; 
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+
+
+.btn-holder{
+ display: flex;
+ flex-direction: row;
+}
+
+.btn-holder button{
+  margin: 10px;
+}
+
+.closebtn{
+  position: absolute;
+  top: 10px;
+  right: 50px;
+}
+
+.add-preview{
+  width: 25%;
+
+}
+
+.error-message{
+  background-color: red;
+  border-radius: 5px;
+  padding: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .error-message span{
@@ -57,175 +222,95 @@ color: white;
 text-align: center;
 
 }
+.navigationsbuttons{
+padding: 10px;
+border-radius: 20px;
+background-color: var(--icon-backgroud-color);
+color: black;
+transition: background-color 0.5s, color 0.5s;
+}
+.navigationsbuttons:hover{
+background-color: var(--icon-hover-backgroud-color);
+}
+.navigationsbuttons.selected {
+border: 1px solid black;
+font-weight: bold;
+}
 
+input[type="text"] {
+padding: 15px;
+border-radius: 20px;
+color: black;
+border: 1px solid #ccc; 
+margin-top: 10px;
+transition: border 0.2s ease-in-out; 
+}
 
+input[type="text"]:focus {
+border: 2px solid var(--primarycolor);  
+outline: none;  
+}
 
+.file-input-label {
+display: inline-block;
+padding: 10px 20px;
+width: 100%;
+border: 1px solid #ccc;
+border-radius: 20px;
+background-color: var(--primary-dark);
+color: white;
+text-align: center;
+cursor: pointer;
+transition: background-color 0.5s, color 0.5s;
+}
 
+.file-input-label:hover {
+background-color: var(--primary-faded);
+color: black;
+}
+.submit-button {
+display: inline-block;
+padding: 15px 20px;
+border: 1px solid #ccc;
+border-radius: 20px;
+background-color: var(--primary-dark);
+color: white;
+cursor: pointer;
+transition: background-color 0.5s, color 0.5s;
+margin-top: 20px; 
+font-size: 20px;
+}
 
+.submit-button:hover {
+background-color: var(--icon-hover-backgroud-color);
+color: black;
+}
+.closeicon {
+padding: 15px;
+width: 50px;
+background-color: var(--icon-backgroud-color);
+border-radius: 50%;
+position: absolute;
+top: 10px;
+right: 20px;
+cursor: pointer;
+transition: transform 0.5s, background-color 0.5s;  
+}
 
+.closeicon:hover {
+transform: rotate(90deg); 
+background-color:var(--icon-hover-backgroud-color);
+}
+.image-preview-container{
+width: 50%;
+display: flex;
+flex-direction: row;
+flex-wrap: wrap;
+justify-content: center;
+overflow: scroll;
 
-
-
-
-
-  form {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-  }
-  
-  input[type="text"] {
-    padding: 0.5rem;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-  }
-  
-  button {
-    padding: 0.5rem;
-    border: none;
-    border-radius: 4px;
-    background-color: #007bff;
-    color: white;
-    cursor: pointer;
-  }
-  
-  button:disabled {
-    background-color: #ccc;
-    cursor: not-allowed;
-  }
-  
- 
-  .colorpalletholder {
-    display: flex;
-    gap: 0.5rem;
-    margin-top: 1rem;
-  }
-  
-  .colorpalletholder span {
-    display: inline-block;
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    cursor: pointer;
-    border: 2px solid transparent;
-  }
-  
-  .color-red {
-    background-color: #f50505;
-  }
-  
-  .color-green {
-    background-color: #04ba28;
-  }
-  
-  .color-blue {
-    background-color: #0407ba;
-  }
-  
-  .color-purple {
-    background-color: #7404ba;
-  }
-  
-  .color-pink {
-    background-color: #ba04a8;
-  }
-  
- 
-  .colorpalletholder .selected {
-    border: 2px solid black;
-  }
-  
- 
-  .preview-window {
-    margin-top: 1rem;
-  }
-  
-  .inner-preview {
-    border: 1px solid #ddd;
-    padding: 1rem;
-    border-radius: 4px;
-    background-color: black;  
-    max-width: 400px;  
-    word-wrap: break-word; 
-    overflow-wrap: break-word;  
-    white-space: normal;  
-  }
-  
-  .inner-preview h4 {
- 
-    color: white;
-    text-align: center;
-    font-weight: bold;
-    margin: 0;
-    overflow: hidden;  
-    text-overflow: ellipsis; 
-    word-wrap: break-word;  
-    overflow-wrap: break-word;
-  }
-
-  .thebodyoftext {
-    margin-bottom: 1rem;
-  }
-  
-  #textPostbody {
-    width: 100%;  
-    padding: 0.5rem;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    box-sizing: border-box; 
-    font-size: 1rem;
-    line-height: 1.5; 
-    transition: height 0.2s ease;  
-  }
-  
-  #textPostbody:focus {
-    border-color: #007bff;  
-    outline: none; 
-  }
-
-
-
-
-
-
-
-  .add-post-main-holder {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background-color: white; 
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-  }
-
-
-
-  .btn-holder{
-   display: flex;
-   flex-direction: row;
-  }
-
-  .btn-holder button{
-    margin: 10px;
-  }
-
-  .closebtn{
-    position: absolute;
-    top: 10px;
-    right: 50px;
-  }
-
-
-
-
-
-
-
-  .add-preview{
-    width: 30%;
-  }
+}
+.preview-wrapper {
+position: relative;
+margin: 5px;
+}

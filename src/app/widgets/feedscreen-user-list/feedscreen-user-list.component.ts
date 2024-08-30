@@ -20,6 +20,7 @@ export class FeedscreenUserListComponent  implements OnInit{
   @ViewChild('videoHolder') videoHolder!: ElementRef<HTMLDivElement>;
   @ViewChild('linkHolder') linkHolder!: ElementRef<HTMLDivElement>;
   @ViewChild('textHolder') textHolder!: ElementRef<HTMLDivElement>;
+  @ViewChild('imageHolder') imageHolder!: ElementRef<HTMLDivElement>;
 
 
   
@@ -27,6 +28,7 @@ export class FeedscreenUserListComponent  implements OnInit{
   videoList:any[] = [];
   linkList:any[] = [];
   textList:any[] = [];
+  imageList:any[] = [];
   userid:string="";
   screen:string="";
   videoUrl:string ="";
@@ -40,16 +42,20 @@ export class FeedscreenUserListComponent  implements OnInit{
   isLoading = false;
   isLoadingForLink = false;
   isLoadingForText = false;
+  isLoadingForImage = false;
 
 
   showvideosBool:boolean = false;
   showlinksBool:boolean = false;
   showtextsBool:boolean = false;
-  showuserBool:boolean = true;
+  showuserBool:boolean = false;
+  showimagesBool:boolean = false;
+  showvoicesBool:boolean = false;
 
   private scrollListener!: () => void;
   private scrollListenerForLinks!: () => void;
   private scrollListenerForTexts!: () => void;
+  private scrollListenerForImages!: () => void;
 
 
 
@@ -65,6 +71,7 @@ export class FeedscreenUserListComponent  implements OnInit{
         this.getAllVideoPosts();
         this.getLinksPosts();
         this.getTextsPosts();
+        this.getImagesPosts();
       }else{
    
 
@@ -72,6 +79,8 @@ export class FeedscreenUserListComponent  implements OnInit{
         this.getAllVideoPosts();
         this.getLinksPosts();
         this.getTextsPosts();
+        this.getImagesPosts();
+
 
 
       }
@@ -93,6 +102,12 @@ export class FeedscreenUserListComponent  implements OnInit{
  
       this.attachScrollListenerForTexts();
     }
+
+    if (this.showimagesBool) {
+ 
+      this.attachScrollListenerForImages();
+    }
+
 
 
     
@@ -176,6 +191,24 @@ export class FeedscreenUserListComponent  implements OnInit{
   }
 
 
+  private attachScrollListenerForImages(): void {
+    if (this.imageHolder && this.imageHolder.nativeElement) {
+  
+      if (this.scrollListenerForImages) {
+        this.imageHolder.nativeElement.removeEventListener('scroll', this.scrollListenerForImages);
+      }
+      this.scrollListenerForImages = () => this.onScrollForImages();
+      this.imageHolder.nativeElement.addEventListener('scroll', this.scrollListenerForImages);
+ 
+    }
+  }
+
+
+
+
+
+
+
 
 
 
@@ -222,6 +255,30 @@ export class FeedscreenUserListComponent  implements OnInit{
     
     }
   }
+
+
+
+
+  onScrollForImages(): void {
+    if (!this.imageHolder) {
+ 
+      return;
+    }
+
+    const element = this.imageHolder.nativeElement;
+    const scrollTop = element.scrollTop;
+    const scrollHeight = element.scrollHeight;
+    const offsetHeight = element.offsetHeight;
+
+   
+    if ((scrollTop + offsetHeight) >= scrollHeight && !this.isLoading) {
+  
+ 
+      this.getImagesPosts();
+    
+    }
+  }
+
 
 
 
@@ -277,11 +334,14 @@ export class FeedscreenUserListComponent  implements OnInit{
     this.isLoading = true;
     this.http.get<any[]>(`${this.APIURL}get_all_video_posts?limit=${this.limit}&offset=${this.offset}`).subscribe({
       next: (response: any[]) => {
+
+ 
         
         if(response.length === 0){
            this.noviodeposts = true;
+
         }else{
-          this.noviodeposts = false;
+           this.noviodeposts = false;
 
 
           const processedVideos = response.map(video => {
@@ -331,6 +391,17 @@ export class FeedscreenUserListComponent  implements OnInit{
         next: (response: any[]) => {
             const processedLinks = response.map(link => {
                 link.textbody = link.textbody;
+                link.posteddate = link.posteddate;
+                link.postid = link.postid;
+                link.n_or_g = link.n_or_g;
+                link.username = link.username;
+                link.onlinestatus = link.onlinestatus;
+
+                if (link.profileimage) {
+                  link.profileimage = this.createBlobUrl(link.profileimage, 'image/jpeg');
+                }
+
+
                 return link;
             });
 
@@ -339,6 +410,7 @@ export class FeedscreenUserListComponent  implements OnInit{
             );
 
             this.linkList = [...this.linkList, ...newLinks];
+         
 
             if (newLinks.length > 0) {
                 this.offsetlink += this.limitlink;
@@ -367,6 +439,65 @@ export class FeedscreenUserListComponent  implements OnInit{
 
 
 
+async getImagesPosts(): Promise<void> {
+  if (this.isLoadingForImage) return;
+
+  this.isLoadingForImage = true;
+
+  this.http.get<any[]>(`${this.APIURL}get_all_image_posts?limit=${this.limittext}&offset=${this.offsettext}`).subscribe({
+    next: (response: any[]) => {
+      const processedLinks = response.map(image => {
+      
+        image.n_or_g = image.n_or_g;
+        image.postid = image.postid;
+        image.username = image.username;
+        image.posteddate = image.posteddate;
+        image.onlinestatus = image.onlinestatus;
+        if (image.profileimage) {
+          image.profileimage = this.createBlobUrl(image.profileimage, 'image/jpeg');
+        }
+        if (image.post) {
+
+          image.post = this.createBlobUrl(image.post, 'image/jpeg');
+       
+        }
+
+        return image;
+      });
+
+    
+      processedLinks.forEach(text => {
+        if (!this.imageList.some(existingLink => existingLink.posteddate === text.posteddate)) {
+          this.imageList.push(text);
+        }
+      });
+
+   
+
+ 
+      if (processedLinks.length > 0) {
+        this.offsettext += this.limittext;
+      }
+
+      this.isLoadingForImage = false;
+    },
+    error: (error: HttpErrorResponse) => {
+      console.error('There was an error!', error);
+      this.isLoadingForImage = false;
+    }
+  });
+}
+
+
+
+
+
+
+
+
+
+
+
 
 
   async getTextsPosts(): Promise<void> {
@@ -381,6 +512,12 @@ export class FeedscreenUserListComponent  implements OnInit{
           text.textcolor = text.textcolor;
           text.n_or_g = text.n_or_g;
           text.postid = text.postid;
+          text.username = text.username;
+          text.posteddate = text.posteddate;
+          text.onlinestatus = text.onlinestatus;
+          if (text.profileimage) {
+            text.profileimage = this.createBlobUrl(text.profileimage, 'image/jpeg');
+          }
           return text;
         });
   
@@ -390,6 +527,8 @@ export class FeedscreenUserListComponent  implements OnInit{
             this.textList.push(text);
           }
         });
+
+     
   
    
         if (processedLinks.length > 0) {
@@ -521,6 +660,8 @@ export class FeedscreenUserListComponent  implements OnInit{
    this.showuserBool= false;
    this.showlinksBool= false;
    this.showtextsBool= false;
+   this.showimagesBool= false;
+   this.showvoicesBool= false;
  
   }
 
@@ -532,6 +673,8 @@ export class FeedscreenUserListComponent  implements OnInit{
    this.showuserBool= false;
    this.showlinksBool= true;
    this.showtextsBool= false;
+   this.showimagesBool= false;
+   this.showvoicesBool= false;
  
   }
 
@@ -544,9 +687,37 @@ export class FeedscreenUserListComponent  implements OnInit{
    this.showuserBool= false;
    this.showlinksBool= false;
    this.showtextsBool= true;
+   this.showimagesBool= false;
+   this.showvoicesBool= false;
   }
 
 
+
+
+  showimages(e:Event):void{
+    e.preventDefault();
+    e.stopPropagation();
+
+   this.showvideosBool=false;
+   this.showuserBool= false;
+   this.showlinksBool= false;
+   this.showtextsBool= false;
+   this.showimagesBool= true;
+   this.showvoicesBool= false;
+  }
+
+  
+  showvoices(e:Event):void{
+    e.preventDefault();
+    e.stopPropagation();
+
+   this.showvideosBool=false;
+   this.showuserBool= false;
+   this.showlinksBool= false;
+   this.showtextsBool= false;
+   this.showimagesBool= false;
+   this.showvoicesBool= true;
+  }
 
 
   gobackfromviodes(e:Event):void{
@@ -556,6 +727,8 @@ export class FeedscreenUserListComponent  implements OnInit{
    this.showvideosBool=false;
    this.showlinksBool= false;
    this.showtextsBool= false;
+   this.showimagesBool= false;
+   this.showvoicesBool= false;
    this.showuserBool= true;
    
  
@@ -571,4 +744,29 @@ export class FeedscreenUserListComponent  implements OnInit{
   }
 
 
+
+  calculateTimeAgo(postedDate: string): string {
+    const now = new Date();
+    const postDate = new Date(postedDate);
+    const diffInMs = now.getTime() - postDate.getTime();
+    const diffInSeconds = Math.floor(diffInMs / 1000);
+    const diffInMinutes = Math.floor(diffInSeconds / 60);
+    const diffInHours = Math.floor(diffInMinutes / 60);
+    const diffInDays = Math.floor(diffInHours / 24);
+
+    if (diffInSeconds < 60) {
+      return 'just now';
+    } else if (diffInMinutes < 60) {
+      return `${diffInMinutes} minutes ago`;
+    } else if (diffInHours < 24) {
+      return `${diffInHours} hours ago`;
+    } else if (diffInDays === 1) {
+      return 'yesterday';
+    } else {
+      return postDate.toLocaleDateString();
+    }
+  }
+
+
+  
 }
