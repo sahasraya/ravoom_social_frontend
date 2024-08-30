@@ -21,6 +21,7 @@ export class FeedscreenUserListComponent  implements OnInit{
   @ViewChild('linkHolder') linkHolder!: ElementRef<HTMLDivElement>;
   @ViewChild('textHolder') textHolder!: ElementRef<HTMLDivElement>;
   @ViewChild('imageHolder') imageHolder!: ElementRef<HTMLDivElement>;
+  @ViewChild('voiceHolder') voiceHolder!: ElementRef<HTMLDivElement>;
 
 
   
@@ -29,6 +30,7 @@ export class FeedscreenUserListComponent  implements OnInit{
   linkList:any[] = [];
   textList:any[] = [];
   imageList:any[] = [];
+  voiceList:any[] = [];
   userid:string="";
   screen:string="";
   videoUrl:string ="";
@@ -36,13 +38,18 @@ export class FeedscreenUserListComponent  implements OnInit{
   offset = 0;
   offsetlink = 0;
   offsettext = 0;
+  offsetvoice = 0;
+  offsetimage = 0;
   limit = 5;
   limitlink = 5;
   limittext = 5;
+  limitvoice = 5;
+  limitimage = 5;
   isLoading = false;
   isLoadingForLink = false;
   isLoadingForText = false;
   isLoadingForImage = false;
+  isLoadingForVoice = false;
 
 
   showvideosBool:boolean = false;
@@ -56,6 +63,7 @@ export class FeedscreenUserListComponent  implements OnInit{
   private scrollListenerForLinks!: () => void;
   private scrollListenerForTexts!: () => void;
   private scrollListenerForImages!: () => void;
+  private scrollListenerForVoices!: () => void;
 
 
 
@@ -72,6 +80,7 @@ export class FeedscreenUserListComponent  implements OnInit{
         this.getLinksPosts();
         this.getTextsPosts();
         this.getImagesPosts();
+        this.getVoicesPosts();
       }else{
    
 
@@ -80,6 +89,8 @@ export class FeedscreenUserListComponent  implements OnInit{
         this.getLinksPosts();
         this.getTextsPosts();
         this.getImagesPosts();
+        this.getVoicesPosts();
+
 
 
 
@@ -109,6 +120,13 @@ export class FeedscreenUserListComponent  implements OnInit{
     }
 
 
+    if (this.showvoicesBool) {
+ 
+      this.attachScrollListenerForVoices();
+    }
+
+
+
 
     
   }
@@ -135,6 +153,11 @@ export class FeedscreenUserListComponent  implements OnInit{
     }
     if (this.textHolder && this.scrollListenerForTexts) {
       this.textHolder.nativeElement.removeEventListener('scroll', this.scrollListenerForTexts);
+    }
+
+
+    if (this.textHolder && this.scrollListenerForVoices) {
+      this.textHolder.nativeElement.removeEventListener('scroll', this.scrollListenerForVoices);
     }
 
 
@@ -204,6 +227,21 @@ export class FeedscreenUserListComponent  implements OnInit{
   }
 
 
+  private attachScrollListenerForVoices(): void {
+    if (this.voiceHolder && this.voiceHolder.nativeElement) {
+  
+      if (this.scrollListenerForVoices) {
+        this.voiceHolder.nativeElement.removeEventListener('scroll', this.scrollListenerForVoices);
+      }
+      this.scrollListenerForVoices = () => this.onScrollForVoices();
+      this.voiceHolder.nativeElement.addEventListener('scroll', this.scrollListenerForVoices);
+ 
+    }
+  }
+
+  
+
+
 
 
 
@@ -249,7 +287,7 @@ export class FeedscreenUserListComponent  implements OnInit{
     const offsetHeight = element.offsetHeight;
 
    
-    if ((scrollTop + offsetHeight) >= scrollHeight && !this.isLoading) {
+    if ((scrollTop + offsetHeight) >= scrollHeight && !this.isLoadingForText) {
  
       this.getTextsPosts();
     
@@ -271,7 +309,7 @@ export class FeedscreenUserListComponent  implements OnInit{
     const offsetHeight = element.offsetHeight;
 
    
-    if ((scrollTop + offsetHeight) >= scrollHeight && !this.isLoading) {
+    if ((scrollTop + offsetHeight) >= scrollHeight && !this.isLoadingForImage) {
   
  
       this.getImagesPosts();
@@ -279,6 +317,27 @@ export class FeedscreenUserListComponent  implements OnInit{
     }
   }
 
+
+
+  onScrollForVoices(): void {
+    if (!this.voiceHolder) {
+ 
+      return;
+    }
+
+    const element = this.voiceHolder.nativeElement;
+    const scrollTop = element.scrollTop;
+    const scrollHeight = element.scrollHeight;
+    const offsetHeight = element.offsetHeight;
+
+   
+    if ((scrollTop + offsetHeight) >= scrollHeight && !this.isLoadingForVoice) {
+ 
+ 
+      this.getVoicesPosts();
+    
+    }
+  }
 
 
 
@@ -438,13 +497,12 @@ export class FeedscreenUserListComponent  implements OnInit{
 
 
 
-
 async getImagesPosts(): Promise<void> {
   if (this.isLoadingForImage) return;
 
   this.isLoadingForImage = true;
 
-  this.http.get<any[]>(`${this.APIURL}get_all_image_posts?limit=${this.limittext}&offset=${this.offsettext}`).subscribe({
+  this.http.get<any[]>(`${this.APIURL}get_all_image_posts?limit=${this.limitimage}&offset=${this.offsetimage}`).subscribe({
     next: (response: any[]) => {
       const processedLinks = response.map(image => {
       
@@ -467,7 +525,7 @@ async getImagesPosts(): Promise<void> {
 
     
       processedLinks.forEach(text => {
-        if (!this.imageList.some(existingLink => existingLink.posteddate === text.posteddate)) {
+        if (!this.imageList.some(existingLink => existingLink.postid === text.postid)) {
           this.imageList.push(text);
         }
       });
@@ -476,7 +534,7 @@ async getImagesPosts(): Promise<void> {
 
  
       if (processedLinks.length > 0) {
-        this.offsettext += this.limittext;
+        this.offsetimage += this.limitimage;
       }
 
       this.isLoadingForImage = false;
@@ -487,6 +545,87 @@ async getImagesPosts(): Promise<void> {
     }
   });
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+async getVoicesPosts(): Promise<void> {
+  if (this.isLoadingForVoice) return;
+
+  this.isLoadingForVoice = true;
+
+  this.http.get<any[]>(`${this.APIURL}get_all_voice_posts?limit=${this.limitvoice}&offset=${this.offsetvoice}`).subscribe({
+    next: (response: any[]) => {
+      const processedLinks = response.map(voice => {
+      
+        voice.n_or_g = voice.n_or_g;
+        voice.postid = voice.postid;
+        voice.username = voice.username;
+        voice.posteddate = voice.posteddate;
+        voice.onlinestatus = voice.onlinestatus;
+ 
+        if (voice.profileimage) {
+          voice.profileimage = this.createBlobUrl(voice.profileimage, 'image/jpeg');
+        }
+        if (voice.post) {
+
+          const base64Data = voice.post;
+
+           const blob = this.convertBase64ToBlobAudio(base64Data);
+           voice.audioUrl = URL.createObjectURL(blob);
+      
+      
+       
+        }
+
+        return voice;
+      });
+
+    
+      processedLinks.forEach(voice => {
+        if (!this.voiceList.some(existingLink => existingLink.postid === voice.postid)) {
+          this.voiceList.push(voice);
+        }
+      });
+
+   
+
+ 
+      if (processedLinks.length > 0) {
+        this.offsetvoice += this.limitvoice;
+      }
+
+      this.isLoadingForVoice = false;
+    },
+    error: (error: HttpErrorResponse) => {
+      console.error('There was an error!', error);
+      this.isLoadingForVoice = false;
+    }
+  });
+}
+
+
+
+
+
+convertBase64ToBlobAudio(base64Data: string): Blob {
+  return this.convertBase64ToBlob(base64Data, 'audio/mpeg');
+}
+
 
 
 

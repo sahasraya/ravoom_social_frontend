@@ -5,6 +5,7 @@ import { ActivatedRoute, Route, Router, RouterModule } from '@angular/router';
 import { ImageLargerComponent } from '../image-larger/image-larger.component';
 import { PLATFORM_ID } from '@angular/core';
 import { ReporttingComponent } from '../reportting/reportting.component';
+import { SharedServiceService } from '../../services/shared-service.service';
 
 @Component({
   selector: 'app-post',
@@ -14,6 +15,7 @@ import { ReporttingComponent } from '../reportting/reportting.component';
   styleUrl: './post.component.css'
 })
 export class PostComponent implements OnInit {
+  APIURL = 'http://127.0.0.1:8000/';
 
   @Input() post: any;
   @Output() delete = new EventEmitter<void>();
@@ -27,7 +29,6 @@ export class PostComponent implements OnInit {
   audioUrl: string = '';
   likes: number = 0;
   comments: number = 0;
-  APIURL = 'http://127.0.0.1:8000/';
   showLargerImage: boolean = false;
   postToBeDeleted: any = null;
   isthelastcomment: boolean = false;
@@ -40,7 +41,7 @@ export class PostComponent implements OnInit {
   screen: string = "";
 
 
-  constructor(private cdref: ChangeDetectorRef,private renderer: Renderer2, private http: HttpClient, private router: Router, @Inject(PLATFORM_ID) private platformId: Object, private route: ActivatedRoute) { }
+  constructor(private cdref: ChangeDetectorRef,private renderer: Renderer2, private http: HttpClient, private router: Router, @Inject(PLATFORM_ID) private platformId: Object, private route: ActivatedRoute,private sharedservice:SharedServiceService) { }
   ngOnInit(): void {
     this.checkuseridtoroutecommentscreen = this.route.snapshot.paramMap.get('uid')!;
 
@@ -561,41 +562,17 @@ saveScrollPosition = () => {
 
 
   async joingroup(grouptype: any, groupid: any, username: string, userid: any): Promise<void> {
-
-    const scrollPosition = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
  
-    localStorage.setItem('scrollPosition', scrollPosition.toString());
-
-    if (grouptype === "public") {
-      this.router.navigate(['home/group', groupid]);
-    } else if (userid == this.userid) {
-      this.router.navigate(['home/group', groupid]);
-    } else {
-
-
-
-      const formData = new FormData();
-      formData.append('groupid', groupid);
-      formData.append('groupownerid', userid);
-      formData.append('myuserid', this.userid);
-
-      try {
-        const response = await this.http.post<any>(`${this.APIURL}ask_permission_from_admin_to_join_group`, formData).toPromise();
-
-        if (response.message === "requestsent") {
-          alert("Wait till the permission from " + username);
-        } else if (response.message === "requestaccepted") {
-          this.router.navigate(['home/group', groupid]);
-        } else {
-          alert(response.message);
-        }
-      } catch (error) {
-        console.error('There was an error!', error);
-        alert('There was an error sending the permission request. Please try again later.');
-      }
-
-    }
+    this.sharedservice.joinGroup(grouptype,groupid,username,userid,this.userid);
   }
+
+
+
+
+
+  
+
+
 
   showreportscreen():void{
   this.showreportscreenBool=true;

@@ -7,6 +7,7 @@
     border-bottom: 1px solid rgba(0, 0, 0, 0.229);
     flex-direction: column;
     transition: background-color 0.2s;
+    cursor: pointer;
  }
  .navinationbuttonholder {
   margin-top: 10px;
@@ -131,3 +132,28 @@ margin-bottom: 10px;
     word-wrap: break-word;  
     overflow-wrap: break-word;
  }
+
+
+ .loadmorebutton{
+  color: white;
+  font-size: 15px;
+  font-family: 'Open Sans', sans-serif;
+  padding: 8px 15px;
+ border-radius: 50px;
+ background-color: var(--primarycolor);
+ transition: background-color 0.2s;
+ box-shadow: -1px 5px 10px 1px rgba(0, 0, 0, 0.2);
+ cursor: pointer;
+width: 120px;
+margin-bottom: 10px;
+}
+.loadmorebutton:hover{
+  background-color: white;
+  color: var(--primarycolor);
+}
+.user-holder{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-wrap: wrap;
+}

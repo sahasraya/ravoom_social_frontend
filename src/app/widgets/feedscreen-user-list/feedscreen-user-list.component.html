@@ -104,7 +104,7 @@
     
 
         
-     <div class="no-viode-posts-banner" *ngIf="!noviodeposts">
+     <div class="no-viode-posts-banner" *ngIf="videoList.length ===0">
  
 
         <img src="../../../assets/images/videopost.png" alt="">
@@ -313,6 +313,89 @@
  </div>
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+ <div class="viode-holder"  *ngIf="showvoicesBool"   #voiceHolder  >
+
+
+    <div class="btn-holder">
+        <img src="../../../assets/images/backarrow.png" alt="" class="backarrow" (click)="gobackfromviodes($event)">
+    </div>
+
+ 
+
+
+
+
+    <div *ngFor="let voice of voiceList" class="text-container">
+        <div class="voice-holder"     >
+          
+            <div class="voice-user-details-holder">
+            
+                  <div class="indicater-holder">
+                    <img *ngIf="voice.profileimage" [src]="voice.profileimage" alt="Profile Image" class="text-profile-image">
+                    <div class="green-dot" *ngIf="voice.onlinestatus == 1" ></div>
+                  </div>
+
+                <div class="inner-details">
+                    <span><b>{{voice.username}}</b></span>
+                    <small>{{calculateTimeAgo(voice.posteddate)}}  </small>
+                </div>
+            </div>
+              
+            <!-- (click)="commentOnPost($event,post.postid, post.n_or_g)" -->
+
+            <audio *ngIf="voice.audioUrl" controls class="audiofile" >
+                <source [src]="voice.audioUrl" type="audio/mpeg"  >
+                Your browser does not support the audio element.
+              </audio>
+
+
+
+          
+          </div>
+</div>
+    
+
+
+
+
+
+        
+     <div class="no-viode-posts-banner" *ngIf="voiceList.length ===0">
+
+        <img src="../../../assets/images/linkpost.png" alt="">
+        <span>No voices yet !</span>
+
+     </div>
+
+
+ </div>
 
 
 

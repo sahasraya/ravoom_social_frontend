@@ -48,7 +48,7 @@
          
           <video *ngSwitchCase="'video/mp4'" [src]="filePreview" class="video-preview" controls></video>
           <audio *ngSwitchCase="'audio/mpeg'" [src]="filePreview" controls></audio>
-          <div *ngSwitchDefault>File preview not available</div>
+          <div *ngSwitchDefault>Not supported format. File preview not available</div>
          <img src="../../../assets/images/close.png" alt="" class="closeicon" (click)="removeSelectedFile()">
         </div>
       </ng-container>

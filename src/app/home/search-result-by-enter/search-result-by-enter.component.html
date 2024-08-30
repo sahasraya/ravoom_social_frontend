@@ -341,7 +341,7 @@
   <div class="user-holder" *ngIf="GroupList.length > 0">
  
       <div *ngFor="let group of GroupList" class="main-outer-holder">
-        <a [routerLink]="['/home/group', group.groupid]">
+        <a   (click)="joingroup(group.grouptype,group.groupid,group.username,group.groupownerid )">
           <div class="inner-holder">
             <div class="profile-image-holder">
               <img *ngIf="group.userprofileUrl" [src]="group.userprofileUrl" alt="Profile Image" class="profileimage">
@@ -362,8 +362,18 @@
           </div>
         </a>
       </div>
+
+   
+        <span (click)="loadMore()" class="loadmorebutton" *ngIf="moreDataAvailable">Load More</span>
+ 
+
    
   </div>
+
+
+
+
+
   
   <div class="nodatamessage" *ngIf="GroupList.length === 0">
     <img src="../../../assets/images/group.png" alt="">

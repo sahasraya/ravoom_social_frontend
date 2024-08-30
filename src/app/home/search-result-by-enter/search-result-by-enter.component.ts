@@ -3,6 +3,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { PostComponent } from '../../widgets/post/post.component';
+import { SharedServiceService } from '../../services/shared-service.service';
 
 @Component({
   selector: 'app-search-result-by-enter',
@@ -14,9 +15,10 @@ import { PostComponent } from '../../widgets/post/post.component';
 export class SearchResultByEnterComponent  implements OnInit{
  
  
-  constructor(private route: ActivatedRoute, private http: HttpClient) {}
+  constructor(private route: ActivatedRoute, private http: HttpClient,private sharedservice:SharedServiceService) {}
 
   searchtext: string = '';
+  userid:string='';
   APIURL = 'http://127.0.0.1:8000/';
   responseObject: any = [];
   responseObjectTextImageLink: any = [];
@@ -43,6 +45,13 @@ export class SearchResultByEnterComponent  implements OnInit{
 
   linkPreviewData: any = null;
 
+
+  offsetgroup = 0;
+  limitgroup = 10;  
+  moreDataAvailable = true;
+
+
+
   ngOnInit(): void {
     this.route.paramMap.subscribe(params => {
       this.searchtext = params.get('text')!;
@@ -52,28 +61,43 @@ export class SearchResultByEnterComponent  implements OnInit{
       this.getLinkPreview('https://en.wikipedia.org/wiki/Sri_Lanka'); 
       this.getUser(this.searchtext);
       this.getGroup(this.searchtext);
+
+      this.userid = localStorage.getItem('wmd') || '';
+      
     });
   
   }
 
+ 
 
    
 
 async getGroup(searchtext: string):Promise<void>{
     
   const formData = new FormData();
-  formData.append('searchtext', searchtext);
+
+ 
+    formData.append('searchtext', searchtext);
+    formData.append('limit', this.limitgroup.toString());
+    formData.append('offset', this.offsetgroup.toString());
+
   this.http.post<any>(`${this.APIURL}search-enter-press-get-groups`, formData).subscribe({
     next: response => {
       this.responseObject = response;
   
-      this.GroupList = [];
+      if (this.offsetgroup === 0) {
+  
+        this.GroupList = [];
+      }
 
       this.responseObject.forEach((post: any) => {
         if (post.groupimage) {
           post.userprofileUrl = this.createBlobUrl(post.groupimage, 'image/jpeg'); 
         }
       this.GroupList.push(post);
+
+      this.moreDataAvailable = response.length === this.limitgroup;
+
       if(this.GroupList.length > 0){
 
         this.showImagetextLinkPostsBool = false;
@@ -97,6 +121,19 @@ async getGroup(searchtext: string):Promise<void>{
   });
 
 }
+
+
+
+
+
+loadMore() {
+  if (this.moreDataAvailable) {
+    this.offsetgroup += this.limitgroup; 
+    this.getGroup(this.searchtext);      
+  }
+}
+
+
 
 
 
@@ -219,6 +256,13 @@ async getUser(searchtext: string):Promise<void>{
       }
     });
   }
+
+  async joingroup(grouptype: any, groupid: any, username: string, userid: any): Promise<void> {
+ 
+    this.sharedservice.joinGroup(grouptype,groupid,username,userid,this.userid);
+
+  }
+
 
 
 

@@ -235,7 +235,19 @@ display: flex;
     padding-top: 5px;
 
   }
-
+.voice-user-details-holder{
+  position: relative;
+  display: flex;
+      flex-direction: row;
+     
+      width: 100%;
+      padding-left: 15px;
+      padding-top: 5px; 
+}
+.audiofile{
+  margin-top: 10px;
+  width: 90%;
+}
   .post-image{
     width: 100%;
     height: 100%;
@@ -327,7 +339,21 @@ display: flex;
     justify-content: flex-start;
  
 }
-
+.voice-holder{
+  border-radius: 10px;
+ 
+ height: var(--user-left-hoder-post-dynamic-width-audio);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #333;
+  margin: 5px 0;
+  cursor: pointer;
+  flex-direction: column;
+  position: relative; 
+  transition:  box-shadow 0.3s ease;
+  justify-content: flex-start; 
+}
 .text-holder:hover ,.image-holder:hover{
   
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5); 
