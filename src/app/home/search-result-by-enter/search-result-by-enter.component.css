@@ -107,6 +107,15 @@ margin-bottom: 10px;
  width: 100%;
    max-width: 680px;
  }
+
+
+ .div-button-holder{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+ }
+
+
  .video-post-holder,.text-link-post-holder{
   display: flex;
   justify-content: center;

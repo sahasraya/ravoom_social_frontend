@@ -47,17 +47,29 @@ export class SearchResultByEnterComponent  implements OnInit{
 
 
   offsetgroup = 0;
+  offsetuser = 0;
+  offsetlink = 0;
+  offsetvideo = 0;
+  offsettextimagelink = 0;
   limitgroup = 10;  
+  limituser = 10;  
+  limitlink = 10;  
+  limitvideo = 10;  
+  limittextimagelink = 10;  
   moreDataAvailable = true;
+  moreDataAvailableuser = true;
+  moreDataAvailablelink = true;
+  moreDataAvailablevideo = true;
+  moreDataAvailabletextimagelink = true;
 
 
 
   ngOnInit(): void {
     this.route.paramMap.subscribe(params => {
       this.searchtext = params.get('text')!;
-      // this.getResult(this.searchtext);
+      this.getVideos(this.searchtext);
       this.getImageTextImageLink(this.searchtext);
-      this.getTextLink(this.searchtext);
+      this.getLink(this.searchtext);
       this.getLinkPreview('https://en.wikipedia.org/wiki/Sri_Lanka'); 
       this.getUser(this.searchtext);
       this.getGroup(this.searchtext);
@@ -133,6 +145,46 @@ loadMore() {
   }
 }
 
+loadMoreUser() {
+  if (this.moreDataAvailableuser) {
+    this.offsetuser += this.limituser; 
+    this.getUser(this.searchtext);      
+  }
+}
+
+loadMoreLinks(e:Event) {
+  e.preventDefault();
+  e.stopPropagation();
+ 
+  if (this.moreDataAvailablelink) {
+    this.offsetlink += this.limitlink; 
+    this.getLink(this.searchtext);      
+  }
+}
+
+
+
+loadMoreVideos(e:Event) {
+  e.preventDefault();
+  e.stopPropagation();
+ 
+  if (this.moreDataAvailablevideo) {
+    this.offsetvideo += this.limitvideo; 
+    this.getVideos(this.searchtext);      
+  }
+}
+
+
+loadMoreTextImageLink(e:Event) {
+  e.preventDefault();
+  e.stopPropagation();
+ 
+  if (this.moreDataAvailabletextimagelink) {
+    this.offsettextimagelink += this.limittextimagelink; 
+    this.getVideos(this.searchtext);      
+  }
+}
+
 
 
 
@@ -145,22 +197,32 @@ async getUser(searchtext: string):Promise<void>{
   
   const formData = new FormData();
   formData.append('searchtext', searchtext);
+  formData.append('limit', this.limituser.toString());
+  formData.append('offset', this.offsetuser.toString());
+
+
+
 
   this.http.post<any>(`${this.APIURL}search-enter-press-get-users`, formData).subscribe({
     next: response => {
       this.responseObject = response;
  
-      this.UserList = [];
+      if (this.offsetuser === 0) {
+  
+        this.UserList = [];
+      }
+
+     
 
       this.responseObject.forEach((post: any) => {
         if (post.profileimage) {
           post.userprofileUrl = this.createBlobUrl(post.profileimage, 'image/jpeg'); 
         }
-
-        
-
-  
+ 
         this.UserList.push(post);
+
+        this.moreDataAvailableuser = response.length === this.limituser;
+
 
         if(this.UserList.length > 0){
           this.showImagetextLinkPostsBool = false;
@@ -202,9 +264,12 @@ async getUser(searchtext: string):Promise<void>{
     });
   }
 
-  async getTextLink(searchtext: string) {
+  async getLink(searchtext: string) {
     const formData = new FormData();
     formData.append('searchtext', searchtext);
+    formData.append('limit', this.limitlink.toString());
+    formData.append('offset', this.offsetlink.toString());
+  
 
  
 
@@ -213,8 +278,12 @@ async getUser(searchtext: string):Promise<void>{
         this.responseObject = response;
       
         
-     
-        this.TextLinkPosts = [];
+        if (this.offsetlink === 0) {
+  
+          this.TextLinkPosts = [];
+        }
+
+ 
 
         this.responseObject.forEach((post: any) => {
           if (post.userprofile) {
@@ -227,7 +296,7 @@ async getUser(searchtext: string):Promise<void>{
 
     
           this.TextLinkPosts.push(post);
-
+          this.moreDataAvailablelink = response.length === this.limitlink;
 
          
 
@@ -269,6 +338,7 @@ async getUser(searchtext: string):Promise<void>{
   async getImageTextImageLink(searchtext: string) {
     const formData = new FormData();
     formData.append('searchtext', searchtext);
+    
     this.responseObjectTextImageLink = [];
  
     this.http.post<any>(`${this.APIURL}search-enter-press-result-image-link-text`, formData).subscribe({
@@ -340,49 +410,96 @@ async getUser(searchtext: string):Promise<void>{
   }
 
 
-  async getResult(searchtext: string):Promise<void> {
+
+
+
+
+
+
+
+  async getVideos(searchtext: string):Promise<void> {
     const formData = new FormData();
     formData.append('searchtext', searchtext);
+    formData.append('limit', this.limitvideo.toString());
+    formData.append('offset', this.offsetvideo.toString());
 
     this.http.post<any>(`${this.APIURL}search-enter-press-result`, formData).subscribe({
       next: response => {
+     
         this.responseObject = response;
+
+        if (this.offsetvideo === 0) {
+  
+          this.videoPosts = [];
+        }
+
+        
+
+ 
+
         this.responseObject.forEach((post: any) => {
+       
           if (post.userprofile) {
             post.userprofileUrl = this.createBlobUrl(post.userprofile, 'image/jpeg'); 
-            post.postUrl = this.createBlobUrl(post.post, 'image/jpeg'); 
-       
-
           }
 
-           
+          if (post.post) {
+          
+            const base64Data = post.post;
+              const blob = this.convertBase64ToBlob(base64Data, 'video/mp4');
+              post.postUrl = URL.createObjectURL(blob);
+              
 
-          switch (post.posttype) {
-            case 'video':
-              this.videoPosts.push(post);
-              break;
-            case 'audio':
-              this.audioPosts.push(post);
-              break;
-            case 'image':
-              this.imagePosts.push(post);
-              break;
-            case 'text':
-              this.textPosts.push(post);
-              break;
-            case 'link':
-              this.linkPosts.push(post);
-              break;
+              
           }
 
-          alert(this.videoPosts);
+    
+          this.videoPosts.push(post);
+          this.moreDataAvailablevideo = response.length === this.limitvideo;
+      
+          if(this.videoPosts.length > 0){
+
+            this.showImagetextLinkPostsBool = false;
+            this.showAudioPostsBool = false;
+            this.showImagePostsBool = false;
+            this.showTextPostsBool = false;
+            this.showLinkPostsBool = false;
+            this.showVideoPostsBool = true ;
+            this.showTextLinkPostsBool = false;
+            this.showUserBool =false;
+            this.showGroupBool= false;
+    
+          }
+
+
         });
+
+
+
       },
       error: (error: HttpErrorResponse) => {
         console.error('There was an error!', error);
       }
     });
   }
+
+
+
+
+
+  convertBase64ToBlob(base64: string, mimeType: string): Blob {
+    const base64Data = base64.replace(/^data:video\/mp4;base64,/, '');
+    const byteChars = atob(base64Data);
+    const byteNums = new Array(byteChars.length);
+
+    for (let i = 0; i < byteChars.length; i++) {
+      byteNums[i] = byteChars.charCodeAt(i);
+    }
+
+    const byteArray = new Uint8Array(byteNums);
+    return new Blob([byteArray], { type: mimeType });
+  }
+
 
 
 
@@ -413,20 +530,7 @@ async getUser(searchtext: string):Promise<void>{
     return URL.createObjectURL(blob);
   }
 
-  getContentType(posttype: string): string {
-    switch (posttype) {
-      case 'video':
-        return 'video/mp4';
-      case 'audio':
-        return 'audio/mpeg';
-      case 'image':
-        return 'image/jpeg';
-      case 'link':
-        return 'image/jpeg';
-      default:
-        return '';
-    }
-  }
+ 
 
   showTextPosts(): void {
     this.showImagetextLinkPostsBool = false;

@@ -134,14 +134,20 @@
   </audio>
 </div>
   <div class="active-buttons-holder">
-    <span class="dot dot-blue"></span>
+    <span class="dot dot-blue" (click)="likePost(post.postid, post.userid,  post.username, post.userprofile,post.n_or_g)" [attr.data-postid]="post.postid">
+
+
+    </span>
     
-    <button (click)="likePost(post.postid, post.userid,  post.username, post.userprofile,post.n_or_g)">Like</button>
-    <span>{{ likes }} Likes</span>
+ 
+    <span class="likescount" *ngIf="likes > 0">{{ likes }} </span>
+
+
+
 
     <!-- Comment button -->
      <span class="comment-button" (click)="commentOnPost($event,post.postid,post.n_or_g)" *ngIf="post.posttype != 'group'">
-      <img src="../../../assets/images/comment.png" alt="" > {{ comments }}
+      <img src="../../../assets/images/comment.png" alt="" ><span *ngIf="comments > 0"> {{ comments }}</span>
      </span>
 
  

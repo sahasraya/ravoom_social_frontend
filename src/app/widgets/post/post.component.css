@@ -76,7 +76,7 @@
   white-space: nowrap;  
   word-wrap: break-word;  
   display: -webkit-box;  
-  -webkit-line-clamp: 2;  
+ 
   -webkit-box-orient: vertical;  
 }
 .linktext{
@@ -158,12 +158,22 @@
   border-style: solid;
   border-color: #00bcd4;
   display: inline-block;
+  cursor: pointer;
+  transition: transform 0.3s ease, background-color 0.3s ease;  
+}
+
+.dot-blue:hover {
+  transform: scale(1.2);  
+  background-color: #e0f7fa;  
+}
+.likescount{
+  margin-left: 2px;
 }
 
 
  .comment-button{
   padding: 10px;
-  background-color: var(--icon-backgroud-color);
+ 
   border-radius: 25px;
   cursor: pointer;
   display: flex;
@@ -418,6 +428,9 @@ max-width: 100%;
   margin-bottom: 10px;
 }
 
+.liked-dot {
+  background-color: #2196f3; 
+}
 
  
 

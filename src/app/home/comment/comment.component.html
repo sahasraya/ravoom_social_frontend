@@ -126,16 +126,33 @@
   
 
       <div class="active-buttons-holder">
-        <button (click)="likePost(post.postid, post.userid,  post.username, post.userprofile,post.n_or_g)">Like</button>
-        <span>{{ likes }} Likes</span>
-    
-  
 
+       <h1></h1>
+       
+            <span class="dot dot-blue" (click)="likePost(post.postid, post.userid,  post.username, post.userprofile,post.n_or_g)"  [attr.data-postid]="post.postid">
+
+            </span>
+         
+            <span  *ngIf="likes > 0" class="likecount">{{ likes }} </span>
+          
+     
+     
+       <div class="comment-div-holder">
         <span class="comment-button"  >
-          <img src="../../../assets/images/comment.png" alt="" > {{ numberofcomments }} Comments
+          <img src="../../../assets/images/comment.png" alt="numberofcomments" > <span *ngIf="numberofcomments > 0" class="commentnumber">{{ numberofcomments }} </span> 
          </span>
+       </div>
+     
+
+
 
       </div>
+
+
+
+
+
+
 
 
 

@@ -226,6 +226,10 @@ saveScrollPosition = () => {
   async getpostlikecount(): Promise<void> {
     if (this.post && this.post.postid) {
 
+
+      const dotElement = document.querySelector(`.dot-blue[data-postid="${this.post.postid}"]`);
+
+
       if (this.post.n_or_g == "g") {
         const params = new HttpParams().set('postid', this.post.postid.toString());
         try {
@@ -233,6 +237,21 @@ saveScrollPosition = () => {
 
           if (response.like_count !== undefined) {
             this.likes = response.like_count;
+
+            if (this.userid !== '') {
+              const paramstocheckuserliked = new HttpParams()
+                  .set('postid', this.post.postid.toString())
+                  .set('userid', this.userid.toString());
+
+              const likeCheckResponse: any = await this.http.get<any>(`${this.APIURL}check_curruntuser_liked_or_not_group`, { params: paramstocheckuserliked }).toPromise();
+              
+              if (likeCheckResponse.message === "yes") {
+                  dotElement?.classList.add('liked-dot');
+              } else {
+                  dotElement?.classList.remove('liked-dot');
+              }
+          }
+            
           }
         } catch (error) {
           console.error('There was an error!', error);
@@ -244,6 +263,25 @@ saveScrollPosition = () => {
 
           if (response.like_count !== undefined) {
             this.likes = response.like_count;
+
+            if (this.userid !== '') {
+              const paramstocheckuserliked = new HttpParams()
+                  .set('postid', this.post.postid.toString())
+                  .set('userid', this.userid.toString());
+
+               
+
+              const likeCheckResponse: any = await this.http.get<any>(`${this.APIURL}check_curruntuser_liked_or_not`, { params: paramstocheckuserliked }).toPromise();
+              
+              if (likeCheckResponse.message === "yes") {
+                  dotElement?.classList.add('liked-dot');
+              } else {
+                  dotElement?.classList.remove('liked-dot');
+              }
+          }
+
+
+
           }
         } catch (error) {
           console.error('There was an error!', error);
@@ -389,6 +427,9 @@ saveScrollPosition = () => {
 
   async likePost(postid: number, userid: number, username: string, profileimage: string, normalorgroup: any): Promise<void> {
 
+    const dotElement = document.querySelector(`.dot-blue[data-postid="${postid}"]`);
+ 
+
     if (this.userid == '') {
       this.router.navigate(['/auth/log-in']);
       return;
@@ -411,9 +452,13 @@ saveScrollPosition = () => {
           if (response.message == "no") {
 
             this.likes++;
+        
+            dotElement?.classList.add('liked-dot');
+            
 
           } else {
             this.likes--;
+            dotElement?.classList.remove('liked-dot');
             this.http.post(this.APIURL + "send-notification", formData).subscribe({
               next: (response: any) => {
 
@@ -433,6 +478,9 @@ saveScrollPosition = () => {
           if (response.message == "no") {
 
             this.likes++;
+    
+            dotElement?.classList.add('liked-dot');
+
             this.http.post(this.APIURL + "send-notification", formData).subscribe({
               next: (response: any) => {
 
@@ -440,6 +488,7 @@ saveScrollPosition = () => {
             });
           } else {
             this.likes--;
+            dotElement?.classList.remove('liked-dot');
             this.http.post(this.APIURL + "send-notification", formData).subscribe({
               next: (response: any) => {
 

@@ -189,6 +189,9 @@ input[type="text"]:focus {
  .active-buttons-holder{
   margin-top: 15px;
   margin-bottom: 20px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
  }
  
 
@@ -378,14 +381,28 @@ input[type="text"]:focus {
   display: flex;
   flex-direction: row;
   border-radius: 15px;
-  margin-top: 10px;
+  align-items: center;
+ 
  
  }
- .comment-button img{
-  width: 20px;
-  margin-right: 5px;
+ .likecount{
+  margin-left: 5px;
  }
-
+ .comment-button img{
+  width: 18px;
+  height: 18px;
+ 
+ }
+.comment-div-holder{
+  background-color: var(--icon-hover-backgroud-color);
+  padding: 10px;
+ 
+  border-radius: 25px;
+  margin-left: 10px;
+}
+.commentnumber{
+  margin-left: 5px;
+}
  .nocomments{
   display: flex;
   flex-direction: column;
@@ -630,4 +647,27 @@ input[type="text"]:focus {
   align-items: center;
   justify-content: center;
   z-index: 1000;  
+}
+
+.dot-blue {
+  height: 18px;
+  width: 18px;
+  background-color: #ffffff;
+  border-radius: 50%;
+  border-width: 2px;
+  border-style: solid;
+  border-color: #00bcd4;
+  display: inline-block;
+  cursor: pointer;
+  transition: transform 0.3s ease, background-color 0.3s ease;  
+}
+
+.dot-blue:hover {
+  transform: scale(1.2);  
+  background-color: #e0f7fa;  
+}
+
+
+.liked-dot {
+  background-color: #2196f3; 
 }

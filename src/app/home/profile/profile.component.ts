@@ -82,6 +82,7 @@ export class ProfileComponent   {
     this.offset = 0;  
     this.getPostsFeed();
   }
+  
   async getuserdetailsFrommethod(userid:string):Promise<void>{
     const formData = new FormData();
     formData.append('userid', userid);

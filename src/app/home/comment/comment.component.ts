@@ -716,6 +716,13 @@ export class CommentComponent implements OnInit {
 
 
   likePost(postid: number, userid: any, username: string, profileimage: string, normalorgroup: string): void {
+
+
+    const dotElement = document.querySelector(`.dot-blue[data-postid="${postid}"]`);
+
+
+
+
     if (!this.userid) {
       this.router.navigate(['/auth/log-in']);
       return;
@@ -736,8 +743,10 @@ export class CommentComponent implements OnInit {
       next: (response: any) => {
         if (response.message === "no") {
           this.likes++;
+          dotElement?.classList.add('liked-dot');
         } else {
           this.likes--;
+          dotElement?.classList.remove('liked-dot'); 
         }
   
         if(userid == this.userid){
