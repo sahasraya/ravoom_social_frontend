@@ -393,13 +393,23 @@ input[type="text"]:focus {
   height: 18px;
  
  }
-.comment-div-holder{
+.comment-div-holder,.follow-btn-holder{
   background-color: var(--icon-hover-backgroud-color);
   padding: 10px;
  
   border-radius: 25px;
   margin-left: 10px;
+  transition: background-color 0.3s;
+  cursor: pointer;
 }
+
+.follow-btn-holder:hover{
+  background-color: var(--icon-backgroud-color);
+}
+
+
+
+
 .commentnumber{
   margin-left: 5px;
 }
@@ -670,4 +680,19 @@ input[type="text"]:focus {
 
 .liked-dot {
   background-color: #2196f3; 
+  height: 18px;
+  width: 18px;
+ 
+  border-radius: 50%;
+  border-width: 2px;
+  border-style: solid;
+  border-color: #00bcd4;
+  display: inline-block;
+  cursor: pointer;
+  transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+.liked-dot:hover {
+  transform: scale(1.2);  
+  background-color: #2196f3;  
 }

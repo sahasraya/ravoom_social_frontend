@@ -430,6 +430,21 @@ max-width: 100%;
 
 .liked-dot {
   background-color: #2196f3; 
+  height: 18px;
+  width: 18px;
+ 
+  border-radius: 50%;
+  border-width: 2px;
+  border-style: solid;
+  border-color: #00bcd4;
+  display: inline-block;
+  cursor: pointer;
+  transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+.liked-dot:hover {
+  transform: scale(1.2);  
+  background-color: #2196f3;  
 }
 
  

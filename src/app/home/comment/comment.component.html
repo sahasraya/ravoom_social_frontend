@@ -127,13 +127,22 @@
 
       <div class="active-buttons-holder">
 
-       <h1></h1>
+    
+        <span *ngIf="likedornottext =='yes'" class="dot liked-dot" (click)="likePost(post.postid, post.userid,  post.username, post.userprofile,post.n_or_g)" [attr.data-postid]="post.postid">
+
+        </span>
+ 
+
        
-            <span class="dot dot-blue" (click)="likePost(post.postid, post.userid,  post.username, post.userprofile,post.n_or_g)"  [attr.data-postid]="post.postid">
+            <span *ngIf="likedornottext !='yes'" class="dot dot-blue" (click)="likePost(post.postid, post.userid,  post.username, post.userprofile,post.n_or_g)"  [attr.data-postid]="post.postid">
 
             </span>
          
             <span  *ngIf="likes > 0" class="likecount">{{ likes }} </span>
+
+
+
+           
           
      
      
@@ -141,9 +150,15 @@
         <span class="comment-button"  >
           <img src="../../../assets/images/comment.png" alt="numberofcomments" > <span *ngIf="numberofcomments > 0" class="commentnumber">{{ numberofcomments }} </span> 
          </span>
-       </div>
-     
 
+
+       
+
+
+       </div>
+
+     
+       <span  *ngIf="userid !=''"  class="follow-btn-holder" (click)="iamstartedtofollow(post.userid)">{{followButtonText}}</span>
 
 
       </div>

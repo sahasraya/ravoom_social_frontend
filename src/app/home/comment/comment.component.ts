@@ -41,10 +41,12 @@ export class CommentComponent implements OnInit {
   checkuseridtoroutecommentscreen: string = "";
   numberofcomments:any;
   comment="comment";
-
+  likedornottext:string = "";
   limit = 20;  
   offset = 0; 
   loading = false;
+  followButtonText:string = "Follow";
+
 
   constructor(private route: ActivatedRoute, private http: HttpClient, private fb: FormBuilder, private router: Router) {
     this.commentForm = this.fb.group({
@@ -71,12 +73,77 @@ export class CommentComponent implements OnInit {
     this.getpostlikecount();
     this.userid = localStorage.getItem('wmd') || '';
     this.checkuseridtoroutecommentscreen = this.route.snapshot.paramMap.get('uid') || '';
-
-
     this.getpostcommentCount(this.postid);
+
+     
+     
+    
 
 
   }
+
+
+async getfollowingstatus(postowneruserid:any):Promise<void>{
+ 
+  if(this.userid){
+    let params = new HttpParams()
+    .set('postownerid', postowneruserid.toString())
+    .set('userid', this.userid.toString());
+
+  try {
+    const response: any = await this.http.get<any>(`${this.APIURL}following-status`, { params }).toPromise();
+
+
+
+
+    if (response.exists) {
+      this.followButtonText = "Following";
+    } else {
+      this.followButtonText = "Follow";
+
+
+    }
+
+    if (response.exists) {
+      console.log('The user is following the post owner.');
+    } else {
+      console.log('The user is not following the post owner.');
+    }
+  } catch (error) {
+    console.error('There was an error!', error);
+  }
+  }
+}
+
+
+  async iamstartedtofollow(iamfollowinguserid: any): Promise<void> {
+
+    const formData = new FormData();
+    formData.append('myuserid', this.userid);
+    formData.append('iamfollowinguserid', iamfollowinguserid);
+
+
+
+    this.http.post(this.APIURL + 'start-to-follow', formData).subscribe({
+      next: (response: any) => {
+
+
+        this.toggleFollowButtonText();
+      },
+      error: error => {
+        console.error('There was an error!', error);
+      }
+    });
+
+  }
+
+
+  toggleFollowButtonText(): void {
+    this.followButtonText = this.followButtonText === 'Follow' ? 'Following' : 'Follow';
+  }
+
+
+
 
 
   async getpostcommentCount(postid:any): Promise<void> {
@@ -210,6 +277,8 @@ export class CommentComponent implements OnInit {
     if (this.postid) {
 
       const params = new HttpParams().set('postid', this.postid.toString());
+      const dotElement = document.querySelector(`.dot-blue[data-postid="${this.postid}"]`);
+
 
       try {
         if (this.groupornormalpost == "g") {
@@ -217,12 +286,52 @@ export class CommentComponent implements OnInit {
 
           if (response.like_count !== undefined) {
             this.likes = response.like_count;
+
+            if (this.userid !== '') {
+              const paramstocheckuserliked = new HttpParams()
+                  .set('postid', this.postid.toString())
+                  .set('userid', this.userid.toString());
+
+              const likeCheckResponse: any = await this.http.get<any>(`${this.APIURL}check_curruntuser_liked_or_not_group`, { params: paramstocheckuserliked }).toPromise();
+              
+              if (likeCheckResponse.message === "yes") {
+                  dotElement?.classList.add('liked-dot');
+              } else {
+                  dotElement?.classList.remove('liked-dot');
+              }
+          }
+
+
           }
         } else {
           const response: any = await this.http.get<any>(`${this.APIURL}get_like_count`, { params }).toPromise();
 
           if (response.like_count !== undefined) {
             this.likes = response.like_count;
+
+            if (this.userid !== '') {
+              const paramstocheckuserliked = new HttpParams()
+                  .set('postid', this.postid.toString())
+                  .set('userid', this.userid.toString());
+
+               
+
+              const likeCheckResponse: any = await this.http.get<any>(`${this.APIURL}check_curruntuser_liked_or_not`, { params: paramstocheckuserliked }).toPromise();
+              
+              if (likeCheckResponse.message === "yes") {
+                  dotElement?.classList.add('liked-dot');
+                
+                  this.likedornottext = "yes";
+              } else {
+                  dotElement?.classList.remove('liked-dot');
+               
+
+                  this.likedornottext = "no";
+
+              }
+          }
+
+
           }
         }
       } catch (error) {
@@ -340,7 +449,7 @@ export class CommentComponent implements OnInit {
           }
 
 
-
+          this.getfollowingstatus( this.post.userid);
 
 
         },
@@ -380,7 +489,7 @@ export class CommentComponent implements OnInit {
             this.post.audioUrl = URL.createObjectURL(audioBlob);
           }
 
-
+          this.getfollowingstatus( this.post.userid);
 
         },
         error: (error: HttpErrorResponse) => {
@@ -719,6 +828,7 @@ export class CommentComponent implements OnInit {
 
 
     const dotElement = document.querySelector(`.dot-blue[data-postid="${postid}"]`);
+    const dotElement1 = document.querySelector(`.liked-dot[data-postid="${postid}"]`);
 
 
 
@@ -744,9 +854,13 @@ export class CommentComponent implements OnInit {
         if (response.message === "no") {
           this.likes++;
           dotElement?.classList.add('liked-dot');
+          dotElement1?.classList.remove('liked-dot');
+          dotElement1?.classList.add('dot-blue');
         } else {
           this.likes--;
-          dotElement?.classList.remove('liked-dot'); 
+          dotElement?.classList.remove('liked-dot');
+          dotElement1?.classList.remove('liked-dot');
+          dotElement1?.classList.add('dot-blue');
         }
   
         if(userid == this.userid){

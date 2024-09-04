@@ -134,11 +134,14 @@
   </audio>
 </div>
   <div class="active-buttons-holder">
-    <span class="dot dot-blue" (click)="likePost(post.postid, post.userid,  post.username, post.userprofile,post.n_or_g)" [attr.data-postid]="post.postid">
-
+  
+    <span *ngIf="likedornottext =='yes'" class="dot liked-dot" (click)="likePost(post.postid, post.userid,  post.username, post.userprofile,post.n_or_g)" [attr.data-postid]="post.postid">
 
     </span>
-    
+
+    <span *ngIf="likedornottext !='yes'" class="dot dot-blue" (click)="likePost(post.postid, post.userid,  post.username, post.userprofile,post.n_or_g)" [attr.data-postid]="post.postid">
+    </span>
+ 
  
     <span class="likescount" *ngIf="likes > 0">{{ likes }} </span>
 

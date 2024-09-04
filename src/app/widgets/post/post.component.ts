@@ -40,6 +40,8 @@ export class PostComponent implements OnInit {
   btntext: string = "";
   screen: string = "";
 
+  likedornottext :string = "";
+
 
   constructor(private cdref: ChangeDetectorRef,private renderer: Renderer2, private http: HttpClient, private router: Router, @Inject(PLATFORM_ID) private platformId: Object, private route: ActivatedRoute,private sharedservice:SharedServiceService) { }
   ngOnInit(): void {
@@ -228,6 +230,7 @@ saveScrollPosition = () => {
 
 
       const dotElement = document.querySelector(`.dot-blue[data-postid="${this.post.postid}"]`);
+     
 
 
       if (this.post.n_or_g == "g") {
@@ -275,8 +278,14 @@ saveScrollPosition = () => {
               
               if (likeCheckResponse.message === "yes") {
                   dotElement?.classList.add('liked-dot');
+                
+                  this.likedornottext = "yes";
               } else {
                   dotElement?.classList.remove('liked-dot');
+               
+
+                  this.likedornottext = "no";
+
               }
           }
 
@@ -428,6 +437,7 @@ saveScrollPosition = () => {
   async likePost(postid: number, userid: number, username: string, profileimage: string, normalorgroup: any): Promise<void> {
 
     const dotElement = document.querySelector(`.dot-blue[data-postid="${postid}"]`);
+    const dotElement1 = document.querySelector(`.liked-dot[data-postid="${postid}"]`);
  
 
     if (this.userid == '') {
@@ -454,11 +464,15 @@ saveScrollPosition = () => {
             this.likes++;
         
             dotElement?.classList.add('liked-dot');
+            dotElement1?.classList.remove('liked-dot');
+            dotElement1?.classList.add('dot-blue');
             
 
           } else {
             this.likes--;
             dotElement?.classList.remove('liked-dot');
+            dotElement1?.classList.remove('liked-dot');
+            dotElement1?.classList.add('dot-blue');
             this.http.post(this.APIURL + "send-notification", formData).subscribe({
               next: (response: any) => {
 
@@ -480,6 +494,8 @@ saveScrollPosition = () => {
             this.likes++;
     
             dotElement?.classList.add('liked-dot');
+            dotElement1?.classList.remove('liked-dot');
+            dotElement1?.classList.add('dot-blue');
 
             this.http.post(this.APIURL + "send-notification", formData).subscribe({
               next: (response: any) => {
@@ -489,6 +505,8 @@ saveScrollPosition = () => {
           } else {
             this.likes--;
             dotElement?.classList.remove('liked-dot');
+            dotElement1?.classList.remove('liked-dot');
+            dotElement1?.classList.add('dot-blue');
             this.http.post(this.APIURL + "send-notification", formData).subscribe({
               next: (response: any) => {
 
