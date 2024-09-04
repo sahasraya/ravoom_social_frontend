@@ -14,7 +14,23 @@
 
 
   <div class="left-user-holder">
-    <app-feedscreen-user-list></app-feedscreen-user-list>
+
+
+ 
+
+    <ng-container >
+      <app-feedscreen-user-list (optionSelected)="onOptionSelected($event)"></app-feedscreen-user-list>
+    </ng-container>
+
+
+ 
+
+ 
+
+
+
+
+
   </div>
 
 
@@ -121,13 +137,27 @@
 
 
   <div class="posts-container">
-    <div *ngFor="let post of posts; let i = index">
+
+ 
+    <div class="selectedoptionholderbuttons" *ngIf="selectedOption !=''">
+      <img src="../../../assets/images/close.png" alt="" class="backarrow"  (click)="gobackfromviodes($event)" title="close options">
+        <img src="../../../assets/images/morevideos.png" alt="" class="morevidoeicon" (click)="gotovideoslider($event)" title="open viode slider">
+    </div>
+  
+    <div *ngFor="let post of posts; let i = index"  >
       <app-post [post]="post" (delete)="handlePostDelete(i)"></app-post>
     </div>
 
 
   </div>
 </div>
+
+
+
+
+
+
+
 
 
 

@@ -125,35 +125,10 @@
   }
 
 
-  .backarrow {
-    width: 40px;
-    height: 40px;
-    padding: 5px;
-    border-radius: 50%;
-    background-color: var(--icon-hover-backgroud-color);
-    position: relative;
-    left: 5px;
-    transition: background-color 0.3s;
-    cursor: pointer;
-    top: -2px;
-  }
-  .morevidoeicon{
-    margin-left: 15px;
-    width: 40px;
-    height: 40px;
-    padding: 5px;
-    border-radius: 50%;
-    background-color: var(--icon-hover-backgroud-color);
-    position: relative;
-    left: 5px;
-    transition: background-color 0.3s;
-    cursor: pointer;
-    top: -2px;
-  }
-  .backarrow:hover,.morevidoeicon:hover{
-    background-color: var(--icon-backgroud-color);
   
-  }
+
+  
+
   .btn-holder{
     display: flex;
     flex-direction: row;

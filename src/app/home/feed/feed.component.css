@@ -223,4 +223,43 @@ margin-right: 1rem;
   z-index: 1000;  
 }
 
+
+.backarrow {
+  width: 40px;
+  height: 40px;
+  padding: 5px;
+  border-radius: 50%;
+  background-color: var(--icon-hover-backgroud-color);
+  position: relative;
+  left: 5px;
+  transition: background-color 0.3s;
+  cursor: pointer;
+  top: -2px;
+}
+.backarrow:hover,.morevidoeicon:hover{
+  background-color: var(--icon-backgroud-color);
+
+}
+
+.morevidoeicon{
+  margin-left: 15px;
+  width: 40px;
+  height: 40px;
+  padding: 5px;
+  border-radius: 50%;
+  background-color: var(--icon-hover-backgroud-color);
+  position: relative;
+  left: 5px;
+  transition: background-color 0.3s;
+  cursor: pointer;
+  top: -2px;
+}
+
+.selectedoptionholderbuttons{
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  margin: 10px 0px;
+  padding-right: 10px;
+}
  

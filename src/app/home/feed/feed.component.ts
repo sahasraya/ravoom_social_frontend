@@ -2,7 +2,7 @@ import { ChangeDetectorRef, Component, HostListener } from '@angular/core';
 import { AddPostComponent } from '../../widgets/add-post/add-post.component';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 import { PostComponent } from '../../widgets/post/post.component';
 import { NotificationComponent } from '../notification/notification.component';
@@ -36,17 +36,20 @@ export class FeedComponent {
   openaddpostscreenbool: boolean = false;
   APIURL = "http://127.0.0.1:8000/";
   limit = 5;
-  offset = 0;
+  limitoption = 5;
+  offset=0;
+  offsetoption = 0;
   loading = false;
+  loadingoption = false;
   iscreatenewgroupopen: boolean = false;
   showoptionsmenu:boolean=false;  
   userid:string = "";
   postType: string = "";
   user: any;
-
+  selectedOption: string = '';
  
 
-  constructor(private http: HttpClient, private cdr: ChangeDetectorRef) {}
+  constructor(private http: HttpClient, private cdr: ChangeDetectorRef,private router:Router) {}
 
   ngOnInit(): void {
     this.getPostsFeed();
@@ -74,7 +77,9 @@ async getuserdetails(userid:string):Promise<void>{
 
   
 
+
   
+
   createnewgroup():void{
     this.iscreatenewgroupopen = true;
   }
@@ -93,27 +98,86 @@ async getuserdetails(userid:string):Promise<void>{
   }
 
 
+  onOptionSelected(option: string): void {
+    this.selectedOption = option;
+    this.posts = [];
+    this.offsetoption = 0;
 
-  getPostsFeed(): void {
-    if (this.loading) return;
+    this.getPostsFromOption(this.selectedOption);
+  
+    
+  }
+
+  gotovideoslider(e:Event){
+    e.preventDefault();
  
+    this.router.navigate(['/home/slider']);
 
 
-    this.loading = true;
-    this.http.get<any[]>(`${this.APIURL}get_posts_feed?limit=${this.limit}&offset=${this.offset}`).subscribe({
-      next: (res) => {
-        this.posts = [...this.posts, ...this.processPosts(res)];
-        this.offset += this.limit;
-        this.loading = false;
-        this.cdr.detectChanges();  
+
+  }
+
+
+  gobackfromviodes(e:Event):void{
+    e.preventDefault();
+    e.stopPropagation();
+    this.posts = [];
+    this.offset = 0;
+    this.selectedOption = '';
+ this.getPostsFeed();
+ 
    
+ 
+  }
+
+  async getPostsFromOption(selectedOption: string): Promise<void> {
+    if (this.loadingoption) return;
+
+    this.loadingoption = true;
+
+    const formData = new FormData();
+    formData.append('selectedOption', selectedOption);
+    formData.append('limit', this.limitoption.toString());
+    formData.append('offset', this.offsetoption.toString());
+  
+    this.http.post<any[]>(`${this.APIURL}get_posts_feed_option`, formData).subscribe({
+      next: (response: any[]) => {
+   
+        this.posts = [...this.posts, ...this.processPosts(response)];
+ 
+        this.offsetoption += this.limitoption;
+        this.loadingoption = false;
+        this.cdr.detectChanges();  
       },
-      error: (error) => {
+      error: (error: HttpErrorResponse) => {
+        this.loadingoption = false;
         console.error('There was an error!', error);
-        this.loading = false;
       }
     });
-  }
+}
+
+
+ 
+
+getPostsFeed(): void {
+  if (this.loading) return;
+
+  this.loading = true;
+  this.http.get<any[]>(`${this.APIURL}get_posts_feed?limit=${this.limit}&offset=${this.offset}`).subscribe({
+    next: (res) => {
+ 
+      this.posts = [...this.posts, ...this.processPosts(res)];
+      this.offset += this.limit;
+      this.loading = false;
+      this.cdr.detectChanges();  
+    },
+    error: (error) => {
+      console.error('There was an error!', error);
+      this.loading = false;
+    }
+  });
+}
+
 
   private processPosts(posts: any[]): any[] {
     const processedPosts: any[] = [];
@@ -157,10 +221,20 @@ async getuserdetails(userid:string):Promise<void>{
 
   @HostListener('window:scroll', ['$event'])
   onScroll(event: Event): void {
-    const element = document.documentElement;
-    if (element.scrollHeight - element.scrollTop === element.clientHeight) {
-      localStorage.removeItem('scrollPosition');
-      this.getPostsFeed();
-    }
+      const element = document.documentElement;
+  
+ 
+      if (element.scrollHeight - element.scrollTop === element.clientHeight) {
+          localStorage.removeItem('scrollPosition');
+  
+          if (this.selectedOption === "") {
+      
+              this.getPostsFeed();
+          } else {
+         
+              this.getPostsFromOption(this.selectedOption);
+          }
+      }
   }
+  
 }
