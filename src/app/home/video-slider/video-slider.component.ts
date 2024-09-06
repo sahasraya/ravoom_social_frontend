@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren, AfterViewInit } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { CommentComponent } from '../comment/comment.component';
@@ -23,6 +23,9 @@ export class VideoSliderComponent implements OnInit, AfterViewInit {
   getthecommentsBool:boolean = false;
   selectedPostId: string | null = null;
   videoList: any[] = [];
+  userid:string = "";
+  likes: number = 0;
+ 
 
   private scrollListener!: () => void;
 
@@ -30,6 +33,9 @@ export class VideoSliderComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.getAllVideoPosts();
+    this.userid = localStorage.getItem('wmd') || '';
+  
+
   }
 
   ngAfterViewInit(): void {
@@ -42,6 +48,18 @@ export class VideoSliderComponent implements OnInit, AfterViewInit {
     }
   }
 
+
+  async getpostlikecount(postid: any): Promise<number> {
+    const params = new HttpParams().set('postid', postid.toString());
+    try {
+      const response: any = await this.http.get<any>(`${this.APIURL}get_like_count`, { params }).toPromise();
+      return response.like_count !== undefined ? response.like_count : 0;
+    } catch (error) {
+      console.error('There was an error!', error);
+      return 0;
+    }
+  }
+  
 
 
   getthecomments(event: Event, postid: string): void {
@@ -91,13 +109,11 @@ export class VideoSliderComponent implements OnInit, AfterViewInit {
 
   async getAllVideoPosts(): Promise<void> {
     if (this.isLoading) return;
-
+  
     this.isLoading = true;
     this.http.get<any[]>(`${this.APIURL}get_all_video_posts_slider?limit=${this.limit}&offset=${this.offset}`).subscribe({
-      next: (response: any[]) => {
-        const processedVideos = response.map(video => {
-       
-
+      next: async (response: any[]) => {
+        const processedVideos = await Promise.all(response.map(async (video) => {
           if (video.post) {
             const base64Data = video.post;
             const blob = this.convertBase64ToBlob(base64Data, 'video/mp4');
@@ -105,27 +121,27 @@ export class VideoSliderComponent implements OnInit, AfterViewInit {
           }
           if (video.userprofile) {
             video.profileImageUrl = this.createBlobUrl(video.userprofile, 'image/jpeg');
-        }
-
-
-        video.username = video.username;  
-        video.posteddate = video.posteddate;
-        video.postdescription = video.postdescription;
-
-
+          }
+  
+          video.username = video.username;  
+          video.posteddate = video.posteddate;
+          video.postdescription = video.postdescription;
+  
+          // Get like count for each post
+          video.likeCount = await this.getpostlikecount(video.postid);
           return video;
-        });
-
-        this.videoList = [...this.videoList, ...processedVideos];
-        this.offset += this.limit;
+        }));
+  
+        this.videoList = processedVideos;
         this.isLoading = false;
       },
-      error: (error: HttpErrorResponse) => {
+      error: error => {
         console.error('There was an error!', error);
         this.isLoading = false;
       }
     });
   }
+  
 
 
 
@@ -167,6 +183,54 @@ export class VideoSliderComponent implements OnInit, AfterViewInit {
     const byteArray = new Uint8Array(byteNums);
     return new Blob([byteArray], { type: mimeType });
   }
+
+async addliketoviode(e:Event,video: any,viodeid:any,postowerid:any,userprofile:any,username:string):Promise<void>{
+
+   
+
+  const formData = new FormData();
+  formData.append('postid', viodeid.toString());
+  formData.append('userid', postowerid.toString());
+  formData.append('currentuserid', this.userid.toString());
+  formData.append('username', username);
+  formData.append('profileimage', userprofile);
+
+  formData.append('commenttext', '.');
+  formData.append('notificationtype', 'like');
+  formData.append('replytext', ".");
+
+
+  this.http.post(this.APIURL + 'add_post_like', formData).subscribe({
+    next: (response: any) => {
+      if (response.message == "no") {
+
+        video.likeCount++;
+    
+      
+        
+
+      } else {
+        video.likeCount--;
+       
+        this.http.post(this.APIURL + "send-notification", formData).subscribe({
+          next: (response: any) => {
+       console.log(response);
+          }
+        });
+      }
+
+      // Handle success response
+    },
+    error: error => {
+      console.error('There was an error!', error);
+    }
+  });
+
+
+
+
+
+}
 
 
   calculateTimeAgo(postedDate: string): string {

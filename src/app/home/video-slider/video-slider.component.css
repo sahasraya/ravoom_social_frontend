@@ -163,6 +163,10 @@ cursor: pointer;
   white-space: normal;
   margin-bottom: 10px;
 }
+.like-icon-holder{
+  display: flex;
+  flex-direction: column;
+}
 
  
 
