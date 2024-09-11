@@ -63,6 +63,7 @@ export class LogInComponent implements OnInit {
           if (response.message === "Login successful") {
            
             localStorage.setItem('ppd', 'no');
+            localStorage.setItem('jwt', response.token);
             localStorage.setItem('name', 'normal');
             localStorage.setItem('core', 'never');
             localStorage.setItem('appd', 'AkfwpkfpMMkwppge');

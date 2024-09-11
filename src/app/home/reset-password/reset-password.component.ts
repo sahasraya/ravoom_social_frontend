@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterModule } from '@angular/router';
@@ -244,6 +244,10 @@ allPasswordConditionsMet(): boolean {
 
 
   async onSubmitnewpassword(): Promise<void> {
+
+    const token = localStorage.getItem('jwt');
+
+    
     const formData = new FormData();
     formData.append('userid', this.userid);
     formData.append('newpassword', this.enternewpasswordForm.get('newpassword')!.value);
@@ -261,10 +265,14 @@ allPasswordConditionsMet(): boolean {
   
     this.showinvalidcredentioalsbanner = false;
  
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
 
+    console.log(headers);
 
   
-    this.http.post(this.APIURL + 'update-new-password', formData).subscribe({
+    this.http.post(this.APIURL + 'update-new-password', formData,{headers}).subscribe({
       next: (response: any) => {
         console.log('Password updated successfully');
         alert("Password updated successfully");

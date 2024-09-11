@@ -160,7 +160,7 @@
   flex: 1;
   position: sticky;
   top: 10px;
-border: 1px solid var(--icon-hover-backgroud-color);
+ 
   border-radius: 15px;
   height: 90vh;
   overflow-y: scroll;

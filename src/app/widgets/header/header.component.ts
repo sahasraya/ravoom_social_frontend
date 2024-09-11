@@ -4,7 +4,7 @@ import { RouterModule } from '@angular/router';
 import { SearchComponent } from '../search/search.component';
 import { NotificationService } from '../../home/notification/notification.service';
 import { NotificationComponent } from '../../home/notification/notification.component';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { AddPostComponent } from '../add-post/add-post.component';
 
 @Component({
@@ -152,14 +152,45 @@ async updatethehiddenvisibility(userid:any){
     this.searchText = text;
   }
   logout(): void {
-    localStorage.clear();
-    this.showSignOutMessage = true;
+    const token = localStorage.getItem('jwt');
 
-    setTimeout(() => {
-      this.showSignOutMessage = false;
-      location.reload();  
-    }, 3000);  
+    if (token) {
+   
+      const headers = new HttpHeaders({
+        'Authorization': `Bearer ${token}`
+      });
+
+      console.log(headers);
+      this.http.post(this.APIURL + 'logout', {}, { headers }).subscribe({
+        next: (response: any) => {
+          console.log('Logged out successfully');
+         
+          localStorage.clear();
+          
+        
+          this.showSignOutMessage = true;
+
+      
+          setTimeout(() => {
+            this.showSignOutMessage = false;
+            location.reload();
+          }, 3000);
+        },
+        error: (error) => {
+          console.error('Logout error:', error);
+       
+        }
+      });
+    } else {
+      console.log('No token found, skipping logout.');
+    
+      location.reload();
+
+    }
   }
+
+
+  
 
   getNotifications(): void {
     this.updatingusernotificationseenstatus();

@@ -9,6 +9,58 @@
 
  
 
+    <div class="options-holder-inner">
+        <div class="options-holder" (click)="showvideos($event)"  >
+            <img src="../../../assets/images/videopost.png" alt="">
+            <span>viodes</span>
+         </div>
+        
+        
+        
+        
+         <div class="options-holder" (click)="showlinks($event)"   >
+            <img src="../../../assets/images/linkpost.png" alt="">
+            <span>links</span>
+         </div>
+        
+        
+        
+        
+         <div class="options-holder" (click)="showtexts($event)"   >
+            <img src="../../../assets/images/textpost.png" alt="">
+            <span>texts</span>
+         </div>
+        
+        
+        
+        
+         <div class="options-holder" (click)="showimages($event)"   >
+            <img src="../../../assets/images/imagepost.png" alt="">
+            <span>images</span>
+         </div>
+        
+        
+        
+         <div class="options-holder" (click)="showvoices($event)"   >
+            <img src="../../../assets/images/audiopost.png" alt="">
+            <span>voices</span>
+         </div>
+
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
     <div class="userholder"  >
         <a *ngFor="let user of userList"  >
             <div class="group" (click)="navigatetouser(user.userid)">
@@ -37,41 +89,7 @@
 
 
 
-<div class="options-holder" (click)="showvideos($event)"  >
-    <img src="../../../assets/images/videopost.png" alt="">
-    <span>viodes</span>
- </div>
 
-
-
-
- <div class="options-holder" (click)="showlinks($event)"   >
-    <img src="../../../assets/images/linkpost.png" alt="">
-    <span>links</span>
- </div>
-
-
-
-
- <div class="options-holder" (click)="showtexts($event)"   >
-    <img src="../../../assets/images/textpost.png" alt="">
-    <span>texts</span>
- </div>
-
-
-
-
- <div class="options-holder" (click)="showimages($event)"   >
-    <img src="../../../assets/images/imagepost.png" alt="">
-    <span>images</span>
- </div>
-
-
-
- <div class="options-holder" (click)="showvoices($event)"   >
-    <img src="../../../assets/images/audiopost.png" alt="">
-    <span>voices</span>
- </div>
 
 
 
