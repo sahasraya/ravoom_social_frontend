@@ -246,6 +246,10 @@ allPasswordConditionsMet(): boolean {
   async onSubmitnewpassword(): Promise<void> {
 
     const token = localStorage.getItem('jwt');
+    if(!token){
+      alert("Unauthorized access. Please check your credentials.");
+      return;
+    }
 
     
     const formData = new FormData();
@@ -269,7 +273,7 @@ allPasswordConditionsMet(): boolean {
       'Authorization': `Bearer ${token}`
     });
 
-    console.log(headers);
+   
 
   
     this.http.post(this.APIURL + 'update-new-password', formData,{headers}).subscribe({
@@ -284,7 +288,14 @@ allPasswordConditionsMet(): boolean {
       },
       error: error => {
         this.showpasswordresetoptions = false;
-        console.error('There was an error posting the data!', error);
+        this.enternewpasswordForm.reset();
+         this.resetPassWordForm.reset();
+         this.entersentcode.reset();
+        if (error.status === 401) {
+          alert("Unauthorized access. Please check your credentials.");
+        } else {
+          console.error('There was an error posting the data!', error);
+        }
       }
     });
   }
