@@ -2,7 +2,7 @@ import { Component, EventEmitter, Inject, Input, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'; 
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule, RouterOutlet } from '@angular/router';
-import { HttpClient, HttpClientModule, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpClientModule, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgxLinkPreviewModule } from 'ngx-link-preview';
 import { isPlatformBrowser } from '@angular/common';  
@@ -176,9 +176,18 @@ this.getLinkPreview(this.linkUrl);
     if (this.textPostForm.valid) {
       const formData = new FormData();
 
- 
+      const token = localStorage.getItem('jwt');
+      if(!token){
+        alert("Unauthorized access. Please check your credentials.");
+        return;
+      }
+
+      const headers = new HttpHeaders({
+        'Authorization': `Bearer ${token}`
+      });
+
       
-      if (this.userid) {
+    
   
         formData.append('userid', this.userid);
         formData.append('textPostdescription', this.textPostForm.get('textPostdescription')!.value);
@@ -186,7 +195,7 @@ this.getLinkPreview(this.linkUrl);
         const colorToAppend = this.selectedColor ? this.selectedColor : '#000a03';
         formData.append('selectedColor', colorToAppend);
   
-        this.http.post(this.APIURL + 'add-post-text', formData).subscribe({
+        this.http.post(this.APIURL + 'add-post-text', formData,{headers}).subscribe({
           next: response => {
             console.log('Response from server:', response);
 
@@ -194,12 +203,16 @@ this.getLinkPreview(this.linkUrl);
             this.closePost.emit();
           },
           error: error => {
+            if (error.status === 401) {
+        
+              alert("Unauthorized access. Please check your credentials.");
+    
+            }
+            
             console.error('There was an error posting the data!', error);
           }
         });
-      } else {
-        console.error('User ID is not available in session storage.');
-      }
+      
     }
   }
 
@@ -233,6 +246,20 @@ this.getLinkPreview(this.linkUrl);
 
   onSubmit(): void {
     if (this.addPostForm.valid  ) {
+
+      const token = localStorage.getItem('jwt');
+      if(!token){
+        alert("Unauthorized access. Please check your credentials.");
+        return;
+      }
+
+      const headers = new HttpHeaders({
+        'Authorization': `Bearer ${token}`
+      });
+
+      
+
+
       const formData = new FormData();
       formData.append('uid', this.userid);
       formData.append('postdescription', this.addPostForm.get('postdescription')!.value);
@@ -240,7 +267,7 @@ this.getLinkPreview(this.linkUrl);
 
       
 
-      this.http.post(this.APIURL + 'add-post', formData).subscribe({
+      this.http.post(this.APIURL + 'add-post', formData,{headers}).subscribe({
         next: response => {
           console.log(response);
           this.selectedFile = null;
@@ -255,6 +282,12 @@ this.getLinkPreview(this.linkUrl);
           
         },
         error: error => {
+          if (error.status === 401) {
+        
+            alert("Unauthorized access. Please check your credentials.");
+  
+          }
+
           console.error('There was an error!', error);
         }
       });
@@ -267,15 +300,30 @@ this.getLinkPreview(this.linkUrl);
 
   onSubmitImag(): void {
     if (this.imagePostForm.valid) {
+
+      const token = localStorage.getItem('jwt');
+      if(!token){
+        alert("Unauthorized access. Please check your credentials.");
+        return;
+      }
+
+      const headers = new HttpHeaders({
+        'Authorization': `Bearer ${token}`
+      });
+
+
+
+
+
       const formData = new FormData();
       formData.append('uid', this.userid);
       formData.append('imagePostdescription', this.imagePostForm.get('imagePostdescription')!.value);
   
       this.selectedFiles.forEach(file => {
-        formData.append('imagefile', file, file.name);  // Use 'imagefile' to match the FastAPI parameter
+        formData.append('imagefile', file, file.name);   
       });
   
-      this.http.post(this.APIURL + 'add-post-image', formData).subscribe({
+      this.http.post(this.APIURL + 'add-post-image', formData,{headers}).subscribe({
         next: response => {
           console.log(response);
           this.selectedFiles = [];
@@ -285,6 +333,11 @@ this.getLinkPreview(this.linkUrl);
           this.closePost.emit();
         },
         error: error => {
+          if (error.status === 401) {
+            alert("Unauthorized access. Please check your credentials.");
+  
+          }
+
           console.error('There was an error!', error);
         }
       });
@@ -296,6 +349,19 @@ this.getLinkPreview(this.linkUrl);
 
   onSubmitLink(): void {
     if (this.linkPostForm.valid) {
+
+      const token = localStorage.getItem('jwt');
+      if(!token){
+        alert("Unauthorized access. Please check your credentials.");
+        return;
+      }
+
+      const headers = new HttpHeaders({
+        'Authorization': `Bearer ${token}`
+      });
+
+
+
       const formData = new FormData();
       formData.append('uid', this.userid);
       formData.append('imagePostdescription', this.linkPostForm.get('listPostdescription')!.value);
@@ -310,7 +376,7 @@ this.getLinkPreview(this.linkUrl);
  
     
   
-      this.http.post(this.APIURL + 'add-post-link', formData).subscribe({
+      this.http.post(this.APIURL + 'add-post-link', formData,{headers}).subscribe({
         next: response => {
           console.log(response);
   
@@ -319,6 +385,11 @@ this.getLinkPreview(this.linkUrl);
           this.closePost.emit();
         },
         error: error => {
+          if (error.status === 401) {
+            alert("Unauthorized access. Please check your credentials.");
+  
+          }
+          
           console.error('There was an error!', error);
         }
       });

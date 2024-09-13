@@ -18,7 +18,7 @@
 <div class="video-post-holder" *ngIf="showImagetextLinkPostsBool">
  
 
-  <div class="posts-container"> 
+  <div class="posts-container" *ngIf="ImageTextLinkPosts.length > 0"> 
  
     <div *ngFor="let post of ImageTextLinkPosts; let i = index">
       <app-post [post]="post" ></app-post>
@@ -26,8 +26,8 @@
 
    
 
-    <div class="div-button-holder">
-      <span (click)="loadMoreTextImageLink($event)" class="loadmorebutton" *ngIf="moreDataAvailabletextimagelink">Load More</span>
+    <div class="div-button-holder" *ngIf="ImageTextLinkPosts.length > 0">
+      <span (click)="loadMoreTextImageLink($event)" class="loadmorebutton"  >Load More</span>
     </div>
 
 
@@ -50,23 +50,20 @@
 <div class="video-post-holder" *ngIf="showVideoPostsBool">
 
 
-  <div class="posts-container"> 
+  <div class="posts-container" *ngIf="videoPosts.length > 0"> 
     <div *ngFor="let post of videoPosts; let i = index" >
       <app-post [post]="post" ></app-post>
     </div>
 
 
     
-    <div class="div-button-holder">
-      <span (click)="loadMoreVideos($event)" class="loadmorebutton" *ngIf="moreDataAvailablevideo">Load More</span>
+    <div class="div-button-holder" *ngIf="videoPosts.length > 0">
+      <span (click)="loadMoreVideos($event)" class="loadmorebutton"  >Load More</span>
     </div>
 
+
+    
   </div>
-
-
-
-
- 
 
   <div class="nodatamessageforviodeandaudio" *ngIf="videoPosts.length==0">
 
@@ -75,7 +72,6 @@
     <p>No video files found</p>
 
   </div>
-
 </div>
 
 
@@ -246,8 +242,8 @@
 
     </div>
 
-    <div class="div-button-holder">
-      <span (click)="loadMoreLinks($event)" class="loadmorebutton" *ngIf="moreDataAvailablelink">Load More</span>
+    <div class="div-button-holder" *ngIf="TextLinkPosts.length > 0">
+      <span (click)="loadMoreLinks($event)" class="loadmorebutton"  >Load More</span>
     </div>
   
   </div>

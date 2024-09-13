@@ -1,5 +1,5 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { PLATFORM_ID } from '@angular/core';
@@ -47,6 +47,18 @@ export class CreateGroupComponent implements OnInit{
 
   async onSubmitGroupInformation(): Promise<void> {
     if (this.createGroupFormGroup.valid) {
+
+      const token = localStorage.getItem('jwt');
+      if(!token){
+        alert("Unauthorized access. Please check your credentials.");
+        return;
+      }
+      const headers = new HttpHeaders({
+        'Authorization': `Bearer ${token}`
+      });
+  
+
+
       const formData = new FormData();
   
       formData.append('userid', this.userid.toString());
@@ -55,13 +67,18 @@ export class CreateGroupComponent implements OnInit{
       formData.append('groupimage', this.createGroupFormGroup.get('groupimage')?.value);
       formData.append('groupbackgroundimage', this.createGroupFormGroup.get('groupbackgroundimage')?.value);
   
-      this.http.post(this.APIURL + 'create-group', formData).subscribe({
+      this.http.post(this.APIURL + 'create-group', formData,{headers}).subscribe({
         next: (response: any) => {
         
           this.createGroupFormGroup.reset();
           this.router.navigate(['home/group', response['groupid']]);
         },
         error: (error: any) => {
+          if (error.status === 401) {
+          alert("Unauthorized access. Please check your credentials");
+           
+  
+          }
           console.error('There was an error!', error);
         }
       });

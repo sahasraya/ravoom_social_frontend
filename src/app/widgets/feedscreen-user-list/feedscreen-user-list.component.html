@@ -61,7 +61,7 @@
 
 
     
-    <div class="userholder"  >
+    <div class="userholder"  *ngIf="userid != ''">
         <a *ngFor="let user of userList"  >
             <div class="group" (click)="navigatetouser(user.userid)">
                 <img [src]="user.profileimageUrl" alt="user Image" class="img">
@@ -78,6 +78,17 @@
          
         
         </a>
+
+        <div class="no-posts-div" *ngIf="userList.length ==0">
+            no recent interactions  
+            <img src="../../../assets/images/profile-user.png" alt="">
+          
+             
+          
+          </div>
+
+
+
     </div>
 
 

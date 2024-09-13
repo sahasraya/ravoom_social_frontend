@@ -292,7 +292,10 @@ allPasswordConditionsMet(): boolean {
          this.resetPassWordForm.reset();
          this.entersentcode.reset();
         if (error.status === 401) {
-          alert("Unauthorized access. Please check your credentials.");
+        
+          this.showinvalidcredentioalsbanner = true;
+          this.message = "Unauthorized access. Please check your credentials";
+
         } else {
           console.error('There was an error posting the data!', error);
         }

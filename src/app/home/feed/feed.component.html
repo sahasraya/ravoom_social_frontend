@@ -149,6 +149,21 @@
     </div>
 
 
+
+<div class="no-posts-div" *ngIf="posts.length ==0">
+  no posts yet ! 
+  <img src="../../../assets/images/imagepost.png" alt="">
+
+  <span class="creategroup" (click)="toggleOptionsSelecter($event)" >
+      
+  
+    add post
+
+  </span>
+
+</div>
+
+
   </div>
 </div>
 

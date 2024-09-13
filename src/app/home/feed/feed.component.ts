@@ -104,6 +104,7 @@ async getuserdetails(userid:string):Promise<void>{
     this.offsetoption = 0;
 
     this.getPostsFromOption(this.selectedOption);
+ 
   
     
   }
@@ -167,6 +168,7 @@ getPostsFeed(): void {
     next: (res) => {
  
       this.posts = [...this.posts, ...this.processPosts(res)];
+    
       this.offset += this.limit;
       this.loading = false;
       this.cdr.detectChanges();  

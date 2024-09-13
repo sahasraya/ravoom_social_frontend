@@ -1,5 +1,5 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular/common/http';
 import { ChangeDetectorRef, Component, EventEmitter, HostListener, Inject, Input, OnInit, Output, Renderer2 } from '@angular/core';
 import { ActivatedRoute, Route, Router, RouterModule } from '@angular/router';
 import { ImageLargerComponent } from '../image-larger/image-larger.component';
@@ -593,9 +593,23 @@ saveScrollPosition = () => {
 
 
   removePostYes(postId: any): void {
-    const params = new HttpParams().set('postid', postId.toString());
+    const params = new HttpParams()
+      .set('postid', postId.toString())
+      .set('userid', this.userid.toString());
 
-    this.http.get<any>(`${this.APIURL}delete_post`, { params }).subscribe({
+    const token = localStorage.getItem('jwt');
+    if(!token){
+      alert("Unauthorized access. Please check your credentials.");
+      return;
+    }
+
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+    
+    const options = { headers, params };
+
+    this.http.get<any>(`${this.APIURL}delete_post`, options ).subscribe({
       next: (response: any) => {
 
 
@@ -606,6 +620,18 @@ saveScrollPosition = () => {
         this.cdref.detectChanges();
       },
       error: (error: HttpErrorResponse) => {
+        if (error.status === 401) {
+        
+          alert("Unauthorized access. Please check your credentials.");
+
+        }
+        if (error.status === 500) {
+        
+          alert("Internel server error.");
+
+        }
+
+
         console.error('There was an error!', error);
       }
     });

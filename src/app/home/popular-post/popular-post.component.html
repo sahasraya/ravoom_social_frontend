@@ -6,6 +6,15 @@
 
 
 
+<div *ngIf="videoPosts.length ==0 ||audioPosts.length ==0 || imagePosts.length ==0 || textPosts.length ==0 || linkPosts.length ==0 || groupPosts.length ==0" class="no-posts-div">
+  no popular posts found 
+  <img src="../../../assets/images/like.png" alt="">
+ 
+ 
+</div>
+
+
+
 
 
 <div class="outer-holder" *ngIf="showVideoPostsBool">
