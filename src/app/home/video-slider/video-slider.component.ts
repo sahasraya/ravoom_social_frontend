@@ -18,13 +18,14 @@ export class VideoSliderComponent implements OnInit, AfterViewInit {
 
   APIURL = 'http://127.0.0.1:8000/';
   offset = 0;
-  limit = 5;
+  limit = 15;
   isLoading = false;
   getthecommentsBool:boolean = false;
   selectedPostId: string | null = null;
   videoList: any[] = [];
   userid:string = "";
   likes: number = 0;
+  likedornottext: { [postid: string]: string } = {};
  
 
   private scrollListener!: () => void;
@@ -50,15 +51,35 @@ export class VideoSliderComponent implements OnInit, AfterViewInit {
 
 
   async getpostlikecount(postid: any): Promise<number> {
+  
     const params = new HttpParams().set('postid', postid.toString());
+    
     try {
       const response: any = await this.http.get<any>(`${this.APIURL}get_like_count`, { params }).toPromise();
+  
+      if (this.userid) {
+        const paramstocheckuserliked = new HttpParams()
+          .set('postid', postid.toString())
+          .set('userid', this.userid.toString());
+  
+        const likeCheckResponse: any = await this.http.get<any>(`${this.APIURL}check_curruntuser_liked_video_or_not`, { params: paramstocheckuserliked }).toPromise();
+  
+     
+  
+        if (likeCheckResponse.message === "yes") {
+          this.likedornottext[postid] = "yes"; 
+        } else {
+          this.likedornottext[postid] = "no";  
+        }
+      }
+  
       return response.like_count !== undefined ? response.like_count : 0;
     } catch (error) {
       console.error('There was an error!', error);
       return 0;
     }
   }
+  
   
 
 
@@ -103,7 +124,9 @@ export class VideoSliderComponent implements OnInit, AfterViewInit {
     const offsetHeight = element.offsetHeight;
 
     if ((scrollTop + offsetHeight) >= scrollHeight && !this.isLoading) {
-      this.getAllVideoPosts();
+      if (this.limit !== 15 && this.limit > 15) {
+        this.getAllVideoPosts();
+      }
     }
   }
 
@@ -127,8 +150,8 @@ export class VideoSliderComponent implements OnInit, AfterViewInit {
           video.posteddate = video.posteddate;
           video.postdescription = video.postdescription;
   
-          // Get like count for each post
           video.likeCount = await this.getpostlikecount(video.postid);
+          console.log(video.likeCount);
           return video;
         }));
   
@@ -185,7 +208,10 @@ export class VideoSliderComponent implements OnInit, AfterViewInit {
   }
 
 async addliketoviode(e:Event,video: any,viodeid:any,postowerid:any,userprofile:any,username:string):Promise<void>{
+  const dotElement = document.querySelector(`.dot-blue[data-postid="${viodeid}"]`);
+  const dotElement1 = document.querySelector(`.liked-dot[data-postid="${viodeid}"]`);
 
+ 
    
 
   const formData = new FormData();
@@ -206,11 +232,15 @@ async addliketoviode(e:Event,video: any,viodeid:any,postowerid:any,userprofile:a
 
         video.likeCount++;
     
-      
+            dotElement?.classList.remove('dot-blue');
+            dotElement?.classList.add('liked-dot');
         
 
       } else {
         video.likeCount--;
+        dotElement?.classList.remove('liked-dot');
+        dotElement1?.classList.remove('liked-dot');
+        dotElement1?.classList.add('dot-blue');
        
         this.http.post(this.APIURL + "send-notification", formData).subscribe({
           next: (response: any) => {

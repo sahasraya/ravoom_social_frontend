@@ -166,6 +166,46 @@ cursor: pointer;
 .like-icon-holder{
   display: flex;
   flex-direction: column;
+  margin-left: 5px;
+}
+
+
+
+
+.liked-dot {
+    
+  height: 35px;
+  width: 35px;
+  border-radius: 50%;
+  border-width: 4px;
+  border-style: solid;
+  border-color: #00bcd4;
+  display: inline-block;
+  cursor: pointer;
+  transition: border-width 0.3s ease, transform 0.3s ease;
+}
+
+.liked-dot:hover {
+  border-width: 3px;  
+  transform: scale(1.1);
+  
+}
+
+.dot-blue {
+  height: 35px;
+  width: 35px;
+  border-radius: 50%;
+  border-width: 3px;
+  border-style: solid;
+  border-color: #00bcd4;
+  display: inline-block;
+  cursor: pointer;
+  transition: border-width 0.3s ease;
+}
+
+.dot-blue:hover {
+ 
+  border-width: 4px;  
 }
 
  

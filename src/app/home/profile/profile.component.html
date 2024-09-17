@@ -12,11 +12,12 @@
     <!-- <button (click)="openaddpostscreen('i')">open</button> -->
 
 
-
+   
     <div class="button-holder">
       <button (click)="showfeed()"  [class.selected]="showfeedBool" class="navigationsbuttons">Feed</button>
       <button (click)="showiamfollowinguserlist()" [class.selected]="showiamfollowinguserlistBool" class="navigationsbuttons">I am following ({{iamfollowinguserslist.length}})</button>
       <button (click)="showiamfolloeduserlist()" [class.selected]="showiamfolloeduserlistBool" class="navigationsbuttons">I am followed ({{iamfolloweduserslist.length}})</button>
+      <button (click)="showfavelist()" [class.selected]="showfavelistBool" class="navigationsbuttons" *ngIf="userid == userfrommethod?.userid">Saved</button>
     </div>
 
 
@@ -194,6 +195,24 @@
 
 
       
+
+
+
+      <div class="posts-container" *ngIf="showfavelistBool">
+
+     
+         
+      
+      
+        <div *ngFor="let post of faveposts">
+          <app-post [post]="post"  (postRemoved)="onPostRemoved($event)"></app-post>
+        </div>
+    
+
+        <div class="noiamfollowinguserlist" *ngIf="faveposts.length == 0">
+          <p>No saved posts</p>
+</div>
+      </div>
 
 
 

@@ -1,6 +1,6 @@
 
 <div class="main-holder-outer">
-
+<!-- <app-pre-loader></app-pre-loader> -->
 
 
 
@@ -167,9 +167,10 @@
     
     
       
-       
+        
       
-        <button type="submit"  *ngIf="age! > 18 && signUpForm.valid && allPasswordConditionsMet()">Sign Up</button>
+        
+        <button type="submit"   *ngIf="age! > 18 && signUpForm.valid && allPasswordConditionsMet()"> Sign Up</button>
     
         <a  class="logintag" (click)="goToSignUpScreen()">Log in</a>
     

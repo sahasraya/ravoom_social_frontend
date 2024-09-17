@@ -28,11 +28,20 @@
                   <div class="functions-btn-holder">
                     
 
+
+                 
+
+
+
+
                     <div class="like-icon-holder">
-                      <div class="icon-wrapper"  (click)="addliketoviode($event,video, video.postid,video.userid,video.userprofile,video.username)">
-                        <img src="../../../assets/images/like.png" alt="add like">
-                        
-                      </div>
+                      {{ likedornottext[video.postid] }}
+                      <span *ngIf="likedornottext[video.postid] === 'yes'" class="dot liked-dot" (click)="addliketoviode($event,video, video.postid,video.userid,video.userprofile,video.username)" [attr.data-postid]="video.postid">
+                      </span>
+                  
+                      <span *ngIf="likedornottext[video.postid] !== 'yes'" class="dot dot-blue" (click)="addliketoviode($event,video, video.postid,video.userid,video.userprofile,video.username)" [attr.data-postid]="video.postid">
+                      </span>
+
                       <small *ngIf="video.likeCount>0" >{{video.likeCount}} likes</small>
 
                     </div>

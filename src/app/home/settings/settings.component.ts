@@ -31,6 +31,8 @@ export class SettingsComponent implements OnInit{
 
   isPasswordFieldFocused: boolean = false;
   passwordsaresame:boolean = false;
+  showaccountBool:boolean = true;
+  showprofileBool:boolean=false;
 
 
   correctImage = '../../../assets/images/correct.png';
@@ -70,7 +72,15 @@ export class SettingsComponent implements OnInit{
 
  
 
- 
+  showaccount():void{
+  this.showaccountBool=true;
+  this.showprofileBool=false;
+  }
+  showprofile():void{
+   
+    this.showaccountBool=false;
+    this.showprofileBool=true;
+  }
 
 onSubmit(): void {
   if (this.updateForm.valid) {
@@ -157,6 +167,7 @@ onSubmit(): void {
           profileimage: this.user.profileimage,
          
         });
+        
 
         
       },
@@ -171,3 +182,5 @@ onSubmit(): void {
 
   
 }
+
+

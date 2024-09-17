@@ -1,5 +1,29 @@
 <div *ngIf="!post.deleted" class="post">
 
+  <div class="liked_members_div_fixed" *ngIf="islikedmembereddivvisible">
+    <div class="member_main_outer_holder" #memberMainOuterHolder>
+     <div class="main_titile_holder">
+      <h3>Members who liked</h3>
+     </div>
+      <img src="../../../assets/images/close.png" alt="" class="closeicon" (click)="closememebrslikeddiv($event)">
+  
+      <div class="main_member_holder" *ngFor="let member of likedMembers">
+        <img [src]="member.profileimage" alt="Profile Image">
+        <span class="liked_member_name">{{ member.username }}</span>
+      </div>
+  
+      
+      <button *ngIf="!loadingMoreMembers && hasMoreMembers" (click)="loadMoreMembers($event)" class="loadmorebutton">Load More</button>
+    </div>
+  </div>
+  
+  
+
+
+
+
+
+
    <div class="reporting-screen" *ngIf="showreportscreenBool" >
     <img src="../../../assets/images/close.png" alt="" class="closeicon" (click)="closeReportScreen()">
     <app-reportting [type]="postreport"></app-reportting>
@@ -7,6 +31,7 @@
 
   <div class="post-header">
 
+    <div class="bottom-message" *ngIf="addedtofav"><span>{{favtext}}</span></div>
  
     <div *ngIf="profileImageUrl" class="profile-image-container">
       <img *ngIf="profileImageUrl" [src]="profileImageUrl" alt="User Profile Image" class="profile-image"  />
@@ -45,6 +70,8 @@
                         Delete
                       </li>
                       <li (click)="showreportscreen()">  <img src="../../../assets/images/complain.png" alt=""> Report</li>
+                      <li (click)="savepost($event,post.postid,post)">  <img src="../../../assets/images/save.png" alt="">   {{ post.isSaved ? 'Remove from favorites' : 'Save' }}</li>
+                      
                     </ul>
                   </div>
 
@@ -136,14 +163,13 @@
   <div class="active-buttons-holder">
   
     <span *ngIf="likedornottext =='yes'" class="dot liked-dot" (click)="likePost(post.postid, post.userid,  post.username, post.userprofile,post.n_or_g)" [attr.data-postid]="post.postid">
-
     </span>
 
     <span *ngIf="likedornottext !='yes'" class="dot dot-blue" (click)="likePost(post.postid, post.userid,  post.username, post.userprofile,post.n_or_g)" [attr.data-postid]="post.postid">
     </span>
  
  
-    <span class="likescount" *ngIf="likes > 0">{{ likes }} </span>
+    <span class="likescount" *ngIf="likes > 0" (click)="getlikeedmembers(post.postid)">{{ likes }} </span>
 
 
 

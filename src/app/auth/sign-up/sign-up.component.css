@@ -199,7 +199,7 @@ button {
   display: inline-block;
   padding: 15px 20px;
   border: 1px solid #ccc;
-  border-radius: 20px;
+  border-radius: 25px;
   background-color: var(--primary-dark);
   color: white;
   cursor: pointer;
@@ -212,6 +212,13 @@ button:hover {
   background-color: rgba(43,149,236, 0.1);
   color: rgb(43,149,236);
   border: 1px solid rgb(43,149,236);
+}
+
+.preloader{
+  width: 30px;
+  display: block;
+  margin: 0px auto;
+  margin-top: 10px;
 }
 
 .image-preview {

@@ -27,12 +27,13 @@ import { ImageLargerComponent } from '../../widgets/image-larger/image-larger.co
 })
 export class ProfileComponent   {
 
-
  
   userid: any;
   getfrommethoduserid:any;
   limit = 4;
+  limitfav = 4;
   offset = 0;
+  offsetfav = 0;
   profileImageUrl: string = '';  
   postType: string = "";
   APIURL = 'http://127.0.0.1:8000/';
@@ -42,15 +43,18 @@ export class ProfileComponent   {
  
   showfeedBool:boolean = true;
   showoptionsmenu:boolean=false;
+  showfavelistBool:boolean = false;
   loading = false;
+  loadingfav = false;
   showiamfolloeduserlistBool:boolean = false;
   showiamfollowinguserlistBool:boolean = false;
 
   user: any;
   userfrommethod:any;
-  posts:any=[];
+  posts:any[]=[];
   iamfollowinguserslist: any[] = [];
   iamfolloweduserslist: any[] = [];
+  faveposts: any[] = [];
 
   constructor(private fb: FormBuilder, private http: HttpClient, private route: ActivatedRoute,private cdref: ChangeDetectorRef,private router:Router) { }
 
@@ -66,6 +70,7 @@ export class ProfileComponent   {
       this.getiamfolloinguserlist(this.userid);
       this.getiamfolloeduserlist(this.userid);
       this.getuserdetailsFrommethod(this.getfrommethoduserid);
+      this.getfavList(this.userid);
     }else{
       this.iamfollowinguserslist = [];
       this.iamfolloweduserslist= [];
@@ -82,6 +87,36 @@ export class ProfileComponent   {
     this.offset = 0;  
     this.getPostsFeed();
   }
+
+  onPostRemoved(postid: number): void {
+    
+    this.faveposts = this.faveposts.filter(post => post.postid !== postid);
+  }
+
+  async getfavList(userid: number): Promise<void> {
+    if (this.loadingfav) return;
+  
+    this.loadingfav = true;
+  
+    
+    this.http.get<any[]>(`${this.APIURL}get_fav_list?userid=${userid}&limitfav=${this.limitfav}&offsetfav=${this.offsetfav}`).subscribe({
+      next: (res) => {
+        this.faveposts = [...this.faveposts, ...this.processPosts(res)];
+        this.offsetfav += this.limitfav;
+        this.loadingfav = false;
+        this.cdref.detectChanges();
+ 
+      },
+      error: (error) => {
+        console.error('There was an error!', error);
+        this.loadingfav = false;
+      }
+    });
+  }
+  
+
+
+
   
   async getuserdetailsFrommethod(userid:string):Promise<void>{
     const formData = new FormData();
@@ -91,6 +126,8 @@ export class ProfileComponent   {
       next: (response:any) => {
         
         this.userfrommethod = response;  
+        console.log('Data type of userfrommethod.userid:', typeof this.userfrommethod?.userid);
+        console.log('Data type of userid:', typeof this.userid);
     
       },
       error: (error: HttpErrorResponse) => {
@@ -233,32 +270,44 @@ openaddpostscreen(type: string): void {
 @HostListener('window:scroll', ['$event'])
 onScroll(event: Event): void {
     const element = document.documentElement;
-    if (element.scrollHeight - element.scrollTop === element.clientHeight) {
-      localStorage.removeItem('scrollPosition');
-  
-        this.getPostsFeed();
+
+    if ((element.scrollHeight - element.scrollTop <= element.clientHeight + 1) && !this.loading) {
+        localStorage.removeItem('scrollPosition');
+
+
+        if(this.showfavelistBool){
+            this.getfavList(this.userid);
+        }else{
+          this.getPostsFeed();
+
+        }
     }
 }
 
+
+
+ 
+
 private processPosts(posts: any[]): any[] {
-    const processedPosts: any[] = [];
-    posts.forEach(post => {
-        const existingPost = this.posts.find((p: { postid: any; }) => p.postid === post.postid);
+  const processedPosts: any[] = [];
+  posts.forEach(post => {
+ 
+    const existingPost = processedPosts.find(p => p.postid === post.postid);
 
-        if (existingPost) {
-            if (post.image) {
-                existingPost.images.push(post.image);
-            }
-        } else {
-            const newPost = {
-                ...post,
-                images: post.posttype === 'image' && post.image ? [post.image] : []
-            };
-            processedPosts.push(newPost);
-        }
-    });
+    if (existingPost) {
+      if (post.image) {
+        existingPost.images.push(post.image);
+      }
+    } else {
+      const newPost = {
+        ...post,
+        images: post.posttype === 'image' && post.image ? [post.image] : []
+      };
+      processedPosts.push(newPost);
+    }
+  });
 
-    return processedPosts;
+  return processedPosts;
 }
 
 
@@ -287,6 +336,7 @@ showfeed():void{
   this.showfeedBool = true;
   this.showiamfolloeduserlistBool = false;
   this.showiamfollowinguserlistBool = false;
+  this.showfavelistBool=false;
 }
  
 
@@ -294,12 +344,22 @@ showiamfollowinguserlist():void{
   this.showfeedBool = false;
   this.showiamfolloeduserlistBool = false;
   this.showiamfollowinguserlistBool = true;
+  this.showfavelistBool=false;
+
 }
 
 showiamfolloeduserlist():void{
   this.showfeedBool = false;
   this.showiamfolloeduserlistBool = true;
   this.showiamfollowinguserlistBool = false;
+  this.showfavelistBool=false;
+
+}
+showfavelist():void{
+  this.showfeedBool = false;
+  this.showiamfolloeduserlistBool = false;
+  this.showiamfollowinguserlistBool = false;
+  this.showfavelistBool=true;
 }
 
 

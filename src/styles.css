@@ -17,6 +17,7 @@ body {
 html {
     scroll-behavior: smooth;
 }
+
 :root {
     --primarycolor: rgb(43, 149, 236);
     --primary-faded: rgba(43,149,236, 0.1);

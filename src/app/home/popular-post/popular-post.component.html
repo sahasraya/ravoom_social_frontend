@@ -6,7 +6,7 @@
 
 
 
-<div *ngIf="videoPosts.length ==0 ||audioPosts.length ==0 || imagePosts.length ==0 || textPosts.length ==0 || linkPosts.length ==0 || groupPosts.length ==0" class="no-posts-div">
+<div *ngIf="videoPosts.length ==0 && audioPosts.length ==0 && imagePosts.length ==0 && textPosts.length ==0 && linkPosts.length ==0 && groupPosts.length ==0" class="no-posts-div">
   no popular posts found 
   <img src="../../../assets/images/like.png" alt="">
  
@@ -132,28 +132,31 @@
 
 
 
-<div class="image-post-holder" *ngIf="showLinkPostsBool">
+<div class="outer-holder" *ngIf="showLinkPostsBool">
   <div *ngFor="let post of linkPosts" class="main-outer-holder"
     (click)="nanigatetocommentsscreen(post.postid,post.n_or_g)">
+    <div class="timeholder">
+    <div class="content-holder">
     <div class="inner-holder">
       <div class="profile-image-holder">
-        <img *ngIf="post.userprofileUrl" [src]="post.userprofileUrl" alt="Profile Image" class="profileimage">
-        <div class="details">
-          <p class="usernamepost">{{ post.username }}</p>
-          <p>{{ calculateTimeAgo(post.posteddate) }}</p>
-        </div>
+        <img *ngIf="post.userprofileUrl" [src]="post.userprofileUrl" alt="Profile Image" class="profileimage"> 
+        <span class="usernamepost">{{post.username}}</span>    
       </div>
-
-      <div class="previewdiv">
-        <h3>{{ post.filepath }}</h3>
-
-        <img [src]="post.textbody" alt="{{ post.title }}" class="post">
-        <a [href]="post.thelink" target="_blank">{{ post.thelink }}</a>
-      </div>
-
+      <p>{{ post.postdescription }}</p>
 
     </div>
-    <p>{{ post.postdescription }}</p>
+
+    <img [src]="post.textbody" alt="{{ post.title }}" class="postimage">
+
+  </div>
+
+  <small>{{ calculateTimeAgo(post.posteddate) }}</small>
+
+</div>
+
+
+    
+ 
   </div>
 </div>
 

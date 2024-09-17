@@ -16,6 +16,33 @@ form {
     margin-bottom: 15px;
   }
   
+  .button-holder{
+    margin: 0px auto;
+    width: var(--post-dynamic-width);
+   
+    display: flex;
+    justify-content: start;
+   padding-left: 10px;
+  }
+ 
+  .navigationsbuttons{
+    padding: 10px;
+    border-radius: 20px;
+    background-color: var(--icon-hover-backgroud-color);
+    color: black;
+    border: none;
+    transition: background-color 0.5s, color 0.5s;
+    cursor: pointer;
+  
+  }
+  .navigationsbuttons:hover{
+    background-color: var(--icon-backgroud-color);
+  }
+  .navigationsbuttons.selected {
+   
+    background-color: var(--icon-backgroud-color);
+    font-weight: bold;
+  }
   label {
  
     font-weight: bold;

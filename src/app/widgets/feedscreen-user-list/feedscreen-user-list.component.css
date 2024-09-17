@@ -241,7 +241,7 @@ display: flex;
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0)); /* Black to transparent gradient */
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0));  
     pointer-events: none;  
     border-radius: 15px;
 }

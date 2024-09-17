@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterModule, RouterOutlet } from '@angular/router';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { PreLoaderComponent } from '../../widgets/pre-loader/pre-loader.component';
 @Component({
   selector: 'app-sign-up',
   standalone: true,
@@ -13,7 +14,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
-    RouterModule
+    RouterModule,
+    PreLoaderComponent
   ],
   templateUrl: './sign-up.component.html',
   styleUrls: ['./sign-up.component.css']

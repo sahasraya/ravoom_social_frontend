@@ -1,4 +1,11 @@
-<form [formGroup]="updateForm" (ngSubmit)="onSubmit()">
+<!-- <div class="button-holder">
+  <button  [class.selected]="showaccountBool" (click)="showaccount()"  class="navigationsbuttons">Account</button>
+  <button  [class.selected]="showprofileBool"   (click)="showprofile()"   class="showprofile()" class="navigationsbuttons">Profile</button>
+</div> -->
+
+
+
+<form [formGroup]="updateForm" (ngSubmit)="onSubmit()" *ngIf="showaccountBool">
  
   <div>
     <label for="username">  <div class="icon-wrapper"><img src="../../../assets/images/username.png" alt=""></div>Username</label>
@@ -31,3 +38,15 @@
    <a routerLink="/home/reset-password" class="resetpassword">reset-password</a>
   <button type="submit"     *ngIf="updateForm.valid ">Update</button>
 </form>
+
+
+
+
+
+
+
+
+
+<div class="showprofilesettings" *ngIf="showprofileBool">
+<h1>dwdad</h1>
+</div>

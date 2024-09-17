@@ -32,7 +32,9 @@
   justify-content: start;
  padding-left: 10px;
 }
-
+.button-holder button{
+  margin: 5px;
+}
 
 .navigationsbuttons{
   padding: 10px;
@@ -53,9 +55,7 @@
   font-weight: bold;
 }
 
-.button-holder button{
-  margin: 5px;
-}
+
 
 .creategroup{
   box-shadow: -1px 4px 6px 3px rgba(0, 0, 0, 0.1);
@@ -214,6 +214,7 @@ width: 20vh;
   width: 50px;
   height: 50px;
   border-radius: 50%;
+  object-fit: cover;
 }
 .userdetails-holder  h2{
   opacity: 0.8;

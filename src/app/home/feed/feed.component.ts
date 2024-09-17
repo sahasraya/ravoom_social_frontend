@@ -221,22 +221,23 @@ getPostsFeed(): void {
     this.getPostsFeed();  
   }
 
-  @HostListener('window:scroll', ['$event'])
-  onScroll(event: Event): void {
-      const element = document.documentElement;
-  
- 
-      if (element.scrollHeight - element.scrollTop === element.clientHeight) {
-          localStorage.removeItem('scrollPosition');
-  
-          if (this.selectedOption === "") {
-      
-              this.getPostsFeed();
-          } else {
+@HostListener('window:scroll', ['$event'])
+onScroll(event: Event): void {
+    const element = document.documentElement;
+
+    if ((element.scrollHeight - element.scrollTop <= element.clientHeight + 1) && !this.loading) {
+        localStorage.removeItem('scrollPosition');
+
+        if (this.selectedOption === "") {
+           
+            this.getPostsFeed();   
+        } else {
          
-              this.getPostsFromOption(this.selectedOption);
-          }
-      }
-  }
+
+            this.getPostsFromOption(this.selectedOption);  
+        }
+    }
+}
+
   
 }

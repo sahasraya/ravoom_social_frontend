@@ -1,6 +1,6 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular/common/http';
-import { ChangeDetectorRef, Component, EventEmitter, HostListener, Inject, Input, OnInit, Output, Renderer2 } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, EventEmitter, HostListener, Inject, Input, OnInit, Output, Renderer2, ViewChild } from '@angular/core';
 import { ActivatedRoute, Route, Router, RouterModule } from '@angular/router';
 import { ImageLargerComponent } from '../image-larger/image-larger.component';
 import { PLATFORM_ID } from '@angular/core';
@@ -19,6 +19,8 @@ export class PostComponent implements OnInit {
 
   @Input() post: any;
   @Output() delete = new EventEmitter<void>();
+  @ViewChild('memberMainOuterHolder') memberMainOuterHolder!: ElementRef<HTMLDivElement>;
+  @Output() postRemoved = new EventEmitter<number>();
 
 
   postreport = 'postreport'; 
@@ -33,26 +35,38 @@ export class PostComponent implements OnInit {
   postToBeDeleted: any = null;
   isthelastcomment: boolean = false;
   showreportscreenBool:boolean=false;
+  addedtofav:boolean=false;
   onlinestatus:boolean=true;
+  islikedmembereddivvisible:boolean=false;
   followButtonText: string = 'Follow';
   checkuseridtoroutecommentscreen: string = "";
   userid: string = "";
   btntext: string = "";
   screen: string = "";
-
+  likedMembers:any[]=[];
+  groupid:string="";
+  favtext:string="";
   likedornottext :string = "";
+  offset = 0;
+  limit = 10;
+  loadingMoreMembers = false;
+  hasMoreMembers = false;
+ 
 
-
-  constructor(private cdref: ChangeDetectorRef,private renderer: Renderer2, private http: HttpClient, private router: Router, @Inject(PLATFORM_ID) private platformId: Object, private route: ActivatedRoute,private sharedservice:SharedServiceService) { }
+  constructor(private cdref: ChangeDetectorRef,private renderer: Renderer2, private http: HttpClient, private router: Router, @Inject(PLATFORM_ID) private platformId: Object, private route: ActivatedRoute,private sharedservice:SharedServiceService,) { }
   ngOnInit(): void {
     this.checkuseridtoroutecommentscreen = this.route.snapshot.paramMap.get('uid')!;
 
+   
     this.getpostlikecount();
     this.getpostcommentCount();
     this.getfollowingstatus(this.post.userid);
-    
     if (isPlatformBrowser(this.platformId)) {
       this.userid = localStorage.getItem('wmd') || '';
+      if(this.userid){
+        this.getisaddedtofav(this.post,this.post.postid);
+      }
+
     }
     this.checkisamemberofgroup(this.userid);
     if (this.post.posttype === 'video') {
@@ -86,6 +100,64 @@ export class PostComponent implements OnInit {
 
   }
 
+  async getisaddedtofav(post: any, postid: number): Promise<void> {
+    const formData = new FormData();
+    formData.append('userid', this.userid.toString());
+    formData.append('postid', postid.toString());
+  
+
+  
+    this.http.post<any>(`${this.APIURL}is_added_to_fav`, formData).subscribe({
+      next: (response: any) => {
+        if (response.message === 'exists') {
+          post.isSaved = true;  
+      
+        } else if (response.message === 'not_found') {
+          
+
+          post.isSaved = false; 
+        }
+      },
+      error: (error: HttpErrorResponse) => {
+        if (error.status === 422) {
+          alert('Invalid data submitted.');
+        } else if (error.status === 500) {
+          alert('Server error. Please try again later.');
+        } else {
+          alert('An unexpected error occurred.');
+        }
+        console.error('Error checking favorite post:', error);
+      }
+    });
+  }
+  
+
+
+  async loadMoreMembers(e:Event): Promise<void> {
+    e.preventDefault();
+    
+
+    this.loadingMoreMembers = true;
+
+    try {
+      const response: any = await this.getlikeedmembers(this.post.postid);
+     
+      if (response && response.length > 0) {
+        const newMembers = response.map((member: any) => ({
+          username: member.username,
+          profileimage: this.createBlobUrl(member.profileimage, 'image/jpeg')
+        }));
+        this.likedMembers = [...this.likedMembers, ...newMembers];
+        this.offset += this.limit;
+      } else {
+        this.hasMoreMembers = false;  
+      }
+    } catch (error) {
+      console.error('There was an error!', error);
+    } finally {
+      this.loadingMoreMembers = false;
+    }
+  }
 
 saveScrollPosition = () => {
   const scrollPosition = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
@@ -94,8 +166,122 @@ saveScrollPosition = () => {
 
  
 
+ 
 
 
+async getlikeedmembers(postid: number): Promise<void> {
+  this.islikedmembereddivvisible = true;  
+  this.cdref.detectChanges();
+  const formData = new FormData();
+  formData.append('postid', postid.toString());
+  formData.append('limit', this.limit.toString());
+  formData.append('offset', this.offset.toString());
+
+  try {
+    this.groupid = this.route.snapshot.paramMap.get('groupid') || '';
+  
+    if(this.groupid !=""){
+       
+      const response: any = await this.http.post(this.APIURL + 'get_liked_members_group', formData).toPromise();
+      const newMembers = response.map((member: any) => ({
+        username: member.username,
+        profileimage: this.createBlobUrl(member.profileimage, 'image/jpeg')
+      }));
+      this.likedMembers = [...this.likedMembers, ...newMembers];
+      this.offset += this.limit;
+      this.loadingMoreMembers = false;
+      if(this.likedMembers.length >= 10){
+        this.hasMoreMembers= true;
+      }
+    }else{
+      
+
+      const response: any = await this.http.post(this.APIURL + 'get_liked_members', formData).toPromise();
+      const newMembers = response.map((member: any) => ({
+        username: member.username,
+        profileimage: this.createBlobUrl(member.profileimage, 'image/jpeg')
+      }));
+      this.likedMembers = [...this.likedMembers, ...newMembers];
+      this.offset += this.limit;
+      this.loadingMoreMembers = false;
+      if(this.likedMembers.length >= 10){
+        this.hasMoreMembers= true;
+      }
+    }
+    
+  } catch (error) {
+    console.error('There was an error!', error);
+    this.loadingMoreMembers = false;  
+  }
+}
+
+ 
+
+async savepost(e: Event, postid: number,post:any): Promise<void> {
+  e.preventDefault();
+  const formData = new FormData();
+  formData.append('userid', this.userid.toString());
+  formData.append('postid', postid.toString());
+
+  this.http.post<any>(`${this.APIURL}save_fav_post`, formData).subscribe({
+    next: (response: any) => {
+      if (response.message === 'saved') {
+        post.isSaved = true;
+        this.addedtofav=true;
+        this.favtext="Post added to favorites !";
+
+        setTimeout(() => {
+          this.addedtofav=false;
+        }, 5000);
+        
+      } else if (response.message === 'removed') {
+        post.isSaved = false;
+        this.addedtofav=true;
+        this.favtext="Post removed from favorites !";
+        setTimeout(() => {
+          this.addedtofav=false;
+        }, 5000);
+        this.postRemoved.emit(postid);
+      
+      }
+    },
+    error: (error: HttpErrorResponse) => {
+      if (error.status === 422) {
+        this.favtext="Error: Invalid data submitted.";
+        setTimeout(() => {
+          this.addedtofav=false;
+        }, 1000);
+
+       
+      } else if (error.status === 500) {
+        this.favtext="Server error. Please try again later.";
+        setTimeout(() => {
+          this.addedtofav=false;
+        }, 1000);
+ 
+      } else {
+        this.favtext="An unexpected error occurred.";
+        setTimeout(() => {
+          this.addedtofav=false;
+        }, 1000);
+
+       
+      }
+      console.error('Error saving favorite post:', error);
+    }
+  });
+}
+
+ 
+
+
+
+
+closememebrslikeddiv(e:Event):void{
+  e.preventDefault();
+  this.islikedmembereddivvisible=false;
+
+}
   async checkTheOnlineStatus(userid: any): Promise<void> {
     const formData = new FormData();
     formData.append('userid', userid);
@@ -343,6 +529,12 @@ saveScrollPosition = () => {
     return URL.createObjectURL(blob);
   }
 
+
+  
+
+ 
+
+  
   ngAfterContentChecked() {
 
 
@@ -409,7 +601,7 @@ saveScrollPosition = () => {
   }
 
   ngOnDestroy(): void {
-  // window.removeEventListener('beforeunload', this.saveScrollPosition);
+ 
 
     if (this.imageUrl) {
       URL.revokeObjectURL(this.imageUrl);
@@ -423,6 +615,7 @@ saveScrollPosition = () => {
     if (this.profileImageUrl) {
       URL.revokeObjectURL(this.profileImageUrl);
     }
+    
   }
 
 
@@ -463,9 +656,8 @@ saveScrollPosition = () => {
 
             this.likes++;
         
+            dotElement?.classList.remove('dot-blue');
             dotElement?.classList.add('liked-dot');
-            dotElement1?.classList.remove('liked-dot');
-            dotElement1?.classList.add('dot-blue');
             
 
           } else {
@@ -492,10 +684,8 @@ saveScrollPosition = () => {
           if (response.message == "no") {
 
             this.likes++;
-    
+            dotElement?.classList.remove('dot-blue');
             dotElement?.classList.add('liked-dot');
-            dotElement1?.classList.remove('liked-dot');
-            dotElement1?.classList.add('dot-blue');
 
             this.http.post(this.APIURL + "send-notification", formData).subscribe({
               next: (response: any) => {
