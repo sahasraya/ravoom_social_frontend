@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-userlist-to-follow',
@@ -12,7 +13,7 @@ import { RouterModule } from '@angular/router';
 })
 export class UserlistToFollowComponent  implements OnInit{
  
-  APIURL = 'http://127.0.0.1:8000/';
+  APIURL = environment.APIURL;
   currentUserId:string ="";
   users:any;
   profileimageUrl:any;

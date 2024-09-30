@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { environment } from '../../environments/environment';
  
 
 @Injectable({
@@ -8,7 +9,7 @@ import { Router } from '@angular/router';
 })
 export class SharedServiceService {
 
-  APIURL = 'http://127.0.0.1:8000/';
+  APIURL = environment.APIURL;
  
 
 

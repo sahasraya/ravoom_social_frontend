@@ -5,6 +5,7 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ImageLargerComponent } from '../../widgets/image-larger/image-larger.component';
 import { ReporttingComponent } from '../../widgets/reportting/reportting.component';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-comment',
@@ -21,7 +22,7 @@ export class CommentComponent implements OnInit {
  
   post: any;
   images: any;
-  APIURL = 'http://127.0.0.1:8000/';
+  APIURL = environment.APIURL;
   commentForm: FormGroup;
   replayCommentForm: FormGroup;
   comments: any[] = [];

@@ -3,6 +3,7 @@ import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http'
 import { Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren, AfterViewInit } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { CommentComponent } from '../comment/comment.component';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-video-slider',
@@ -16,7 +17,7 @@ export class VideoSliderComponent implements OnInit, AfterViewInit {
   @ViewChild('videoHolder') videoHolder!: ElementRef<HTMLDivElement>;
   @ViewChildren('videoElement') videoElements!: QueryList<ElementRef<HTMLVideoElement>>;
 
-  APIURL = 'http://127.0.0.1:8000/';
+  APIURL = environment.APIURL;
   offset = 0;
   limit = 15;
   isLoading = false;

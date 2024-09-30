@@ -4,11 +4,13 @@ import { Component, EventEmitter, Inject, Input, Output } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { PLATFORM_ID } from '@angular/core';
+import { environment } from '../../../environments/environment';
+import { PreLoaderComponent } from '../pre-loader/pre-loader.component';
 
 @Component({
   selector: 'app-add-post-group',
   standalone: true,
-  imports: [CommonModule,RouterModule,ReactiveFormsModule],
+  imports: [CommonModule,RouterModule,ReactiveFormsModule,PreLoaderComponent],
   templateUrl: './add-post-group.component.html',
   styleUrl: './add-post-group.component.css'
 })
@@ -40,12 +42,13 @@ export class AddPostGroupComponent {
   showtextpostformbool:boolean =false;
   showimagepostsformbool:boolean =false;
   showlinkpostformbool:boolean =false;
+  isuploadingthepost:boolean=false;
  
  
   
   linkPreviewData: any = null;
 
-  APIURL = 'http://127.0.0.1:8000/';
+  APIURL = environment.APIURL;
   @Output() postAdded = new EventEmitter<void>();
   @Output() closePost = new EventEmitter<void>();
   @Input() groupid!: string;
@@ -212,7 +215,7 @@ this.getLinkPreview(this.linkUrl);
   onSubmit(): void {
     if (this.addPostForm.valid  ) {
 
-
+      this.isuploadingthepost=true;
       const token = localStorage.getItem('jwt');
       if(!token){
         alert("Unauthorized access. Please check your credentials.");
@@ -237,7 +240,7 @@ this.getLinkPreview(this.linkUrl);
 
       this.http.post(this.APIURL + 'add-post-group', formData,{headers}).subscribe({
         next: response => {
-          console.log(response);
+          this.isuploadingthepost=false;
           this.selectedFile = null;
           this.filePreview = null;
           this.selectedFiles = [];
@@ -250,6 +253,7 @@ this.getLinkPreview(this.linkUrl);
           
         },
         error: error => {
+          this.isuploadingthepost=false;
           if (error.status === 401) {
         
             alert("Unauthorized access. Please check your credentials.");

@@ -6,6 +6,7 @@ import { ActivatedRoute, Router, RouterModule, RouterOutlet } from '@angular/rou
 import { PostComponent } from '../../widgets/post/post.component';
 import { AddPostComponent } from '../../widgets/add-post/add-post.component';
 import { ImageLargerComponent } from '../../widgets/image-larger/image-larger.component';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-profile',
@@ -36,7 +37,7 @@ export class ProfileComponent   {
   offsetfav = 0;
   profileImageUrl: string = '';  
   postType: string = "";
-  APIURL = 'http://127.0.0.1:8000/';
+  APIURL = environment.APIURL;
   showLargerImage: boolean = false;
   openaddpostscreenbool: boolean = false;
   username:string = "";

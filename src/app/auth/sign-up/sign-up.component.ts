@@ -5,6 +5,7 @@ import { Router, RouterModule, RouterOutlet } from '@angular/router';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { PreLoaderComponent } from '../../widgets/pre-loader/pre-loader.component';
+import { environment } from '../../../environments/environment';
 @Component({
   selector: 'app-sign-up',
   standalone: true,
@@ -23,7 +24,7 @@ import { PreLoaderComponent } from '../../widgets/pre-loader/pre-loader.componen
 export class SignUpComponent implements OnInit{
   signUpForm: FormGroup;
   imagePreview: string | ArrayBuffer | null = null;
-  APIURL = 'http://127.0.0.1:8000/';
+  APIURL = environment.APIURL;
   maxDate: string="";
   age: number | null = null;
   passwordsnotmatching:boolean = false;
@@ -33,6 +34,7 @@ export class SignUpComponent implements OnInit{
 
   errormessage:string = "";
   isPasswordFieldFocused: boolean = false;
+  issigninup:boolean=false;
 
 
   correctImage = '../../../assets/images/correct.png';
@@ -135,6 +137,7 @@ allPasswordConditionsMet(): boolean {
 
   onSubmit(): void {
     if (this.signUpForm.valid) {
+      this.issigninup=true;
       const formData = new FormData();
 
       if (this.age !== null) {
@@ -148,6 +151,7 @@ allPasswordConditionsMet(): boolean {
 
       this.http.post(this.APIURL + 'sign-up', formData).subscribe({
         next: (response:any) => {
+      this.issigninup=false;
           
            if(response.message =="Passwords do not match"){
               this.passwordsnotmatching=true;
@@ -206,6 +210,8 @@ allPasswordConditionsMet(): boolean {
     
         },
         error: error => {
+      this.issigninup=false;
+
           alert(error);
           console.error('There was an error!', error);
         }

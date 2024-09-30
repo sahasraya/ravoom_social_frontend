@@ -4,6 +4,7 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { PLATFORM_ID } from '@angular/core';
 import { Router } from '@angular/router';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-create-group',
@@ -18,7 +19,7 @@ export class CreateGroupComponent implements OnInit{
   imagePreviewGroupImage: string | ArrayBuffer | null = null;
   imagePreviewGroupBackgroundImage: string | ArrayBuffer | null = null;
 
-  APIURL = 'http://127.0.0.1:8000/';
+  APIURL = environment.APIURL;
   userid: string = "";
   groupmessageexsisteornot:string ="";
   groupmessageColor:string="white";

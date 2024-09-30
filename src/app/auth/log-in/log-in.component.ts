@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterModule, RouterOutlet } from '@angular/router';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-log-in',
@@ -27,7 +28,7 @@ export class LogInComponent implements OnInit {
   loginmessage:string = "";
   showPasswordToggle: boolean = false;
 
-  APIURL = 'http://127.0.0.1:8000/';
+  APIURL = environment.APIURL;
 
 
   

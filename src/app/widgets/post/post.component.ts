@@ -6,6 +6,7 @@ import { ImageLargerComponent } from '../image-larger/image-larger.component';
 import { PLATFORM_ID } from '@angular/core';
 import { ReporttingComponent } from '../reportting/reportting.component';
 import { SharedServiceService } from '../../services/shared-service.service';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-post',
@@ -15,7 +16,7 @@ import { SharedServiceService } from '../../services/shared-service.service';
   styleUrl: './post.component.css'
 })
 export class PostComponent implements OnInit {
-  APIURL = 'http://127.0.0.1:8000/';
+  APIURL = environment.APIURL;
 
   @Input() post: any;
   @Output() delete = new EventEmitter<void>();

@@ -7,6 +7,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgxLinkPreviewModule } from 'ngx-link-preview';
 import { isPlatformBrowser } from '@angular/common';  
 import { PLATFORM_ID } from '@angular/core';
+import { environment } from '../../../environments/environment';
+import { PreLoaderComponent } from '../pre-loader/pre-loader.component';
  
 
 @Component({
@@ -19,7 +21,8 @@ import { PLATFORM_ID } from '@angular/core';
     FormsModule,
     ReactiveFormsModule,
     RouterModule,
-    NgxLinkPreviewModule
+    NgxLinkPreviewModule,
+    PreLoaderComponent
   ],
   templateUrl: './add-post.component.html',
   styleUrl: './add-post.component.css'
@@ -38,6 +41,7 @@ export class AddPostComponent {
   mediaDuration: number | null = null;
   selectedColor: string = '';
   linkUrl: string = '';
+  isuploadingthepost:boolean = false;
 
   
   apiRoute = 'https://opengraph.io/api/1.1/site/:site?app_id=3ec5a83b-4cce-4f5e-8ed7-30f72e7414e7';
@@ -55,7 +59,7 @@ export class AddPostComponent {
   
   linkPreviewData: any = null;
 
-  APIURL = 'http://127.0.0.1:8000/';
+  APIURL = environment.APIURL;
   @Input() postType: string = '';
   @Output() postAdded = new EventEmitter<void>();
   @Output() closePost = new EventEmitter<void>();
@@ -246,10 +250,11 @@ this.getLinkPreview(this.linkUrl);
 
   onSubmit(): void {
     if (this.addPostForm.valid  ) {
-
+      this.isuploadingthepost=true;
       const token = localStorage.getItem('jwt');
       if(!token){
         alert("Unauthorized access. Please check your credentials.");
+        this.isuploadingthepost=false;
         return;
       }
 
@@ -269,7 +274,7 @@ this.getLinkPreview(this.linkUrl);
 
       this.http.post(this.APIURL + 'add-post', formData,{headers}).subscribe({
         next: response => {
-          console.log(response);
+          this.isuploadingthepost=false;
           this.selectedFile = null;
           this.filePreview = null;
           this.selectedFiles = [];
@@ -282,6 +287,7 @@ this.getLinkPreview(this.linkUrl);
           
         },
         error: error => {
+          this.isuploadingthepost=false;
           if (error.status === 401) {
         
             alert("Unauthorized access. Please check your credentials.");

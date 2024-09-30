@@ -8,6 +8,7 @@ import { PLATFORM_ID } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { warn } from 'node:console';
 import { ImageLargerComponent } from '../../widgets/image-larger/image-larger.component';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-groups',
@@ -19,7 +20,7 @@ import { ImageLargerComponent } from '../../widgets/image-larger/image-larger.co
 export class GroupsComponent implements OnInit{
 
   groupid:string="";
-  APIURL = 'http://127.0.0.1:8000/';
+  APIURL = environment.APIURL;
   group: any;
   userList:any[] =[];
   curruntuserisFollowedList:any[] =[];

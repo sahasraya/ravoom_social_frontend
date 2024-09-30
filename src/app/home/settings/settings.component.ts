@@ -3,6 +3,7 @@ import { HttpClient, HttpClientModule, HttpErrorResponse, HttpParams } from '@an
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, RouterModule, RouterOutlet } from '@angular/router';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-settings',
@@ -23,7 +24,7 @@ export class SettingsComponent implements OnInit{
   updateForm: FormGroup;
   userid: any;
   profileImageUrl: string = ''; 
-  APIURL = 'http://127.0.0.1:8000/';
+  APIURL = environment.APIURL;
   isprofileimageselected:boolean = false;
  
   user: any;

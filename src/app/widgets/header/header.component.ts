@@ -6,6 +6,7 @@ import { NotificationService } from '../../home/notification/notification.servic
 import { NotificationComponent } from '../../home/notification/notification.component';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { AddPostComponent } from '../add-post/add-post.component';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-header',
@@ -15,7 +16,7 @@ import { AddPostComponent } from '../add-post/add-post.component';
   styleUrl: './header.component.css'
 })
 export class HeaderComponent implements OnInit{
-  APIURL = 'http://127.0.0.1:8000/';
+  APIURL = environment.APIURL;
   @Output() addPost = new EventEmitter<void>();
   @Output() uploadPost = new EventEmitter<void>();
 

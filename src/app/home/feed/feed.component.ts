@@ -10,6 +10,7 @@ import { CreateGroupComponent } from '../../widgets/create-group/create-group.co
 import { HeaderComponent } from '../../widgets/header/header.component';
 import { FeedscreenUserListComponent } from '../../widgets/feedscreen-user-list/feedscreen-user-list.component';
 import { FeedscreenGroupListComponent } from '../../widgets/feedscreen-group-list/feedscreen-group-list.component';
+import { environment } from '../../../environments/environment';
 
 
 @Component({
@@ -34,7 +35,7 @@ export class FeedComponent {
 
   posts: any[] = [];
   openaddpostscreenbool: boolean = false;
-  APIURL = "http://127.0.0.1:8000/";
+  APIURL = environment.APIURL;
   limit = 5;
   limitoption = 5;
   offset=0;
@@ -47,6 +48,7 @@ export class FeedComponent {
   postType: string = "";
   user: any;
   selectedOption: string = '';
+  username:string = "";
  
 
   constructor(private http: HttpClient, private cdr: ChangeDetectorRef,private router:Router) {}
@@ -54,7 +56,9 @@ export class FeedComponent {
   ngOnInit(): void {
     this.getPostsFeed();
     this.userid = localStorage.getItem('wmd') || '';
-    this.getuserdetails(this.userid);
+    if(this.userid){
+      this.getuserdetails(this.userid);
+    }
 
   }
 
@@ -66,6 +70,7 @@ async getuserdetails(userid:string):Promise<void>{
       next: (response:any) => {
         
         this.user = response;  
+        this.username = this.user.username;
      
       },
       error: (error: HttpErrorResponse) => {

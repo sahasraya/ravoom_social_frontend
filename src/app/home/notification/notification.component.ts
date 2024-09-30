@@ -4,6 +4,7 @@ import { ChangeDetectorRef, Component, ElementRef, HostListener, OnInit } from '
 import { Router, RouterModule } from '@angular/router';
 import { log } from 'console';
 import { NotificationService } from './notification.service';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-notification',
@@ -15,7 +16,7 @@ import { NotificationService } from './notification.service';
 export class NotificationComponent implements OnInit {
 
  
-  APIURL = "http://127.0.0.1:8000/";
+  APIURL = environment.APIURL;
   notifications: any[] = [];
   currentUserId: string = ""; 
   opennotificationwindow:boolean=false;

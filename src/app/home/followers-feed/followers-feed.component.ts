@@ -7,6 +7,7 @@ import { PostComponent } from '../../widgets/post/post.component';
 import { FeedscreenGroupListComponent } from '../../widgets/feedscreen-group-list/feedscreen-group-list.component';
 import { FeedscreenUserListComponent } from '../../widgets/feedscreen-user-list/feedscreen-user-list.component';
 import { UserlistToFollowComponent } from '../userlist-to-follow/userlist-to-follow.component';
+import { environment } from '../../../environments/environment';
 
 
 @Component({
@@ -22,7 +23,7 @@ export class FollowersFeedComponent {
 
   posts: any[] = [];
   openaddpostscreenbool: boolean = false;
-  APIURL = "http://127.0.0.1:8000/";
+  APIURL = environment.APIURL;
   limit = 5;
   offset = 0;
   loading = false;

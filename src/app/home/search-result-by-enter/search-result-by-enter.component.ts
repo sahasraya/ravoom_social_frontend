@@ -4,6 +4,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { PostComponent } from '../../widgets/post/post.component';
 import { SharedServiceService } from '../../services/shared-service.service';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-search-result-by-enter',
@@ -19,7 +20,7 @@ export class SearchResultByEnterComponent  implements OnInit{
 
   searchtext: string = '';
   userid:string='';
-  APIURL = 'http://127.0.0.1:8000/';
+  APIURL = environment.APIURL;
   responseObject: any = [];
   responseObjectTextImageLink: any = [];
 

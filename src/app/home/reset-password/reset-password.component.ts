@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-reset-password',
@@ -32,7 +33,7 @@ export class ResetPasswordComponent implements OnInit{
   countdown: number = 10;
   countdownInterval: any;
 
-  APIURL = 'http://127.0.0.1:8000/';
+  APIURL = environment.APIURL;
 
   passwordConditions = {
     minLength: false,

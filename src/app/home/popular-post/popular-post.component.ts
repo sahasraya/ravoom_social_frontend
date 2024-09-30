@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-popular-post',
@@ -12,7 +13,7 @@ import { Router } from '@angular/router';
 })
 export class PopularPostComponent  implements OnInit{
 
-  APIURL = 'http://127.0.0.1:8000/';
+  APIURL = environment.APIURL;
   videoUrl:string = "";
   popularPosts: any[] = [];
   likeCounts: any[] = [];
