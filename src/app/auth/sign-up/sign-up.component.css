@@ -120,6 +120,9 @@ transition: background-color 0.2s;
   padding: 10px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
+.hidden-banner{
+  display:none;
+}
 
 .good-banner{
   position: sticky;
@@ -294,22 +297,18 @@ button:hover {
 }
 .logintag{
   color: var(--primarycolor);
-  font-size: 15px;
+  font-size: 3vh;
   text-decoration: none;
   font-family: 'Open Sans', sans-serif;
-  padding: 8px 15px;
   position: relative;
- top: 35px;
- border-radius: 50px;
- background-color: white;
- transition: background-color 0.2s;
- box-shadow: -1px 5px 10px 1px rgba(0, 0, 0, 0.2);
  cursor: pointer;
+ text-align: left;
+ margin-left: 6px;
+ margin-top: 10px;
 
 }
-.logintag:hover{
-  background-color: var(--primarycolor);
-  color: white;
+.logintag:hover{ 
+  text-decoration: underline;
 }
 
 .icon-wrapper {
@@ -342,6 +341,18 @@ button:hover {
 }
 .icon-wrapper img {
   max-width: 100%;
+}
+
+
+
+.disabled-button {
+  cursor: not-allowed;
+  opacity: 0.6; 
+}
+
+.enabled-button {
+  cursor: pointer;
+  opacity: 1;
 }
 
 

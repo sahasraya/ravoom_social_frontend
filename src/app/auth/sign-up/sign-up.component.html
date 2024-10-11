@@ -16,7 +16,11 @@
         <img src="../../../assets/images/crabber_header.png" alt="" class="main-image">
       </a>
 
-      <h3 class="ravoom-text">Sign up</h3>
+      <h3 class="ravoom-text">Sign Up</h3>
+
+
+      <a  class="logintag" (click)="goToSignUpScreen()">Log In</a>
+      
     
      </div>
   
@@ -31,8 +35,7 @@
   </div>
   
 
-
-
+ 
 
   <form [formGroup]="signUpForm" (ngSubmit)="onSubmit()">
 
@@ -40,7 +43,7 @@
     <img src="../../../assets/images/reset.png" alt="" class="reset-icon" (click)="resetform($event)" title="reset this form">
 
 
-    <div [class]="bannerClass"  >
+    <div [class]="bannerClass"  *ngIf="passwordsnotmatching">
       <span class="bannertext">{{errormessage}}</span>
     </div>
     
@@ -76,7 +79,7 @@
           <label for="emailaddress">
             <div class="icon-wrapper"><img src="../../../assets/images/email.png" alt=""> </div>
             Email Address</label>
-          <input id="emailaddress" formControlName="emailaddress" type="email" placeholder="Email address">
+          <input id="emailaddress" formControlName="emailaddress" type="email" placeholder="Email Address" #emailInput>
         </div>
       
         <div>
@@ -84,7 +87,7 @@
             <div class="icon-wrapper">
               <img src="../../../assets/images/telephone.png" alt="">
             </div> Phone Number</label>
-          <input id="phonenumber" formControlName="phonenumber" type="number" placeholder="Phone number">
+          <input id="phonenumber" formControlName="phonenumber" type="number" placeholder="Phone Number">
         </div>
       
         <div>
@@ -146,7 +149,7 @@
           
           
           </label>
-          <input [type]="showPassword ? 'text' : 'password'" id="reenterpassword" formControlName="reenterpassword" placeholder="Re enter password" (input)="checkpasswordequls(password.value ,reenterpassword.value)" #reenterpassword>
+          <input [type]="showPassword ? 'text' : 'password'" id="reenterpassword" formControlName="reenterpassword" placeholder="Re Enter Password" (input)="checkpasswordequls(password.value ,reenterpassword.value)" #reenterpassword>
         </div>
     
         <div *ngIf="age !== null && age !== 0" [ngClass]="{'agebelow18': age < 18}" >
@@ -170,10 +173,20 @@
         
       
         
-        <button type="submit"   *ngIf="age! > 18 && signUpForm.valid && allPasswordConditionsMet()"> Sign Up</button>
+        <!-- <button type="submit"   *ngIf="age! > 18 && signUpForm.valid && allPasswordConditionsMet()"> Sign Up</button> -->
     
-        <a  class="logintag" (click)="goToSignUpScreen()">Log in</a>
-    
+       
+        <button 
+        type="submit" 
+        [disabled]="!(age! > 18 && signUpForm.valid && allPasswordConditionsMet())"
+        [ngClass]="{
+          'disabled-button': !(age! > 18 && signUpForm.valid && allPasswordConditionsMet()),
+          'enabled-button': age! > 18 && signUpForm.valid && allPasswordConditionsMet()
+        }">
+        Sign Up
+      </button>
+      
+      
     
         
       </form>

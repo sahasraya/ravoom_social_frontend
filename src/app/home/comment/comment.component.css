@@ -74,7 +74,7 @@
     flex-direction: column;
     margin-top: 10px;
   }
-  .post-media img,.image-post-media img,.linkholder img, .post-media video{
+  .post-media img,.image-post-media img, .post-media video{
  
     width: 100%;
     height: 50%;
@@ -388,12 +388,16 @@ input[type="text"]:focus {
  .likecount{
   margin-left: 5px;
  }
+ .likecount:hover{
+  cursor: pointer;
+  text-decoration: underline;
+ }
  .comment-button img{
   width: 18px;
   height: 18px;
  
  }
-.comment-div-holder,.follow-btn-holder{
+.follow-btn-holder{
   background-color: var(--icon-hover-backgroud-color);
   padding: 10px;
  
@@ -402,7 +406,15 @@ input[type="text"]:focus {
   transition: background-color 0.3s;
   cursor: pointer;
 }
-
+.comment-div-holder{
+  background-color: var(--icon-hover-backgroud-color);
+  padding: 10px;
+ 
+  border-radius: 25px;
+  margin-left: 10px;
+ 
+ 
+}
 .follow-btn-holder:hover{
   background-color: var(--icon-backgroud-color);
 }
@@ -421,8 +433,8 @@ input[type="text"]:focus {
  }
 
  .nocomments img{
-  height: 10vh;
-  margin-bottom: 10px;
+  height: 6vh;
+  margin-bottom: 5px;
   opacity: 0.5;
  }
  .nocomments p{
@@ -600,11 +612,18 @@ input[type="text"]:focus {
   width: 100%;
   justify-content: space-between;
 }
-.replaytextholder img{
-  border-radius: 50%;
-  width: 30px;
-  height: 30px;
+.replayuserprofile{
+  width: 35px;
+  height: 35px;
 }
+.dropdown-toggle{
+  width: 35px;
+  height: 35px;
+}
+ .replaydropdownimage{
+  width: 20px;
+  height: 20px;
+ }
 .replaytextuserdetailsholder{
   display: flex;
   flex-direction: row;
@@ -696,3 +715,5 @@ input[type="text"]:focus {
   transform: scale(1.2);  
   background-color: #2196f3;  
 }
+
+ 

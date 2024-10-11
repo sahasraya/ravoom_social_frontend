@@ -11,6 +11,7 @@ import { HeaderComponent } from '../../widgets/header/header.component';
 import { FeedscreenUserListComponent } from '../../widgets/feedscreen-user-list/feedscreen-user-list.component';
 import { FeedscreenGroupListComponent } from '../../widgets/feedscreen-group-list/feedscreen-group-list.component';
 import { environment } from '../../../environments/environment';
+import { PreLoaderComponent } from '../../widgets/pre-loader/pre-loader.component';
 
 
 @Component({
@@ -27,6 +28,7 @@ import { environment } from '../../../environments/environment';
     HeaderComponent,
     FeedscreenUserListComponent,
     FeedscreenGroupListComponent,
+    PreLoaderComponent
   ],
   templateUrl: './feed.component.html',
   styleUrl: './feed.component.css'
@@ -49,6 +51,8 @@ export class FeedComponent {
   user: any;
   selectedOption: string = '';
   username:string = "";
+  iscontentisloading:boolean=true;
+  
  
 
   constructor(private http: HttpClient, private cdr: ChangeDetectorRef,private router:Router) {}
@@ -168,15 +172,29 @@ async getuserdetails(userid:string):Promise<void>{
 getPostsFeed(): void {
   if (this.loading) return;
 
+  this.iscontentisloading=true;
+
   this.loading = true;
   this.http.get<any[]>(`${this.APIURL}get_posts_feed?limit=${this.limit}&offset=${this.offset}`).subscribe({
     next: (res) => {
  
-      this.posts = [...this.posts, ...this.processPosts(res)];
+      if (res.length > 0) {
+  
+        this.posts = [...this.posts, ...this.processPosts(res)];
+        this.offset += this.limit;
+
     
-      this.offset += this.limit;
+        localStorage.setItem("offsetoffset", this.offset.toString());
+      } else {
+ 
+        console.log("No more posts to load.");
+      }
+
       this.loading = false;
-      this.cdr.detectChanges();  
+      this.iscontentisloading=false;
+
+      this.cdr.detectChanges();
+
     },
     error: (error) => {
       console.error('There was an error!', error);
@@ -235,6 +253,7 @@ onScroll(event: Event): void {
 
         if (this.selectedOption === "") {
            
+            
             this.getPostsFeed();   
         } else {
          

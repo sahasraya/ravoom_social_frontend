@@ -1,9 +1,9 @@
 <div class="navinationbuttonholder">
-  <button (click)="showTextImageLinkPosts()"  [class.selected]="showImagetextLinkPostsBool" class="navigationsbuttons">Text image link ({{ImageTextLinkPosts.length}})</button>
+  <button (click)="showTextImageLinkPosts()"  [class.selected]="showImagetextLinkPostsBool" class="navigationsbuttons">Posts ({{ImageTextLinkPosts.length}})</button>
 <button (click)="showAudioPosts()"  [class.selected]="showAudioPostsBool" class="navigationsbuttons">Audios ({{audioPosts.length}})</button>
-<button (click)="showVideoPosts()"  [class.selected]="showVideoPostsBool" class="navigationsbuttons">Viode ({{videoPosts.length}})</button>
-<button (click)="showTextLinkPosts()"  [class.selected]="showTextLinkPostsBool" class="navigationsbuttons">Post ({{TextLinkPosts.length}})</button>
-<button (click)="showUser()"  [class.selected]="showUserBool" class="navigationsbuttons">User ({{UserList.length}})</button>
+<button (click)="showVideoPosts()"  [class.selected]="showVideoPostsBool" class="navigationsbuttons">Videos ({{videoPosts.length}})</button>
+<button (click)="showTextLinkPosts()"  [class.selected]="showTextLinkPostsBool" class="navigationsbuttons">Texts & Links ({{TextLinkPosts.length}})</button>
+<button (click)="showUser()"  [class.selected]="showUserBool" class="navigationsbuttons">Users ({{UserList.length}})</button>
 <button (click)="showGroups()"  [class.selected]="showGroupBool" class="navigationsbuttons">Groups ({{GroupList.length}})</button>
 </div>
 
@@ -26,7 +26,7 @@
 
    
 
-    <div class="div-button-holder" *ngIf="ImageTextLinkPosts.length > 0">
+    <div class="div-button-holder" *ngIf="moreDataAvailabletextimagelink">
       <span (click)="loadMoreTextImageLink($event)" class="loadmorebutton"  >Load More</span>
     </div>
 
@@ -242,8 +242,8 @@
 
     </div>
 
-    <div class="div-button-holder" *ngIf="TextLinkPosts.length > 0">
-      <span (click)="loadMoreLinks($event)" class="loadmorebutton"  >Load More</span>
+    <div class="div-button-holder" *ngIf="moreDataAvailablelink">
+      <span (click)="loadMoreTextLinks($event)" class="loadmorebutton"  >Load More</span>
     </div>
   
   </div>

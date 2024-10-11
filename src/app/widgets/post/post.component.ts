@@ -83,10 +83,7 @@ export class PostComponent implements OnInit {
     }
      
 
-    this.renderer.listen('window', 'load', () => {
-      
-
-    });
+    
     if(this.userid !=''){
       this.checkTheOnlineStatus(this.post.userid);
 
@@ -724,6 +721,7 @@ closememebrslikeddiv(e:Event):void{
     const scrollPosition = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
  
     localStorage.setItem('scrollPosition', scrollPosition.toString());
+    localStorage.setItem('nav', 'yes');
 
 
     if (this.checkuseridtoroutecommentscreen != null) {

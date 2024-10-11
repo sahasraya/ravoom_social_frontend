@@ -3,13 +3,13 @@
   <div class="liked_members_div_fixed" *ngIf="islikedmembereddivvisible">
     <div class="member_main_outer_holder" #memberMainOuterHolder>
      <div class="main_titile_holder">
-      <h3>Members who liked</h3>
+      <h3>Members Who Liked</h3>
      </div>
       <img src="../../../assets/images/close.png" alt="" class="closeicon" (click)="closememebrslikeddiv($event)">
   
       <div class="main_member_holder" *ngFor="let member of likedMembers">
         <img [src]="member.profileimage" alt="Profile Image">
-        <span class="liked_member_name">{{ member.username }}</span>
+        <span class="liked_member_name" >{{ member.username }}</span>
       </div>
   
       
@@ -43,7 +43,7 @@
            <div class="username-holder">
             <span>
               <div class="postdetilsholder">
-                <a  class="username" (click)="navigatetouser()">{{ post.username }} </a>
+                <a  class="username" (click)="navigatetouser()" title="see {{post.username}} profile">{{ post.username }} </a>
               <small >{{ calculateTimeAgo(post.posteddate) }}</small>
               </div>
               <span *ngIf="post.groupname != null">&#64; {{ post.groupname }}</span>
@@ -176,14 +176,14 @@
 
     <!-- Comment button -->
      <span class="comment-button" (click)="commentOnPost($event,post.postid,post.n_or_g)" *ngIf="post.posttype != 'group'">
-      <img src="../../../assets/images/comment.png" alt="" ><span *ngIf="comments > 0"> {{ comments }}</span>
+      <img src="../../../assets/images/comment.png" alt="" title="add comment"><span *ngIf="comments > 0"> {{ comments }}</span>
      </span>
 
  
    
  
  <span *ngIf="this.userid !='' && userid != post.userid && post.posttype !='group'">
-  <span (click)="iamstartedtofollow(post.userid)" class="comment-button"  >{{followButtonText}}</span>
+  <span (click)="iamstartedtofollow(post.userid)" class="comment-button"  title="{{followButtonText}} now">{{followButtonText}}</span>
 
  </span>
 

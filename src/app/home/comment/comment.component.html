@@ -3,7 +3,30 @@
 
 <div *ngIf="post" class="post-container">
 
+  <div class="liked_members_div_fixed" *ngIf="islikedmembereddivvisible">
+    <div class="member_main_outer_holder" #memberMainOuterHolder>
+     <div class="main_titile_holder">
+      <h3>Members Who Liked</h3>
+     </div>
+      <img src="../../../assets/images/close.png" alt="" class="closeicon" (click)="closememebrslikeddiv($event)">
+  
+      <div class="main_member_holder" *ngFor="let member of likedMembers">
+        <img [src]="member.profileimage" alt="Profile Image">
+        <span class="liked_member_name" >{{ member.username }}</span>
+      </div>
+  
+      
+      <button *ngIf="!loadingMoreMembers && hasMoreMembers" (click)="loadMoreMembers($event)" class="loadmorebutton">Load More</button>
+    </div>
+  </div>
 
+
+
+
+
+
+
+  
   <div [ngSwitch]="fromwhatscreen">
     <a *ngSwitchCase="'home'" routerLink=''>
       <img src="../../../assets/images/backarrow.png" alt="" class="backarrow">
@@ -138,7 +161,7 @@
 
             </span>
          
-            <span  *ngIf="likes > 0" class="likecount">{{ likes }} </span>
+            <span  *ngIf="likes > 0" class="likecount" (click)="getlikeedmembers(post.postid)">{{ likes }} </span>
 
 
 
@@ -256,7 +279,7 @@
                             <div class="replaycomment-outerhodler">
                               <div class="replaytextholder">
                                  <div class="replaytextuserdetailsholder">
-                                    <img *ngIf="replay.userprofileBlobUrl" [src]="replay.userprofileBlobUrl" alt="User Profile">
+                                    <img *ngIf="replay.userprofileBlobUrl" [src]="replay.userprofileBlobUrl" alt="User Profile" class="replayuserprofile">
 
                                       <div class="usedetilsholder">
                                         <a [routerLink]="['/home/profile', replay.userid]" class="commentusername">
@@ -278,10 +301,11 @@
                                   <ul>
                                   
                                     <li  (click)="removeReplayComment(replay,replay.commentreplayid )"  *ngIf="replay.userid == userid" class="dropdownicons">
-                                      <img src="../../../assets/images/delete.png" alt="">
+                                      <img src="../../../assets/images/delete.png" alt="" class="replaydropdownimage">
+                                       
                                       Delete replay
                                     </li> 
-                                    <li>  <img src="../../../assets/images/complain.png" alt=""> Report replay</li>
+                                    <li>  <img src="../../../assets/images/complain.png" alt="" class="replaydropdownimage"> Report replay</li>
                       
                                   
                                      
@@ -345,7 +369,7 @@
       
       <div *ngIf="comments.length === 0 || isthelastcomment" class="nocomments">
         <img src="../../../assets/images/nocomments.png" alt="">
-        <p>No comments available.</p>
+        <p>No comments</p>
       </div>
       
       

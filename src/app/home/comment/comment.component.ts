@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
-import { Component, HostListener, Input, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, HostListener, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ImageLargerComponent } from '../../widgets/image-larger/image-larger.component';
@@ -28,6 +28,7 @@ export class CommentComponent implements OnInit {
   comments: any[] = [];
   likes: number = 0;
   showLargerImage: boolean = false;
+  islikedmembereddivvisible:boolean=false;
   commentToBeDeleted: any = null;
   deleteingcommentid: any;
   isthelastcomment: boolean = false;
@@ -44,12 +45,17 @@ export class CommentComponent implements OnInit {
   comment="comment";
   likedornottext:string = "";
   limit = 20;  
+  limitlike = 10;  
   offset = 0; 
+  offsetlike = 0; 
   loading = false;
   followButtonText:string = "Follow";
+  likedMembers:any[]=[];
+  hasMoreMembers = false;
+  loadingMoreMembers = false;
 
 
-  constructor(private route: ActivatedRoute, private http: HttpClient, private fb: FormBuilder, private router: Router) {
+  constructor(private route: ActivatedRoute, private http: HttpClient, private fb: FormBuilder, private router: Router,private cdref: ChangeDetectorRef) {
     this.commentForm = this.fb.group({
       commenttext: ['', [Validators.required]],
 
@@ -139,13 +145,94 @@ async getfollowingstatus(postowneruserid:any):Promise<void>{
   }
 
 
+
+  async getlikeedmembers(postid: number): Promise<void> {
+ 
+    this.islikedmembereddivvisible = true;  
+    this.cdref.detectChanges();
+    const formData = new FormData();
+    formData.append('postid', postid.toString());
+    formData.append('limit', this.limitlike.toString());
+    formData.append('offset', this.offsetlike.toString());
+
+ 
+  
+    try {
+     
+    
+      if(this.groupornormalpost !="n"){
+         
+        const response: any = await this.http.post(this.APIURL + 'get_liked_members_group', formData).toPromise();
+        const newMembers = response.map((member: any) => ({
+          username: member.username,
+          profileimage: this.createBlobUrl(member.profileimage, 'image/jpeg')
+        }));
+        this.likedMembers = [...this.likedMembers, ...newMembers];
+        console.log(this.likedMembers);
+        this.limitlike += this.offsetlike;
+        this.loadingMoreMembers = false;
+        if(this.likedMembers.length >= 10){
+          this.hasMoreMembers= true;
+        }
+      }else{
+        
+  
+        const response: any = await this.http.post(this.APIURL + 'get_liked_members', formData).toPromise();
+        const newMembers = response.map((member: any) => ({
+          username: member.username,
+          profileimage: this.createBlobUrl(member.profileimage, 'image/jpeg')
+        }));
+        this.likedMembers = [...this.likedMembers, ...newMembers];
+        this.limitlike += this.offsetlike;
+        this.loadingMoreMembers = false;
+        if(this.likedMembers.length >= 10){
+          this.hasMoreMembers= true;
+        }
+      }
+      
+    } catch (error) {
+      console.error('There was an error!', error);
+      this.loadingMoreMembers = false;  
+    }
+  }
+
   toggleFollowButtonText(): void {
     this.followButtonText = this.followButtonText === 'Follow' ? 'Following' : 'Follow';
   }
 
 
 
+  async loadMoreMembers(e:Event): Promise<void> {
+    e.preventDefault();
+    
 
+    this.loadingMoreMembers = true;
+
+    try {
+      const response: any = await this.getlikeedmembers(this.post.postid);
+     
+      if (response && response.length > 0) {
+        const newMembers = response.map((member: any) => ({
+          username: member.username,
+          profileimage: this.createBlobUrl(member.profileimage, 'image/jpeg')
+        }));
+        this.likedMembers = [...this.likedMembers, ...newMembers];
+        this.offset += this.limit;
+      } else {
+        this.hasMoreMembers = false;  
+      }
+    } catch (error) {
+      console.error('There was an error!', error);
+    } finally {
+      this.loadingMoreMembers = false;
+    }
+  }
+
+  closememebrslikeddiv(e:Event):void{
+    e.preventDefault();
+    this.islikedmembereddivvisible=false;
+  
+  }
 
   async getpostcommentCount(postid:any): Promise<void> {
  

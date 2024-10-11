@@ -84,14 +84,14 @@
         <span class="creategroup" (click)="toggleOptionsSelecter($event)" >
       
           <img src="../../../assets/images/ravoomit.png" alt=""> 
-          Ravoom it
+          Ravoom It
   
         </span>
   
   
         <span class="creategroup" (click)="createnewgroup()">
           <img src="../../../assets/images/add.png" alt=""  >
-          group
+          Group
   
         </span>
 
@@ -116,7 +116,7 @@
 
       <div class="option" (click)="openaddpostscreen('l')">
         <div class="icon-wrapper"><img src="../../../assets/images/linkpost.png" alt=""></div>
-        <span class="optionname">link</span>
+        <span class="optionname">Link</span>
       </div>
 
       <div class="option" (click)="openaddpostscreen('v')">
@@ -151,7 +151,7 @@
 
 
 <div class="no-posts-div" *ngIf="posts.length ==0">
-  no posts yet ! 
+  No Posts Yet ! 
   <img src="../../../assets/images/imagepost.png" alt="">
 
   <span class="creategroup" (click)="toggleOptionsSelecter($event)" >
@@ -188,6 +188,7 @@
 </div>
 
 
+<img src="../../../assets/images/preloader.gif" alt="" class="iscontentisloading" *ngIf="iscontentisloading">
 
 
 

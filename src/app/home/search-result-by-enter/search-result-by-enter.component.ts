@@ -49,12 +49,12 @@ export class SearchResultByEnterComponent  implements OnInit{
 
   offsetgroup = 0;
   offsetuser = 0;
-  offsetlink = 0;
+  offsettextlink = 0;
   offsetvideo = 0;
   offsettextimagelink = 0;
   limitgroup = 10;  
   limituser = 10;  
-  limitlink = 10;  
+  limittextlink = 10;  
   limitvideo = 10;  
   limittextimagelink = 10;  
   moreDataAvailable = true;
@@ -70,12 +70,13 @@ export class SearchResultByEnterComponent  implements OnInit{
       this.searchtext = params.get('text')!;
       this.getVideos(this.searchtext);
       this.getImageTextImageLink(this.searchtext);
-      this.getLink(this.searchtext);
+      this.getTextLink(this.searchtext);
       this.getLinkPreview('https://en.wikipedia.org/wiki/Sri_Lanka'); 
       this.getUser(this.searchtext);
       this.getGroup(this.searchtext);
 
       this.userid = localStorage.getItem('wmd') || '';
+      
       
     });
   
@@ -146,21 +147,25 @@ loadMore() {
   }
 }
 
-loadMoreUser() {
-  if (this.moreDataAvailableuser) {
-    this.offsetuser += this.limituser; 
-    this.getUser(this.searchtext);      
-  }
-}
 
-loadMoreLinks(e:Event) {
+
+loadMoreTextLinks(e:Event) {
   e.preventDefault();
   e.stopPropagation();
  
-  if (this.moreDataAvailablelink) {
-    this.offsetlink += this.limitlink; 
-    this.getLink(this.searchtext);      
-  }
+ 
+  const scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
+
+  this.offsettextlink += this.limittextlink;
+
+  this.getTextLink(this.searchtext).then(() => {
+    setTimeout(() => {
+      window.scrollTo({ top: scrollPosition, behavior: 'auto' });
+    }, 0);   
+  });
+
+      
+ 
 }
 
 
@@ -176,14 +181,82 @@ loadMoreVideos(e:Event) {
 }
 
 
-loadMoreTextImageLink(e:Event) {
+loadMoreTextImageLink(e: Event) {
   e.preventDefault();
   e.stopPropagation();
- 
-  if (this.moreDataAvailabletextimagelink) {
-    this.offsettextimagelink += this.limittextimagelink; 
-    this.getVideos(this.searchtext);      
+
+  const scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
+
+  this.offsettextimagelink += this.limittextimagelink;
+
+  this.getImageTextImageLink(this.searchtext).then(() => {
+    setTimeout(() => {
+      window.scrollTo({ top: scrollPosition, behavior: 'auto' });
+    }, 0);   
+  });
+}
+
+
+
+loadMoreUser() {
+  if (this.moreDataAvailableuser) {
+    this.offsetuser += this.limituser; 
+    this.getUser(this.searchtext);      
   }
+}
+
+
+
+
+async getTextLink(searchtext: string) {
+  if (!this.moreDataAvailablelink) {
+    console.log('No more data to load.');
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append('searchtext', searchtext);
+  formData.append('limit', this.limittextlink.toString());
+  formData.append('offset', this.offsettextlink.toString());
+
+  this.http.post<any>(`${this.APIURL}search-enter-press-result-link-text`, formData).subscribe({
+    next: (response: any) => {
+      this.responseObject = response;
+
+      if (this.offsettextlink === 0) {
+        this.TextLinkPosts = [];
+      }
+
+      this.responseObject.forEach((post: any) => {
+        if (post.userprofile) {
+          post.userprofileUrl = this.createBlobUrl(post.userprofile, 'image/jpeg'); 
+        }
+
+        if (post.post) {
+          post.postUrl = this.createBlobUrl(post.post, 'image/jpeg'); 
+        }
+
+        this.TextLinkPosts.push(post);
+      });
+
+      this.moreDataAvailablelink = response.length === this.limittextlink;
+
+      if (this.TextLinkPosts.length > 0) {
+        this.showImagetextLinkPostsBool = false;
+        this.showAudioPostsBool = false;
+        this.showImagePostsBool = false;
+        this.showTextPostsBool = false;
+        this.showLinkPostsBool = false;
+        this.showVideoPostsBool = false;
+        this.showTextLinkPostsBool = true;
+        this.showUserBool = false;
+        this.showGroupBool = false;
+      }
+    },
+    error: (error: HttpErrorResponse) => {
+      console.error('There was an error!', error);
+    }
+  });
 }
 
 
@@ -194,51 +267,86 @@ loadMoreTextImageLink(e:Event) {
 
 
 
-async getUser(searchtext: string):Promise<void>{
-  
+
+
+
+
+
+async getImageTextImageLink(searchtext: string) {
+  if (!this.moreDataAvailabletextimagelink) {
+    console.log('No more data to load.');
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append('searchtext', searchtext);
+  formData.append('limit', this.limittextimagelink.toString());
+  formData.append('offset', this.offsettextimagelink.toString());
+
+  return new Promise<void>((resolve, reject) => {
+    this.http.post<any>(`${this.APIURL}search-enter-press-result-image-link-text`, formData).subscribe({
+      next: (response: any) => {
+        const newPosts = this.processPosts(response);
+
+        this.ImageTextLinkPosts.push(...newPosts);
+
+        this.moreDataAvailabletextimagelink = newPosts.length === this.limittextimagelink;
+
+
+        resolve();
+      },
+      error: (error: HttpErrorResponse) => {
+        console.error('There was an error!', error);
+        reject(error);
+      }
+    });
+  });
+}
+
+
+
+
+async getUser(searchtext: string): Promise<void> {
+  if (!this.moreDataAvailableuser) {
+    console.log('No more data to load.');
+    return;
+  }
+
   const formData = new FormData();
   formData.append('searchtext', searchtext);
   formData.append('limit', this.limituser.toString());
   formData.append('offset', this.offsetuser.toString());
 
-
-
-
   this.http.post<any>(`${this.APIURL}search-enter-press-get-users`, formData).subscribe({
-    next: response => {
+    next: (response: any) => {
       this.responseObject = response;
- 
+
       if (this.offsetuser === 0) {
-  
         this.UserList = [];
       }
 
-     
-
-      this.responseObject.forEach((post: any) => {
-        if (post.profileimage) {
-          post.userprofileUrl = this.createBlobUrl(post.profileimage, 'image/jpeg'); 
-        }
- 
-        this.UserList.push(post);
-
-        this.moreDataAvailableuser = response.length === this.limituser;
-
-
-        if(this.UserList.length > 0){
-          this.showImagetextLinkPostsBool = false;
-          this.showAudioPostsBool = false;
-          this.showImagePostsBool = false;
-          this.showTextPostsBool = false;
-          this.showLinkPostsBool = false;
-          this.showVideoPostsBool = false ;
-          this.showTextLinkPostsBool = false;
-          this.showUserBool =true;
+      this.responseObject.forEach((user: any) => {
+        if (user.profileimage) {
+          user.userprofileUrl = this.createBlobUrl(user.profileimage, 'image/jpeg'); 
         }
 
+        this.UserList.push(user);
       });
 
-      
+      // Check if more data is available based on response length
+      this.moreDataAvailableuser = response.length === this.limituser;
+
+      // Update visibility based on user data
+      if (this.UserList.length > 0) {
+        this.showImagetextLinkPostsBool = false;
+        this.showAudioPostsBool = false;
+        this.showImagePostsBool = false;
+        this.showTextPostsBool = false;
+        this.showLinkPostsBool = false;
+        this.showVideoPostsBool = false;
+        this.showTextLinkPostsBool = false;
+        this.showUserBool = true;
+      }
     },
     error: (error: HttpErrorResponse) => {
       console.error('There was an error!', error);
@@ -265,67 +373,14 @@ async getUser(searchtext: string):Promise<void>{
     });
   }
 
-  async getLink(searchtext: string) {
-    const formData = new FormData();
-    formData.append('searchtext', searchtext);
-    formData.append('limit', this.limitlink.toString());
-    formData.append('offset', this.offsetlink.toString());
+
+
+
+
+
+
+
   
-
- 
-
-    this.http.post<any>(`${this.APIURL}search-enter-press-result-link-text`, formData).subscribe({
-      next: (response:any) => {
-        this.responseObject = response;
-      
-        
-        if (this.offsetlink === 0) {
-  
-          this.TextLinkPosts = [];
-        }
-
- 
-
-        this.responseObject.forEach((post: any) => {
-          if (post.userprofile) {
-            post.userprofileUrl = this.createBlobUrl(post.userprofile, 'image/jpeg'); 
-          }
-
-          if (post.post) {
-            post.postUrl = this.createBlobUrl(post.post, 'image/jpeg'); 
-          }
-
-    
-          this.TextLinkPosts.push(post);
-          this.moreDataAvailablelink = response.length === this.limitlink;
-
-         
-
-
-          if(this.TextLinkPosts.length > 0){
-
-            this.showImagetextLinkPostsBool = false;
-            this.showAudioPostsBool = false;
-            this.showImagePostsBool = false;
-            this.showTextPostsBool = false;
-            this.showLinkPostsBool = false;
-            this.showVideoPostsBool = false ;
-            this.showTextLinkPostsBool = true;
-            this.showUserBool =false;
-            this.showGroupBool= false;
-    
-          }
-
-
-        });
-
-     
-      },
-      error: (error: HttpErrorResponse) => {
-        console.error('There was an error!', error);
-      }
-    });
-  }
 
   async joingroup(grouptype: any, groupid: any, username: string, userid: any): Promise<void> {
  
@@ -336,55 +391,7 @@ async getUser(searchtext: string):Promise<void>{
 
 
 
-  async getImageTextImageLink(searchtext: string) {
-    const formData = new FormData();
-    formData.append('searchtext', searchtext);
-    
-    this.responseObjectTextImageLink = [];
- 
-    this.http.post<any>(`${this.APIURL}search-enter-press-result-image-link-text`, formData).subscribe({
-      next: (response:any) => {
-    
-        this.responseObjectTextImageLink = [...this.responseObjectTextImageLink, ...this.processPosts(response)];
- 
-
-       this.ImageTextLinkPosts = [];
-
-        this.responseObjectTextImageLink.forEach((post: any) => {
-           
-          this.ImageTextLinkPosts.push(post);
-
-          
-
-
-          if(this.ImageTextLinkPosts.length > 0){
-
-            this.showImagetextLinkPostsBool = true;
-            this.showAudioPostsBool = false;
-            this.showImagePostsBool = false;
-            this.showTextPostsBool = false;
-            this.showLinkPostsBool = false;
-            this.showVideoPostsBool = false ;
-            this.showTextLinkPostsBool = false;
-            this.showUserBool =false;
-            this.showGroupBool= false;
-    
-          }
-        
-
-    
-        });
-        
-      },
-
-
-      error: (error: HttpErrorResponse) => {
-        console.error('There was an error!', error);
-      }
-    });
-
- 
-  }
+  
 
 
   private processPosts(posts: any[]): any[] {

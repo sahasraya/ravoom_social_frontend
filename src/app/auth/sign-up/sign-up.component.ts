@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'; 
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule, RouterOutlet } from '@angular/router';
@@ -22,6 +22,11 @@ import { environment } from '../../../environments/environment';
   styleUrls: ['./sign-up.component.css']
 })
 export class SignUpComponent implements OnInit{
+  @ViewChild('emailInput') emailInput!: ElementRef; 
+  @ViewChild('password')passwordInput!: ElementRef; 
+
+
+  
   signUpForm: FormGroup;
   imagePreview: string | ArrayBuffer | null = null;
   APIURL = environment.APIURL;
@@ -57,7 +62,7 @@ export class SignUpComponent implements OnInit{
       password: ['', Validators.required],
       reenterpassword: ['', Validators.required],
       birthdate: ['', Validators.required],
-      profileimage: ['', Validators.required]
+      // profileimage: ['', Validators.required]
   
     });
   }
@@ -137,89 +142,132 @@ allPasswordConditionsMet(): boolean {
 
   onSubmit(): void {
     if (this.signUpForm.valid) {
-      this.issigninup=true;
-      const formData = new FormData();
+      this.issigninup = true;
+      this.passwordsnotmatching = true;
+      this.bannerClass = 'hidden-banner';
 
+      const formData = new FormData();
+  
       if (this.age !== null) {
         formData.append('age', this.age.toString());
       }
-      
-      Object.keys(this.signUpForm.value).forEach(key => {
-        formData.append(key, this.signUpForm.value[key]);
-        console.log(this.signUpForm.value[key]);
-      });
+      if(this.signUpForm.get("password")!.value != this.signUpForm.get("reenterpassword")!.value){
+              this.issigninup = false;
 
-      this.http.post(this.APIURL + 'sign-up', formData).subscribe({
-        next: (response:any) => {
-      this.issigninup=false;
-          
-           if(response.message =="Passwords do not match"){
-              this.passwordsnotmatching=true;
-              this.errormessage = response.message;
               this.bannerClass = 'error-banner';
-
+              this.errormessage = "Passwords do not match";
+              this.passwordInput.nativeElement.focus();
               setTimeout(() => {
                 this.passwordsnotmatching = false;
               }, 3000);
+              return;
+      }
+  
+      const profileImage = this.signUpForm.get('profileimage')?.value;
+  
+      const submitFormData = () => {
+        Object.keys(this.signUpForm.value).forEach(key => {
+          if (key !== 'profileimage') {  
+            formData.append(key, this.signUpForm.value[key]);
+          }
+        });
+  
+        this.http.post(this.APIURL + 'sign-up', formData).subscribe({
+          next: (response: any) => {
+            this.issigninup = false;
+            this.passwordsnotmatching = false;
 
-           }else if(response.message=="Email address already exists"){
-            this.passwordsnotmatching=true;
-            this.errormessage = response.message;
-            this.bannerClass = 'error-banner';
+  
+             if (response.message === "User created successfully") {
+              this.handleSuccess(response.userid);
+            }
+          },
+          error: error => {
+            this.issigninup = false;
+            if(error.message="Email address already exists"){
+              this.bannerClass = 'error-banner';
+              this.errormessage = "Email address already exists";
+              this.emailInput.nativeElement.focus();
+              setTimeout(() => {
+                this.passwordsnotmatching = false;
+              }, 3000);
+              return;
 
-            setTimeout(() => {
-              this.passwordsnotmatching = false;
-            }, 3000);
-            
-            } else if(response.message=="User created successfully"){
-            localStorage.setItem('ppd', 'no');
-            localStorage.setItem('name', 'normal');
-            localStorage.setItem('core', 'never');
-            localStorage.setItem('appd', 'AkfwpkfpMMkwppge');
-            localStorage.setItem('ud', 'AASfeeg2332Afwfafwa');
-            localStorage.setItem('s', '2');
-            localStorage.setItem('g', '34');
-            localStorage.setItem('21', '5g2');
-            localStorage.setItem('cap', 'np');
-            localStorage.setItem('uid', 'Jfwgw2wfAfwawwgAd');
-            localStorage.setItem('doc', '25');
-
-            localStorage.setItem('wmd', response.userid);
-            localStorage.setItem('ger', response.userid);
-            localStorage.setItem('fat', response.userid);
-            localStorage.setItem('mainsource', response.userid);
-            localStorage.setItem('ud', response.userid);
-            localStorage.setItem('www', '34');
-            localStorage.setItem('reload', 'false');
-
-
-            localStorage.removeItem('username');
-            localStorage.removeItem('emailaddress');
-            localStorage.removeItem('phonenumber');
-
-
-            this.signUpForm.reset();
-            this.isPasswordFieldFocused = false;
-            this.signUpForm.patchValue({ profileimage: null });
-            this.imagePreview = null;
-
-            this.passwordsnotmatching=true;
-            this.bannerClass = 'good-banner';
-            this.errormessage ="Confirm the Email and Log in";
-           }
-    
-        },
-        error: error => {
-      this.issigninup=false;
-
-          alert(error);
-          console.error('There was an error!', error);
-        }
-      });
+            }
+           
+            console.error('There was an error!', error);
+          }
+        });
+      };
+  
+      if (!profileImage) {
+        this.loadDefaultImage().then((defaultImageBlob) => {
+          formData.append('profileimage', defaultImageBlob, 'default-profileimage.png');
+          submitFormData();  
+        }).catch(error => {
+          this.issigninup = false;
+          console.error('Error loading default image:', error);
+        });
+      } else {
+        formData.append('profileimage', profileImage);
+        submitFormData();
+      }
     }
   }
+  
 
 
+
+  private handleSuccess(userId: string): void {
+    localStorage.setItem('ppd', 'no');
+    localStorage.setItem('name', 'normal');
+    localStorage.setItem('core', 'never');
+    localStorage.setItem('appd', 'AkfwpkfpMMkwppge');
+    localStorage.setItem('ud', 'AASfeeg2332Afwfafwa');
+    localStorage.setItem('s', '2');
+    localStorage.setItem('g', '34');
+    localStorage.setItem('21', '5g2');
+    localStorage.setItem('cap', 'np');
+    localStorage.setItem('uid', 'Jfwgw2wfAfwawwgAd');
+    localStorage.setItem('doc', '25');
+  
+    localStorage.setItem('wmd', userId);
+    localStorage.setItem('ger', userId);
+    localStorage.setItem('fat', userId);
+    localStorage.setItem('mainsource', userId);
+    localStorage.setItem('ud', userId);
+    localStorage.setItem('www', '34');
+    localStorage.setItem('reload', 'false');
+  
+    localStorage.removeItem('username');
+    localStorage.removeItem('emailaddress');
+    localStorage.removeItem('phonenumber');
+  
+    this.signUpForm.reset();
+    this.isPasswordFieldFocused = false;
+    this.signUpForm.patchValue({ profileimage: null });
+    this.imagePreview = null;
+  
+    this.passwordsnotmatching = true;
+    this.bannerClass = 'good-banner';
+    this.errormessage = "Confirm the Email and Log in";
+  }
+  
+  
+  private loadDefaultImage(): Promise<Blob> {
+    return fetch('../../../assets/images/profile-user.png')  
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.blob();  
+      })
+      .catch(error => {
+        console.error('Error loading default image:', error);
+        throw error;  
+      });
+  }
+  
   visiblepassword(): void {
     this.showPassword = !this.showPassword;
   }
