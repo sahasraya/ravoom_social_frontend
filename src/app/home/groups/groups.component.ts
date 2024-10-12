@@ -51,6 +51,9 @@ export class GroupsComponent implements OnInit{
   grouptype:string = "";
   groupname:string = "";
   groupownerid:string = "";
+  groupbackgroundimageupdateddate:string="";
+  groupimageupdateddate:string="";
+
 
 
 
@@ -115,9 +118,10 @@ export class GroupsComponent implements OnInit{
   
       this.http.post<any>(this.APIURL + 'update-backgroundimage', formData).subscribe({
         next: (response: any) => {
-          console.log('Response from server:', response);
+           
           if (response.message === "done") {
             alert("Background image updated successfully!");
+            this.getGroupDetails(this.groupid);
           }
         },
         error: error => {
@@ -151,9 +155,10 @@ export class GroupsComponent implements OnInit{
   
       this.http.post<any>(this.APIURL + 'update-groupmainimage', formData).subscribe({
         next: (response: any) => {
-          console.log('Response from server:', response);
+          
           if (response.message === "done") {
             alert("Group image updated successfully!");
+            this.getGroupDetails(this.groupid);
           }
         },
         error: error => {
@@ -521,6 +526,8 @@ async changeusertypemodtouser(user: any, userid: any): Promise<void> {
         this.grouptype= this.group.grouptype;
         this.groupname = this.group.groupname;
         this.groupownerid = this.group.groupownerid;
+        this.groupbackgroundimageupdateddate = this.group.groupbackgroundimageupdateddate;
+        this.groupimageupdateddate = this.group.groupimageupdateddate;
       
 
        

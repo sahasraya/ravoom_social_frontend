@@ -267,7 +267,7 @@ input[type="file"] {
   width: 30px;
   padding: 5px;
   background-color: white;
-  border-radius: 50%;
+  border-radius: 30%;
   margin-right: 5px;
 }
 .removebutton:hover{
@@ -439,6 +439,15 @@ input[type="file"] {
 background-color: var( --primary-faded);
 color: black;
 }
+
+.setting-btn-holder{
+display: flex;
+flex-direction: column;
+}
+.setting-btn-holder small{
+  margin: 10px;
+}
+
 
   @media (max-width: 1200px) {
     .posts-container {

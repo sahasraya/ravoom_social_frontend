@@ -1,5 +1,6 @@
 <form [formGroup]="createGroupFormGroup" (ngSubmit)="onSubmitGroupInformation()">
     <div class="create-new-group-holder">
+      <img src="../../../assets/images/preloader.gif" alt="" class="iscontentisloading" *ngIf="isgroupiscreating">
 
         <div class="form-group">
             <label for="groupimage">Group name</label>

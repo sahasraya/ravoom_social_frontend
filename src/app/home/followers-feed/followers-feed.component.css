@@ -29,19 +29,7 @@
     margin-left: 1rem;
    
   }
-  .right-group-holder {
-    flex: 1;
-    position: sticky;
-    top: 10px;
-   border: 1px solid var(--icon-hover-backgroud-color);
-    border-radius: 15px;
-    height: 90vh;
-    overflow-y: scroll;
-    scrollbar-width: none; 
-    -ms-overflow-style: none;  
-  margin-right: 1rem;
-  }
-
+ 
   .nofollowers-banner{
     width: 100%;
     display: flex;

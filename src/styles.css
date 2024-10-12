@@ -89,6 +89,66 @@ html {
     margin-right: 10px;
     object-fit: cover;
   }
+
+  .iscontentisloading {
+    position: fixed;
+    top: 50%; 
+    left: 50%;  
+    transform: translate(-50%, -50%);  
+    height: 35px;  
+    width: auto;  
+    text-align: center;
+    z-index: 9999;
+  }
+
+  .privacy-policy-holder{
+    display: flex;
+    flex-direction: row;
+    border: 1px solid var(--icon-hover-backgroud-color);
+    border-radius: 15px;
+    margin-top: 10px;
+    padding: 10px;
+    align-items: center;
+    transition: background-color 0.3s ease;
+
+  }
+  .privacy-policy-holder:hover{
+    cursor: pointer;
+    background-color: var(--icon-hover-backgroud-color);
+
+  }
+  .privacy-policy-holder-atag{
+    text-decoration: none;
+    color: black;
+  }
+  .privacy-policy-holder img{
+    height: 25px;
+    margin-right: 10px;
+  }
+  .outer-right-group-holder{
+    position: sticky;
+    display: flex;
+    flex-direction: column;
+    top: 10px;
+    border: 1px solid var(--icon-hover-backgroud-color);
+    border-radius: 15px;
+    height: 90vh;
+    overflow-y: scroll;
+    scrollbar-width: none; 
+    -ms-overflow-style: none; 
+    width: 25%;
+  }
+  .right-group-holder {
+    flex: 1;
+     
+  margin-right: 1rem;
+  }
+  
+  .outer-right-group-holder ::-webkit-scrollbar, .right-group-holder::-webkit-scrollbar ,.left-user-holder::-webkit-scrollbar{
+    display: none;  
+  }
+  
+ 
 :root {
     --primarycolor: rgb(43, 149, 236);
     --primary-faded: rgba(43,149,236, 0.1);

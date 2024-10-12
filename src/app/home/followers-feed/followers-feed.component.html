@@ -31,7 +31,7 @@
   
   
           <div class="nofollower-inner-holder" *ngIf="!showtheuserlisttofollowBool">
-            <p>No followers yet</p>
+            <p>No Followers Yet</p>
             <button class="addfollowersbtn" (click)="showtheuserlisttofollow()">add followers</button>
           </div>
 
@@ -43,15 +43,25 @@
   </div>
 
 
-  <div class="right-group-holder">
 
 
-    <app-feedscreen-group-list></app-feedscreen-group-list>
-    
-       
-    
-    
-    </div>
+  
+  <div class="outer-right-group-holder">
+
+    <div class="right-group-holder">
+  
+  
+      <app-feedscreen-group-list></app-feedscreen-group-list>
+   
+      </div>
+  
+      
+      <a routerLink="/home/privacy-policy" class="privacy-policy-holder-atag"><div class="privacy-policy-holder">
+        <img src="../../../assets/images/policy.png" alt=""> Privacy Policy
+      </div>
+    </a>
+  
+  </div>
     
 
 

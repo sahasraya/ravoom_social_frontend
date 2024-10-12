@@ -15,7 +15,7 @@ import { environment } from '../../../environments/environment';
 export class FeedscreenGroupListComponent implements OnInit {
 
   APIURL = environment.APIURL;
-  populargrouplist:any;
+  populargrouplist:any [] = [];
   userid:string="";
  
 

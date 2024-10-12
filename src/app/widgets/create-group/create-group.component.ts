@@ -23,6 +23,7 @@ export class CreateGroupComponent implements OnInit{
   userid: string = "";
   groupmessageexsisteornot:string ="";
   groupmessageColor:string="white";
+  isgroupiscreating:boolean=false;
 
   constructor(private fb :FormBuilder,private http:HttpClient,@Inject(PLATFORM_ID) private platformId: Object,private router:Router){
 
@@ -48,10 +49,12 @@ export class CreateGroupComponent implements OnInit{
 
   async onSubmitGroupInformation(): Promise<void> {
     if (this.createGroupFormGroup.valid) {
+       this.isgroupiscreating = true;
 
       const token = localStorage.getItem('jwt');
       if(!token){
         alert("Unauthorized access. Please check your credentials.");
+       this.isgroupiscreating = false;
         return;
       }
       const headers = new HttpHeaders({
@@ -70,11 +73,14 @@ export class CreateGroupComponent implements OnInit{
   
       this.http.post(this.APIURL + 'create-group', formData,{headers}).subscribe({
         next: (response: any) => {
+          this.isgroupiscreating = false;
         
           this.createGroupFormGroup.reset();
           this.router.navigate(['home/group', response['groupid']]);
         },
         error: (error: any) => {
+         this.isgroupiscreating = false;
+
           if (error.status === 401) {
           alert("Unauthorized access. Please check your credentials");
            

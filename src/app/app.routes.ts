@@ -18,6 +18,7 @@ import { ResetPasswordComponent } from './home/reset-password/reset-password.com
 import { ForgetPasswordComponent } from './auth/forget-password/forget-password.component';
 import { UserlistToFollowComponent } from './home/userlist-to-follow/userlist-to-follow.component';
 import { VideoSliderComponent } from './home/video-slider/video-slider.component';
+import { PrivacyPolicyComponent } from './home/privacy-policy/privacy-policy.component';
 
 export const routes: Routes = [
 
@@ -54,6 +55,13 @@ export const routes: Routes = [
             { path: 'slider', component: VideoSliderComponent }
         ]
     },
+
+    {
+        path:"home",component:HomeComponent,children:[
+            { path: 'privacy-policy', component: PrivacyPolicyComponent }
+        ]
+    },
+
 
 
     

@@ -170,22 +170,7 @@
   padding-top: 10px;
  
 }
-.right-group-holder {
-  flex: 1;
-  position: sticky;
-  top: 10px;
-  border: 1px solid var(--icon-hover-backgroud-color);
-  border-radius: 15px;
-  height: 90vh;
-  overflow-y: scroll;
-  scrollbar-width: none; 
-  -ms-overflow-style: none;  
-margin-right: 1rem;
-}
 
-.right-group-holder::-webkit-scrollbar ,.left-user-holder::-webkit-scrollbar{
-  display: none;  
-}
 .heading-holder{
   padding: 10px;
   border-bottom: 1px solid rgb(187 187 187);
@@ -278,13 +263,3 @@ margin-right: 1rem;
   margin-bottom: 25px;
 }
  
-.iscontentisloading {
-  position: fixed;
-  top: 50%; 
-  left: 50%;  
-  transform: translate(-50%, -50%);  
-  height: 35px;  
-  width: auto;  
-  text-align: center;
-  z-index: 9999;  
-}
