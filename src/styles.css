@@ -106,7 +106,7 @@ html {
     flex-direction: row;
     border: 1px solid var(--icon-hover-backgroud-color);
     border-radius: 15px;
-    margin-top: 10px;
+    margin-top: 5px;
     padding: 10px;
     align-items: center;
     transition: background-color 0.3s ease;
