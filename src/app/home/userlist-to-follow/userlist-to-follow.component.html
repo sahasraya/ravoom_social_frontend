@@ -1,5 +1,7 @@
 <div class="userlist-wrapper">
 
+  <img src="../../../assets/images/preloader.gif" alt="iscontentisloading" class="iscontentisloading" *ngIf="iscontentisloading">
+
     <div *ngFor="let user of users ; let i = index" class="user-holder">
         <img [src]=" user.profileimageUrl" alt="profile image of {{ user.username }}">
   

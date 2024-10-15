@@ -505,7 +505,7 @@ async getfollowingstatus(postowneruserid:any):Promise<void>{
 
 
 
-  getPostData(): void {
+  async  getPostData(): Promise<void> {
 
     const formData = new FormData();
     formData.append('postid', this.postid!);

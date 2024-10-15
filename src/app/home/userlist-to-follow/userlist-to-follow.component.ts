@@ -18,6 +18,7 @@ export class UserlistToFollowComponent  implements OnInit{
   users:any;
   profileimageUrl:any;
   followButtonText: string = 'Follow';
+  iscontentisloading:boolean = true;
 
   constructor(private http:HttpClient){}
 
@@ -34,6 +35,9 @@ export class UserlistToFollowComponent  implements OnInit{
 
     this.http.post<any>(`${this.APIURL}get_userlist_to_follow`, formData).subscribe({
       next: (response: any) => {
+      this.iscontentisloading=false;
+
+    
         this.users = response.users.map((user: any) => ({
           ...user,
           followButtonText: 'Follow',  
@@ -46,6 +50,8 @@ export class UserlistToFollowComponent  implements OnInit{
         });
       },
       error: (error: HttpErrorResponse) => {
+       this.iscontentisloading=false;
+
         console.error('There was an error!', error);
       }
     });

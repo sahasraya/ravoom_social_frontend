@@ -1,10 +1,4 @@
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
-    margin: 0;
-    padding: 0;
-  }
-  
+ 
   .confirmation-container {
     display: flex;
     justify-content: center;
@@ -22,7 +16,7 @@ body {
   
   .confirmation-box h1 {
     font-size: 24px;
-    color: #4CAF50;
+    color:var(--primarycolor);
     margin-bottom: 20px;
   }
   
@@ -36,7 +30,7 @@ body {
     display: inline-block;
     margin-top: 20px;
     padding: 10px 20px;
-    background-color: #4CAF50;
+    background-color: var(--primarycolor);
     color: #fff;
     text-decoration: none;
     cursor: pointer;
@@ -45,6 +39,6 @@ body {
   }
   
   .confirmation-box a:hover {
-    background-color: #45a049;
+    background-color:var(--primarycolor);
   }
   

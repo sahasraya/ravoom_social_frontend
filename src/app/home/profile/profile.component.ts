@@ -41,6 +41,7 @@ export class ProfileComponent   {
   showLargerImage: boolean = false;
   openaddpostscreenbool: boolean = false;
   username:string = "";
+  followButtonText:string= "Follow";
  
   showfeedBool:boolean = true;
   showoptionsmenu:boolean=false;
@@ -72,7 +73,10 @@ export class ProfileComponent   {
       this.getiamfolloeduserlist(this.userid);
       this.getuserdetailsFrommethod(this.getfrommethoduserid);
       this.getfavList(this.userid);
-    }else{
+      this.getfollowingstatus(this.getfrommethoduserid);
+    }
+    
+    else{
       this.iamfollowinguserslist = [];
       this.iamfolloweduserslist= [];
       this.userfrommethod = null;
@@ -88,6 +92,81 @@ export class ProfileComponent   {
     this.offset = 0;  
     this.getPostsFeed();
   }
+
+
+  async iamstartedtofollow(iamfollowinguserid: any): Promise<void> {
+
+    const formData = new FormData();
+    formData.append('myuserid', iamfollowinguserid);
+    formData.append('iamfollowinguserid', this.userid);
+
+     
+
+
+
+    this.http.post(this.APIURL + 'start-to-follow', formData).subscribe({
+      next: (response: any) => {
+
+
+        this.toggleFollowButtonText();
+      },
+      error: error => {
+        console.error('There was an error!', error);
+      }
+    });
+
+  }
+
+
+  toggleFollowButtonText(): void {
+    this.followButtonText = this.followButtonText === 'Follow' ? 'Following' : 'Follow';
+  }
+
+
+
+
+
+  async getfollowingstatus(postownerid: any): Promise<void> {
+    
+
+     
+        let params = new HttpParams()
+          .set('postownerid', this.userid.toString())
+          .set('userid', postownerid.toString());
+
+      
+
+        try {
+          const response: any = await this.http.get<any>(`${this.APIURL}following-status`, { params }).toPromise();
+          console.log(response);
+
+
+
+          if (response.exists) {
+            this.followButtonText = "Following";
+          } else {
+            this.followButtonText = "Follow";
+
+
+          }
+
+          if (response.exists) {
+            console.log('The user is following the post owner.');
+          } else {
+            console.log('The user is not following the post owner.');
+          }
+        } catch (error) {
+          console.error('There was an error!', error);
+        }
+      
+     
+  }
+
+
+
+
+
+
 
   onPostRemoved(postid: number): void {
     

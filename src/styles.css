@@ -104,8 +104,7 @@ html {
   .privacy-policy-holder{
     display: flex;
     flex-direction: row;
-    border: 1px solid var(--icon-hover-backgroud-color);
-    border-radius: 15px;
+  
     margin-top: 5px;
     padding: 10px;
     align-items: center;
@@ -130,8 +129,7 @@ html {
     display: flex;
     flex-direction: column;
     top: 10px;
-    border: 1px solid var(--icon-hover-backgroud-color);
-    border-radius: 15px;
+  
     height: 90vh;
     overflow-y: scroll;
     scrollbar-width: none; 
@@ -140,8 +138,15 @@ html {
   }
   .right-group-holder {
     flex: 1;
-     
+    border: 1px solid var(--icon-hover-backgroud-color);
+    border-radius: 15px;
   margin-right: 1rem;
+  }
+  .link-holder{
+    border: 1px solid var(--icon-hover-backgroud-color);
+    border-radius: 15px;
+    margin-right: 1rem;
+    margin-top: 10px;
   }
   
   .outer-right-group-holder ::-webkit-scrollbar, .right-group-holder::-webkit-scrollbar ,.left-user-holder::-webkit-scrollbar{

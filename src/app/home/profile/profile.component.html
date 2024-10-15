@@ -4,6 +4,8 @@
     <app-image-larger *ngIf="showLargerImage" [imageUrl]="'data:image/jpeg;base64,' + user?.profileimage" (close)="onCloseLargerImage()"></app-image-larger>
 
     <h1>{{user?.username}}</h1>
+
+    <span class="joinbtn" (click)="iamstartedtofollow(getfrommethoduserid)" *ngIf="userid != userfrommethod?.userid">{{followButtonText}}</span>
     
     <app-add-post  [postType]="postType"  (postAdded)="onPostAdded()" *ngIf="openaddpostscreenbool" (closePost)="openaddpostscreenbool = false"></app-add-post>
 
@@ -15,8 +17,8 @@
    
     <div class="button-holder">
       <button (click)="showfeed()"  [class.selected]="showfeedBool" class="navigationsbuttons">Feed</button>
-      <button (click)="showiamfollowinguserlist()" [class.selected]="showiamfollowinguserlistBool" class="navigationsbuttons">I am following ({{iamfollowinguserslist.length}})</button>
-      <button (click)="showiamfolloeduserlist()" [class.selected]="showiamfolloeduserlistBool" class="navigationsbuttons">I am followed ({{iamfolloweduserslist.length}})</button>
+      <button (click)="showiamfollowinguserlist()" [class.selected]="showiamfollowinguserlistBool" class="navigationsbuttons">Following ({{iamfollowinguserslist.length}})</button>
+      <button (click)="showiamfolloeduserlist()" [class.selected]="showiamfolloeduserlistBool" class="navigationsbuttons">Followed ({{iamfolloweduserslist.length}})</button>
       <button (click)="showfavelist()" [class.selected]="showfavelistBool" class="navigationsbuttons" *ngIf="userid == userfrommethod?.userid">Saved</button>
     </div>
 
@@ -126,7 +128,7 @@
               <small *ngIf="user.date">{{ user.date | date: 'shortTime' }}</small>
             </div>
 
-            <img src="../../../assets/images/threedots.png" alt="" (click)="toggleDropdown($event, user)" class="dropdown-toggle">
+            <img src="../../../assets/images/threedots.png" alt="" (click)="toggleDropdown($event, user)" class="dropdown-toggle" *ngIf="userid == userfrommethod?.userid">
             
             <div *ngIf="user.showDropdown" class="dropdown-menu">
               <ul>

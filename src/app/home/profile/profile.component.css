@@ -293,6 +293,23 @@ color: rgb(43,149,236);
 border: 1px solid rgb(43,149,236);
 }
 
+.joinbtn{
+  color: white;
+  font-size: 15px;
+  border-radius: 20px;
+  background-color:var(--primarycolor);
+  margin-right: 10px;
+  padding: 5px 10px;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+
+}
+.joinbtn:hover{
+
+  background-color: var(--primary-faded);
+  color: var(--primarycolor);
+}
+
 
 
 
