@@ -12,6 +12,8 @@ import { FeedscreenUserListComponent } from '../../widgets/feedscreen-user-list/
 import { FeedscreenGroupListComponent } from '../../widgets/feedscreen-group-list/feedscreen-group-list.component';
 import { environment } from '../../../environments/environment';
 import { PreLoaderComponent } from '../../widgets/pre-loader/pre-loader.component';
+import { NetworkService } from '../../services/network.service';
+import { NetworkstatusComponent } from '../../widgets/networkstatus/networkstatus.component';
 
 
 @Component({
@@ -28,7 +30,8 @@ import { PreLoaderComponent } from '../../widgets/pre-loader/pre-loader.componen
     HeaderComponent,
     FeedscreenUserListComponent,
     FeedscreenGroupListComponent,
-    PreLoaderComponent
+    PreLoaderComponent,
+    NetworkstatusComponent
   ],
   templateUrl: './feed.component.html',
   styleUrl: './feed.component.css'
@@ -52,18 +55,54 @@ export class FeedComponent {
   selectedOption: string = '';
   username:string = "";
   iscontentisloading:boolean=true;
+  isOnline: boolean = false;
+  isLowConnection: boolean = false;
+  networkstatus: string = 'offline';  
+  networkstatustext: string = 'You are offline';
+  hideNetworkStatus: boolean = false;
+  wasOnline: boolean = false;
   
  
 
-  constructor(private http: HttpClient, private cdr: ChangeDetectorRef,private router:Router) {}
+  constructor(private http: HttpClient, private cdr: ChangeDetectorRef,private router:Router,private networkService: NetworkService) {}
 
   ngOnInit(): void {
-    this.getPostsFeed();
-    this.userid = localStorage.getItem('wmd') || '';
-    if(this.userid){
-      this.getuserdetails(this.userid);
-    }
+   
+    setTimeout(() => {
+      this.getPostsFeed();
+      this.userid = localStorage.getItem('wmd') || '';
+      if (this.userid) {
+        this.getuserdetails(this.userid);
+      }
+    }, 1000);
 
+    this.networkService.onlineStatus$.subscribe(status => {
+      this.isOnline = status;
+      this.updateNetworkStatus(status);
+    });
+
+  }
+
+ 
+  
+ private updateNetworkStatus(status: boolean) {
+    if (status) {
+      if (!this.wasOnline) {
+        this.networkstatus = 'online';
+        this.networkstatustext = 'You are online';
+        this.hideNetworkStatus = false;
+
+        setTimeout(() => {
+          this.hideNetworkStatus = true;  
+        }, 1000);
+      }
+      this.wasOnline = true;
+    } else {
+      this.networkstatus = 'offline';
+      this.networkstatustext = 'You are offline';
+      this.hideNetworkStatus = false;  
+      this.wasOnline = false;
+    }
   }
 
 async getuserdetails(userid:string):Promise<void>{

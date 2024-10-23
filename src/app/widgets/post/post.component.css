@@ -297,10 +297,30 @@
   color: var(--primarycolor);
 }
 
+.hiddencommentdiv {
+  display: none;
+}
 
+.commentscreen-holder {
+  display: block;
+  overflow-y: scroll;
+  width: max-content;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  position: fixed;
+  top: 0px;
+  background-color: rgba(255, 255, 255, 0.888);
+  left: 0px;
+  width: 100%;
+  height: 100vh;
+  z-index: 1000;
+}
 
+.commentscreen-holder::-webkit-scrollbar {
+  display: none;
+}
 
-
+ 
 
 
 
@@ -393,7 +413,7 @@ max-width: 100%;
 .closeicon {
   padding: 15px;
   width: 50px;
-  background-color: white;
+  background-color: rgb(225, 225, 225);
   border-radius: 50%;
   position: absolute;
   top: 10px;

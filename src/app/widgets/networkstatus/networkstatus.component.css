@@ -1,0 +1,28 @@
+.main-network-holder {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: 50%;
+    margin: 0 auto;
+    background-color: var(--icon-hover-backgroud-color);
+    border-radius: 15px;
+    height: 50vh;
+
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.main-network-holder img {
+    height: 20vh;
+}
+
+.main-network-holder p {
+    max-width: 260px;
+    font-size: 25px;
+    color: black;
+    opacity: 0.7;
+    text-align: center;
+}

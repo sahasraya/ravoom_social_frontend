@@ -1,4 +1,4 @@
-<app-header (uploadPost)="onPostAdded()"></app-header>
+<app-header (uploadPost)="onPostAdded()" *ngIf="hideNetworkStatus"></app-header>
 <!-- <app-add-post (postAdded)="onPostAdded()" *ngIf="openaddpostscreenbool" (closePost)="openaddpostscreenbool = false"></app-add-post> -->
 <!-- (postAdded)="onPostAdded()" -->
 <!-- <app-notification></app-notification> -->
@@ -6,10 +6,18 @@
 <!-- <app-add-post (postAdded)="onPostAdded()" *ngIf="openaddpostscreenbool" (closePost)="openaddpostscreenbool = false"></app-add-post> -->
 
 
+ 
+<div [ngClass]="[
+    networkstatus === 'online' ? 'bg-green' : '',
+    networkstatus === 'offline' ? 'bg-red' : '',
+    hideNetworkStatus ? 'hidenetworkstatus' : ''
+  ]" *ngIf="!wasOnline">
+  {{ networkstatustext }}
+</div>
+ 
+<app-networkstatus *ngIf="!wasOnline"></app-networkstatus>
 
-
-
-<div class="main-outer-holder">
+<div class="main-outer-holder" *ngIf="hideNetworkStatus">
 
 
 

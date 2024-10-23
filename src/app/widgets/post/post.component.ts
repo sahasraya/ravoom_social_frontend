@@ -7,11 +7,12 @@ import { PLATFORM_ID } from '@angular/core';
 import { ReporttingComponent } from '../reportting/reportting.component';
 import { SharedServiceService } from '../../services/shared-service.service';
 import { environment } from '../../../environments/environment';
+import { CommentComponent } from '../../home/comment/comment.component';
 
 @Component({
   selector: 'app-post',
   standalone: true,
-  imports: [CommonModule, RouterModule, PostComponent, ImageLargerComponent,ReporttingComponent],
+  imports: [CommonModule, RouterModule, PostComponent, ImageLargerComponent,ReporttingComponent,CommentComponent],
   templateUrl: './post.component.html',
   styleUrl: './post.component.css'
 })
@@ -52,6 +53,8 @@ export class PostComponent implements OnInit {
   limit = 10;
   loadingMoreMembers = false;
   hasMoreMembers = false;
+  getthecommentsBool:boolean = false;
+  selectedPostId: string | null = null;
  
 
   constructor(private cdref: ChangeDetectorRef,private renderer: Renderer2, private http: HttpClient, private router: Router, @Inject(PLATFORM_ID) private platformId: Object, private route: ActivatedRoute,private sharedservice:SharedServiceService,) { }
@@ -90,13 +93,58 @@ export class PostComponent implements OnInit {
     }
 
 
-    window.addEventListener('beforeunload', this.saveScrollPosition);
-  const savedPosition = localStorage.getItem('scrollPosition');
-  if (savedPosition) {
-    window.scrollTo(0, parseInt(savedPosition, 10));
-  }
+   
 
   }
+
+ 
+
+async getlikeedmembers(postid: number): Promise<void> {
+  this.islikedmembereddivvisible = true;  
+  this.cdref.detectChanges();
+  const formData = new FormData();
+  formData.append('postid', postid.toString());
+  formData.append('limit', this.limit.toString());
+  formData.append('offset', this.offset.toString());
+
+  try {
+    this.groupid = this.route.snapshot.paramMap.get('groupid') || '';
+  
+    if(this.groupid !=""){
+       
+      const response: any = await this.http.post(this.APIURL + 'get_liked_members_group', formData).toPromise();
+      const newMembers = response.map((member: any) => ({
+        username: member.username,
+        profileimage: this.createBlobUrl(member.profileimage, 'image/jpeg')
+      }));
+      this.likedMembers = [...this.likedMembers, ...newMembers];
+      this.offset += this.limit;
+      this.loadingMoreMembers = false;
+      if(this.likedMembers.length >= 10){
+        this.hasMoreMembers= true;
+      }
+    }else{
+      
+
+      const response: any = await this.http.post(this.APIURL + 'get_liked_members', formData).toPromise();
+      const newMembers = response.map((member: any) => ({
+        username: member.username,
+        profileimage: this.createBlobUrl(member.profileimage, 'image/jpeg')
+      }));
+      this.likedMembers = [...this.likedMembers, ...newMembers];
+      this.offset += this.limit;
+      this.loadingMoreMembers = false;
+      if(this.likedMembers.length >= 10){
+        this.hasMoreMembers= true;
+      }
+    }
+    
+  } catch (error) {
+    console.error('There was an error!', error);
+    this.loadingMoreMembers = false;  
+  }
+}
+
 
   async getisaddedtofav(post: any, postid: number): Promise<void> {
     const formData = new FormData();
@@ -157,61 +205,11 @@ export class PostComponent implements OnInit {
     }
   }
 
-saveScrollPosition = () => {
-  const scrollPosition = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
-  localStorage.setItem('scrollPosition', scrollPosition.toString());
-}
-
  
 
  
 
-
-async getlikeedmembers(postid: number): Promise<void> {
-  this.islikedmembereddivvisible = true;  
-  this.cdref.detectChanges();
-  const formData = new FormData();
-  formData.append('postid', postid.toString());
-  formData.append('limit', this.limit.toString());
-  formData.append('offset', this.offset.toString());
-
-  try {
-    this.groupid = this.route.snapshot.paramMap.get('groupid') || '';
-  
-    if(this.groupid !=""){
-       
-      const response: any = await this.http.post(this.APIURL + 'get_liked_members_group', formData).toPromise();
-      const newMembers = response.map((member: any) => ({
-        username: member.username,
-        profileimage: this.createBlobUrl(member.profileimage, 'image/jpeg')
-      }));
-      this.likedMembers = [...this.likedMembers, ...newMembers];
-      this.offset += this.limit;
-      this.loadingMoreMembers = false;
-      if(this.likedMembers.length >= 10){
-        this.hasMoreMembers= true;
-      }
-    }else{
-      
-
-      const response: any = await this.http.post(this.APIURL + 'get_liked_members', formData).toPromise();
-      const newMembers = response.map((member: any) => ({
-        username: member.username,
-        profileimage: this.createBlobUrl(member.profileimage, 'image/jpeg')
-      }));
-      this.likedMembers = [...this.likedMembers, ...newMembers];
-      this.offset += this.limit;
-      this.loadingMoreMembers = false;
-      if(this.likedMembers.length >= 10){
-        this.hasMoreMembers= true;
-      }
-    }
-    
-  } catch (error) {
-    console.error('There was an error!', error);
-    this.loadingMoreMembers = false;  
-  }
-}
+ 
 
  
 
@@ -278,6 +276,7 @@ async savepost(e: Event, postid: number,post:any): Promise<void> {
 closememebrslikeddiv(e:Event):void{
   e.preventDefault();
   this.islikedmembereddivvisible=false;
+  this.getthecommentsBool=false;
 
 }
   async checkTheOnlineStatus(userid: any): Promise<void> {
@@ -522,100 +521,67 @@ closememebrslikeddiv(e:Event):void{
     return new Blob(byteArrays, { type: contentType });
   }
 
+ 
+
+
+  
+
   createBlobUrl(base64: string, contentType: string): string {
     const blob = this.base64ToBlob(base64, contentType);
     return URL.createObjectURL(blob);
   }
-
-
-  
-
- 
-
   
   ngAfterContentChecked() {
-
-
-    if (this.post.posttype === 'image') {
-
-
+    if (this.post.posttype === 'image' && !this.imageUrl) {
       this.imageUrl = this.createBlobUrl(this.post.image, 'image/jpeg');
-
-      this.videoUrl = '';
-      this.audioUrl = '';
-
-
-    } else if (this.post.posttype === 'audio') {
+    } else if (this.post.posttype === 'audio' && !this.audioUrl) {
       const base64Data = this.post.post;
-
       const blob = this.convertBase64ToBlobAudio(base64Data);
       this.audioUrl = URL.createObjectURL(blob);
-      this.imageUrl = '';
-      this.videoUrl = '';
-    }
-
-    else if (this.post.posttype === 'text') {
-
-
+    } else if (this.post.posttype === 'text' && !this.profileImageUrl) {
       this.profileImageUrl = this.createBlobUrl(this.post.userprofile, 'image/jpeg');
-
-      this.audioUrl = '';
-      this.imageUrl = '';
-      this.videoUrl = '';
-
-    }
-
-    else if (this.post.posttype === 'link') {
-
-
+    } else if (this.post.posttype === 'link' && !this.profileImageUrl) {
       this.profileImageUrl = this.createBlobUrl(this.post.userprofile, 'image/jpeg');
-
-      this.audioUrl = '';
-      this.imageUrl = '';
-      this.videoUrl = '';
-
+    } else if (this.post.posttype === 'group') {
+      if (!this.profileImageUrl) {
+        this.profileImageUrl = this.createBlobUrl(this.post.userprofile, 'image/jpeg');
+      }
+      if (!this.groupImageUrl) {
+        this.groupImageUrl = this.createBlobUrl(this.post.post, 'image/jpeg');
+      }
     }
-
-    else if (this.post.posttype === 'group') {
-
-
-
-      this.profileImageUrl = this.createBlobUrl(this.post.userprofile, 'image/jpeg');
-      this.groupImageUrl = this.createBlobUrl(this.post.post, 'image/jpeg');
-
-      this.audioUrl = '';
-      this.imageUrl = '';
-      this.videoUrl = '';
-
-    }
-
-
-
-
-    if (this.post.userprofile) {
-      this.profileImageUrl = this.createBlobUrl(this.post.userprofile, 'image/jpeg');
-    }
+  
+    this.cleanupUnusedUrls();
+    
     this.cdref.detectChanges();
   }
-
-  ngOnDestroy(): void {
- 
-
-    if (this.imageUrl) {
+  
+  cleanupUnusedUrls(): void {
+    if (!this.imageUrl) {
       URL.revokeObjectURL(this.imageUrl);
+      this.imageUrl = '';
     }
-    if (this.videoUrl) {
+    if (!this.videoUrl) {
       URL.revokeObjectURL(this.videoUrl);
+      this.videoUrl = '';
     }
-    if (this.audioUrl) {
+    if (!this.audioUrl) {
       URL.revokeObjectURL(this.audioUrl);
+      this.audioUrl = '';
     }
-    if (this.profileImageUrl) {
+    if (!this.profileImageUrl) {
       URL.revokeObjectURL(this.profileImageUrl);
+      this.profileImageUrl = '';
     }
-    
+    if (!this.groupImageUrl) {
+      URL.revokeObjectURL(this.groupImageUrl);
+      this.groupImageUrl = '';
+    }
   }
-
+  
+  ngOnDestroy(): void {
+    this.cleanupUnusedUrls();
+  }
 
 
 
@@ -849,7 +815,11 @@ closememebrslikeddiv(e:Event):void{
   }
 
 
-
+  getthecomments(event: Event, postid: string): void {
+    event.stopPropagation();
+    this.selectedPostId = postid; 
+    this.getthecommentsBool = true; 
+  }
 
 
   

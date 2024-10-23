@@ -6,6 +6,7 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { PreLoaderComponent } from '../../widgets/pre-loader/pre-loader.component';
 import { environment } from '../../../environments/environment';
+import { NetworkService } from '../../services/network.service';
 @Component({
   selector: 'app-sign-up',
   standalone: true,
@@ -54,7 +55,7 @@ export class SignUpComponent implements OnInit{
   };
 
 
-  constructor(private fb: FormBuilder, private http: HttpClient,private router:Router) {
+  constructor(private fb: FormBuilder, private http: HttpClient,private router:Router,private networkService: NetworkService) {
     this.signUpForm = this.fb.group({
       username: ['', Validators.required],
       emailaddress: ['', [Validators.required, Validators.email]],
@@ -69,7 +70,7 @@ export class SignUpComponent implements OnInit{
   ngOnInit(): void {
     const today = new Date();
     const day = String(today.getDate()).padStart(2, '0');
-    const month = String(today.getMonth() + 1).padStart(2, '0'); // January is 0!
+    const month = String(today.getMonth() + 1).padStart(2, '0');  
     const year = today.getFullYear();
     this.maxDate = `${year}-${month}-${day}`;
 

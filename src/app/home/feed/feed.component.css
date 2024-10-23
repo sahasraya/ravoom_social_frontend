@@ -180,6 +180,43 @@
 .heading-holder span{
   opacity: 0.8;
 }
+
+
+
+.bg-green {
+  background-color: green; 
+  color: white; 
+  position: fixed;
+  bottom: 10px;
+  left: 10px;
+  width: 30%;
+  border-radius: 20px;
+  padding: 15px;
+  display: flex;
+  align-items: center;
+  z-index: 1000;
+}
+
+.bg-red {
+  background-color: red; 
+  color: white; 
+  position: fixed;
+  bottom: 10px;
+  left: 10px;
+  position: fixed;
+  bottom: 10px;
+  left: 10px;
+  width: 30%;
+  border-radius: 20px;
+  padding: 15px;
+  display: flex;
+  align-items: center;
+  z-index: 1000;
+}
+.hidenetworkstatus{
+ display: none;
+}
+
  
 
  
