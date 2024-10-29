@@ -54,6 +54,7 @@ export class PostComponent implements OnInit {
   loadingMoreMembers = false;
   hasMoreMembers = false;
   getthecommentsBool:boolean = false;
+  groupornormalpost:string= "";
   selectedPostId: string | null = null;
  
 
@@ -815,9 +816,10 @@ closememebrslikeddiv(e:Event):void{
   }
 
 
-  getthecomments(event: Event, postid: string): void {
+  getthecomments(event: Event, postid: string,type:string): void {
     event.stopPropagation();
     this.selectedPostId = postid; 
+    this.groupornormalpost=type;
     this.getthecommentsBool = true; 
   }
 

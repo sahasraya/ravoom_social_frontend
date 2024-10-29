@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, ElementRef, EventEmitter, HostListener, OnInit, Output, Renderer2, ViewChild } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { SearchComponent } from '../search/search.component';
 import { NotificationService } from '../../home/notification/notification.service';
 import { NotificationComponent } from '../../home/notification/notification.component';
@@ -30,7 +30,7 @@ export class HeaderComponent implements OnInit{
   private openDropdown: HTMLElement | null = null;
   @ViewChild('mainlogo', { static: true }) mainLogo!: ElementRef;
  
-  constructor(private notificationService: NotificationService,private http:HttpClient,private renderer: Renderer2) {}
+  constructor(private notificationService: NotificationService,private http:HttpClient,private renderer: Renderer2,private router:Router) {}
 
   ngOnInit(): void {
     this.userid = localStorage.getItem('wmd') || '';
@@ -149,6 +149,12 @@ async updatethehiddenvisibility(userid:any){
   }
   
 
+  gotohomepage(e:Event):void{
+    e.preventDefault();
+    this.router.navigate(['/']);
+
+  }
+  
   handleSearchText(text: string) {
     this.searchText = text;
   }

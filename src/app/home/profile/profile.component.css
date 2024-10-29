@@ -6,11 +6,12 @@
 .user-details-hodler img {
   border-radius: 50%;
   border: 2px solid grey;
-  width: 250px;  
-  height: 250px; 
+  width: 200px;  
+  height: 200px; 
   object-fit: cover;  
   margin-bottom: 10px; 
   margin-top: 15px;
+  cursor: pointer;
 }
 .user-details-hodler{
   margin: 0px auto;

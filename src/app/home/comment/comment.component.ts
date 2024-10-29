@@ -16,12 +16,13 @@ import { environment } from '../../../environments/environment';
 })
 export class CommentComponent implements OnInit {
   @Input() postid: string | null = null;
+  @Input() groupornormalpostinput: string | null = null;
 
 
   
  
   post: any;
-  images: any;
+  images: any[]=[];
   APIURL = environment.APIURL;
   commentForm: FormGroup;
   replayCommentForm: FormGroup;
@@ -72,15 +73,15 @@ export class CommentComponent implements OnInit {
     if (!this.postid) {
       this.postid = this.route.snapshot.paramMap.get('postid');
     }
-    this.groupornormalpost = this.route.snapshot.paramMap.get('type');
+    this.groupornormalpost = this.groupornormalpostinput || this.route.snapshot.paramMap.get('type');
     this.fromwhatscreen = this.route.snapshot.paramMap.get('screen')!;
 
     this.getPostData();
-    this.getComments();
     this.getpostlikecount();
     this.userid = localStorage.getItem('wmd') || '';
     this.checkuseridtoroutecommentscreen = this.route.snapshot.paramMap.get('uid') || '';
     this.getpostcommentCount(this.postid);
+    this.getComments();
 
      
      
@@ -111,11 +112,7 @@ async getfollowingstatus(postowneruserid:any):Promise<void>{
 
     }
 
-    if (response.exists) {
-      console.log('The user is following the post owner.');
-    } else {
-      console.log('The user is not following the post owner.');
-    }
+    
   } catch (error) {
     console.error('There was an error!', error);
   }
@@ -154,6 +151,8 @@ async getfollowingstatus(postowneruserid:any):Promise<void>{
     formData.append('postid', postid.toString());
     formData.append('limit', this.limitlike.toString());
     formData.append('offset', this.offsetlike.toString());
+ 
+   
 
  
   
@@ -168,7 +167,6 @@ async getfollowingstatus(postowneruserid:any):Promise<void>{
           profileimage: this.createBlobUrl(member.profileimage, 'image/jpeg')
         }));
         this.likedMembers = [...this.likedMembers, ...newMembers];
-        console.log(this.likedMembers);
         this.limitlike += this.offsetlike;
         this.loadingMoreMembers = false;
         if(this.likedMembers.length >= 10){
@@ -234,21 +232,23 @@ async getfollowingstatus(postowneruserid:any):Promise<void>{
   
   }
 
-  async getpostcommentCount(postid:any): Promise<void> {
- 
-      const params = new HttpParams().set('postid', postid.toString());
- 
-      try {
-        const response: any = await this.http.get<any>(`${this.APIURL}get_comments_count`, { params }).toPromise();
-
-        if (response.comment_count !== undefined) {
-           this.numberofcomments= response.comment_count;
-        }
-      } catch (error) {
-        console.error('There was an error!', error);
+  async getpostcommentCount(postid: any): Promise<void> {
+   
+  
+    const params = new HttpParams().set('postid', postid.toString());
+  
+    try {
+      const response: any = await this.http.get<any>(`${this.APIURL}get_comments_count`, { params }).toPromise();
+  
+      if (response.comment_count !== undefined) {
+        this.numberofcomments = response.comment_count;
+  
       }
-    
+    } catch (error) {
+      console.error('There was an error!', error);
+    }
   }
+  
 
   onImageClick(): void {
     this.showLargerImage = true;
@@ -361,6 +361,11 @@ async getfollowingstatus(postowneruserid:any):Promise<void>{
     this.showLargerImage = false;
   }
 
+
+
+
+
+  
   async getpostlikecount(): Promise<void> {
     if (this.postid) {
 
@@ -431,6 +436,11 @@ async getfollowingstatus(postowneruserid:any):Promise<void>{
   }
 
 
+
+
+
+
+
   async getnumberofreplays(commentid: any): Promise<void> {
     try {
       const params = new HttpParams().set('commentid', commentid.toString());
@@ -451,51 +461,175 @@ async getfollowingstatus(postowneruserid:any):Promise<void>{
   }
 
 
+  private async saveCommentsToSession(postid: string, comments: any[]): Promise<void> {
+    const encryptedComments = await this.encryptData(JSON.stringify(comments), postid);
+    sessionStorage.setItem(`postcomments_${postid}`, encryptedComments);
+  }
+
+  private async getCommentsFromSession(postid: string): Promise<any[] | null> {
+    const encryptedComments = sessionStorage.getItem(`postcomments_${postid}`);
+    if (encryptedComments) {
+      const decryptedData = await this.decryptData(encryptedComments, postid);
+      return decryptedData ? JSON.parse(decryptedData) : null;
+    }
+    return null;
+  }
+
+  private async encryptData(data: string, password: string): Promise<string> {
+    const enc = new TextEncoder();
+    const keyMaterial = await window.crypto.subtle.importKey(
+      'raw',
+      enc.encode(password),
+      { name: 'PBKDF2' },
+      false,
+      ['deriveBits', 'deriveKey']
+    );
+
+    const key = await window.crypto.subtle.deriveKey(
+      {
+        name: 'PBKDF2',
+        salt: enc.encode(password),
+        iterations: 1000,
+        hash: 'SHA-256'
+      },
+      keyMaterial,
+      { name: 'AES-GCM', length: 256 },
+      false,
+      ['encrypt']
+    );
+
+    const iv = window.crypto.getRandomValues(new Uint8Array(12)); // Initialization vector
+    const encryptedData = await window.crypto.subtle.encrypt(
+      {
+        name: 'AES-GCM',
+        iv: iv
+      },
+      key,
+      enc.encode(data)
+    );
+
+    const buffer = new Uint8Array(encryptedData);
+    const encryptedDataWithIv = new Uint8Array(iv.length + buffer.length);
+    encryptedDataWithIv.set(iv);
+    encryptedDataWithIv.set(buffer, iv.length);
+
+    return btoa(String.fromCharCode(...encryptedDataWithIv)); // Encode as base64
+  }
+
+  private async decryptData(encryptedData: string, password: string): Promise<string | null> {
+    const enc = new TextEncoder();
+    const data = Uint8Array.from(atob(encryptedData), c => c.charCodeAt(0));
+    const iv = data.slice(0, 12);
+    const encryptedBuffer = data.slice(12);
+
+    const keyMaterial = await window.crypto.subtle.importKey(
+      'raw',
+      enc.encode(password),
+      { name: 'PBKDF2' },
+      false,
+      ['deriveBits', 'deriveKey']
+    );
+
+    const key = await window.crypto.subtle.deriveKey(
+      {
+        name: 'PBKDF2',
+        salt: enc.encode(password),
+        iterations: 1000,
+        hash: 'SHA-256'
+      },
+      keyMaterial,
+      { name: 'AES-GCM', length: 256 },
+      false,
+      ['decrypt']
+    );
+
+    try {
+      const decryptedData = await window.crypto.subtle.decrypt(
+        {
+          name: 'AES-GCM',
+          iv: iv
+        },
+        key,
+        encryptedBuffer
+      );
+
+      return new TextDecoder().decode(decryptedData);
+    } catch (e) {
+      console.error('Decryption failed:', e);
+      return null;  
+    }
+  }
 
   async getComments(loadMore: boolean = false): Promise<void> {
     if (!loadMore) {
-        this.offset = 0;  
+      this.offset = 0;
     }
-
-    const params = new HttpParams()
-        .set('postid', this.postid!.toString())
-        .set('limit', '10')
-        .set('offset', this.offset.toString());
-
-    const url = this.groupornormalpost == "g" 
-        ? `${this.APIURL}get_comments_group` 
-        : `${this.APIURL}get_comments`;
-
-    this.http.get<any>(url, { params }).subscribe({
-        next: (response: any) => {
-            if (response.comments) {
-                const newComments = response.comments.map((comment: any) => ({
-                    username: comment.username,
-                    text: comment.text,
-                    commenteddate: new Date(comment.commenteddate),
-                    imageurl: comment.profileimage,
-                    userid: comment.userid,
-                    commentid: comment.commentid
-                }));
-
-               
-                this.isthelastcommentLoaing = newComments.length == 10;
  
 
-                if (loadMore) {
-                    this.comments = [...this.comments, ...newComments];  
-                } else {
-                    this.comments = newComments;  
-                }
+    const params = new HttpParams()
+      .set('postid', this.postid!.toString())
+      .set('limit', '10')
+      .set('offset', this.offset.toString());
 
-                this.offset += 10; 
+    const url = this.groupornormalpost === "g" 
+      ? `${this.APIURL}get_comments_group` 
+      : `${this.APIURL}get_comments`;
+
+    try {
+      this.http.get<any>(url, { params }).subscribe({
+        next: (response: any) => {
+          try {
+            if (response && Array.isArray(response.comments)) {
+              const newComments = response.comments.map((comment: any) => ({
+                username: comment.username,
+                text: comment.text,
+                commenteddate: new Date(comment.commenteddate),
+                imageurl: comment.profileimage,
+                userid: comment.userid,
+                commentid: comment.commentid
+              }));
+
+              this.isthelastcommentLoaing = newComments.length === 10;
+
+              if (loadMore) {
+                this.comments = [...this.comments, ...newComments];  
+              } else {
+                this.comments = newComments;  
+              }
+
+            
+
+              this.offset += 10; 
+            } else {
+              this.comments = [];
+              console.log("No comments found or comments is not an array.");
+              this.isthelastcommentLoaing = false;  
             }
+          } catch (err) {
+            console.error("Error processing comments:", err);
+            this.comments = [];
+            this.isthelastcommentLoaing = false;
+          }
         },
         error: (error: any) => {
-            console.error('There was an error!', error);
+          console.log("Error fetching comments:", error.message);
+          if (error.message === "No comments found") {
+            console.log('No comments');
+          } else if (error.status === "404") {
+            console.log('No comments found, 404 error');
+          } else {
+            console.log('An unexpected error occurred:', error);
+          }
         }
-    });
-}
+      });
+    } catch (err) {
+      console.error("Error making the request:", err);
+      this.comments = [];  
+      this.isthelastcommentLoaing = false;  
+    }
+  }
+
+
   
 
 
@@ -505,94 +639,79 @@ async getfollowingstatus(postowneruserid:any):Promise<void>{
 
 
 
-  async  getPostData(): Promise<void> {
-
+  async getPostData(): Promise<void> {
+    const storedPostData = sessionStorage.getItem(`postdata_${this.postid}`);
+    if (storedPostData) {
+      const decryptedData = JSON.parse(atob(storedPostData));
+  
+      this.post = decryptedData.post;
+      this.images = decryptedData.images;
+  
+      if (this.post.posttype === "video") {
+        const videoBlob = this.convertBase64ToBlob(this.post.post, 'video/mp4');
+        this.post.videoUrl = URL.createObjectURL(videoBlob);
+      } else if (this.post.posttype === "audio") {
+        const audioBlob = this.convertBase64ToBlobAudio(this.post.post);
+        this.post.audioUrl = URL.createObjectURL(audioBlob);
+      }
+  
+      this.getfollowingstatus(this.post.userid);
+      
+      return;  
+    }
+  
     const formData = new FormData();
     formData.append('postid', this.postid!);
-
-    if (this.groupornormalpost == "g") {
-
-      this.http.post<any>(`${this.APIURL}get_post_group`, formData).subscribe({
-        next: response => {
-
-          this.post = response;
-          if (this.post.posttype == "image") {
-
-
-            const formDataimage = new FormData();
-            formDataimage.append('postid', this.postid!);
-            this.http.post<any>(`${this.APIURL}get_images_group`, formDataimage).subscribe({
-              next: imageResponse => {
-                this.images = imageResponse.map((img: any) => this.createBlobUrl(img.image, 'image/jpeg'));
-             
-
-
-              }
-
+  
+    const url = this.groupornormalpost === "g" ? `${this.APIURL}get_post_group` : `${this.APIURL}get_post`;
+  
+    this.http.post<any>(url, formData).subscribe({
+      next: response => {
+        this.post = response;
+  
+        if (this.post.posttype === "image") {
+          const formDataimage = new FormData();
+          formDataimage.append('postid', this.postid!);
+          const imageUrl = this.groupornormalpost === "g" ? `${this.APIURL}get_images_group` : `${this.APIURL}get_images`;
+  
+          this.http.post<any>(imageUrl, formDataimage).subscribe({
+            next: imageResponse => {
+              this.images = imageResponse.map((img: any) => this.createBlobUrl(img.image, 'image/jpeg'));
             }
-            );
-          } else if (this.post.posttype == "video") {
-            const videoBlob = this.convertBase64ToBlob(this.post.post, 'video/mp4');
-            this.post.videoUrl = URL.createObjectURL(videoBlob);
-          }
-
-
-          this.getfollowingstatus( this.post.userid);
-
-
-        },
-        error: (error: HttpErrorResponse) => {
-          console.error('There was an error!', error);
-
+          });
+        } else if (this.post.posttype === "video") {
+          const videoBlob = this.convertBase64ToBlob(this.post.post, 'video/mp4');
+          this.post.videoUrl = URL.createObjectURL(videoBlob);
+        } else if (this.post.posttype === "audio") {
+          const audioBlob = this.convertBase64ToBlobAudio(this.post.post);
+          this.post.audioUrl = URL.createObjectURL(audioBlob);
         }
-      });
-
-
-    } else {
-
-      this.http.post<any>(`${this.APIURL}get_post`, formData).subscribe({
-        next: response => {
-
-          this.post = response;
-
-          if (this.post.posttype == "image") {
-
-            const formDataimage = new FormData();
-            formDataimage.append('postid', this.postid!);
-            this.http.post<any>(`${this.APIURL}get_images`, formDataimage).subscribe({
-              next: imageResponse => {
-                this.images = imageResponse.map((img: any) => this.createBlobUrl(img.image, 'image/jpeg'));
-        
-
-              }
-
-            }
-            );
-          } else if (this.post.posttype == "video") {
-            const videoBlob = this.convertBase64ToBlob(this.post.post, 'video/mp4');
-            this.post.videoUrl = URL.createObjectURL(videoBlob);
-          }
-          else if (this.post.posttype == "audio") {
-            const audioBlob = this.convertBase64ToBlobAudio(this.post.post);
-            this.post.audioUrl = URL.createObjectURL(audioBlob);
-          }
-
-          this.getfollowingstatus( this.post.userid);
-
-        },
-        error: (error: HttpErrorResponse) => {
-          console.error('There was an error!', error);
-
-        }
-      });
-
-    }
-
-
-
+  
+        const postDataToStore = {
+          post: this.post,
+          images: this.images
+        };
+        const encodedPostData = btoa(JSON.stringify(postDataToStore)); 
+        sessionStorage.setItem(`postdata_${this.postid}`, encodedPostData);
+  
+        this.getfollowingstatus(this.post.userid);
+      },
+      error: (error: HttpErrorResponse) => {
+        console.error('There was an error!', error);
+      }
+    });
   }
+  
 
 
+
+
+
+
+
+
+
+  
   convertBase64ToBlobAudio(base64Data: string): Blob {
     return this.convertBase64ToBlob(base64Data, 'audio/mpeg');
   }

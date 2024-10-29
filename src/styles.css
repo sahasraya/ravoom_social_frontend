@@ -131,9 +131,6 @@ html {
     top: 10px;
   
     height: 90vh;
-    overflow-y: scroll;
-    scrollbar-width: none; 
-    -ms-overflow-style: none; 
     width: 25%;
   }
   .right-group-holder {

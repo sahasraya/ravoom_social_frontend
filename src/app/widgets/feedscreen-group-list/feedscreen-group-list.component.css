@@ -1,13 +1,4 @@
-.heading-holder{
-    padding: 10px;
-    border-bottom: 1px solid rgb(187 187 187);
-    margin-left: 10px;
-    margin-right: 10px;
-  }
-  .heading-holder span{
-    opacity: 0.8;
-  }
-
+ 
 
   .heading-holder{
     padding: 10px;
@@ -22,6 +13,11 @@
  
     margin-left: 10px;
     margin-right: 10px;
+    height: 70vh;  
+    overflow-y: auto;
+    overflow-x: hidden;  
+    padding: 10px;
+    box-sizing: border-box;
   }
   .inner-group-holder a{
     text-decoration: none;
@@ -39,23 +35,33 @@
   .group:hover{
     background-color: var(--icon-hover-backgroud-color);
   }
-  .group-details-holder{
+  .group-details-holder {
     display: flex;
     flex-direction: column;
     margin-left: 15px;
-    
-  }
+}
+
+.group-type-holder {
+    display: flex;
+    align-items: center;
+}
+
+.group-name {
+    max-width: 150px;  
+    overflow: hidden;
+    white-space: nowrap;  
+    text-overflow: ellipsis;  
+    display: inline-block;
+    margin-right: 5px;
+}
+
   .img{
     width: 45px;
     height: 45px;
     border-radius: 50%;
     object-fit: cover;
   }
-  .group-type-holder{
-    display: flex;
-    flex-direction: row;
-    gap: 3px;
-  }
+  
   .searchgroupinput{
     width: 100%;
     padding: 15px;

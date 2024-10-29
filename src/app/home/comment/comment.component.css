@@ -616,6 +616,7 @@ input[type="text"]:focus {
 .replayuserprofile{
   width: 35px;
   height: 35px;
+  border-radius: 50%;
 }
 .dropdown-toggle{
   width: 35px;
