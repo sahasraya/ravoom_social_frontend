@@ -545,7 +545,6 @@ input[type="text"]:focus {
 .slider-image {
   width: 80vw;
   height: 80vh;
-  border: 1px solid #ccc;
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
   border-radius: 5px;
   object-fit: contain;
@@ -716,6 +715,21 @@ input[type="text"]:focus {
 .liked-dot:hover {
   transform: scale(1.2);  
   background-color: #2196f3;  
+}
+
+
+
+
+
+
+
+@media (max-width: 500px) {  
+  .post-container{
+   width: 95%;
+  }
+
+  
+  
 }
 
  

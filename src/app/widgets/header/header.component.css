@@ -2,6 +2,8 @@
     background-color: white;
     padding: 0px 10px;
     border-bottom: 1px solid #ccc;
+ 
+ 
 
 }
 
@@ -138,11 +140,35 @@
     cursor: pointer;
     transition: transform 0.3s, background-color 0.3s;   
   }
+  .filtericonmobile,.imagetextvoicefiltericonmobile{
+    display: none;
+    padding: 15px;
+    width: 55px;
+    background-color: white;
+   cursor: pointer;
+  
+    top: 10px;
+    right: 20px;
+    cursor: pointer;
+    transition: transform 0.3s, background-color 0.3s; 
+  }
+  .homeiconmobile{
+    padding: 15px;
+    width: 55px;
+    background-color: white;
+    border-radius: 50%;
+  
+    top: 10px;
+    right: 20px;
+    cursor: pointer;
+    transition: transform 0.3s, background-color 0.3s; 
+    display: none;
+  }
 
  .signuplogin{
   margin: 5px;
  }
-  .notificationicon:hover ,.creategroup:hover,.homeicon:hover,.globelicon:hover{
+  .notificationicon:hover ,.creategroup:hover,.homeiconmobile:hover,.homeicon:hover,.globelicon:hover{
  
     background-color:var(--icon-hover-backgroud-color);
   }
@@ -184,4 +210,150 @@
   .img-wrapper {
     flex: 1;
     cursor: pointer;
+  }
+
+ 
+  .filteroptiosnholdermobile {
+    position: fixed;  
+    top: -100%;  
+    left: 0;
+    width: 100%; 
+    height: 100%;  
+    background-color: white;  
+    opacity: 0; 
+    transition: top 0.5s ease, opacity 0.5s ease;  
+    z-index: 1000;  
+    display: none;
+ overflow: scroll;
+  }
+  
+  .filteroptiosnholdermobile.visible {
+    top: 0; 
+    opacity: 1;  
+  }
+  .closeicon {
+    padding: 15px;
+    width: 50px;
+    background-color: white;
+    border-radius: 50%;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+    transition: transform 0.5s, background-color 0.5s;  
+  }
+  
+  .closeicon:hover {
+    transform: rotate(90deg); 
+    background-color: rgba(255, 255, 255, 0.644);
+  }
+  
+ 
+  .profiletext{
+    display: block;
+    background-color: red;
+  }
+  .userprofileinfoholder{
+    display: flex;
+    flex-direction: column;
+  }
+  .userprofileinfoholder small{
+    color: rgba(0, 0, 0, 0.595);
+  }
+
+
+  .options-holder-inner-mobile{
+    display: flex;
+    flex-direction: column;
+    border-radius: 10px;
+    padding: 5px;
+    margin-bottom: 5px;
+    margin-top: 65px;
+    display: none;
+ 
+  }
+
+
+
+ 
+
+
+
+
+  @media (max-width: 500px) {  
+
+   
+
+    .options-holder-profile-mobile{
+      display: flex;
+      flex-direction: row;
+      padding: 15px;
+      cursor: pointer;
+      border-radius: 10px;
+      transition: background-color 0.3s;
+      align-items: center;
+    }
+
+    .options-holder {
+      display: flex;
+      flex-direction: row;
+      padding: 15px;
+      cursor: pointer;
+      border-radius: 10px;
+      transition: background-color 0.3s;
+      align-items: center;
+    }
+    .options-holder:hover{
+      background-color: var(--icon-hover-backgroud-color);
+    }
+    
+ 
+    
+    .header-search ,.globelicon ,.homeicon ,.notificationicon,.profileimage-container,.signuplogin{
+     display: none;
+    }
+    .filtericonmobile ,.imagetextvoicefiltericonmobile{
+      display: block;
+    }
+
+    .filtericonmobile:hover,.imagetextvoicefiltericonmobile:hover {
+ 
+      background-color:var(--icon-hover-backgroud-color);
+    }
+    .options-holder img , .options-holder-filter img{
+      width: 30px;
+      height: 30px;
+      margin-right: 10px;
+   
+      
+    }
+    .profileimage{
+      width: 45px;
+      height: 45px;
+      margin-right: 10px;
+    }
+    .filteroptiosnholdermobile,.options-holder-inner-mobile{
+      display: block;
+    }
+    .signuplogin{
+      width: max-content;
+    }
+     
+
+    .options-holder-filter{
+      display: flex;
+      flex-direction: column;
+      margin-top: 60px;
+      padding: 10px;
+    }
+    .optionfilter{
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      margin: 10px 5px;
+    }
+    .optionhodlermobile{
+      position: relative;
+      top: 60px;
+    }
   }

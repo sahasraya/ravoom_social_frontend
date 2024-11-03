@@ -72,7 +72,7 @@
 }
 .creategroup img{
   width: 15px;
-  margin-right: 5px;
+
   height: 15px;
 
 }
@@ -199,7 +199,6 @@ width: 20vh;
 .ravoomitimage{
   width: 15px;
   height: 15px;
-  margin-right: 5px;
 }
 .userdetails-holder{
   display: flex;
@@ -310,6 +309,36 @@ border: 1px solid rgb(43,149,236);
   background-color: var(--primary-faded);
   color: var(--primarycolor);
 }
+
+.ravoomtext{
+  margin-left: 5px;
+}
+
+
+
+  
+@media (max-width: 500px) {  
+  .posttypeholder{
+  width: 95%;
+  margin: 0px auto;
+  }
+  .posts-container{
+    width: 95%;
+    margin-top: 10px;
+  }
+  .ravoomtext{
+    display: none;
+  
+  }
+  .addfollowersbtn{
+    width: 40%;
+  }
+ 
+  
+}
+
+
+
 
 
 

@@ -3,7 +3,7 @@
 form {
     display: flex;
     flex-direction: column;
-    width: 400px;
+    width: 40%;
     margin: 0 auto;
     padding: 20px;
     border: 1px solid #ccc;
@@ -163,3 +163,18 @@ text-align: center;
     margin: 10px 0px 0px 10px;
     color: rgba(0, 0, 0, 0.583);
   }
+
+
+
+  
+@media (max-width: 500px) {  
+  .main-image{
+  width: 80%;
+  }
+  form{
+    width: 100%;
+  }
+  
+}
+
+

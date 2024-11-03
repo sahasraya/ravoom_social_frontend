@@ -209,6 +209,26 @@ button:hover {
 
 
 
+  
+  @media (max-width: 500px) {  
+    form{
+    width: 95%;
+    }
+    .image-holder img{
+      width: 200px;
+      height: 200px;
+     
+    }
+    .resetpassword{
+      font-size: 15px;
+      width: auto;
+    }
+    
+  }
+
+
+
+
 
 
  

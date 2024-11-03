@@ -70,3 +70,18 @@
 
 
 
+
+
+
+@media (max-width: 500px) {  
+  .left-user-holder,.outer-right-group-holder{
+   display: none;
+  }
+  .addfollowersbtn{
+    width: 40%;
+  }
+  
+}
+
+
+

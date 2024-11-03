@@ -87,7 +87,7 @@
 }
 .creategroup img{
   width: 15px;
-  margin-right: 5px;
+
   height: 15px;
 
 }
@@ -155,6 +155,8 @@
   flex-wrap: wrap;
   padding-top: 15px;
   column-gap: 2rem;
+  position: sticky;
+  top: 550px;
 }
 .left-user-holder{
   flex: 1;
@@ -316,4 +318,23 @@
   opacity: 0.7;
   margin-bottom: 25px;
 }
+.ravoomittext ,.grouptext{
+  margin-left: 5px;
+}
+
+
+
+
  
+
+@media (max-width: 500px) {  
+  .left-user-holder,.ravoomittext ,.grouptext,.outer-right-group-holder{
+   display: none;
+  }
+
+  .usersname{
+    font-size: 17px;
+    color: black;
+  }
+  
+}

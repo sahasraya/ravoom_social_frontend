@@ -151,6 +151,26 @@ html {
   }
   
  
+  .options-holder-inner{
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--icon-hover-backgroud-color);
+    border-radius: 10px;
+    padding: 5px;
+    margin-bottom: 5px;
+  }
+
+
+  @media (max-width: 500px) {  
+    .member_main_outer_holder{
+    width: 95%;
+    }
+  
+   
+    
+  }
+  
+
 :root {
     --primarycolor: rgb(43, 149, 236);
     --primary-faded: rgba(43,149,236, 0.1);
@@ -162,5 +182,9 @@ html {
     --user-left-hoder-post-dynamic-width-audio:20vh;
     --icon-backgroud-color: rgba(128, 128, 128, 0.308);
     --icon-hover-backgroud-color: rgba(128, 128, 128, 0.178);
+  
 
   }
+
+
+

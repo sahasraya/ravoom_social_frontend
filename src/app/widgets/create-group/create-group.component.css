@@ -149,3 +149,14 @@ button:hover{
   transform: translateY(-7px);  
 }
  
+
+
+
+
+
+@media (max-width: 500px) {  
+  .create-new-group-holder{
+width: 95vw;
+  }
+  
+}

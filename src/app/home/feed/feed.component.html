@@ -1,4 +1,10 @@
-<app-header (uploadPost)="onPostAdded()" *ngIf="hideNetworkStatus"></app-header>
+<app-header 
+  (uploadPost)="onPostAdded()" 
+  (optionSelectedInFeed)="onOptionSelected($event)" 
+  *ngIf="hideNetworkStatus">
+</app-header>
+
+
 <!-- <app-add-post (postAdded)="onPostAdded()" *ngIf="openaddpostscreenbool" (closePost)="openaddpostscreenbool = false"></app-add-post> -->
 <!-- (postAdded)="onPostAdded()" -->
 <!-- <app-notification></app-notification> -->
@@ -26,8 +32,10 @@
 
  
 
-    <ng-container >
-      <app-feedscreen-user-list (optionSelected)="onOptionSelected($event)"></app-feedscreen-user-list>
+    <ng-container>
+      <app-feedscreen-user-list 
+        (optionSelected)="onOptionSelected($event)">
+      </app-feedscreen-user-list>
     </ng-container>
 
 
@@ -84,7 +92,7 @@
         <img *ngIf="user?.profileimage" [src]="'data:image/jpeg;base64,' + user?.profileimage" alt="Profile Image"
           class="profileimage">
 
-        <h2 *ngIf="username !=''">Hi, {{username}}</h2>
+        <h2 *ngIf="username !=''" class="usersname">Hi, {{username}}</h2>
       </div>
 
 
@@ -92,14 +100,14 @@
         <span class="creategroup" (click)="toggleOptionsSelecter($event)" >
       
           <img src="../../../assets/images/ravoomit.png" alt=""> 
-          Ravoom It
+           <span class="ravoomittext"> Ravoom It</span>
   
         </span>
   
   
         <span class="creategroup" (click)="createnewgroup()">
           <img src="../../../assets/images/add.png" alt=""  >
-          Group
+          <span class="grouptext">Group</span>
   
         </span>
 

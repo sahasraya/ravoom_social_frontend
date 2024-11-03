@@ -25,6 +25,140 @@
       <a routerLink=""><img src="../../../assets/images/globe.png" alt="" class="globelicon"  *ngIf="userid != ''"></a>
       <a routerLink="/home/followers-feed"><img src="../../../assets/images/home.png" alt="" class="homeicon"  *ngIf="userid != ''"></a>
 
+      <img src="../../../assets/images/filter.png" alt="" class="imagetextvoicefiltericonmobile" (click)="toggleOptionsfilter()" >
+      <img src="../../../assets/images/menuicon.png" alt="" class="filtericonmobile" (click)="toggleOptions()" >
+
+
+<div class="filteroptiosnholdermobile" [class.visible]="optionsVisible" >
+  <img src="../../../assets/images/close.png" alt="" class="closeicon" (click)="closefiltermobile()">
+
+
+<div class="options-holder-inner-mobile-filter" *ngIf="isfilteropen">
+
+
+
+
+
+  <div class="options-holder-inner-mobile-filter" *ngIf="isfilteropen">
+
+    <ng-container >
+      <app-feedscreen-user-list class="optionhodlermobile"
+       
+        (feedMethodCalled)="handleOptionSelection($event)">
+      </app-feedscreen-user-list>
+    </ng-container>
+
+  </div>
+
+</div>
+
+
+
+
+
+
+  <!-- hamburger menu items holder -->
+  <!-- (click)="showvideos($event)" -->
+  <div class="options-holder-inner-mobile" *ngIf="!isfilteropen">
+
+
+
+    
+  
+    <app-search    > </app-search>
+    
+    <div class="options-holder-profile-mobile" *ngIf="userid != ''"    >
+      <img *ngIf="user?.profileimage" [src]="'data:image/jpeg;base64,' + user?.profileimage" alt="Profile Image" class="profileimage"(click)="navitating($event,'profile')">
+      <div class="userprofileinfoholder" (click)="navitating($event,'profile')">
+        <p><b>Profile</b></p>
+        <small>{{user?.username}}</small>
+      </div>
+      
+   </div>
+
+
+
+
+    <div class="options-holder"  (click)="navitating($event,'home')"   >
+      <img src="../../../assets/images/home.png" alt="">
+      <span>Home</span>
+   </div>
+
+
+   <div class="options-holder" (click)="navitating($event,'globle')"    >
+    <img src="../../../assets/images/globe.png" alt="">
+    <span>Globle</span>
+   </div>
+
+
+   <div class="options-holder"  (click)="navitating($event,'notifications')" *ngIf="userid != ''" >
+    <img src="../../../assets/images/notification.png" alt="">
+    <span>Notifications</span>
+   </div>
+
+
+   
+   <div class="options-holder" (click)="navitating($event,'populargroups')">
+    <img src="../../../assets/images/group.png" alt="">
+    <span>Popular Groups</span>
+   </div>
+
+
+   <div class="options-holder"   (click)="navitating($event,'interactions')" *ngIf="userid != ''">
+    <img src="../../../assets/images/profile-user.png" alt="">
+    <span>Interactions</span>
+   </div>
+
+   <div class="options-holder" (click)="navitating($event,'settings')"   *ngIf="userid != ''">
+    <img src="../../../assets/images/settings.png" alt="">
+    <span>Settings</span>
+   </div>
+
+
+   <div class="options-holder"   (click)="navitating($event,'privacypolicy')" >
+    <img src="../../../assets/images/policy.png" alt="">
+    <span>Privacy Policy</span>
+   </div>
+
+
+   <div class="options-holder" (click)="navitating($event,'attributes')"   >
+    <img src="../../../assets/images/attributes.png" alt="">
+    <span>Attributes</span>
+   </div>
+
+
+   <div class="options-holder" (click)="navitating($event,'signup')"  *ngIf="userid == ''" >
+    <img src="../../../assets/images/signup.png" alt="">
+    <span>Sign Up</span>
+   </div>
+
+   <div class="options-holder" (click)="navitating($event,'login')" *ngIf="userid == ''"  >
+    <img src="../../../assets/images/login.png" alt="">
+    <span>Log In</span>
+   </div>
+
+
+
+
+   <div class="options-holder" (click)="logout()" *ngIf="userid != ''"  >
+    <img src="../../../assets/images/logout.png" alt="">
+    <span>Log Out</span>
+   </div>
+
+
+    
+    
+     
+ </div>
+</div>
+
+
+
+
+
+
+
+
   
         <span class="notification-icon-holder">
           <img src="../../../assets/images/notification.png" alt="" class="notificationicon" *ngIf="userid != ''"

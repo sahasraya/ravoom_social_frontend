@@ -18,6 +18,8 @@ export class FeedscreenUserListComponent implements OnInit {
   APIURL = environment.APIURL;
 
   @Output() optionSelected: EventEmitter<string> = new EventEmitter<string>();
+  @Output() feedMethodCalled: EventEmitter<string> = new EventEmitter<string>();
+ 
 
 
 
@@ -143,47 +145,60 @@ export class FeedscreenUserListComponent implements OnInit {
 
 
 
+  showtexts(e: Event): void {
+    e.preventDefault();
+    e.stopPropagation();
+    this.optionSelected.emit('text');  
+
+   
+    if (window.innerWidth < 500) {
+      this.callFeedMethod('text');
+    }
+  }
+
   showvideos(e: Event): void {
     e.preventDefault();
     e.stopPropagation();
-    this.optionSelected.emit('video');
+    this.optionSelected.emit('video');   
 
-
-
+    if (window.innerWidth < 500) {
+      this.callFeedMethod('video'); 
+    }
   }
 
   showlinks(e: Event): void {
     e.preventDefault();
     e.stopPropagation();
-    this.optionSelected.emit('link');
+    this.optionSelected.emit('link');  
 
-
+    if (window.innerWidth < 500) {
+      this.callFeedMethod('link'); 
+    }
   }
-
-
-  showtexts(e: Event): void {
-    e.preventDefault();
-    e.stopPropagation();
-    this.optionSelected.emit('text');
-
-  }
-
-
-
 
   showimages(e: Event): void {
     e.preventDefault();
     e.stopPropagation();
-    this.optionSelected.emit('image');
+    this.optionSelected.emit('image');  
 
+    if (window.innerWidth < 500) {
+      this.callFeedMethod('image'); 
+    }
   }
-
 
   showvoices(e: Event): void {
     e.preventDefault();
     e.stopPropagation();
+    this.optionSelected.emit('audio');  
 
-    this.optionSelected.emit('audio');
+    if (window.innerWidth < 500) {
+      this.callFeedMethod('audio'); 
+    }
+  }
+
+
+  private callFeedMethod(selectedOption: string): void {
+    this.feedMethodCalled.emit(selectedOption);   
   }
 
 

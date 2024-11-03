@@ -4,7 +4,7 @@
   </a>
 
   <div class="innerholder">
-    <div class="screen" *ngFor="let video of videoList; let i = index">
+    <div [ngClass]="screen" *ngFor="let video of videoList; let i = index">
  
       <div class="profile-container" *ngIf="!(getthecommentsBool && selectedPostId === video.postid)">
         <img [src]="video.profileImageUrl" alt="User Profile Image" class="profile-image">
@@ -16,7 +16,7 @@
       </div>
 
  
-      <div class="viode-inner-holder" *ngIf="!(getthecommentsBool && selectedPostId === video.postid)">
+      <div [ngClass]="viode_inner_holder_responsiveness" *ngIf="!(getthecommentsBool && selectedPostId === video.postid)">
         <span class="viodediscription">{{video.postdescription}}</span>
 
                  <div class="inner1-holder">
@@ -45,6 +45,20 @@
                       <small *ngIf="video.likeCount>0" >{{video.likeCount}} likes</small>
 
                     </div>
+
+
+
+
+
+                    
+
+
+
+
+
+
+
+
 
           
                     <div class="icon-wrapper" (click)="getthecomments($event, video.postid)">

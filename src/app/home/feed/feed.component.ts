@@ -157,28 +157,6 @@ async getuserdetails(userid:string):Promise<void>{
     
   }
 
-  gotovideoslider(e:Event){
-    e.preventDefault();
- 
-    this.router.navigate(['/home/slider']);
-
-
-
-  }
-
-
-  gobackfromviodes(e:Event):void{
-    e.preventDefault();
-    e.stopPropagation();
-    this.posts = [];
-    this.offset = 0;
-    this.selectedOption = '';
- this.getPostsFeed();
- 
-   
- 
-  }
-
   async getPostsFromOption(selectedOption: string): Promise<void> {
     if (this.loadingoption) return;
 
@@ -204,6 +182,30 @@ async getuserdetails(userid:string):Promise<void>{
       }
     });
 }
+
+  gotovideoslider(e:Event){
+    e.preventDefault();
+ 
+    this.router.navigate(['/home/slider']);
+
+
+
+  }
+
+
+  gobackfromviodes(e:Event):void{
+    e.preventDefault();
+    e.stopPropagation();
+    this.posts = [];
+    this.offset = 0;
+    this.selectedOption = '';
+ this.getPostsFeed();
+ 
+   
+ 
+  }
+
+  
 
 
  

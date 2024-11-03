@@ -358,6 +358,24 @@ button:hover {
 
 
 
+@media (max-width: 500px) {  
+  .image-holder{
+   display: none;
+  }
+  .main-holder-outer{
+    padding: 0px;
+    width: auto;
+  
+  }
+  .main-holder-outer form{
+    width: 100%;
+  }
+  
+}
+
+
+
+
 
 
 

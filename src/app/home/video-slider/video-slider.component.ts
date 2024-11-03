@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
-import { Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren, AfterViewInit } from '@angular/core';
+import { Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren, AfterViewInit, HostListener } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { CommentComponent } from '../comment/comment.component';
 import { environment } from '../../../environments/environment';
@@ -27,6 +27,9 @@ export class VideoSliderComponent implements OnInit, AfterViewInit {
   userid:string = "";
   likes: number = 0;
   likedornottext: { [postid: string]: string } = {};
+
+  screen: string = 'screen'; 
+  viode_inner_holder_responsiveness:string = 'viode_inner_holder_pc';
  
 
   private scrollListener!: () => void;
@@ -50,6 +53,8 @@ export class VideoSliderComponent implements OnInit, AfterViewInit {
     }
   }
 
+ 
+ 
 
   async getpostlikecount(postid: any): Promise<number> {
   

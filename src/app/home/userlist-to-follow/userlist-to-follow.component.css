@@ -73,3 +73,21 @@
   justify-content: center; 
  
 }
+
+
+
+
+
+
+
+
+  
+@media (max-width: 500px) {  
+  .user-holder img{
+  height: 200px;
+  width: 150px;
+  }
+  
+   
+  
+}

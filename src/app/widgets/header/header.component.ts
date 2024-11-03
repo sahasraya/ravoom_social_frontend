@@ -7,11 +7,13 @@ import { NotificationComponent } from '../../home/notification/notification.comp
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { AddPostComponent } from '../add-post/add-post.component';
 import { environment } from '../../../environments/environment';
+import { FeedscreenUserListComponent } from '../feedscreen-user-list/feedscreen-user-list.component';
+ 
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule,RouterModule,SearchComponent,NotificationComponent,AddPostComponent],
+  imports: [CommonModule,RouterModule,SearchComponent,NotificationComponent,AddPostComponent,FeedscreenUserListComponent],
   templateUrl: './header.component.html',
   styleUrl: './header.component.css'
 })
@@ -19,15 +21,25 @@ export class HeaderComponent implements OnInit{
   APIURL = environment.APIURL;
   @Output() addPost = new EventEmitter<void>();
   @Output() uploadPost = new EventEmitter<void>();
+  @Output() optionSelected: EventEmitter<string> = new EventEmitter<string>();
+  @Output() optionSelectedInFeed = new EventEmitter<string>();
+
+
 
   userid: string = "";
   showSignOutMessage: boolean = false;
   openaddpostscreenbool:boolean=false;
+  openaddpostscreenboolfilter:boolean=false;
   searchText: string = '';
   user: any;
   dropdownVisible: boolean = false;
   showtheonlinestatusindicator:boolean = true;
   private openDropdown: HTMLElement | null = null;
+  optionsVisible: boolean = false;
+  optionsVisiblefilter: boolean = false;
+  isfilteropen:boolean=false;
+  postType: string = "";
+
   @ViewChild('mainlogo', { static: true }) mainLogo!: ElementRef;
  
   constructor(private notificationService: NotificationService,private http:HttpClient,private renderer: Renderer2,private router:Router) {}
@@ -57,6 +69,79 @@ export class HeaderComponent implements OnInit{
 
 
   }
+
+
+  handleOptionSelection(option: string) {
+    this.optionsVisiblefilter=!this.optionsVisiblefilter;
+    this.optionsVisible = !this.optionsVisible; 
+    this.optionSelectedInFeed.emit(option); 
+  }
+
+  navitating(e: Event, navigatetype: string): void {
+    e.stopPropagation(); 
+    this.optionsVisiblefilter=!this.optionsVisiblefilter;
+    this.optionsVisible = !this.optionsVisible; 
+    
+    switch (navigatetype) {
+      case 'home':
+        this.router.navigate(['/home/followers-feed']);
+        break;
+      case 'signup':
+        this.router.navigate(['/auth/sign-up']);
+        break;
+      case 'login':
+        this.router.navigate(['/auth/log-in']);
+        break;
+
+      case 'globle':
+        this.router.navigate(['/']);
+        break;
+      case 'notifications':
+        this.router.navigate(['/home/notification']);
+        break;
+      case 'populargroups':
+        this.router.navigate(['/populargroups']);
+        break;
+      case 'interactions':
+        this.router.navigate(['/interactions']);
+        break;
+      case 'settings':
+        this.router.navigate(['/home/settings', this.userid]);
+        break;
+      case 'profile':
+        this.router.navigate(['/home/profile', this.userid]);
+        break;
+      case 'privacypolicy':
+        this.router.navigate(['/home/privacy-policy']);
+        break;
+      case 'attributes':
+        this.router.navigate(['/home/attributes']);
+        break;
+      default:
+        console.warn('Unknown navigation type:', navigatetype);
+    }
+  }
+
+
+  toggleOptions(): void {
+    this.isfilteropen=false;
+    this.optionsVisible = !this.optionsVisible; 
+    this.optionsVisiblefilter=!this.optionsVisiblefilter;
+
+  }
+  toggleOptionsfilter(): void {
+    this.isfilteropen=true;
+    this.optionsVisiblefilter=!this.optionsVisiblefilter;
+    this.optionsVisible = !this.optionsVisible; 
+  }
+
+  closefiltermobile():void{
+    this.optionsVisible = !this.optionsVisible; 
+    this.optionsVisiblefilter=!this.optionsVisiblefilter;
+
+
+  }
+
 async updatethehiddenvisibility(userid:any){
   const formData = new FormData();
   
@@ -109,8 +194,11 @@ async updatethehiddenvisibility(userid:any){
 
   openaddpostscreen(): void {
     this.openaddpostscreenbool = true;
+
     this.addPost.emit();
   }
+
+ 
 
 
   showdropdown(event: Event): void {
@@ -235,4 +323,65 @@ async updatethehiddenvisibility(userid:any){
     this.dropdownVisible = false;
     this.openDropdown = null;
   }
+
+
+
+
+
+
+
+  showvideos(e: Event): void {
+    this.isfilteropen=true;
+    this.optionsVisiblefilter=!this.optionsVisiblefilter;
+    this.optionsVisible = !this.optionsVisible;
+    e.preventDefault();
+    e.stopPropagation();
+    this.optionSelected.emit('video');
+
+
+
+  }
+
+  showlinks(e: Event): void {
+    e.preventDefault();
+    e.stopPropagation();
+    this.optionSelected.emit('link');
+    this.isfilteropen=true;
+    this.optionsVisiblefilter=!this.optionsVisiblefilter;
+    this.optionsVisible = !this.optionsVisible;
+   
+
+
+  }
+
+
+  showtexts(e: Event): void {
+    e.preventDefault();
+    e.stopPropagation();
+    this.optionSelected.emit('text');
+ 
+
+  }
+
+
+
+
+  showimages(e: Event): void {
+    this.optionsVisiblefilter=!this.optionsVisiblefilter;
+    e.preventDefault();
+    e.stopPropagation();
+    this.optionSelected.emit('image');
+
+  }
+
+
+  showvoices(e: Event): void {
+    this.optionsVisiblefilter=!this.optionsVisiblefilter;
+    e.preventDefault();
+    e.stopPropagation();
+
+    this.optionSelected.emit('audio');
+  }
+
+
 }

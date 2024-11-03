@@ -315,3 +315,14 @@ input[type="text"]:focus {
   margin: 5px;
 }
  
+
+
+
+
+
+@media (max-width: 500px) {  
+  form,.add-preview{
+  width: 95%;
+  }
+  
+}
