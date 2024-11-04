@@ -166,3 +166,52 @@ margin-bottom: 10px;
   align-items: center;
   flex-wrap: wrap;
 }
+
+.profile-holder{
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  width: 100vw;
+  height: 100vh;
+  background-color: white;
+  overflow: scroll;
+}
+
+
+.closeicon {
+  padding: 15px;
+  width: 50px;
+  background-color: white;
+  border-radius: 50%;
+  position: fixed;
+  top: 70px;
+  right: 10px;
+  cursor: pointer;
+  transition: transform 0.5s, background-color 0.5s;  
+}
+
+.closeicon:hover {
+  transform: rotate(90deg); 
+  background-color: rgba(255, 255, 255, 0.644);
+}
+
+
+
+@media (max-width: 500px) {  
+ 
+  .navinationbuttonholder{
+    overflow-x: scroll;
+    width: auto;
+  }
+
+  .main-outer-holder{
+    width: 95vw;
+  }
+
+  .nodatamessageforviodeandaudio,.nodatamessage{
+    width: 95vw;
+    margin-top: 10px;
+  }
+ 
+  
+}

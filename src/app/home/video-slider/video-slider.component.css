@@ -27,7 +27,7 @@
 
 .video {
    
-  width: auto;  
+ 
   max-width: 100%;  
   border-radius: 10px;
   
@@ -225,9 +225,7 @@ cursor: pointer;
 
   
 @media (max-width: 500px) {  
-  .screen{
-  width: 100%;
-  }
+ 
   .inner1-holder{
     display: flex;
     flex-direction: column;
@@ -246,6 +244,16 @@ cursor: pointer;
 
   .commentscreen-holder{
     width: 100vw;
+  }
+  .video {
+   
+ 
+    max-width: 95vw;   
+    
+  }
+
+  .screen{
+    width: 95vw;
   }
    
   

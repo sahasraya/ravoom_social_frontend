@@ -31,6 +31,7 @@
     border-radius: 50%;
     width: 200px;
     height: 200px;
+    object-fit: cover;
   
 }
 .detail-holder{
@@ -112,21 +113,7 @@ input[type="text"]:focus{
     padding: 10px;
   }
 
-
-
-
-
-
-
-
-
-
-
-
-  
  
-  
-
 
 .user-profile {
   display: flex;
@@ -303,9 +290,13 @@ input[type="file"] {
     display: none;  
 }
 .groupname {
-  word-wrap: break-word;  
-  overflow-wrap: break-word;  
-  hyphens: auto;  
+  max-width: 400px;         
+  white-space: nowrap;      
+  overflow: hidden;         
+  text-overflow: ellipsis;  
+  word-wrap: break-word;    
+  overflow-wrap: break-word; 
+  hyphens: auto;            
 }
 
 .dropdown.open .dropdown-menu {
@@ -434,6 +425,7 @@ input[type="file"] {
   transition: color 0.3s ease;
   cursor: pointer;
   text-align: center;
+  width: max-content;
 }
 .createpostspan:hover{
 background-color: var( --primary-faded);
@@ -449,6 +441,84 @@ flex-direction: column;
 }
 
 
+
+
+
+
+
+
+
+
+@media (max-width: 500px) {  
+  .group-main-holder{
+  width: 99%;
+  }
+ .gobackatag{
+  position: sticky;
+  top: 10px;
+ 
+  z-index: 100;
+ }
+ .groupbackgroundimage{
+ 
+  position: relative;  
+  margin: 0;
+  margin-bottom: 12px;
+ }
+ .groupimageholder{
+  margin-top: -120px;
+  margin-left: 10px;
+  display: flex;
+  align-items: flex-start;
+ }
+ .groupimage{
+  width: 100px;
+  height: 100px;
+ }
+  
+ .overlay {
+  position: absolute; 
+  top: 0;  
+  left: 0;  
+  right: 0;  
+  bottom: 0;  
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.651), rgba(0, 0, 0, 0));  
+  z-index: 1; 
+}
+.groupname{
+  font-size: 21px;
+  color: white;
+  font-weight: bold;
+  max-width: 240px;       
+  white-space: nowrap;    
+  overflow: hidden;        
+  text-overflow: ellipsis; 
+  word-wrap: break-word;   
+  overflow-wrap: break-word; 
+  hyphens: auto;
+
+}
+.grouptype ,.followerscount{
+  color: white;
+}
+.posts-wrapper{
+  margin-right: 0px;
+  margin-left: 0px;
+}
+
+
+
+}
+
+
+
+
+
+
+
+
+
+/* 
   @media (max-width: 1200px) {
     .posts-container {
       flex-direction: column;  
@@ -464,7 +534,7 @@ flex-direction: column;
         margin-top: 20px;
         position: static;
       }
-  }
+  } */
 
 
 

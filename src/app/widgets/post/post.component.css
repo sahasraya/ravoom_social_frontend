@@ -516,6 +516,31 @@ outline:none;
   z-index: 1000;
 }
 
+
+.profile-holder{
+  position: fixed;
+}
+
+@media (max-width: 500px) {  
+  .username{
+    max-width: 200px;       
+    white-space: nowrap;    
+    overflow: hidden;        
+    text-overflow: ellipsis; 
+    word-wrap: break-word;   
+    overflow-wrap: break-word; 
+    hyphens: auto;
+  }
+
+  .imageholder ,.text-holder{
+    height: var(--post-dynamic-width-mobile);
+  }
+
+
+}
+
+
+
  
  
  

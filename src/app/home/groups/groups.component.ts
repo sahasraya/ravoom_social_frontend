@@ -38,6 +38,7 @@ export class GroupsComponent implements OnInit{
   BGimagechanched:boolean=false;
   maingroupimageischanched:boolean=false;
   showLargerImage: boolean = false;
+  isuserjoinggroup: boolean = false;
   showSmallergroupLargerImage: boolean = false;
   limit = 5;
   offset = 0;
@@ -71,10 +72,11 @@ export class GroupsComponent implements OnInit{
  
     }
     
-    this.joinedornottothegroup(this.userid,this.groupid);
+ 
     this.getnumberofgroupfollowers(this.groupid);
    
-    if(this.userid !=''){
+    if (this.userid != '') {
+      this.joinedornottothegroup(this.userid,this.groupid);
       this.getCurrunUserDetailsOfGroup(this.userid);
       this.getcurruntuserisfolloweduserlidt(this.userid);
     }
@@ -226,7 +228,6 @@ export class GroupsComponent implements OnInit{
 
       this.http.post<any>(this.APIURL + 'remove-group', formData).subscribe({
         next: response => {
-          console.log('Response from server:', response);
           if (response.message === "removed") {
             this.router.navigate(['/']);
           }
@@ -460,9 +461,13 @@ async changeusertypemodtouser(user: any, userid: any): Promise<void> {
   
      
       if (response.message === 'yes') {
-          this.btntext = "Leave group";
+        this.btntext = "Leave group";
+        this.isuserjoinggroup = true;
+
+        
       } else {
         this.btntext = "Join now";
+        this.isuserjoinggroup = false;
 
         
       }
@@ -673,18 +678,15 @@ async changeusertypemodtouser(user: any, userid: any): Promise<void> {
 
 
     if(this.btntext =="Leave group"){
-  
-     
-
       const result = confirm("Do you need to leavd the group?");
       if(result){
-        this.btntext="Join now";
+        this.btntext = "Join now";
+        this.isuserjoinggroup = false;
         
         
     
         this.http.post<any>(`${this.APIURL}join-group`, formData).subscribe({
           next: (response:any) => {
-            console.log (response);
             this.getGroupDetails(groupid);
             
           },
@@ -698,11 +700,11 @@ async changeusertypemodtouser(user: any, userid: any): Promise<void> {
     else if(this.btntext=="Join now"){
   
 
-        this.btntext ="Leave group";
+      this.btntext = "Leave group";
+      this.isuserjoinggroup = true;
 
         this.http.post<any>(`${this.APIURL}join-group`, formData).subscribe({
           next: (response:any) => {
-            console.log (response);
             this.getGroupDetails(groupid);
             
           },

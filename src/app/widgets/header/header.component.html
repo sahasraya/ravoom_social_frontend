@@ -1,5 +1,12 @@
 <div class="header">
 
+  <app-notification ></app-notification>
+
+  <div class="pop-group-holder-mobile" *ngIf="isclikedpopulargroups">
+    <img src="../../../assets/images/close.png" alt="" class="closeiconpopgroupmobile" (click)="closepopgroupsmobile()">
+    <app-feedscreen-group-list></app-feedscreen-group-list>
+  </div>
+
 
   <div class="nav-links">
     <div class="img-wrapper" (click)="gotohomepage($event)">
@@ -12,16 +19,10 @@
     <div class="right-side">
       <a routerLink="/auth/sign-up" *ngIf="userid == ''" class="signuplogin">Sign Up</a>
       <a routerLink="/auth/log-in" *ngIf="userid == ''" class="signuplogin">Log In</a>
-      <!-- <a routerLink="" *ngIf="userid != ''" (click)="logout()">log out</a> -->
-      <!-- <a routerLink="/home/settings/{{userid}}" *ngIf="userid != ''">settings</a>
-      <a routerLink="/home/profile/{{userid}}" *ngIf="userid != ''">profile</a> -->
+   
       <app-add-post *ngIf="openaddpostscreenbool" (closePost)="openaddpostscreenbool = false"></app-add-post>
 
-      <!-- <span class="creategroup" (click)="openaddpostscreen()">
-        <img src="../../../assets/images/add.png" alt="" *ngIf="userid != ''">
-        create
-
-      </span> -->
+   
       <a routerLink=""><img src="../../../assets/images/globe.png" alt="" class="globelicon"  *ngIf="userid != ''"></a>
       <a routerLink="/home/followers-feed"><img src="../../../assets/images/home.png" alt="" class="homeicon"  *ngIf="userid != ''"></a>
 
@@ -54,6 +55,12 @@
 
 
 
+  
+
+    
+
+    
+    
 
 
 
@@ -65,7 +72,7 @@
 
     
   
-    <app-search    > </app-search>
+    <app-search> </app-search>
     
     <div class="options-holder-profile-mobile" *ngIf="userid != ''"    >
       <img *ngIf="user?.profileimage" [src]="'data:image/jpeg;base64,' + user?.profileimage" alt="Profile Image" class="profileimage"(click)="navitating($event,'profile')">
@@ -102,6 +109,8 @@
     <img src="../../../assets/images/group.png" alt="">
     <span>Popular Groups</span>
    </div>
+
+  
 
 
    <div class="options-holder"   (click)="navitating($event,'interactions')" *ngIf="userid != ''">
@@ -201,7 +210,7 @@
       </div>
 
 
-      <app-notification></app-notification>
+  
     </div>
   </div>
 </div>

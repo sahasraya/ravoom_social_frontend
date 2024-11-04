@@ -7,7 +7,10 @@
 
     <div *ngIf="group.groupbackgroundimage" class="groupbackgroundimage" (click)="onImageClick()">
         <img [src]="groupbackgroundimage" alt="Group Background Image" class="groupbackgroundimage">
+        <div class="overlay"></div>
       </div>
+
+     
 
  
       <app-image-larger *ngIf="showLargerImage" [imageUrl]="'data:image/jpeg;base64,' + group?.groupbackgroundimage" (close)="onCloseLargerImage()"></app-image-larger>
@@ -21,14 +24,14 @@
                    <div class="detail-holder">
                     <h2 class="groupname">{{ groupname }}</h2>
                    
-                    <span>{{ group.grouptype }}</span>
+                    <span class="grouptype">{{ group.grouptype }}</span>
             
 
                   
                     
-                    <small>{{followerscount}} members</small>
+                    <small class="followerscount">{{followerscount}} members</small>
 
-                    <span (click)="addgrouppost()" class="createpostspan">Create post</span>
+                    <span (click)="addgrouppost()" class="createpostspan" *ngIf="isuserjoinggroup">Create post</span>
 
                    </div>
     </div>

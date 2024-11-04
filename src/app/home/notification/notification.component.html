@@ -4,7 +4,10 @@
 
 <div class="notofication-holder" *ngIf="opennotificationwindow" >
    
- 
+    <img src="../../../assets/images/close.png" alt="" class="closeicon" (click)="closenotificationsinmobile($event)">
+
+
+
 
 <div class="nonotifications-banner" *ngIf="notifications.length == 0">
     

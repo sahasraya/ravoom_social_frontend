@@ -1,6 +1,6 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { HttpClient, HttpClientModule, HttpErrorResponse, HttpParams } from '@angular/common/http';
-import { ChangeDetectorRef, Component, HostListener, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, HostListener, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule, RouterOutlet } from '@angular/router';
 import { PostComponent } from '../../widgets/post/post.component';
@@ -27,6 +27,7 @@ import { environment } from '../../../environments/environment';
   styleUrl: './profile.component.css'
 })
 export class ProfileComponent   {
+  @Input() profileowneruid: string | undefined;
 
  
   userid: any;
@@ -62,21 +63,30 @@ export class ProfileComponent   {
 
   ngOnInit(): void {
 
+ 
+
     this.route.paramMap.subscribe(params => {
     this.userid = params.get('uid')!;
     this.getfrommethoduserid = localStorage.getItem('wmd') || '';
-    this.loadInitialData();
-   
-    if(this.userid !=''){
-      this.getUserDetails();
+      this.loadInitialData();
+ 
+
+      if (this.profileowneruid) {
+      this.getUserDetails(this.profileowneruid);
+        
+      } else if (this.userid != '') {
+      
+      this.getUserDetails(this.userid);
       this.getiamfolloinguserlist(this.userid);
       this.getiamfolloeduserlist(this.userid);
       this.getuserdetailsFrommethod(this.getfrommethoduserid);
       this.getfavList(this.userid);
       this.getfollowingstatus(this.getfrommethoduserid);
-    }
+    }  
     
-    else{
+      else {
+       
+        
       this.iamfollowinguserslist = [];
       this.iamfolloweduserslist= [];
       this.userfrommethod = null;
@@ -90,7 +100,21 @@ export class ProfileComponent   {
   loadInitialData(): void {
     this.posts = [];  
     this.offset = 0;  
-    this.getPostsFeed();
+    if (this.profileowneruid) {
+ 
+      this.getPostsFeed(this.profileowneruid);
+      if (this.getfrommethoduserid) {
+        this.userid = this.getfrommethoduserid;
+        this.getfollowingstatus(this.profileowneruid);
+
+      }
+     
+
+    } else {
+
+      this.getPostsFeed(this.userid);
+      
+    }
   }
 
 
@@ -264,12 +288,12 @@ export class ProfileComponent   {
       }
     });
   }
- async getPostsFeed(): Promise<void> {
+ async getPostsFeed(userid:string): Promise<void> {
     if (this.loading) return;
     this.loading = true;
-
+ 
     const formDataUser = new FormData();
-    formDataUser.append('userid', this.userid);
+    formDataUser.append('userid', userid);
     formDataUser.append('limit', this.limit.toString());
     formDataUser.append('offset', this.offset.toString());
 
@@ -322,12 +346,14 @@ openaddpostscreen(type: string): void {
   this.openaddpostscreenbool = true;
 }
 
-  getUserDetails(): void {
+  getUserDetails(userid: string): void {
    
 
 
     const formData = new FormData();
-    formData.append('userid', this.userid.toString());
+    formData.append('userid', userid.toString());
+    
+ 
 
     this.http.post<any>(`${this.APIURL}get_user_details`, formData).subscribe({
       next: (response:any) => {
@@ -358,7 +384,12 @@ onScroll(event: Event): void {
         if(this.showfavelistBool){
             this.getfavList(this.userid);
         }else{
-          this.getPostsFeed();
+          if (this.profileowneruid) {
+            this.getPostsFeed(this.profileowneruid);
+          } else {
+            this.getPostsFeed(this.userid);
+            
+          }
 
         }
     }
@@ -406,7 +437,7 @@ onCloseLargerImage(): void {
   this.showLargerImage = false;
 }
 onPostAdded(): void {
-  this.getPostsFeed();  
+  this.getPostsFeed(this.userid);  
 }
 
 

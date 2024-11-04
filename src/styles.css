@@ -178,6 +178,7 @@ html {
     --primary-dark: rgb(43,149,236);
     --primary-darker: rgb(43,149,236);
     --post-dynamic-width: 80vh;
+    --post-dynamic-width-mobile: 50vh;
     --user-left-hoder-post-dynamic-width: 35vh;
     --user-left-hoder-post-dynamic-width-audio:20vh;
     --icon-backgroud-color: rgba(128, 128, 128, 0.308);

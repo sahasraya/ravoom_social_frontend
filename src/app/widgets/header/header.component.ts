@@ -8,12 +8,19 @@ import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http
 import { AddPostComponent } from '../add-post/add-post.component';
 import { environment } from '../../../environments/environment';
 import { FeedscreenUserListComponent } from '../feedscreen-user-list/feedscreen-user-list.component';
+import { FeedscreenGroupListComponent } from '../feedscreen-group-list/feedscreen-group-list.component';
  
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule,RouterModule,SearchComponent,NotificationComponent,AddPostComponent,FeedscreenUserListComponent],
+  imports: [CommonModule,
+    RouterModule,
+    SearchComponent,
+    NotificationComponent,
+    AddPostComponent,
+    FeedscreenGroupListComponent,
+    FeedscreenUserListComponent],
   templateUrl: './header.component.html',
   styleUrl: './header.component.css'
 })
@@ -37,7 +44,8 @@ export class HeaderComponent implements OnInit{
   private openDropdown: HTMLElement | null = null;
   optionsVisible: boolean = false;
   optionsVisiblefilter: boolean = false;
-  isfilteropen:boolean=false;
+  isfilteropen: boolean = false;
+  isclikedpopulargroups: boolean = false;
   postType: string = "";
 
   @ViewChild('mainlogo', { static: true }) mainLogo!: ElementRef;
@@ -71,6 +79,9 @@ export class HeaderComponent implements OnInit{
   }
 
 
+  closepopgroupsmobile(): void{
+    this.isclikedpopulargroups = false;
+  }
   handleOptionSelection(option: string) {
     this.optionsVisiblefilter=!this.optionsVisiblefilter;
     this.optionsVisible = !this.optionsVisible; 
@@ -97,10 +108,10 @@ export class HeaderComponent implements OnInit{
         this.router.navigate(['/']);
         break;
       case 'notifications':
-        this.router.navigate(['/home/notification']);
+        this.getNotifications();
         break;
       case 'populargroups':
-        this.router.navigate(['/populargroups']);
+        this.isclikedpopulargroups = true;
         break;
       case 'interactions':
         this.router.navigate(['/interactions']);

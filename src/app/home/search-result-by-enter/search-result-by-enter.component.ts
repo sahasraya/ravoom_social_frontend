@@ -5,11 +5,13 @@ import { ActivatedRoute, RouterModule } from '@angular/router';
 import { PostComponent } from '../../widgets/post/post.component';
 import { SharedServiceService } from '../../services/shared-service.service';
 import { environment } from '../../../environments/environment';
+import { ProfileComponent } from '../profile/profile.component';
+import { HeaderComponent } from '../../widgets/header/header.component';
 
 @Component({
   selector: 'app-search-result-by-enter',
   standalone: true,
-  imports: [CommonModule,PostComponent,RouterModule],
+  imports: [CommonModule,PostComponent,RouterModule,ProfileComponent,HeaderComponent],
   templateUrl: './search-result-by-enter.component.html',
   styleUrl: './search-result-by-enter.component.css'
 })
@@ -19,6 +21,7 @@ export class SearchResultByEnterComponent  implements OnInit{
   constructor(private route: ActivatedRoute, private http: HttpClient,private sharedservice:SharedServiceService) {}
 
   searchtext: string = '';
+  profileowneruid: string = '';
   userid:string='';
   APIURL = environment.APIURL;
   responseObject: any = [];
@@ -43,6 +46,7 @@ export class SearchResultByEnterComponent  implements OnInit{
   showTextLinkPostsBool: boolean = false;
   showUserBool: boolean = false;
   showGroupBool: boolean = false;
+  isclickedtoshowuser: boolean = false;
 
   linkPreviewData: any = null;
 
@@ -84,7 +88,15 @@ export class SearchResultByEnterComponent  implements OnInit{
 
  
 
+  closeprofilewindow(): void{
+    this.isclickedtoshowuser= false 
+  }
    
+  showtheuserprofile(event: Event, navigatingprofileuserid: string): void {
+    event.preventDefault(); 
+    this.profileowneruid = navigatingprofileuserid; 
+    this.isclickedtoshowuser = true;
+  }
 
 async getGroup(searchtext: string):Promise<void>{
     

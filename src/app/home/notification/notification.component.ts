@@ -54,6 +54,11 @@ export class NotificationComponent implements OnInit {
     });
   }
 
+  closenotificationsinmobile(e: Event): void{
+   
+    this.opennotificationwindow = !this.opennotificationwindow;
+   
+  }
 
   calculateTimeAgo(postedDate: string): string {
     const now = new Date();
