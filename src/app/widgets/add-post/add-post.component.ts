@@ -328,6 +328,8 @@ this.getLinkPreview(this.linkUrl);
       this.selectedFiles.forEach(file => {
         formData.append('imagefile', file, file.name);   
       });
+
+ 
   
       this.http.post(this.APIURL + 'add-post-image', formData,{headers}).subscribe({
         next: response => {

@@ -103,11 +103,15 @@
   </div>
 
   
-  <div *ngIf="post.posttype === 'image'" class="imageholder">
-    <span class="numberofimages" *ngIf="post.images.length>1">{{post.images.length}}</span>
-    <img   [src]="imageUrl" alt="Post Image"   (click)="getthecomments($event, post.postid,post.n_or_g)" />
-    <!-- <img   [src]="imageUrl" alt="Post Image" (click)="showImageSliderMethod(post.images)" /> -->
+  <div class="main-outer-div-holder-image" *ngIf="post.posttype === 'image'">
+    <img [src]="imageUrl" alt="Post Image" (click)="getthecomments($event, post.postid, post.n_or_g)" class="mainimage" />
+
+    <div [ngStyle]="backgroundStyle" class="imageholder">
+      <span class="numberofimages" *ngIf="post.images.length > 1">{{ post.images.length }}</span>
+
+    </div>
   </div>
+  
 
 
   <div *ngIf="post.posttype === 'group'" class="imageholder">
@@ -195,14 +199,7 @@
 
   </div>
 
-
-  <div class="alert-BG" *ngIf="postToBeDeleted" >
-    <div  class="delete-confirmation-dialog">
-      <p>Are you sure you want to remove the comment?</p>
-      <button (click)="removePostYes(post.postid)">Yes</button>
-      <button (click)="cancelDeleteComment()">No</button>
-    </div>
-  </div>
+ 
 
 
 

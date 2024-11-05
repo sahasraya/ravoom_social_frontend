@@ -65,6 +65,7 @@ margin-bottom: 10px;
   cursor: pointer;
   text-align: center;  
   margin: 0 5px;  
+  font-size: 15px;
 }
 
 .navigationsbuttons:hover {
@@ -215,6 +216,11 @@ margin-bottom: 10px;
   .nodatamessageforviodeandaudio,.nodatamessage{
     width: 95vw;
     margin-top: 10px;
+  }
+
+  .navigationsbuttons{
+    font-size: 12px;
+    padding: 5px;
   }
  
   

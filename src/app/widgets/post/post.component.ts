@@ -56,13 +56,11 @@ export class PostComponent implements OnInit {
   getthecommentsBool:boolean = false;
   groupornormalpost:string= "";
   selectedPostId: string | null = null;
- 
+  backgroundStyle: { [key: string]: string } = {};
 
   constructor(private cdref: ChangeDetectorRef,private renderer: Renderer2, private http: HttpClient, private router: Router, @Inject(PLATFORM_ID) private platformId: Object, private route: ActivatedRoute,private sharedservice:SharedServiceService,) { }
   ngOnInit(): void {
-    this.checkuseridtoroutecommentscreen = this.route.snapshot.paramMap.get('uid')!;
-
-   
+    this.checkuseridtoroutecommentscreen = this.route.snapshot.paramMap.get('uid')!; 
     this.getpostlikecount();
     this.getpostcommentCount();
     this.getfollowingstatus(this.post.userid);
@@ -79,23 +77,13 @@ export class PostComponent implements OnInit {
       try {
         const blob = this.convertBase64ToBlob(base64Data, 'video/mp4');
         this.videoUrl = URL.createObjectURL(blob);
-      } catch (error) {
-
-      }
+      } catch (error) {}
       this.imageUrl = '';
       this.audioUrl = '';
-    }
-     
-
-    
-    if(this.userid !=''){
+    } if(this.userid !=''){
       this.checkTheOnlineStatus(this.post.userid);
 
     }
-
-
-   
-
   }
 
  
@@ -354,16 +342,10 @@ closememebrslikeddiv(e:Event):void{
 
         try {
           const response: any = await this.http.get<any>(`${this.APIURL}following-status`, { params }).toPromise();
-
-
-
-
           if (response.exists) {
             this.followButtonText = "Following";
           } else {
             this.followButtonText = "Follow";
-
-
           }
 
           if (response.exists) {
@@ -388,9 +370,6 @@ closememebrslikeddiv(e:Event):void{
     const formData = new FormData();
     formData.append('myuserid', this.userid);
     formData.append('iamfollowinguserid', iamfollowinguserid);
-
-
-
     this.http.post(this.APIURL + 'start-to-follow', formData).subscribe({
       next: (response: any) => {
 
@@ -414,9 +393,6 @@ closememebrslikeddiv(e:Event):void{
 
 
       const dotElement = document.querySelector(`.dot-blue[data-postid="${this.post.postid}"]`);
-     
-
-
       if (this.post.n_or_g == "g") {
         const params = new HttpParams().set('postid', this.post.postid.toString());
         try {
@@ -535,6 +511,25 @@ closememebrslikeddiv(e:Event):void{
   ngAfterContentChecked() {
     if (this.post.posttype === 'image' && !this.imageUrl) {
       this.imageUrl = this.createBlobUrl(this.post.image, 'image/jpeg');
+      this.profileImageUrl = this.createBlobUrl(this.post.userprofile, 'image/jpeg');
+
+   
+      this.backgroundStyle = {
+        'background-image': `url(${this.imageUrl})`,
+        'background-color': '#d9d9d9',  
+        'background-size': 'cover',  
+        'background-position': 'center',
+      
+        'filter': 'blur(50px)',  
+        'opacity': '0.4',  
+        'display': 'flex',  
+        'align-items': 'center',
+        'justify-content': 'center',
+        'border-radius': '10px',  
+        'position': 'relative', 
+        
+      
+      };
     } else if (this.post.posttype === 'audio' && !this.audioUrl) {
       const base64Data = this.post.post;
       const blob = this.convertBase64ToBlobAudio(base64Data);
@@ -556,6 +551,7 @@ closememebrslikeddiv(e:Event):void{
     
     this.cdref.detectChanges();
   }
+  
   
   cleanupUnusedUrls(): void {
     if (!this.imageUrl) {
@@ -734,11 +730,7 @@ closememebrslikeddiv(e:Event):void{
     this.cdref.detectChanges();
   }
 
-  removePost(postId: any): void {
-    this.postToBeDeleted = true;
-
-    console.log('Removing post with ID:', postId);
-  }
+ 
 
   @HostListener('document:click', ['$event'])
   closeAllDropdowns(event?: MouseEvent): void {
@@ -748,50 +740,52 @@ closememebrslikeddiv(e:Event):void{
 
 
 
-  removePostYes(postId: any): void {
-    const params = new HttpParams()
-      .set('postid', postId.toString())
-      .set('userid', this.userid.toString());
-
-    const token = localStorage.getItem('jwt');
-    if(!token){
-      alert("Unauthorized access. Please check your credentials.");
-      return;
-    }
-
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`
-    });
-    
-    const options = { headers, params };
-
-    this.http.get<any>(`${this.APIURL}delete_post`, options ).subscribe({
-      next: (response: any) => {
-
-
-        if (response.message === 'Deleted') {
-          this.delete.emit();
-        }
-        this.postToBeDeleted = false;
-        this.cdref.detectChanges();
-      },
-      error: (error: HttpErrorResponse) => {
-        if (error.status === 401) {
-        
-          alert("Unauthorized access. Please check your credentials.");
-
-        }
-        if (error.status === 500) {
-        
-          alert("Internel server error.");
-
-        }
-
-
-        console.error('There was an error!', error);
+  removePost(postId: any): void {
+   
+    const userConfirmed = window.confirm("Do you want to delete this post?");
+  
+ 
+    if (userConfirmed) {
+      const params = new HttpParams()
+        .set('postid', postId.toString())
+        .set('userid', this.userid.toString());
+  
+      const token = localStorage.getItem('jwt');
+      if (!token) {
+        alert("Unauthorized access. Please check your credentials.");
+        return;
       }
-    });
+  
+      const headers = new HttpHeaders({
+        'Authorization': `Bearer ${token}`
+      });
+  
+      const options = { headers, params };
+  
+      this.http.get<any>(`${this.APIURL}delete_post`, options).subscribe({
+        next: (response: any) => {
+          if (response.message === 'Deleted') {
+            this.delete.emit();
+          }
+          this.postToBeDeleted = false;
+          this.cdref.detectChanges();
+        },
+        error: (error: HttpErrorResponse) => {
+          if (error.status === 401) {
+            alert("Unauthorized access. Please check your credentials.");
+          }
+          if (error.status === 500) {
+            alert("Internal server error.");
+          }
+          console.error('There was an error!', error);
+        }
+      });
+    } else {
+      // User chose not to delete the post
+      console.log("User canceled the deletion.");
+    }
   }
+  
 
 
   cancelDeleteComment(): void {

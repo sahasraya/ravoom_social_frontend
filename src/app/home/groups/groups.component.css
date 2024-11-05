@@ -363,6 +363,7 @@ input[type="file"] {
   left: 15px;
   transition: background-color 0.3s;
   cursor: pointer;
+
 }
 .backarrow:hover{
   background-color: var(--icon-backgroud-color);
@@ -458,9 +459,9 @@ flex-direction: column;
   }
  .gobackatag{
   position: sticky;
-  top: 10px;
+  top: 70px;
  
-  z-index: 100;
+  z-index: 9;
  }
  .groupbackgroundimage{
  
@@ -473,6 +474,7 @@ flex-direction: column;
   margin-left: 10px;
   display: flex;
   align-items: flex-start;
+  z-index: 1;
  }
  .groupimage{
   width: 100px;
@@ -536,7 +538,7 @@ color: black;
 .navigation-holder{
   margin: 0px;
   overflow-x: scroll;
- 
+ padding: 10px;
   
 
 }
