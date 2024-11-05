@@ -39,6 +39,7 @@
     </div>
 
 
+
     <div class="postownerdetailholder">
            <div class="username-holder">
             <span>
@@ -46,9 +47,7 @@
                 <a  class="username" (click)="navigatetouser()" title="see {{post.username}} profile">{{ post.username }} </a>
               <small >{{ calculateTimeAgo(post.posteddate) }}</small>
               </div>
-              <span *ngIf="post.groupname != null">&#64; {{ post.groupname }}</span>
    
-
             </span>
                   <div class="buttun-hodler" >
                    
@@ -90,6 +89,8 @@
 
  
   <h3 *ngIf="userid == post.userid && post.posttype === 'group'">Your group</h3>
+  <span *ngIf="post.groupname != null" class="groupname" (click)="joingroup(post.grouptype,post.groupid,post.username,post.userid )">  {{ post.groupname }}</span>
+
  
   <span *ngIf="post.posttype === 'link'" class="linktext">{{post.filepath}}</span>
 

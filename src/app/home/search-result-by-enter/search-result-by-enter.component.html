@@ -1,403 +1,407 @@
-<div class="navinationbuttonholder">
-  <button (click)="showTextImageLinkPosts()"  [class.selected]="showImagetextLinkPostsBool" class="navigationsbuttons">Posts ({{ImageTextLinkPosts.length}})</button>
-<button (click)="showAudioPosts()"  [class.selected]="showAudioPostsBool" class="navigationsbuttons">Audios ({{audioPosts.length}})</button>
-<button (click)="showVideoPosts()"  [class.selected]="showVideoPostsBool" class="navigationsbuttons">Videos ({{videoPosts.length}})</button>
-<button (click)="showTextLinkPosts()"  [class.selected]="showTextLinkPostsBool" class="navigationsbuttons">Texts & Links ({{TextLinkPosts.length}})</button>
-<button (click)="showUser()"  [class.selected]="showUserBool" class="navigationsbuttons">Users ({{UserList.length}})</button>
-<button (click)="showGroups()"  [class.selected]="showGroupBool" class="navigationsbuttons">Groups ({{GroupList.length}})</button>
-</div>
-
-<!-- <button (click)="showImagePosts()">Show Images</button> -->
-<!-- <button (click)="showTextPosts()">Show Texts</button> -->
-<!-- <button (click)="showLinkPosts()">Show Links</button> -->
-
-
-
- 
-
-<div class="video-post-holder" *ngIf="showImagetextLinkPostsBool">
- 
-
-  <div class="posts-container" *ngIf="ImageTextLinkPosts.length > 0"> 
- 
-    <div *ngFor="let post of ImageTextLinkPosts; let i = index">
-      <app-post [post]="post" ></app-post>
-    </div>
-
-   
-
-    <div class="div-button-holder" *ngIf="moreDataAvailabletextimagelink">
-      <span (click)="loadMoreTextImageLink($event)" class="loadmorebutton"  >Load More</span>
-    </div>
-
-
+<div class="main-outer-holder-search">
+  <div class="navinationbuttonholder">
+    <button (click)="showTextImageLinkPosts()"  [class.selected]="showImagetextLinkPostsBool" class="navigationsbuttons">Posts ({{ImageTextLinkPosts.length}})</button>
+  <button (click)="showAudioPosts()"  [class.selected]="showAudioPostsBool" class="navigationsbuttons">Audios ({{audioPosts.length}})</button>
+  <button (click)="showVideoPosts()"  [class.selected]="showVideoPostsBool" class="navigationsbuttons">Videos ({{videoPosts.length}})</button>
+  <button (click)="showTextLinkPosts()"  [class.selected]="showTextLinkPostsBool" class="navigationsbuttons">Texts & Links ({{TextLinkPosts.length}})</button>
+  <button (click)="showUser()"  [class.selected]="showUserBool" class="navigationsbuttons">Users ({{UserList.length}})</button>
+  <button (click)="showGroups()"  [class.selected]="showGroupBool" class="navigationsbuttons">Groups ({{GroupList.length}})</button>
   </div>
- 
-
-  <div class="nodatamessage" *ngIf="ImageTextLinkPosts.length === 0">
+  
+  <!-- <button (click)="showImagePosts()">Show Images</button> -->
+  <!-- <button (click)="showTextPosts()">Show Texts</button> -->
+  <!-- <button (click)="showLinkPosts()">Show Links</button> -->
+  
+  
+  
+   
+  
+  <div class="video-post-holder" *ngIf="showImagetextLinkPostsBool">
+   
+  
+    <div class="posts-container" *ngIf="ImageTextLinkPosts.length > 0"> 
+   
+      <div *ngFor="let post of ImageTextLinkPosts; let i = index">
+        <app-post [post]="post" ></app-post>
+      </div>
+  
+     
+  
+      <div class="div-button-holder" *ngIf="moreDataAvailabletextimagelink">
+        <span (click)="loadMoreTextImageLink($event)" class="loadmorebutton"  >Load More</span>
+      </div>
+  
+  
+    </div>
+   
+  
+    <div class="nodatamessage" *ngIf="ImageTextLinkPosts.length === 0">
+      <img src="../../../assets/images/imagepost.png" alt="">
+  
+      <p>No Posts Found</p>
+    </div>
+    
+  
+  </div>
+  
+  
+  
+  
+  
+  <div class="video-post-holder" *ngIf="showVideoPostsBool">
+  
+  
+    <div class="posts-container" *ngIf="videoPosts.length > 0"> 
+      <div *ngFor="let post of videoPosts; let i = index" >
+        <app-post [post]="post" ></app-post>
+      </div>
+  
+  
+      
+      <div class="div-button-holder" *ngIf="videoPosts.length > 0">
+        <span (click)="loadMoreVideos($event)" class="loadmorebutton"  >Load More</span>
+      </div>
+  
+  
+      
+    </div>
+  
+    <div class="nodatamessageforviodeandaudio" *ngIf="videoPosts.length==0">
+  
+      <img src="../../../assets/images/videopost.png" alt="">
+  
+      <p>No Videos Found</p>
+  
+    </div>
+  </div>
+  
+  
+  
+  
+  
+  
+  
+  <div class="audio-post-holder" *ngIf="showAudioPostsBool">
+    <div *ngFor="let post of audioPosts" class="main-outer-holder">
+      <div class="inner-holder">
+        <div class="profile-image-holder">
+            <img *ngIf="post.userprofileUrl" [src]="post.userprofileUrl" alt="Profile Image" class="profileimage">
+  
+             <div class="details">
+                <p>{{ post.username }}</p>
+                <p>{{ calculateTimeAgo(post.posteddate) }}</p>
+             </div>
+        </div>
+  
+       
+    </div>
+  
+  
+    <p>{{ post.postdescription }}</p>
+  
+      <audio [src]="post.filepath" controls></audio>
+   
+    </div>
+    <div class="nodatamessageforviodeandaudio" *ngIf="audioPosts.length==0">
+      <img src="../../../assets/images/audiopost.png" alt="">
+  
+      <p>No Audios Found</p>
+    </div>
+  
+  </div>
+  
+  
+  
+  
+  
+  <!-- <div class="image-post-holder" *ngIf="showImagePostsBool">
+      <div *ngFor="let post of imagePosts" class="main-outer-holder">
+  
+      
+              <div class="inner-holder">
+                  <div class="profile-image-holder">
+                      <img *ngIf="post.userprofileUrl" [src]="post.userprofileUrl" alt="Profile Image" class="profileimage">
+      
+                       <div class="details">
+                          <p>{{ post.username }}</p>
+                          <p>{{ calculateTimeAgo(post.posteddate) }}</p>
+                       </div>
+                  </div>
+      
+                  <img *ngIf="post.postUrl" [src]="post.postUrl" alt="Post Image" class="post">
+              </div>
+  
+  
+              <p>{{ post.postdescription }}</p>
+   
+        
+      </div>
+  
+  
+  
+      <div class="nodatamessage" *ngIf="imagePosts.length==0">
+        <p>no audio files found</p>
+      </div>
+  
+    </div> -->
+    
+    
+  
+  
+  
+  
+  
+  
+  
+  
+    <!-- <div class="image-post-holder" *ngIf="showLinkPostsBool">
+      <div *ngFor="let post of linkPosts" class="main-outer-holder">
+  
+      
+              <div class="inner-holder">
+                  <div class="profile-image-holder">
+                      <img *ngIf="post.userprofileUrl" [src]="post.userprofileUrl" alt="Profile Image" class="profileimage">
+      
+                       <div class="details">
+                          <p>{{ post.username }}</p>
+                          <p>{{ calculateTimeAgo(post.posteddate) }}</p>
+                       </div>
+                  </div>
+      
+                  <div  class="previewdiv">
+                    <h3>{{ post.filepath }}</h3>
+                    
+                    <img [src]="post.textbody" alt="{{ post.title }}" class="post">
+                    <a [href]="post.thelink" target="_blank">{{ post.thelink }}</a>
+                  </div>
+  
+              </div>
+  
+  
+              <p>{{ post.postdescription }}</p>
+   
+        
+      </div>
+  
+  
+  
+      <div class="nodatamessage" *ngIf="linkPosts.length==0">
+        <p>no link files found</p>
+      </div>
+  
+    </div> -->
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <!-- <div class="text-post-holder" *ngIf="showTextPostsBool">
+    <div *ngFor="let post of textPosts" class="main-outer-holder">
+      <div class="inner-holder">
+        <div class="profile-image-holder">
+            <img *ngIf="post.userprofileUrl" [src]="post.userprofileUrl" alt="Profile Image" class="profileimage">
+  
+             <div class="details">
+                <p>{{ post.username }}</p>
+                <p>{{ calculateTimeAgo(post.posteddate) }}</p>
+             </div>
+        </div>
+  
+       
+    </div>
+    <div class="inner-text-post-holder" [style.background-color]="post.textcolor">
+      <p >{{ post.textbody }}</p>
+    </div>
+    
+    </div>
+  
+    <div class="nodatamessage" *ngIf="textPosts.length==0">
+      <p>no text files found</p>
+    </div>
+   
+  </div> -->
+  
+  
+  
+  
+  
+  
+  <div class="text-link-post-holder" *ngIf="showTextLinkPostsBool">
+    
+   
+    <div class="posts-container">
+     
+      <div *ngFor="let post of TextLinkPosts; let i = index">
+   
+  
+        <app-post [post]="post" ></app-post>
+  
+  
+      </div>
+  
+      <div class="div-button-holder" *ngIf="moreDataAvailablelink">
+        <span (click)="loadMoreTextLinks($event)" class="loadmorebutton"  >Load More</span>
+      </div>
+    
+    </div>
+  
+   
+  
+  
+    <!-- <div *ngFor="let post of TextLinkPosts" class="main-outer-holder">
+      <div class="inner-holder">
+        <div class="profile-image-holder">
+          <img *ngIf="post.userprofileUrl" [src]="post.userprofileUrl" alt="Profile Image" class="profileimage">
+          <div class="details">
+            <p>{{ post.username }}</p>
+            <p>{{ calculateTimeAgo(post.posteddate) }}</p>
+          </div>
+        </div>
+  
+    
+    
+  
+        <ng-container *ngIf="post.posttype === 'text'">
+          <div class="inner-text-post-holder" [style.background-color]="post.textcolor">
+            <p>{{ post.textbody }}</p>
+          </div>
+        </ng-container>
+  
+        <ng-container *ngIf="post.posttype === 'link'">
+          <div class="previewdiv">
+            <h3>{{ post.filepath }}</h3>
+            <img *ngIf="post.textbody" [src]="post.textbody" alt="{{ post.title }}" class="post">
+            <a [href]="post.thelink" target="_blank">{{ post.thelink }}</a>
+          </div>
+        </ng-container>
+  
+      </div>
+  
+     
+      <p>{{ post.postdescription }}</p>
+    </div> -->
+  
+   
+    
+    
+  </div>
+  
+  <div class="nodatamessage" *ngIf="TextLinkPosts.length === 0 && showTextLinkPostsBool"  >
     <img src="../../../assets/images/imagepost.png" alt="">
-
+  
     <p>No Posts Found</p>
   </div>
   
-
-</div>
-
-
-
-
-
-<div class="video-post-holder" *ngIf="showVideoPostsBool">
-
-
-  <div class="posts-container" *ngIf="videoPosts.length > 0"> 
-    <div *ngFor="let post of videoPosts; let i = index" >
-      <app-post [post]="post" ></app-post>
-    </div>
-
-
+  
+  
+  
+  
+  
+  
+  
+  <div *ngIf="showUserBool" >
+  
+    <div class="profile-holder" *ngIf="isclickedtoshowuser && showUserBool">
+      <app-header></app-header>
+      <img src="../../../assets/images/close.png" alt="" class="closeicon" (click)="closeprofilewindow()">
     
-    <div class="div-button-holder" *ngIf="videoPosts.length > 0">
-      <span (click)="loadMoreVideos($event)" class="loadmorebutton"  >Load More</span>
-    </div>
-
-
-    
-  </div>
-
-  <div class="nodatamessageforviodeandaudio" *ngIf="videoPosts.length==0">
-
-    <img src="../../../assets/images/videopost.png" alt="">
-
-    <p>No Videos Found</p>
-
-  </div>
-</div>
-
-
-
-
-
-
-
-<div class="audio-post-holder" *ngIf="showAudioPostsBool">
-  <div *ngFor="let post of audioPosts" class="main-outer-holder">
-    <div class="inner-holder">
-      <div class="profile-image-holder">
-          <img *ngIf="post.userprofileUrl" [src]="post.userprofileUrl" alt="Profile Image" class="profileimage">
-
-           <div class="details">
-              <p>{{ post.username }}</p>
-              <p>{{ calculateTimeAgo(post.posteddate) }}</p>
-           </div>
-      </div>
-
-     
-  </div>
-
-
-  <p>{{ post.postdescription }}</p>
-
-    <audio [src]="post.filepath" controls></audio>
- 
-  </div>
-  <div class="nodatamessageforviodeandaudio" *ngIf="audioPosts.length==0">
-    <img src="../../../assets/images/audiopost.png" alt="">
-
-    <p>No Audios Found</p>
-  </div>
-
-</div>
-
-
-
-
-
-<!-- <div class="image-post-holder" *ngIf="showImagePostsBool">
-    <div *ngFor="let post of imagePosts" class="main-outer-holder">
-
-    
-            <div class="inner-holder">
-                <div class="profile-image-holder">
-                    <img *ngIf="post.userprofileUrl" [src]="post.userprofileUrl" alt="Profile Image" class="profileimage">
-    
-                     <div class="details">
-                        <p>{{ post.username }}</p>
-                        <p>{{ calculateTimeAgo(post.posteddate) }}</p>
-                     </div>
-                </div>
-    
-                <img *ngIf="post.postUrl" [src]="post.postUrl" alt="Post Image" class="post">
-            </div>
-
-
-            <p>{{ post.postdescription }}</p>
- 
-      
-    </div>
-
-
-
-    <div class="nodatamessage" *ngIf="imagePosts.length==0">
-      <p>no audio files found</p>
-    </div>
-
-  </div> -->
-  
-  
-
-
-
-
-
-
-
-
-  <!-- <div class="image-post-holder" *ngIf="showLinkPostsBool">
-    <div *ngFor="let post of linkPosts" class="main-outer-holder">
-
-    
-            <div class="inner-holder">
-                <div class="profile-image-holder">
-                    <img *ngIf="post.userprofileUrl" [src]="post.userprofileUrl" alt="Profile Image" class="profileimage">
-    
-                     <div class="details">
-                        <p>{{ post.username }}</p>
-                        <p>{{ calculateTimeAgo(post.posteddate) }}</p>
-                     </div>
-                </div>
-    
-                <div  class="previewdiv">
-                  <h3>{{ post.filepath }}</h3>
-                  
-                  <img [src]="post.textbody" alt="{{ post.title }}" class="post">
-                  <a [href]="post.thelink" target="_blank">{{ post.thelink }}</a>
-                </div>
-
-            </div>
-
-
-            <p>{{ post.postdescription }}</p>
- 
-      
-    </div>
-
-
-
-    <div class="nodatamessage" *ngIf="linkPosts.length==0">
-      <p>no link files found</p>
-    </div>
-
-  </div> -->
-
-
-
-
-
-
-
-
-
-<!-- <div class="text-post-holder" *ngIf="showTextPostsBool">
-  <div *ngFor="let post of textPosts" class="main-outer-holder">
-    <div class="inner-holder">
-      <div class="profile-image-holder">
-          <img *ngIf="post.userprofileUrl" [src]="post.userprofileUrl" alt="Profile Image" class="profileimage">
-
-           <div class="details">
-              <p>{{ post.username }}</p>
-              <p>{{ calculateTimeAgo(post.posteddate) }}</p>
-           </div>
-      </div>
-
-     
-  </div>
-  <div class="inner-text-post-holder" [style.background-color]="post.textcolor">
-    <p >{{ post.textbody }}</p>
-  </div>
-  
-  </div>
-
-  <div class="nodatamessage" *ngIf="textPosts.length==0">
-    <p>no text files found</p>
-  </div>
- 
-</div> -->
-
-
-
-
-
-
-<div class="text-link-post-holder" *ngIf="showTextLinkPostsBool">
-  
- 
-  <div class="posts-container">
-   
-    <div *ngFor="let post of TextLinkPosts; let i = index">
- 
-
-      <app-post [post]="post" ></app-post>
-
-
-    </div>
-
-    <div class="div-button-holder" *ngIf="moreDataAvailablelink">
-      <span (click)="loadMoreTextLinks($event)" class="loadmorebutton"  >Load More</span>
+      <app-profile [profileowneruid]="profileowneruid"></app-profile> 
     </div>
   
-  </div>
-
- 
-
-
-  <!-- <div *ngFor="let post of TextLinkPosts" class="main-outer-holder">
-    <div class="inner-holder">
-      <div class="profile-image-holder">
-        <img *ngIf="post.userprofileUrl" [src]="post.userprofileUrl" alt="Profile Image" class="profileimage">
-        <div class="details">
-          <p>{{ post.username }}</p>
-          <p>{{ calculateTimeAgo(post.posteddate) }}</p>
-        </div>
-      </div>
-
   
-  
-
-      <ng-container *ngIf="post.posttype === 'text'">
-        <div class="inner-text-post-holder" [style.background-color]="post.textcolor">
-          <p>{{ post.textbody }}</p>
-        </div>
-      </ng-container>
-
-      <ng-container *ngIf="post.posttype === 'link'">
-        <div class="previewdiv">
-          <h3>{{ post.filepath }}</h3>
-          <img *ngIf="post.textbody" [src]="post.textbody" alt="{{ post.title }}" class="post">
-          <a [href]="post.thelink" target="_blank">{{ post.thelink }}</a>
-        </div>
-      </ng-container>
-
-    </div>
-
-   
-    <p>{{ post.postdescription }}</p>
-  </div> -->
-
- 
-  
-  
-</div>
-
-<div class="nodatamessage" *ngIf="TextLinkPosts.length === 0 && showTextLinkPostsBool"  >
-  <img src="../../../assets/images/imagepost.png" alt="">
-
-  <p>No Posts Found</p>
-</div>
-
-
-
-
-
-
-
-
-<div *ngIf="showUserBool" >
-
-  <div class="profile-holder" *ngIf="isclickedtoshowuser && showUserBool">
-    <app-header></app-header>
-    <img src="../../../assets/images/close.png" alt="" class="closeicon" (click)="closeprofilewindow()">
-  
-    <app-profile [profileowneruid]="profileowneruid"></app-profile> 
-  </div>
-
-
-  <div class="user-holder" *ngIf="UserList.length > 0">
-    <div *ngFor="let user of UserList" class="main-outer-holder">
-      <a (click)="showtheuserprofile($event,user.userid)">
-       
-        <div class="profile-image-holder">
-          <img *ngIf="user.userprofileUrl" [src]="user.userprofileUrl" alt="Profile Image" class="profileimage">
-          <div class="details">
-            <p>{{ user.username }}</p>
-            <small>{{ user.createddate |  date:'longDate' }}</small>
-            <p>{{user.userid}}</p>
-           
-  
- 
-          </div>
-        </div>
-      
-     </a>
-    </div>
-
-
-    <span (click)="loadMoreUser()" class="loadmorebutton" *ngIf="moreDataAvailableuser">Load More</span>
-
-  </div>
-  
-  <div class="nodatamessage" *ngIf="UserList.length === 0">
-    <img src="../../../assets/images/profile.png" alt="">
-
-    <p>No Users Found</p>
-  </div>
-
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-<div *ngIf="showGroupBool">
-  <div class="user-holder" *ngIf="GroupList.length > 0">
- 
-      <div *ngFor="let group of GroupList" class="main-outer-holder">
-        <a   (click)="joingroup(group.grouptype,group.groupid,group.username,group.groupownerid )">
-          <div class="inner-holder">
-            <div class="profile-image-holder">
-              <img *ngIf="group.userprofileUrl" [src]="group.userprofileUrl" alt="Profile Image" class="profileimage">
-              <div class="details">
-
-                <div>
-                  <span>{{ group.groupname }}</span>
-                  <small> <b> : {{ group.createdate |  date:'longDate'}} </b></small>
-                </div>
+    <div class="user-holder" *ngIf="UserList.length > 0">
+      <div *ngFor="let user of UserList" class="main-outer-holder">
+        <a (click)="showtheuserprofile($event,user.userid)">
+         
+          <div class="profile-image-holder">
+            <img *ngIf="user.userprofileUrl" [src]="user.userprofileUrl" alt="Profile Image" class="profileimage">
+            <div class="details">
+              <p>{{ user.username }}</p>
+              <small>{{ user.createddate |  date:'longDate' }}</small>
                
-                <small>{{ group.grouptype }}</small>
              
+    
+   
+            </div>
+          </div>
+        
+       </a>
+      </div>
+  
+  
+      <span (click)="loadMoreUser()" class="loadmorebutton" *ngIf="moreDataAvailableuser">Load More</span>
+  
+    </div>
+    
+    <div class="nodatamessage" *ngIf="UserList.length === 0">
+      <img src="../../../assets/images/profile.png" alt="">
+  
+      <p>No Users Found</p>
+    </div>
+  
+  </div>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <div *ngIf="showGroupBool">
+    <div class="user-holder" *ngIf="GroupList.length > 0">
+   
+        <div *ngFor="let group of GroupList" class="main-outer-holder">
+          <a   (click)="joingroup(group.grouptype,group.groupid,group.username,group.groupownerid )">
+            <div class="inner-holder">
+              <div class="profile-image-holder">
+                <img *ngIf="group.userprofileUrl" [src]="group.userprofileUrl" alt="Profile Image" class="profileimage">
+                <div class="details">
+  
+                  <div>
+                    <span>{{ group.groupname }}</span>
+                    <small> <b> : {{ group.createdate |  date:'longDate'}} </b></small>
+                  </div>
+                 
+                  <small>{{ group.grouptype }}</small>
                
-      
-     
+                 
+        
+       
+                </div>
               </div>
             </div>
-          </div>
-        </a>
-      </div>
-
+          </a>
+        </div>
+  
+     
+          <span (click)="loadMore()" class="loadmorebutton" *ngIf="moreDataAvailable">Load More</span>
    
-        <span (click)="loadMore()" class="loadmorebutton" *ngIf="moreDataAvailable">Load More</span>
- 
-
-   
+  
+     
+    </div>
+  
+  
+  
+  
+  
+    
+    <div class="nodatamessage" *ngIf="GroupList.length === 0">
+      <img src="../../../assets/images/group.png" alt="">
+      <p>No Groups Found</p>
+    </div>
+  
   </div>
-
-
-
-
+  
+  
 
   
-  <div class="nodatamessage" *ngIf="GroupList.length === 0">
-    <img src="../../../assets/images/group.png" alt="">
-    <p>No Groups Found</p>
-  </div>
-
 </div>
-
-

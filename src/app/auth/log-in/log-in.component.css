@@ -174,7 +174,12 @@ text-align: center;
   form{
     width: 100%;
   }
-  
+  .anckortagholder a{
+ 
+    font-size: 13px;
+    
+
+  }
 }
 
 

@@ -314,3 +314,10 @@ overflow: scroll;
 position: relative;
 margin: 5px;
 }
+
+
+@media (max-width: 500px) {  
+  form,.add-preview{
+  width: 95%;
+  }
+}

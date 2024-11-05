@@ -494,7 +494,7 @@ input[type="text"]:focus {
   background-color: white;
   border-radius: 50%;
   position: absolute;
-  top: 10px;
+  top: 70px;
   right: 10px;
   cursor: pointer;
   transition: transform 0.5s, background-color 0.5s;  
@@ -529,7 +529,7 @@ input[type="text"]:focus {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.7);
+  background-color: rgba(0, 0, 0, 0.8);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -545,7 +545,7 @@ input[type="text"]:focus {
 .slider-image {
   width: 80vw;
   height: 80vh;
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+ 
   border-radius: 5px;
   object-fit: contain;
 }

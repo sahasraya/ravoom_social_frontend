@@ -30,6 +30,39 @@ export class FeedscreenGroupListComponent implements OnInit {
   }
 
 
+  async navigatetogroup(grouptype:any,groupid:any,groupownerid:any,groupname:string):Promise<void>{
+ 
+    if (grouptype === "public") {
+      this.router.navigate(['home/group', groupid]);
+    } else if (groupownerid == this.userid) {
+      this.router.navigate(['home/group', groupid]);
+    } else {
+
+
+
+      const formData = new FormData();
+      formData.append('groupid', groupid);
+      formData.append('groupownerid', groupownerid);
+      formData.append('myuserid', this.userid);
+
+      try {
+        const response = await this.http.post<any>(`${this.APIURL}ask_permission_from_admin_to_join_group`, formData).toPromise();
+
+        if (response.message === "requestsent") {
+          alert("Wait till the permission from " + groupname);
+        } else if (response.message === "requestaccepted") {
+          this.router.navigate(['home/group', groupid]);
+        } else {
+          alert(response.message);
+        }
+      } catch (error) {
+        console.error('There was an error!', error);
+        alert('There was an error sending the permission request. Please try again later.');
+      }
+
+    }
+    
+  }
   async getPopularGroups(): Promise<void> {
     this.http.post<any[]>(`${this.APIURL}get_populargroup`, new FormData()).subscribe({
       next: (response: any[]) => {
@@ -75,37 +108,8 @@ export class FeedscreenGroupListComponent implements OnInit {
   }
 
 
-  async navigatetogroup(grouptype:any,groupid:any,groupownerid:any,groupname:string):Promise<void>{
- 
-    if (grouptype === "public") {
-      this.router.navigate(['home/group', groupid]);
-    } else if (groupownerid == this.userid) {
-      this.router.navigate(['home/group', groupid]);
-    } else {
 
 
 
-      const formData = new FormData();
-      formData.append('groupid', groupid);
-      formData.append('groupownerid', groupownerid);
-      formData.append('myuserid', this.userid);
 
-      try {
-        const response = await this.http.post<any>(`${this.APIURL}ask_permission_from_admin_to_join_group`, formData).toPromise();
-
-        if (response.message === "requestsent") {
-          alert("Wait till the permission from " + groupname);
-        } else if (response.message === "requestaccepted") {
-          this.router.navigate(['home/group', groupid]);
-        } else {
-          alert(response.message);
-        }
-      } catch (error) {
-        console.error('There was an error!', error);
-        alert('There was an error sending the permission request. Please try again later.');
-      }
-
-    }
-    
-  }
 }

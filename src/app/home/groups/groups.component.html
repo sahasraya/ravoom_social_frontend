@@ -31,11 +31,14 @@
                     
                     <small class="followerscount">{{followerscount}} members</small>
 
-                    <span (click)="addgrouppost()" class="createpostspan" *ngIf="isuserjoinggroup">Create post</span>
+                    <span (click)="addgrouppost()" class="createpostspan" *ngIf="isuserjoinggroup">Create Post</span>
 
                    </div>
     </div>
   
+    <span (click)="addgrouppost()" class="createpostspanmobile" *ngIf="isuserjoinggroup">Create New Post</span>
+
+
     <div class="navigation-holder">
         <button (click)="showhome()"  [class.selected]="showhomeBool" class="navigationsbuttons">Home</button>
         <button (click)="showfollowers()"  [class.selected]="showfollowersBool" class="navigationsbuttons">Followers ({{userList.length -1}})</button>

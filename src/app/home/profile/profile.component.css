@@ -315,7 +315,10 @@ border: 1px solid rgb(43,149,236);
 }
 
 
-
+.profileimage-holder{
+  position: relative;
+  top: 70px;
+}
   
 @media (max-width: 500px) {  
   .posttypeholder{
@@ -333,7 +336,9 @@ border: 1px solid rgb(43,149,236);
   .addfollowersbtn{
     width: fit-content;
   }
- 
+ .button-holder{
+  width: 100vw;
+ }
   
 }
 

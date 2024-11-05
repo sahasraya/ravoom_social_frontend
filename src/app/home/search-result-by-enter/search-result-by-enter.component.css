@@ -18,6 +18,10 @@
   width: 60%;
  
 }
+.main-outer-holder-search{
+  position: relative;
+  top: 70px;
+}
 .nodatamessage{
   width: 60%;
   display: flex;

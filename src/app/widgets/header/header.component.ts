@@ -9,6 +9,8 @@ import { AddPostComponent } from '../add-post/add-post.component';
 import { environment } from '../../../environments/environment';
 import { FeedscreenUserListComponent } from '../feedscreen-user-list/feedscreen-user-list.component';
 import { FeedscreenGroupListComponent } from '../feedscreen-group-list/feedscreen-group-list.component';
+import { PrivacyPolicyComponent } from '../../home/privacy-policy/privacy-policy.component';
+import { AttributesComponent } from '../../home/attributes/attributes.component';
  
 
 @Component({
@@ -20,7 +22,10 @@ import { FeedscreenGroupListComponent } from '../feedscreen-group-list/feedscree
     NotificationComponent,
     AddPostComponent,
     FeedscreenGroupListComponent,
-    FeedscreenUserListComponent],
+    FeedscreenUserListComponent,
+    PrivacyPolicyComponent,
+    AttributesComponent
+  ],
   templateUrl: './header.component.html',
   styleUrl: './header.component.css'
 })
@@ -46,6 +51,8 @@ export class HeaderComponent implements OnInit{
   optionsVisiblefilter: boolean = false;
   isfilteropen: boolean = false;
   isclikedpopulargroups: boolean = false;
+  isclikedprivacypolicy: boolean = false;
+  isclikedattributes: boolean = false;  
   postType: string = "";
 
   @ViewChild('mainlogo', { static: true }) mainLogo!: ElementRef;
@@ -81,6 +88,8 @@ export class HeaderComponent implements OnInit{
 
   closepopgroupsmobile(): void{
     this.isclikedpopulargroups = false;
+    this.isclikedprivacypolicy = false;
+    this.isclikedattributes = false;
   }
   handleOptionSelection(option: string) {
     this.optionsVisiblefilter=!this.optionsVisiblefilter;
@@ -123,10 +132,10 @@ export class HeaderComponent implements OnInit{
         this.router.navigate(['/home/profile', this.userid]);
         break;
       case 'privacypolicy':
-        this.router.navigate(['/home/privacy-policy']);
+        this.isclikedprivacypolicy = true;
         break;
       case 'attributes':
-        this.router.navigate(['/home/attributes']);
+        this.isclikedattributes = true;
         break;
       default:
         console.warn('Unknown navigation type:', navigatetype);

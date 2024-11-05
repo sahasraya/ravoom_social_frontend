@@ -62,6 +62,7 @@ export class FeedComponent {
   hideNetworkStatus: boolean = false;
   wasOnline: boolean = false;
   
+  
  
 
   constructor(private http: HttpClient, private cdr: ChangeDetectorRef,private router:Router,private networkService: NetworkService) {}

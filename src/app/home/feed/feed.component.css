@@ -102,7 +102,7 @@
   background-color: white;
   border-radius: 50%;
   position: absolute;
-  top: 10px;
+  top: 70px;
   right: 30px;
   cursor: pointer;
   transition: transform 0.5s, background-color 0.5s;  
@@ -157,11 +157,12 @@
   column-gap: 2rem;
   position: sticky;
   top: 550px;
+  margin-top: 66px;
 }
 .left-user-holder{
   flex: 1;
   position: sticky;
-  top: 10px;
+  top: 82px;
  
   border-radius: 15px;
   height: 90vh;
@@ -169,7 +170,6 @@
   scrollbar-width: none; 
   -ms-overflow-style: none;  
   margin-left: 1rem;
-  padding-top: 10px;
  
 }
 
@@ -335,6 +335,9 @@
   .usersname{
     font-size: 17px;
     color: black;
+  }
+  .posts-container {
+    width: 100vw;
   }
   
 }

@@ -1,6 +1,6 @@
 .group-main-holder{
     margin: 0px auto;
- 
+    top: 70px;
     border-radius: 15px;
     width: 49%;
     height: auto;
@@ -357,7 +357,7 @@ input[type="file"] {
   height: 40px;
   padding: 5px;
   border-radius: 50%;
-  background-color: var(--icon-hover-backgroud-color);
+  background-color: white;
   position: absolute;
   top: 15px;
   left: 15px;
@@ -440,7 +440,9 @@ flex-direction: column;
   margin: 10px;
 }
 
-
+.createpostspanmobile{
+  display: none;
+}
 
 
 
@@ -452,6 +454,7 @@ flex-direction: column;
 @media (max-width: 500px) {  
   .group-main-holder{
   width: 99%;
+  top: 70px;
   }
  .gobackatag{
   position: sticky;
@@ -506,6 +509,37 @@ flex-direction: column;
   margin-left: 0px;
 }
 
+.file-input-label {
+  
+  font-size: 15px;
+}
+
+.createpostspanmobile{
+  display: block;
+  padding: 10px;
+  border-radius: 25px;
+  color: white;
+  background-color: var(--primarycolor);
+  transition: background-color 0.3s ease;
+  transition: color 0.3s ease;
+  cursor: pointer;
+  text-align: center;
+   margin: 10px 5px;
+}
+.createpostspan{
+  display: none;
+}
+.createpostspanmobile:hover{
+background-color: var( --primary-faded);
+color: black;
+}
+.navigation-holder{
+  margin: 0px;
+  overflow-x: scroll;
+ 
+  
+
+}
 
 
 }

@@ -15,12 +15,15 @@
     flex-wrap: wrap;
     padding-top: 15px;
     column-gap: 2rem;
+    position: sticky;
+    top: 550px;
+    margin-top: 66px;
   }
   .left-user-holder{
     flex: 1;
     position: sticky;
-    top: 10px;
-  
+    top: 82px;
+   
     border-radius: 15px;
     height: 90vh;
     overflow-y: scroll;

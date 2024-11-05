@@ -7,6 +7,23 @@
     <app-feedscreen-group-list></app-feedscreen-group-list>
   </div>
 
+  <div class="pop-group-holder-mobile" *ngIf="isclikedprivacypolicy">
+    <img src="../../../assets/images/close.png" alt="" class="closeiconpopgroupmobile" (click)="closepopgroupsmobile()">
+    <app-privacy-policy></app-privacy-policy>
+  </div>
+
+
+  <div class="pop-group-holder-mobile" *ngIf="isclikedattributes">
+    <img src="../../../assets/images/close.png" alt="" class="closeiconpopgroupmobile" (click)="closepopgroupsmobile()">
+    <app-attributes></app-attributes>
+  </div>
+
+
+
+
+
+
+
 
   <div class="nav-links">
     <div class="img-wrapper" (click)="gotohomepage($event)">
