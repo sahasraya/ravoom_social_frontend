@@ -104,12 +104,19 @@
 
   
   <div class="main-outer-div-holder-image" *ngIf="post.posttype === 'image'">
+    <span class="numberofimages" *ngIf="post.images.length > 1">{{ post.images.length }}</span>
+    
+    <!-- Display the current image -->
     <img [src]="imageUrl" alt="Post Image" (click)="getthecomments($event, post.postid, post.n_or_g)" class="mainimage" />
-
-    <div [ngStyle]="backgroundStyle" class="imageholder">
-      <span class="numberofimages" *ngIf="post.images.length > 1">{{ post.images.length }}</span>
-
+  
+    <!-- Navigation buttons when there are multiple images -->
+    <div *ngIf="post.images.length > 1" class="image-nav-controls">
+      <img src="../../../assets/images/left-arrow.png" alt="" (click)="prevImage()" title="prevImage">
+      <img src="../../../assets/images/right-arrow.png" alt="" (click)="nextImage()" title="nextImage">
+     
     </div>
+  
+    <div [ngStyle]="backgroundStyle" class="imageholder"></div>
   </div>
   
 

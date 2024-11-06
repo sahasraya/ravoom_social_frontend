@@ -85,6 +85,56 @@ export class GroupsComponent implements OnInit{
   }
 
 
+
+    async getGroupDetails(groupid: string): Promise<void> {
+    const formData = new FormData();
+    formData.append('groupid', groupid);
+
+    try {
+        const response = await this.http.post<any>(`${this.APIURL}get_group_details`, formData).toPromise();
+        this.group = response;
+
+        this.grouptype= this.group.grouptype;
+        this.groupname = this.group.groupname;
+        this.groupownerid = this.group.groupownerid;
+        this.groupbackgroundimageupdateddate = this.group.groupbackgroundimageupdateddate;
+        this.groupimageupdateddate = this.group.groupimageupdateddate;
+      
+
+       
+        if (this.group.groupimage) {
+            this.groupimage = this.createBlobUrl(this.group.groupimage, 'image/jpeg');
+        }
+        if (this.group.groupbackgroundimage) {
+            this.groupbackgroundimage = this.createBlobUrl(this.group.groupbackgroundimage, 'image/jpeg');
+        }
+
+       
+        this.userList = [];
+        this.userRequests = [];
+
+       
+        this.group.users.forEach((user: any) => {
+            if (user.profileimage) {
+                user.profileimageBlobUrl = this.createBlobUrl(user.profileimage, 'image/jpeg');
+            } else {
+                user.profileimageBlobUrl = null;
+            }
+
+            if (user.status === 0) {
+              
+                this.userRequests.push(user);
+            } else {
+ 
+
+                this.userList.push(user);
+            }
+        });
+
+    } catch (error) {
+        console.error('There was an error!', error);
+    }
+}
   onImageClick(): void {
     this.showLargerImage = true;
   }
@@ -397,6 +447,10 @@ async changeusertype(user: any,userid: any, username: string,  usertype: string)
   }
 }
 
+
+  
+
+
 async changeusertypemodtouser(user: any, userid: any): Promise<void> {
   const confirmation = confirm(`Do you want to make yourself a user again?`);
   if (!confirmation) {
@@ -520,55 +574,7 @@ async changeusertypemodtouser(user: any, userid: any): Promise<void> {
     return processedPosts;
   }
 
-  async getGroupDetails(groupid: string): Promise<void> {
-    const formData = new FormData();
-    formData.append('groupid', groupid);
 
-    try {
-        const response = await this.http.post<any>(`${this.APIURL}get_group_details`, formData).toPromise();
-        this.group = response;
-
-        this.grouptype= this.group.grouptype;
-        this.groupname = this.group.groupname;
-        this.groupownerid = this.group.groupownerid;
-        this.groupbackgroundimageupdateddate = this.group.groupbackgroundimageupdateddate;
-        this.groupimageupdateddate = this.group.groupimageupdateddate;
-      
-
-       
-        if (this.group.groupimage) {
-            this.groupimage = this.createBlobUrl(this.group.groupimage, 'image/jpeg');
-        }
-        if (this.group.groupbackgroundimage) {
-            this.groupbackgroundimage = this.createBlobUrl(this.group.groupbackgroundimage, 'image/jpeg');
-        }
-
-       
-        this.userList = [];
-        this.userRequests = [];
-
-       
-        this.group.users.forEach((user: any) => {
-            if (user.profileimage) {
-                user.profileimageBlobUrl = this.createBlobUrl(user.profileimage, 'image/jpeg');
-            } else {
-                user.profileimageBlobUrl = null;
-            }
-
-            if (user.status === 0) {
-              
-                this.userRequests.push(user);
-            } else {
- 
-
-                this.userList.push(user);
-            }
-        });
-
-    } catch (error) {
-        console.error('There was an error!', error);
-    }
-}
 
 
   base64ToBlob(base64: string, contentType: string = ''): Blob {

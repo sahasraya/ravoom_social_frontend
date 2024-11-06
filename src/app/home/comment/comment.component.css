@@ -114,16 +114,6 @@
   }
 
  
-input[type="text"] {
-  width: 100%;
-  padding: 15px;
-  margin: 10px 0;
-  border: 1px solid #ccc;
-  border-radius: 15px;
-  box-sizing: border-box;
-  font-size: 16px;
-
-}
 
 .commentusername{
   font-size: 13px;
@@ -175,6 +165,25 @@ button[type="submit"]:hover {
   box-shadow: 0px 6px 6px rgba(0, 0, 0, 0.3);  
 }
 
+input[type="text"] {
+  width: 100%;
+  padding: 15px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 15px;
+  box-sizing: border-box;
+  font-size: 16px;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+
+input[type="text"]:focus {
+  border-color:var(--primarycolor); 
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);  
+  outline: none;  
+}
+
+
 .commentinputholder{
   display: flex;
   justify-content: center;
@@ -182,10 +191,7 @@ button[type="submit"]:hover {
   flex-direction: row;
   align-items: center;
 }
-input[type="text"]:focus {
-  border-color: #007bff;
-  outline: none;
-}
+ 
 
  .active-buttons-holder{
   margin-top: 15px;
@@ -717,7 +723,9 @@ input[type="text"]:focus {
   background-color: #2196f3;  
 }
 
-
+.preloadaddingcomment{
+  width: 30px;
+}
 
 
 
@@ -725,10 +733,24 @@ input[type="text"]:focus {
 
 @media (max-width: 500px) {  
   .post-container{
-   width: 95%;
+   width: 100vw;
    box-shadow: 0 0 10px rgba(255, 255, 255, 0);
   }
-
+  .commentholderouter{
+    padding-bottom: 50px;
+  }
+  input[type="text"] {
+      padding: 10px; 
+  }
+  button[type="submit"] {
+    padding: 7px; 
+    width: 40px; 
+    height: 40px; 
+  
+  }
+  .preloadaddingcomment{
+    width: 20px;
+  }
   
   
 }

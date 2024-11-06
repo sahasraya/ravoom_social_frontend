@@ -2,7 +2,7 @@
 <div class="add-post-main-holder">
   <app-pre-loader *ngIf="isuploadingthepost"></app-pre-loader>
  
-  <img src="../../../assets/images/close.png" alt="" class="closeicon" (click)="closeAddPost()">
+  <img src="../../../assets/images/close.png" alt="" class="closeiconwindow" (click)="closeAddPost()">
 
 
 
@@ -71,9 +71,9 @@
   
   
   
-  <div *ngIf="imagePreviews.length > 0" class="image-preview-container">
+  <div *ngIf="imagePreviews.length > 0 && showimagepostsformbool" class="image-preview-container" >
     <div *ngFor="let preview of imagePreviews" class="preview-wrapper">
-      <img [src]="preview" alt="Image Preview">
+      <img [src]="preview" alt="Image Preview" class="previewimages">
       <img src="../../../assets/images/close.png" alt="" class="closeicon" (click)="removeImagePreview(preview)">
 
    

@@ -17,17 +17,151 @@ export class FeedscreenGroupListComponent implements OnInit {
   APIURL = environment.APIURL;
   populargrouplist:any [] = [];
   userid:string="";
- 
+  private encryptionPassword: string = 'fhwkehfkjhAJhkKJWHRKWHEjhewpofiepwomvdkAoirep'; 
 
 
   constructor(private http:HttpClient,private router:Router){}
 
   ngOnInit(): void {
-    this.getPopularGroups();
+    this.checkdataavaibleinsession();
  
       this.userid = localStorage.getItem('wmd') || '';
   
   }
+
+  checkdataavaibleinsession(): void {
+    const encryptedData = sessionStorage.getItem('populargroups');
+    if (encryptedData) {
+      this.loadGroupsFromSessionStorage(encryptedData);
+    } else {
+      this.getPopularGroups();
+    }
+  }
+
+  async loadGroupsFromSessionStorage(encryptedData: string): Promise<void> {
+    const decryptedData = await this.decryptData(encryptedData, this.encryptionPassword);
+    if (decryptedData) {
+      this.populargrouplist = JSON.parse(decryptedData); 
+    }
+  }
+
+  async getPopularGroups(): Promise<void> {
+    this.http.post<any[]>(`${this.APIURL}get_populargroup`, new FormData()).subscribe({
+      next: (response: any[]) => {
+        this.populargrouplist = response;
+
+        this.populargrouplist.forEach((group: any) => {
+          if (group.groupimage) {
+            group.groupImageUrl = this.createBlobUrl(group.groupimage, 'image/jpeg');
+          }
+        });
+
+ 
+        this.storeGroupsInSessionStorage(this.populargrouplist);
+      },
+      error: (error: HttpErrorResponse) => {
+        console.error('There was an error!', error);
+      }
+    });
+  }
+
+  async storeGroupsInSessionStorage(groups: any[]): Promise<void> {
+    const encryptedData = await this.encryptData(JSON.stringify(groups), this.encryptionPassword);
+    sessionStorage.setItem('populargroups', encryptedData);
+  }
+
+ 
+  private async encryptData(data: string, password: string): Promise<string> {
+    const enc = new TextEncoder();
+    const keyMaterial = await window.crypto.subtle.importKey(
+      'raw',
+      enc.encode(password),
+      { name: 'PBKDF2' },
+      false,
+      ['deriveBits', 'deriveKey']
+    );
+
+    const key = await window.crypto.subtle.deriveKey(
+      {
+        name: 'PBKDF2',
+        salt: enc.encode(password),
+        iterations: 1000,
+        hash: 'SHA-256'
+      },
+      keyMaterial,
+      { name: 'AES-GCM', length: 256 },
+      false,
+      ['encrypt']
+    );
+
+    const iv = window.crypto.getRandomValues(new Uint8Array(12)); 
+    const encryptedData = await window.crypto.subtle.encrypt(
+      {
+        name: 'AES-GCM',
+        iv: iv
+      },
+      key,
+      enc.encode(data)
+    );
+
+    const buffer = new Uint8Array(encryptedData);
+    const encryptedDataWithIv = new Uint8Array(iv.length + buffer.length);
+    encryptedDataWithIv.set(iv);
+    encryptedDataWithIv.set(buffer, iv.length);
+
+    return btoa(String.fromCharCode(...encryptedDataWithIv)); 
+  }
+
+ 
+  private async decryptData(encryptedData: string, password: string): Promise<string | null> {
+    const enc = new TextEncoder();
+    const data = Uint8Array.from(atob(encryptedData), c => c.charCodeAt(0));
+    const iv = data.slice(0, 12);
+    const encryptedBuffer = data.slice(12);
+
+    const keyMaterial = await window.crypto.subtle.importKey(
+      'raw',
+      enc.encode(password),
+      { name: 'PBKDF2' },
+      false,
+      ['deriveBits', 'deriveKey']
+    );
+
+    const key = await window.crypto.subtle.deriveKey(
+      {
+        name: 'PBKDF2',
+        salt: enc.encode(password),
+        iterations: 1000,
+        hash: 'SHA-256'
+      },
+      keyMaterial,
+      { name: 'AES-GCM', length: 256 },
+      false,
+      ['decrypt']
+    );
+
+    try {
+      const decryptedData = await window.crypto.subtle.decrypt(
+        {
+          name: 'AES-GCM',
+          iv: iv
+        },
+        key,
+        encryptedBuffer
+      );
+
+      return new TextDecoder().decode(decryptedData);
+    } catch (e) {
+      console.error('Decryption failed:', e);
+      return null;
+    }
+  }
+  
+
+
+
+
+
 
 
   async navigatetogroup(grouptype:any,groupid:any,groupownerid:any,groupname:string):Promise<void>{
@@ -63,23 +197,7 @@ export class FeedscreenGroupListComponent implements OnInit {
     }
     
   }
-  async getPopularGroups(): Promise<void> {
-    this.http.post<any[]>(`${this.APIURL}get_populargroup`, new FormData()).subscribe({
-      next: (response: any[]) => {
-        this.populargrouplist = response;
-
-        this.populargrouplist.forEach((group:any) => {
-          if (group.groupimage) {
-            group.groupImageUrl = this.createBlobUrl(group.groupimage, 'image/jpeg');
-          }
-        });
  
-      },
-      error: (error: HttpErrorResponse) => {
-        console.error('There was an error!', error);
-      }
-    });
-}
 
 
 

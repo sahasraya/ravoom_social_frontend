@@ -296,8 +296,18 @@ input[type="text"]:focus {
   cursor: pointer;
   transition: transform 0.5s, background-color 0.5s;  
 }
-
-.closeicon:hover {
+.closeiconwindow{
+  padding: 15px;
+  width: 50px;
+  background-color: var(--icon-backgroud-color);
+  border-radius: 50%;
+  position: absolute;
+  top: 70px;
+  right: 20px;
+  cursor: pointer;
+  transition: transform 0.5s, background-color 0.5s;
+}
+.closeicon:hover ,.closeiconwindow:hover {
   transform: rotate(90deg); 
   background-color:var(--icon-hover-backgroud-color);
 }
@@ -313,6 +323,9 @@ input[type="text"]:focus {
 .preview-wrapper {
   position: relative;
   margin: 5px;
+}
+ .previewimages{
+  width: 15%;
 }
  
 

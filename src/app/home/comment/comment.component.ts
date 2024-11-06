@@ -22,7 +22,6 @@ export class CommentComponent implements OnInit {
   
  
   post: any;
-  images: any[]=[];
   APIURL = environment.APIURL;
   commentForm: FormGroup;
   replayCommentForm: FormGroup;
@@ -54,7 +53,8 @@ export class CommentComponent implements OnInit {
   likedMembers:any[]=[];
   hasMoreMembers = false;
   loadingMoreMembers = false;
-
+  images: any[] = [];
+  isSubmitting: boolean = false;
 
   constructor(private route: ActivatedRoute, private http: HttpClient, private fb: FormBuilder, private router: Router,private cdref: ChangeDetectorRef) {
     this.commentForm = this.fb.group({
@@ -68,27 +68,105 @@ export class CommentComponent implements OnInit {
     });
 
   }
-
   ngOnInit(): void {
     if (!this.postid) {
       this.postid = this.route.snapshot.paramMap.get('postid');
     }
     this.groupornormalpost = this.groupornormalpostinput || this.route.snapshot.paramMap.get('type');
     this.fromwhatscreen = this.route.snapshot.paramMap.get('screen')!;
-
+    
     this.getPostData();
     this.getpostlikecount();
     this.userid = localStorage.getItem('wmd') || '';
     this.checkuseridtoroutecommentscreen = this.route.snapshot.paramMap.get('uid') || '';
     this.getpostcommentCount(this.postid);
     this.getComments();
-
-     
-     
-    
-
-
   }
+  
+  async getPostData(): Promise<void> {
+    // Attempt to retrieve stored post data from sessionStorage
+    const storedPostData = sessionStorage.getItem(`postdata_${this.postid}`);
+    
+    if (storedPostData) {
+      // Decrypt and parse the stored data
+      const decryptedData = JSON.parse(atob(storedPostData));
+  
+      // Populate the post from the stored data
+      this.post = decryptedData.post;
+  
+      // Check if the images array is already populated from sessionStorage
+      if (decryptedData.images && decryptedData.images.length > 0) {
+        this.images = decryptedData.images; // Store the already parsed image URLs
+      }
+  
+      // Handle video or audio type
+      if (this.post.posttype === "video") {
+        const videoBlob = this.convertBase64ToBlob(this.post.post, 'video/mp4');
+        this.post.videoUrl = URL.createObjectURL(videoBlob);
+      } else if (this.post.posttype === "audio") {
+        const audioBlob = this.convertBase64ToBlobAudio(this.post.post);
+        this.post.audioUrl = URL.createObjectURL(audioBlob);
+      }
+  
+      this.getfollowingstatus(this.post.userid);
+      return; // Exit early if data is loaded from sessionStorage
+    }
+  
+    // If no data is found in sessionStorage, fetch the post data from the API
+    const formData = new FormData();
+    formData.append('postid', this.postid!);
+  
+    const url = this.groupornormalpost === "g" ? `${this.APIURL}get_post_group` : `${this.APIURL}get_post`;
+  
+    this.http.post<any>(url, formData).subscribe({
+      next: (response) => {
+        this.post = response;
+  
+        if (this.post.posttype === "image") {
+          const formDataimage = new FormData();
+          formDataimage.append('postid', this.postid!);
+          const imageUrl = this.groupornormalpost === "g" ? `${this.APIURL}get_images_group` : `${this.APIURL}get_images`;
+  
+          this.http.post<any>(imageUrl, formDataimage).subscribe({
+            next: (imageResponse) => {
+              // Clear the images array and push new images into the array
+              this.images = imageResponse.map((img: any) =>
+                this.createBlobUrl(img.image, 'image/jpeg') // Create the Blob URL for each image
+              );
+  
+              // Once images are loaded, store the post and images in sessionStorage
+              const postDataToStore = {
+                post: this.post,
+                images: this.images, // Store the Blob URLs directly
+              };
+              const encodedPostData = btoa(JSON.stringify(postDataToStore));
+              sessionStorage.setItem(`postdata_${this.postid}`, encodedPostData);
+            },
+            error: (error: HttpErrorResponse) => {
+              console.error('Error loading images!', error);
+            },
+          });
+        } else if (this.post.posttype === "video") {
+          const videoBlob = this.convertBase64ToBlob(this.post.post, 'video/mp4');
+          this.post.videoUrl = URL.createObjectURL(videoBlob);
+        } else if (this.post.posttype === "audio") {
+          const audioBlob = this.convertBase64ToBlobAudio(this.post.post);
+          this.post.audioUrl = URL.createObjectURL(audioBlob);
+        }
+  
+        this.getfollowingstatus(this.post.userid);
+      },
+      error: (error: HttpErrorResponse) => {
+        console.error('There was an error!', error);
+      },
+    });
+  }
+
+
+
+
+
+  
 
 
 async getfollowingstatus(postowneruserid:any):Promise<void>{
@@ -100,10 +178,6 @@ async getfollowingstatus(postowneruserid:any):Promise<void>{
 
   try {
     const response: any = await this.http.get<any>(`${this.APIURL}following-status`, { params }).toPromise();
-
-
-
-
     if (response.exists) {
       this.followButtonText = "Following";
     } else {
@@ -151,11 +225,6 @@ async getfollowingstatus(postowneruserid:any):Promise<void>{
     formData.append('postid', postid.toString());
     formData.append('limit', this.limitlike.toString());
     formData.append('offset', this.offsetlike.toString());
- 
-   
-
- 
-  
     try {
      
     
@@ -461,104 +530,7 @@ async getfollowingstatus(postowneruserid:any):Promise<void>{
   }
 
 
-  private async saveCommentsToSession(postid: string, comments: any[]): Promise<void> {
-    const encryptedComments = await this.encryptData(JSON.stringify(comments), postid);
-    sessionStorage.setItem(`postcomments_${postid}`, encryptedComments);
-  }
-
-  private async getCommentsFromSession(postid: string): Promise<any[] | null> {
-    const encryptedComments = sessionStorage.getItem(`postcomments_${postid}`);
-    if (encryptedComments) {
-      const decryptedData = await this.decryptData(encryptedComments, postid);
-      return decryptedData ? JSON.parse(decryptedData) : null;
-    }
-    return null;
-  }
-
-  private async encryptData(data: string, password: string): Promise<string> {
-    const enc = new TextEncoder();
-    const keyMaterial = await window.crypto.subtle.importKey(
-      'raw',
-      enc.encode(password),
-      { name: 'PBKDF2' },
-      false,
-      ['deriveBits', 'deriveKey']
-    );
-
-    const key = await window.crypto.subtle.deriveKey(
-      {
-        name: 'PBKDF2',
-        salt: enc.encode(password),
-        iterations: 1000,
-        hash: 'SHA-256'
-      },
-      keyMaterial,
-      { name: 'AES-GCM', length: 256 },
-      false,
-      ['encrypt']
-    );
-
-    const iv = window.crypto.getRandomValues(new Uint8Array(12)); // Initialization vector
-    const encryptedData = await window.crypto.subtle.encrypt(
-      {
-        name: 'AES-GCM',
-        iv: iv
-      },
-      key,
-      enc.encode(data)
-    );
-
-    const buffer = new Uint8Array(encryptedData);
-    const encryptedDataWithIv = new Uint8Array(iv.length + buffer.length);
-    encryptedDataWithIv.set(iv);
-    encryptedDataWithIv.set(buffer, iv.length);
-
-    return btoa(String.fromCharCode(...encryptedDataWithIv)); // Encode as base64
-  }
-
-  private async decryptData(encryptedData: string, password: string): Promise<string | null> {
-    const enc = new TextEncoder();
-    const data = Uint8Array.from(atob(encryptedData), c => c.charCodeAt(0));
-    const iv = data.slice(0, 12);
-    const encryptedBuffer = data.slice(12);
-
-    const keyMaterial = await window.crypto.subtle.importKey(
-      'raw',
-      enc.encode(password),
-      { name: 'PBKDF2' },
-      false,
-      ['deriveBits', 'deriveKey']
-    );
-
-    const key = await window.crypto.subtle.deriveKey(
-      {
-        name: 'PBKDF2',
-        salt: enc.encode(password),
-        iterations: 1000,
-        hash: 'SHA-256'
-      },
-      keyMaterial,
-      { name: 'AES-GCM', length: 256 },
-      false,
-      ['decrypt']
-    );
-
-    try {
-      const decryptedData = await window.crypto.subtle.decrypt(
-        {
-          name: 'AES-GCM',
-          iv: iv
-        },
-        key,
-        encryptedBuffer
-      );
-
-      return new TextDecoder().decode(decryptedData);
-    } catch (e) {
-      console.error('Decryption failed:', e);
-      return null;  
-    }
-  }
+ 
 
   async getComments(loadMore: boolean = false): Promise<void> {
     if (!loadMore) {
@@ -639,68 +611,7 @@ async getfollowingstatus(postowneruserid:any):Promise<void>{
 
 
 
-  async getPostData(): Promise<void> {
-    const storedPostData = sessionStorage.getItem(`postdata_${this.postid}`);
-    if (storedPostData) {
-      const decryptedData = JSON.parse(atob(storedPostData));
-  
-      this.post = decryptedData.post;
-      this.images = decryptedData.images;
-  
-      if (this.post.posttype === "video") {
-        const videoBlob = this.convertBase64ToBlob(this.post.post, 'video/mp4');
-        this.post.videoUrl = URL.createObjectURL(videoBlob);
-      } else if (this.post.posttype === "audio") {
-        const audioBlob = this.convertBase64ToBlobAudio(this.post.post);
-        this.post.audioUrl = URL.createObjectURL(audioBlob);
-      }
-  
-      this.getfollowingstatus(this.post.userid);
-      
-      return;  
-    }
-  
-    const formData = new FormData();
-    formData.append('postid', this.postid!);
-  
-    const url = this.groupornormalpost === "g" ? `${this.APIURL}get_post_group` : `${this.APIURL}get_post`;
-  
-    this.http.post<any>(url, formData).subscribe({
-      next: response => {
-        this.post = response;
-  
-        if (this.post.posttype === "image") {
-          const formDataimage = new FormData();
-          formDataimage.append('postid', this.postid!);
-          const imageUrl = this.groupornormalpost === "g" ? `${this.APIURL}get_images_group` : `${this.APIURL}get_images`;
-  
-          this.http.post<any>(imageUrl, formDataimage).subscribe({
-            next: imageResponse => {
-              this.images = imageResponse.map((img: any) => this.createBlobUrl(img.image, 'image/jpeg'));
-            }
-          });
-        } else if (this.post.posttype === "video") {
-          const videoBlob = this.convertBase64ToBlob(this.post.post, 'video/mp4');
-          this.post.videoUrl = URL.createObjectURL(videoBlob);
-        } else if (this.post.posttype === "audio") {
-          const audioBlob = this.convertBase64ToBlobAudio(this.post.post);
-          this.post.audioUrl = URL.createObjectURL(audioBlob);
-        }
-  
-        const postDataToStore = {
-          post: this.post,
-          images: this.images
-        };
-        const encodedPostData = btoa(JSON.stringify(postDataToStore)); 
-        sessionStorage.setItem(`postdata_${this.postid}`, encodedPostData);
-  
-        this.getfollowingstatus(this.post.userid);
-      },
-      error: (error: HttpErrorResponse) => {
-        console.error('There was an error!', error);
-      }
-    });
-  }
+
   
 
 
@@ -791,6 +702,8 @@ async getfollowingstatus(postowneruserid:any):Promise<void>{
 
   onSubmit(postid: any, userid: any, username: string, userprofile: any): void {
 
+    this.isSubmitting = true;
+
     if (this.userid == '') {
       this.router.navigate(['/auth/log-in']);
       return;
@@ -813,7 +726,8 @@ async getfollowingstatus(postowneruserid:any):Promise<void>{
         this.http.post(this.APIURL + 'add_comment_group', formData).subscribe({
           next: (response: any) => {
             this.getComments();
-            this.numberofcomments ++;
+            this.numberofcomments++;
+            this.isSubmitting = false;
 
             if (userid == this.userid) {
               this.commentForm.reset();
@@ -852,7 +766,8 @@ async getfollowingstatus(postowneruserid:any):Promise<void>{
           next: (response: any) => {
             this.getComments();
 
-            this.numberofcomments ++;
+            this.numberofcomments++;
+            this.isSubmitting = false;
 
         
             if (userid == this.userid) {

@@ -65,12 +65,12 @@
 .imageholder {
   margin-top: 10px;
   width: 100%;
-  height: var(--post-dynamic-width); /* Ensure this variable is defined */
-  background-color: #d9d9d9; /* Fallback background color */
+  height: var(--post-dynamic-width);  
+  background-color: #d9d9d9;  
   overflow: hidden;
-  display: flex; /* Center content */
-  align-items: center; /* Center vertically */
-  justify-content: center; /* Center horizontally */
+  display: flex;  
+  align-items: center; 
+  justify-content: center;  
   border-radius: 10px;
   position: relative; 
 }
@@ -84,18 +84,7 @@
   border-radius: 10px;  
 }
 
-.numberofimages {
-  width: 100%;
-  height: 100%;
-  background-color: #d9d9d9;  
-  display: flex;  
-  align-items: center;  
-  justify-content: center;  
-  border-radius: 10px ;
-  position: absolute;  
-  top: 0;  
-  left: 0; 
-}
+ 
 
 .main-outer-div-holder-image{
   position: relative;
@@ -366,8 +355,38 @@
 }
 
  
+.image-nav-controls {
+  position: absolute;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 10px;
+  z-index: 10;
+  top: 50%; /* Center vertically */
+  transform: translateY(-50%); 
+}
 
+.image-nav-controls img {
+  width: 40px;  
+  height: 40px;
+  background-color: white;
+  border-radius: 50%;  
+  padding: 10px;
+  cursor: pointer;
+  transition: transform 0.3s ease, background-color 0.3s ease; 
+}
 
+.image-nav-controls img:hover {
+  background-color: #f0f0f0;  
+  transform: scale(1.1);  
+}
+
+/* Active effect */
+.image-nav-controls img:active {
+  background-color: #d0d0d0; /* Darker background when clicked */
+  transform: scale(1.05); /* Slightly shrink when clicked */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* Add shadow to give a pressing effect */
+}
 
 .numberofimages{
   width: 30px;

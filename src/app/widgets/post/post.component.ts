@@ -57,6 +57,9 @@ export class PostComponent implements OnInit {
   groupornormalpost:string= "";
   selectedPostId: string | null = null;
   backgroundStyle: { [key: string]: string } = {};
+  currentImageIndex: number = 0;
+
+
 
   constructor(private cdref: ChangeDetectorRef,private renderer: Renderer2, private http: HttpClient, private router: Router, @Inject(PLATFORM_ID) private platformId: Object, private route: ActivatedRoute,private sharedservice:SharedServiceService,) { }
   ngOnInit(): void {
@@ -86,7 +89,67 @@ export class PostComponent implements OnInit {
     }
   }
 
+  ngAfterContentChecked() {
+    if (this.post.posttype === 'image' && !this.imageUrl) {
+      this.loadCurrentImage();
+    } else if (this.post.posttype === 'audio' && !this.audioUrl) {
+      const base64Data = this.post.post;
+      const blob = this.convertBase64ToBlobAudio(base64Data);
+      this.audioUrl = URL.createObjectURL(blob);
+    } else if (this.post.posttype === 'text' && !this.profileImageUrl) {
+      this.profileImageUrl = this.createBlobUrl(this.post.userprofile, 'image/jpeg');
+    } else if (this.post.posttype === 'link' && !this.profileImageUrl) {
+      this.profileImageUrl = this.createBlobUrl(this.post.userprofile, 'image/jpeg');
+    } else if (this.post.posttype === 'group') {
+      if (!this.profileImageUrl) {
+        this.profileImageUrl = this.createBlobUrl(this.post.userprofile, 'image/jpeg');
+      }
+      if (!this.groupImageUrl) {
+        this.groupImageUrl = this.createBlobUrl(this.post.post, 'image/jpeg');
+      }
+    }
+  
+    this.cleanupUnusedUrls();
+    
+    this.cdref.detectChanges();
+  }
+
+
+  loadCurrentImage(): void {
+    const image = this.post.images[this.currentImageIndex];
+    this.imageUrl = this.createBlobUrl(image, 'image/jpeg');
+    this.backgroundStyle = {
+      'background-image': `url(${this.imageUrl})`,
+      'background-color': '#d9d9d9',
+      'background-size': 'cover',
+      'background-position': 'center',
+      'filter': 'blur(50px)',
+      'opacity': '0.4',
+      'display': 'flex',
+      'align-items': 'center',
+      'justify-content': 'center',
+      'border-radius': '10px',
+      'position': 'relative',
+    };
+  }
+
+
+  nextImage(): void {
+    if (this.currentImageIndex < this.post.images.length - 1) {
+      this.currentImageIndex++;
+      this.loadCurrentImage();
+    }
+  }
  
+  prevImage(): void {
+    if (this.currentImageIndex > 0) {
+      this.currentImageIndex--;
+      this.loadCurrentImage();
+    }
+  }
+
+
+
 
 async getlikeedmembers(postid: number): Promise<void> {
   this.islikedmembereddivvisible = true;  
@@ -508,49 +571,7 @@ closememebrslikeddiv(e:Event):void{
     return URL.createObjectURL(blob);
   }
   
-  ngAfterContentChecked() {
-    if (this.post.posttype === 'image' && !this.imageUrl) {
-      this.imageUrl = this.createBlobUrl(this.post.image, 'image/jpeg');
-      this.profileImageUrl = this.createBlobUrl(this.post.userprofile, 'image/jpeg');
-
-   
-      this.backgroundStyle = {
-        'background-image': `url(${this.imageUrl})`,
-        'background-color': '#d9d9d9',  
-        'background-size': 'cover',  
-        'background-position': 'center',
-      
-        'filter': 'blur(50px)',  
-        'opacity': '0.4',  
-        'display': 'flex',  
-        'align-items': 'center',
-        'justify-content': 'center',
-        'border-radius': '10px',  
-        'position': 'relative', 
-        
-      
-      };
-    } else if (this.post.posttype === 'audio' && !this.audioUrl) {
-      const base64Data = this.post.post;
-      const blob = this.convertBase64ToBlobAudio(base64Data);
-      this.audioUrl = URL.createObjectURL(blob);
-    } else if (this.post.posttype === 'text' && !this.profileImageUrl) {
-      this.profileImageUrl = this.createBlobUrl(this.post.userprofile, 'image/jpeg');
-    } else if (this.post.posttype === 'link' && !this.profileImageUrl) {
-      this.profileImageUrl = this.createBlobUrl(this.post.userprofile, 'image/jpeg');
-    } else if (this.post.posttype === 'group') {
-      if (!this.profileImageUrl) {
-        this.profileImageUrl = this.createBlobUrl(this.post.userprofile, 'image/jpeg');
-      }
-      if (!this.groupImageUrl) {
-        this.groupImageUrl = this.createBlobUrl(this.post.post, 'image/jpeg');
-      }
-    }
   
-    this.cleanupUnusedUrls();
-    
-    this.cdref.detectChanges();
-  }
   
   
   cleanupUnusedUrls(): void {
@@ -795,9 +816,6 @@ closememebrslikeddiv(e:Event):void{
 
   navigatetouser():void{
  
-    // const scrollPosition = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
- 
-    // localStorage.setItem('scrollPosition', scrollPosition.toString());
 
  this.router.navigate([`/home/profile/${this.post.userid}`]);
   }

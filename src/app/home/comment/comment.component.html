@@ -197,7 +197,7 @@
 
 
   <hr>
-      <div *ngIf="!isthelastcomment">
+      <div *ngIf="!isthelastcomment" class="commentholderouter">
         <h3>Comments</h3>
 
 
@@ -208,10 +208,13 @@
           <div class="commentinputholder">
       
             <input type="text" formControlName="commenttext" placeholder="Add comment" #commenttext>
-            <button type="submit" *ngIf="commenttext.value"><img src="../../../assets/images/addcomment.png" alt=""></button>
+            <button type="submit" *ngIf="commenttext.value && !isSubmitting">
+              <img src="../../../assets/images/addcomment.png" alt="Add comment">
+            </button>
+            <img src="../../../assets/images/preloader.gif" alt="Loading" *ngIf="isSubmitting" class="preloadaddingcomment">
           </div>
        
-        
+       
         </form>
  
 
