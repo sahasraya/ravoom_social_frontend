@@ -115,6 +115,14 @@
       <img src="../../../assets/images/right-arrow.png" alt="" (click)="nextImage()" title="nextImage">
      
     </div>
+
+    <div *ngIf="post.images.length > 1" class="dot-indicators">
+      <span *ngFor="let dot of post.images; let i = index" 
+            [ngClass]="{'active-dot': i === currentImageIndex}" 
+            (click)="goToImage(i)">
+      </span>
+    </div>
+    
   
     <div [ngStyle]="backgroundStyle" class="imageholder"></div>
   </div>

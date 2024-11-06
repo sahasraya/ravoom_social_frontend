@@ -148,7 +148,12 @@ export class PostComponent implements OnInit {
     }
   }
 
+  goToImage(index: number): void {
+    this.currentImageIndex = index;
+    this.loadCurrentImage();
+  }
 
+  
 
 
 async getlikeedmembers(postid: number): Promise<void> {

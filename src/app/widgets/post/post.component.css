@@ -84,7 +84,35 @@
   border-radius: 10px;  
 }
 
- 
+.dot-indicators {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+}
+
+.dot-indicators span {
+  width: 10px;
+  height: 10px;
+  margin: 0 5px;
+  background-color: rgba(255, 255, 255, 0.5);  
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.dot-indicators .active-dot {
+  background-color: #fff; 
+  transform: scale(1.2); 
+}
+
+.dot-indicators span:hover {
+  background-color: rgba(255, 255, 255, 0.8);  
+}
 
 .main-outer-div-holder-image{
   position: relative;
