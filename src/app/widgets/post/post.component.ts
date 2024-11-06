@@ -336,7 +336,8 @@ async savepost(e: Event, postid: number,post:any): Promise<void> {
 closememebrslikeddiv(e:Event):void{
   e.preventDefault();
   this.islikedmembereddivvisible=false;
-  this.getthecommentsBool=false;
+  this.getthecommentsBool = false;
+  document.body.style.overflow = ''; 
 
 }
   async checkTheOnlineStatus(userid: any): Promise<void> {
@@ -841,6 +842,7 @@ closememebrslikeddiv(e:Event):void{
     this.selectedPostId = postid; 
     this.groupornormalpost=type;
     this.getthecommentsBool = true; 
+     document.body.style.overflow = 'hidden';
   }
 
 

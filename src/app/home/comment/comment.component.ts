@@ -10,7 +10,7 @@ import { environment } from '../../../environments/environment';
 @Component({
   selector: 'app-comment',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, ImageLargerComponent, RouterModule,ReporttingComponent],
+  imports: [CommonModule, ReactiveFormsModule, ImageLargerComponent, RouterModule,ReporttingComponent,FormsModule],
   templateUrl: './comment.component.html',
   styleUrl: './comment.component.css'
 })
@@ -38,6 +38,8 @@ export class CommentComponent implements OnInit {
   showreportscreenBool:boolean=false;
   sliderImages: string[] = [];
   fromwhatscreen: string = "";
+  editCommentText: string = "";
+  editCommentId: string = "";
   groupornormalpost: any;
   userid: string = "";
   checkuseridtoroutecommentscreen: string = "";
@@ -55,6 +57,7 @@ export class CommentComponent implements OnInit {
   loadingMoreMembers = false;
   images: any[] = [];
   isSubmitting: boolean = false;
+  showEditPopup: boolean = false;
 
   constructor(private route: ActivatedRoute, private http: HttpClient, private fb: FormBuilder, private router: Router,private cdref: ChangeDetectorRef) {
     this.commentForm = this.fb.group({
@@ -83,23 +86,54 @@ export class CommentComponent implements OnInit {
     this.getComments();
   }
   
+
+
+ async editComment(commentid: string, commenttext: string): Promise<void> {
+    this.editCommentId = commentid;
+    this.editCommentText = commenttext;
+    this.showEditPopup = true;  // Show the popup
+  }
+
+  async updateComment(): Promise<void> {
+  //   if (this.editCommentText.trim()) {
+     
+
+  //     const formData = new FormData();
+  //     formData.append('editCommentId', this.editCommentId);
+  //     formData.append('editCommentText', this.editCommentText);
+
+  //     this.http.post(this.APIURL + 'add-post-image', formData).subscribe({
+  //       next: (response:any) => {
+  //         try {
+  //           if (response.message = "added") {
+  //             this.editCommentText = "";
+               
+  //            }
+  //         } catch (e) {
+  //           alert(e.message);
+  //         }
+  //       },
+
+
+ 
+  //     }
+  // }
+    
+  }
+
+
   async getPostData(): Promise<void> {
-    // Attempt to retrieve stored post data from sessionStorage
     const storedPostData = sessionStorage.getItem(`postdata_${this.postid}`);
     
     if (storedPostData) {
-      // Decrypt and parse the stored data
       const decryptedData = JSON.parse(atob(storedPostData));
   
-      // Populate the post from the stored data
       this.post = decryptedData.post;
   
-      // Check if the images array is already populated from sessionStorage
       if (decryptedData.images && decryptedData.images.length > 0) {
-        this.images = decryptedData.images; // Store the already parsed image URLs
+        this.images = decryptedData.images;  
       }
   
-      // Handle video or audio type
       if (this.post.posttype === "video") {
         const videoBlob = this.convertBase64ToBlob(this.post.post, 'video/mp4');
         this.post.videoUrl = URL.createObjectURL(videoBlob);
@@ -109,10 +143,9 @@ export class CommentComponent implements OnInit {
       }
   
       this.getfollowingstatus(this.post.userid);
-      return; // Exit early if data is loaded from sessionStorage
+      return;  
     }
   
-    // If no data is found in sessionStorage, fetch the post data from the API
     const formData = new FormData();
     formData.append('postid', this.postid!);
   
@@ -129,15 +162,13 @@ export class CommentComponent implements OnInit {
   
           this.http.post<any>(imageUrl, formDataimage).subscribe({
             next: (imageResponse) => {
-              // Clear the images array and push new images into the array
               this.images = imageResponse.map((img: any) =>
-                this.createBlobUrl(img.image, 'image/jpeg') // Create the Blob URL for each image
+                this.createBlobUrl(img.image, 'image/jpeg')  
               );
   
-              // Once images are loaded, store the post and images in sessionStorage
               const postDataToStore = {
                 post: this.post,
-                images: this.images, // Store the Blob URLs directly
+                images: this.images,  
               };
               const encodedPostData = btoa(JSON.stringify(postDataToStore));
               sessionStorage.setItem(`postdata_${this.postid}`, encodedPostData);
@@ -550,8 +581,12 @@ async getfollowingstatus(postowneruserid:any):Promise<void>{
     try {
       this.http.get<any>(url, { params }).subscribe({
         next: (response: any) => {
+
+          alert("1111111111111111111 " + response);
+          console.log("aaaaaaaaaaaaaaaaaaaaaaaaa " + response);
           try {
             if (response && Array.isArray(response.comments)) {
+              console.log("response.comments " + response.comments);
               const newComments = response.comments.map((comment: any) => ({
                 username: comment.username,
                 text: comment.text,
@@ -563,11 +598,17 @@ async getfollowingstatus(postowneruserid:any):Promise<void>{
 
               this.isthelastcommentLoaing = newComments.length === 10;
 
-              if (loadMore) {
-                this.comments = [...this.comments, ...newComments];  
-              } else {
-                this.comments = newComments;  
-              }
+
+              this.comments = [...this.comments, ...newComments]; 
+
+              // if (loadMore) {
+              //   console.log("loadMore");
+              //   this.comments = [...this.comments, ...newComments];  
+              // } else {
+              //   console.log("loadMoreloadMoreloadMoreloadMore");
+
+              //   this.comments = newComments;  
+              // }
 
             
 
@@ -584,6 +625,8 @@ async getfollowingstatus(postowneruserid:any):Promise<void>{
           }
         },
         error: (error: any) => {
+          alert("errorerror " + error);
+
           console.log("Error fetching comments:", error.message);
           if (error.message === "No comments found") {
             console.log('No comments');
@@ -1054,6 +1097,7 @@ async getfollowingstatus(postowneruserid:any):Promise<void>{
   }
 
 
+  
   async removeReplayComment(relaycomment: any, replaycommentID: any): Promise<void> {
     const result = confirm("Do you want to remove this replay?");
     if (result) {

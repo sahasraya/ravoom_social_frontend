@@ -370,7 +370,7 @@
   scrollbar-width: none;
   -ms-overflow-style: none;
   position: fixed;
-  top: 65px;
+  top: 0px;
   background-color:white;
   left: 0px;
   width: 100%;

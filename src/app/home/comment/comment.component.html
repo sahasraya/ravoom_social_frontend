@@ -302,6 +302,7 @@
 
                                  <div *ngIf="replay.showDropdownReplay" class="dropdown-menu-replay-comment">
                                   <ul>
+                                    
                                   
                                     <li  (click)="removeReplayComment(replay,replay.commentreplayid )"  *ngIf="replay.userid == userid" class="dropdownicons">
                                       <img src="../../../assets/images/delete.png" alt="" class="replaydropdownimage">
@@ -332,6 +333,11 @@
 
           <div *ngIf="comment.showDropdown" class="dropdown-menu">
             <ul>
+
+              <li (click)="editComment(comment.commentid,comment.text)" *ngIf="comment.userid == this.userid" class="dropdownicons">
+                <img src="../../../assets/images/edit.png" alt="">
+                Edit comment
+              </li> 
             
               <li (click)="removeComment(comment,comment.commentid)" *ngIf="comment.userid == this.userid" class="dropdownicons">
                 <img src="../../../assets/images/delete.png" alt="">
@@ -343,6 +349,21 @@
                
             </ul>
           </div>
+
+          <!-- commet edit pop up -->
+
+          <div *ngIf="showEditPopup" class="edit-popup animate-popup">
+            <div class="popup-content">
+              <input type="text" [(ngModel)]="editCommentText" placeholder="Edit your comment" class="popup-input" />
+              <button type="submit" (click)="updateComment()" *ngIf="editCommentText">
+                <img src="../../../assets/images/addcomment.png" alt="">
+              </button>
+            </div>
+          </div>
+
+
+
+
         </div>
 
 

@@ -293,7 +293,7 @@ getPostsFeed(): void {
       const scrollHeight = element.scrollHeight;
       const clientHeight = element.clientHeight;
   
-      if (scrollHeight - scrollPosition <= clientHeight + 1000 && !this.loading) {
+      if (scrollHeight - scrollPosition <= clientHeight + 2000 && !this.loading) {
           localStorage.removeItem('scrollPosition');
   
           if (this.selectedOption === "") {

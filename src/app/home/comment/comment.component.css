@@ -14,6 +14,8 @@
     margin-bottom: 20px;
     padding: 10px;
     border-radius: 10px;
+    position: relative;
+    top: 25px;
   }
   
   .user-profile {
@@ -123,10 +125,19 @@
 .commentusername:hover{
   text-decoration: underline;
 }
-.commenttext{
+.commenttext {
   opacity: 0.7;
   font-size: 15px;
+  max-width: 100%;
+  display: -webkit-box;       
+  -webkit-box-orient: vertical;
+  overflow: hidden;             
+  text-overflow: ellipsis;     
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
 }
+
 
 .replaytext{
 color: var( --primarycolor);
@@ -468,6 +479,7 @@ input[type="text"]:focus {
   font-size: 11px;
   padding: 5px;
   transition: background-color 0.3s;
+  font-size: 15px;
 }
 
 .load-more-btn:hover{
@@ -728,6 +740,57 @@ input[type="text"]:focus {
 }
 
 
+.dropdown-menu {
+  position: absolute;
+  background: white;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  width: 200px;
+  padding: 10px;
+}
+
+.edit-popup {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 400px;
+  padding: 20px;
+  background-color: white;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  border-radius: 10px 10px 0 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease-in-out;
+}
+
+.animate-popup {
+  opacity: 1;
+  visibility: visible;
+  bottom: 50%;
+  transition: all 0.3s ease-in-out;
+}
+
+.popup-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+}
+
+.popup-input {
+  flex: 1;
+  padding: 8px;
+  font-size: 15px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  margin-right: 8px;
+}
 
 
 
