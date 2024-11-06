@@ -91,7 +91,10 @@ export class PostComponent implements OnInit {
 
   ngAfterContentChecked() {
     if (this.post.posttype === 'image' && !this.imageUrl) {
+      this.profileImageUrl = this.createBlobUrl(this.post.userprofile, 'image/jpeg');
+
       this.loadCurrentImage();
+      
     } else if (this.post.posttype === 'audio' && !this.audioUrl) {
       const base64Data = this.post.post;
       const blob = this.convertBase64ToBlobAudio(base64Data);
