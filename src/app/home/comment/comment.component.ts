@@ -7,18 +7,6 @@ import { ImageLargerComponent } from '../../widgets/image-larger/image-larger.co
 import { ReporttingComponent } from '../../widgets/reportting/reportting.component';
 import { environment } from '../../../environments/environment';
 
-
-interface Comment {
-  username: string;
-  text: string;
-  commenteddate: Date;
-  imageurl: string | null;
-  userid: string;
-  commentid: string;
-}
-
-
-
 @Component({
   selector: 'app-comment',
   standalone: true,
@@ -576,30 +564,10 @@ async getfollowingstatus(postowneruserid:any):Promise<void>{
  
 
   async getComments(loadMore: boolean = false): Promise<void> {
-    // If not loading more, reset the offset
     if (!loadMore) {
       this.offset = 0;
     }
   
-    // Prepare the new comments to append (this is done before the API call)
-    const newComments: Comment[] = this.comments.map((comment) => ({
-      username: comment.username,
-      text: comment.text,
-      commenteddate: new Date(comment.commenteddate),
-      imageurl: comment.imageurl,
-      userid: comment.userid,
-      commentid: comment.commentid
-    }));
-  
-    console.log(newComments);
-    // Append the new comments to the local comments array before the API call
-    if (!loadMore) {
-      this.comments = [...newComments, ...this.comments];
-    } else {
-      this.comments = [...this.comments, ...newComments];
-    }
-  
-    // API parameters
     const params = new HttpParams()
       .set('postid', this.postid!.toString())
       .set('limit', '10')
@@ -610,43 +578,69 @@ async getfollowingstatus(postowneruserid:any):Promise<void>{
       : `${this.APIURL}get_comments`;
   
     try {
-      // Perform the API call
-      this.http.get<{ comments: any[] }>(url, { params }).subscribe({
-        next: (response) => {
-          if (response && Array.isArray(response.comments)) {
-            const newCommentsFromAPI: Comment[] = response.comments.map((comment) => ({
-              username: comment.username,
-              text: comment.text,
-              commenteddate: new Date(comment.commenteddate),
-              imageurl: comment.profileimage,
-              userid: comment.userid,
-              commentid: comment.commentid
-            }));
+      // Add any local comments to the current list before making the API call
+      const newComments: any[] = this.comments.map((comment: any) => ({
+        username: comment.username,
+        text: comment.text,
+        commenteddate: new Date(comment.commenteddate),
+        imageurl: comment.profileimage,
+        userid: comment.userid,
+        commentid: comment.commentid
+      }));
   
-            // Set the flag for the last comment
-            this.isthelastcommentLoaing = newCommentsFromAPI.length === 10;
+      if (!loadMore) {
+        // Reset the comments array to include the newly appended comments if not loading more
+        this.comments = [...newComments, ...this.comments];
+      } else {
+        // Append new comments if loading more
+        this.comments = [...this.comments, ...newComments];
+      }
   
-            if (loadMore) {
-              // Append the new comments from the API to the current list
-              this.comments = [...this.comments, ...newCommentsFromAPI];
+      // Now make the API call
+      this.http.get<any>(url, { params }).subscribe({
+        next: (response: any) => {
+          try {
+            if (response && Array.isArray(response.comments)) {
+              const newCommentsFromAPI = response.comments.map((comment: any) => ({
+                username: comment.username,
+                text: comment.text,
+                commenteddate: new Date(comment.commenteddate),
+                imageurl: comment.profileimage,
+                userid: comment.userid,
+                commentid: comment.commentid
+              }));
+  
+              this.isthelastcommentLoaing = newCommentsFromAPI.length === 10;
+  
+              if (loadMore) {
+                // Append new comments from API when loading more
+                this.comments = [...this.comments, ...newCommentsFromAPI];
+              } else {
+                // Reset the comments to the new ones from the API
+                this.comments = newCommentsFromAPI;
+              }
+  
+              this.offset += 10;
             } else {
-              // Append only unique comments to avoid duplicates
-              const uniqueComments = newCommentsFromAPI.filter(
-                (incomingComment: Comment) => !this.comments.some(existing => existing.commentid === incomingComment.commentid)
-              );
-              this.comments = [...uniqueComments, ...this.comments];
+              this.comments = [];
+              console.log("No comments found or comments is not an array.");
+              this.isthelastcommentLoaing = false;
             }
-  
-            // Update the offset
-            this.offset += 10;
-          } else {
+          } catch (err) {
+            console.error("Error processing comments:", err);
             this.comments = [];
             this.isthelastcommentLoaing = false;
           }
         },
         error: (error: any) => {
-          console.error("Error fetching comments:", error.message);
-          this.isthelastcommentLoaing = false;
+          console.log("Error fetching comments:", error.message);
+          if (error.message === "No comments found") {
+            console.log('No comments');
+          } else if (error.status === "404") {
+            console.log('No comments found, 404 error');
+          } else {
+            console.log('An unexpected error occurred:', error);
+          }
         }
       });
     } catch (err) {
@@ -655,9 +649,6 @@ async getfollowingstatus(postowneruserid:any):Promise<void>{
       this.isthelastcommentLoaing = false;
     }
   }
-  
-
-
   
 
 
@@ -756,7 +747,7 @@ async getfollowingstatus(postowneruserid:any):Promise<void>{
 
 
 
- async onSubmit(postid: any, userid: any, username: string, userprofile: any): Promise<void> {
+  onSubmit(postid: any, userid: any, username: string, userprofile: any): void {
 
     this.isSubmitting = true;
 
