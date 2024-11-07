@@ -95,30 +95,13 @@ export class CommentComponent implements OnInit {
   }
 
   async updateComment(): Promise<void> {
-  //   if (this.editCommentText.trim()) {
-     
-
-  //     const formData = new FormData();
-  //     formData.append('editCommentId', this.editCommentId);
-  //     formData.append('editCommentText', this.editCommentText);
-
-  //     this.http.post(this.APIURL + 'add-post-image', formData).subscribe({
-  //       next: (response:any) => {
-  //         try {
-  //           if (response.message = "added") {
-  //             this.editCommentText = "";
-               
-  //            }
-  //         } catch (e) {
-  //           alert(e.message);
-  //         }
-  //       },
-
+    if (this.editCommentText.trim()) {
+      console.log(`Updating comment with ID: ${this.editCommentId} to new text: ${this.editCommentText}`);
 
  
-  //     }
-  // }
-    
+      this.showEditPopup = false;
+      this.editCommentText = '';
+    }
   }
 
 
@@ -563,45 +546,25 @@ async getfollowingstatus(postowneruserid:any):Promise<void>{
 
  
 
-  async getComments(loadMore: boolean = false): Promise<void> {
-    if (!loadMore) {
-      this.offset = 0;
-    }
-  
+  async getComments( ): Promise<void> {
+    
+ 
+
     const params = new HttpParams()
       .set('postid', this.postid!.toString())
       .set('limit', '10')
       .set('offset', this.offset.toString());
-  
+
     const url = this.groupornormalpost === "g" 
       ? `${this.APIURL}get_comments_group` 
       : `${this.APIURL}get_comments`;
-  
+
     try {
-      // Add any local comments to the current list before making the API call
-      const newComments: any[] = this.comments.map((comment: any) => ({
-        username: comment.username,
-        text: comment.text,
-        commenteddate: new Date(comment.commenteddate),
-        imageurl: comment.profileimage,
-        userid: comment.userid,
-        commentid: comment.commentid
-      }));
-  
-      if (!loadMore) {
-        // Reset the comments array to include the newly appended comments if not loading more
-        this.comments = [...newComments, ...this.comments];
-      } else {
-        // Append new comments if loading more
-        this.comments = [...this.comments, ...newComments];
-      }
-  
-      // Now make the API call
       this.http.get<any>(url, { params }).subscribe({
         next: (response: any) => {
           try {
             if (response && Array.isArray(response.comments)) {
-              const newCommentsFromAPI = response.comments.map((comment: any) => ({
+              const newComments = response.comments.map((comment: any) => ({
                 username: comment.username,
                 text: comment.text,
                 commenteddate: new Date(comment.commenteddate),
@@ -609,22 +572,18 @@ async getfollowingstatus(postowneruserid:any):Promise<void>{
                 userid: comment.userid,
                 commentid: comment.commentid
               }));
-  
-              this.isthelastcommentLoaing = newCommentsFromAPI.length === 10;
-  
-              if (loadMore) {
-                // Append new comments from API when loading more
-                this.comments = [...this.comments, ...newCommentsFromAPI];
-              } else {
-                // Reset the comments to the new ones from the API
-                this.comments = newCommentsFromAPI;
-              }
-  
-              this.offset += 10;
+
+              this.isthelastcommentLoaing = newComments.length === 10;
+
+              this.comments = newComments;  
+
+            
+
+              this.offset += 10; 
             } else {
               this.comments = [];
               console.log("No comments found or comments is not an array.");
-              this.isthelastcommentLoaing = false;
+              this.isthelastcommentLoaing = false;  
             }
           } catch (err) {
             console.error("Error processing comments:", err);
@@ -645,10 +604,12 @@ async getfollowingstatus(postowneruserid:any):Promise<void>{
       });
     } catch (err) {
       console.error("Error making the request:", err);
-      this.comments = [];
-      this.isthelastcommentLoaing = false;
+      this.comments = [];  
+      this.isthelastcommentLoaing = false;  
     }
   }
+
+
   
 
 
