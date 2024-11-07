@@ -10,7 +10,7 @@ import { environment } from '../../../environments/environment';
 @Component({
   selector: 'app-comment',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, ImageLargerComponent, RouterModule,ReporttingComponent,FormsModule],
+  imports: [CommonModule, ReactiveFormsModule, ImageLargerComponent, RouterModule,ReporttingComponent],
   templateUrl: './comment.component.html',
   styleUrl: './comment.component.css'
 })
@@ -38,8 +38,6 @@ export class CommentComponent implements OnInit {
   showreportscreenBool:boolean=false;
   sliderImages: string[] = [];
   fromwhatscreen: string = "";
-  editCommentText: string = "";
-  editCommentId: string = "";
   groupornormalpost: any;
   userid: string = "";
   checkuseridtoroutecommentscreen: string = "";
@@ -57,7 +55,6 @@ export class CommentComponent implements OnInit {
   loadingMoreMembers = false;
   images: any[] = [];
   isSubmitting: boolean = false;
-  showEditPopup: boolean = false;
 
   constructor(private route: ActivatedRoute, private http: HttpClient, private fb: FormBuilder, private router: Router,private cdref: ChangeDetectorRef) {
     this.commentForm = this.fb.group({
@@ -86,25 +83,6 @@ export class CommentComponent implements OnInit {
     this.getComments();
   }
   
-
-
- async editComment(commentid: string, commenttext: string): Promise<void> {
-    this.editCommentId = commentid;
-    this.editCommentText = commenttext;
-    this.showEditPopup = true;  // Show the popup
-  }
-
-  async updateComment(): Promise<void> {
-    if (this.editCommentText.trim()) {
-      console.log(`Updating comment with ID: ${this.editCommentId} to new text: ${this.editCommentText}`);
-
- 
-      this.showEditPopup = false;
-      this.editCommentText = '';
-    }
-  }
-
-
   async getPostData(): Promise<void> {
     const storedPostData = sessionStorage.getItem(`postdata_${this.postid}`);
     
@@ -546,8 +524,10 @@ async getfollowingstatus(postowneruserid:any):Promise<void>{
 
  
 
-  async getComments( ): Promise<void> {
-    
+  async getComments(loadMore: boolean = false): Promise<void> {
+    if (!loadMore) {
+      this.offset = 0;
+    }
  
 
     const params = new HttpParams()
@@ -575,7 +555,11 @@ async getfollowingstatus(postowneruserid:any):Promise<void>{
 
               this.isthelastcommentLoaing = newComments.length === 10;
 
-              this.comments = newComments;  
+              if (loadMore) {
+                this.comments = [...this.comments, ...newComments];  
+              } else {
+                this.comments = newComments;  
+              }
 
             
 
@@ -708,7 +692,7 @@ async getfollowingstatus(postowneruserid:any):Promise<void>{
 
 
 
-  onSubmit(postid: any, userid: any, username: string, userprofile: any): void {
+  async onSubmit(postid: any, userid: any, username: string, userprofile: any): Promise<void> {
 
     this.isSubmitting = true;
 
@@ -1062,7 +1046,6 @@ async getfollowingstatus(postowneruserid:any):Promise<void>{
   }
 
 
-  
   async removeReplayComment(relaycomment: any, replaycommentID: any): Promise<void> {
     const result = confirm("Do you want to remove this replay?");
     if (result) {

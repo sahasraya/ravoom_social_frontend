@@ -226,6 +226,11 @@
 
         <div *ngFor="let comment of comments" class="comment">
 
+          
+        
+
+
+
           <div class="comment-header">
             <img *ngIf="comment.imageurl" [src]="'data:image/jpeg;base64,' + comment.imageurl" alt="User Profile Image" class="comment-userprofile">
             <div class="comment-info-holder">
@@ -329,10 +334,7 @@
           <div *ngIf="comment.showDropdown" class="dropdown-menu">
             <ul>
 
-              <li (click)="editComment(comment.commentid,comment.text)" *ngIf="comment.userid == this.userid" class="dropdownicons">
-                <img src="../../../assets/images/edit.png" alt="">
-                Edit comment
-              </li> 
+              
             
               <li (click)="removeComment(comment,comment.commentid)" *ngIf="comment.userid == this.userid" class="dropdownicons">
                 <img src="../../../assets/images/delete.png" alt="">
@@ -344,25 +346,10 @@
                
             </ul>
           </div>
-
-          <!-- commet edit pop up -->
-
-          <div *ngIf="showEditPopup" class="edit-popup animate-popup">
-            <div class="popup-content">
-              <input type="text" [(ngModel)]="editCommentText" placeholder="Edit your comment" class="popup-input" />
-              <button type="submit" (click)="updateComment()" *ngIf="editCommentText">
-                <img src="../../../assets/images/addcomment.png" alt="">
-              </button>
-            </div>
-          </div>
-
-
-
-
         </div>
 
 
-        <span *ngIf="isthelastcommentLoaing" (click)="getComments()" class="load-more-btn">
+        <span *ngIf="isthelastcommentLoaing" (click)="getComments(true)" class="load-more-btn">
           Load More
         </span>
 
