@@ -6,7 +6,7 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ImageLargerComponent } from '../../widgets/image-larger/image-larger.component';
 import { ReporttingComponent } from '../../widgets/reportting/reportting.component';
 import { environment } from '../../../environments/environment';
-import { lastValueFrom, Observable, of } from 'rxjs';
+import { lastValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-comment',
@@ -57,8 +57,6 @@ export class CommentComponent implements OnInit {
   images: any[] = [];
   isSubmitting: boolean = false;
 
-  comments$: Observable<any[]> = of([]);
-  
   constructor(private route: ActivatedRoute, private http: HttpClient, private fb: FormBuilder, private router: Router,private cdref: ChangeDetectorRef) {
     this.commentForm = this.fb.group({
       commenttext: ['', [Validators.required]],
@@ -620,17 +618,61 @@ async getfollowingstatus(postowneruserid:any):Promise<void>{
 
 
 
-  
+  async getComments(loadMore: boolean = false): Promise<void> {
+    // If not loading more, reset comments
+    if (!loadMore) {
+        this.comments = [];
+    }
 
+    const params = new HttpParams()
+        .set('postid', this.postid!.toString());
 
+    const url = this.groupornormalpost === "g"
+        ? `${this.APIURL}get_comments_group`
+        : `${this.APIURL}get_comments`;
+
+    try {
+        const response = await lastValueFrom(this.http.get<any>(url, { params }));
+
+        if (response && Array.isArray(response.comments)) {
+            const newComments = response.comments.map((comment: any) => ({
+                username: comment.username,
+                text: comment.text,
+                commenteddate: new Date(comment.commenteddate),
+                imageurl: comment.profileimage,
+                userid: comment.userid,
+                commentid: comment.commentid
+            }));
+
+            // Log all the comments retrieved
+            console.log('Retrieved Comments:', newComments);
+
+            this.isthelastcommentLoaing = newComments.length > 0;
+            this.comments = loadMore ? [...this.comments, ...newComments] : newComments;
+        } else {
+            this.comments = [];
+            this.isthelastcommentLoaing = false;
+            console.log("No comments found or comments is not an array.");
+        }
+
+        this.cdref.detectChanges();
+    } catch (error: any) {
+        console.error("Error fetching comments:", error);
+        this.comments = [];
+        this.isthelastcommentLoaing = false;
+        this.cdref.detectChanges();
+    }
+}
 
 
 
 
   async onSubmit(postid: any, userid: any, username: string, userprofile: any): Promise<void> {
+    this.getComments();
+
     this.isSubmitting = true;
 
-    if (!this.userid) {
+    if (this.userid == '') {
       this.router.navigate(['/auth/log-in']);
       return;
     }
@@ -641,103 +683,74 @@ async getfollowingstatus(postowneruserid:any):Promise<void>{
       Object.keys(this.commentForm.value).forEach(key => {
         formData.append(key, this.commentForm.value[key]);
       });
-
       const myuserid: string | null = localStorage.getItem('wmd');
       formData.append('postid', postid);
       formData.append('userid', this.userid);
       formData.append('username', username);
       formData.append('userprofile', userprofile);
 
-      const endpoint = this.groupornormalpost === "g"
-        ? 'add_comment_group'
-        : 'add_comment';
+      if (this.groupornormalpost == "g") {
 
-      try {
-        // Send the comment data to the server
-        const response: any = await lastValueFrom(this.http.post(this.APIURL + endpoint, formData));
-        
-        console.log('Comment added successfully:', response);
-        this.numberofcomments++;
+        this.http.post(this.APIURL + 'add_comment_group', formData).subscribe({
+          next: async (response: any) => {
+          await  this.getComments();
+           
 
-        // Check if the comment was posted by the current user
-        if (userid !== this.userid) {
-          // Send a notification if the comment was not posted by the user
-          formData.append('userid', userid);
-          formData.append('profileimage', userprofile);
-          formData.append('notificationtype', 'comment');
-          formData.append('currentuserid', myuserid!);
-          formData.append('commenttext', this.commentForm.get('commenttext')?.value);
-          formData.append('replytext', ".");
+            this.numberofcomments++;
+            this.isSubmitting = false;
 
-          await lastValueFrom(this.http.post(this.APIURL + "send-notification", formData));
-        }
+            if (userid == this.userid) {
+              this.commentForm.reset();
 
-        // Reset the comment form
-        this.commentForm.reset();
+              return;
+            } else {
+              formData.append('userid', userid);
 
-        // Fetch the latest comments after the comment is added
-        await this.getComments();
-        
-      } catch (error) {
-        console.error('There was an error submitting the comment!', error);
-      } finally {
-        this.isSubmitting = false;
-      }
-    }
-  }
+              formData.append('profileimage', userprofile);
+              formData.append('notificationtype', 'comment');
+              formData.append('currentuserid', myuserid!);
+              formData.append('commenttext', this.commentForm.get('commenttext')?.value);
+              formData.append('replytext', ".");
 
-  async getComments(loadMore: boolean = false): Promise<void> {
-    if (!loadMore) {
-      this.offset = 0;
-    }
 
-    const params = new HttpParams()
-      .set('postid', this.postid!.toString())
-      .set('limit', this.limit.toString())
-      .set('offset', this.offset.toString());
 
-    const url = this.groupornormalpostinput === 'g' 
-      ? `${this.APIURL}get_comments_group` 
-      : `${this.APIURL}get_comments`;
+              this.http.post(this.APIURL + "send-notification", formData).subscribe({
+                next: (response: any) => {
 
-    try {
-      const response = await this.http
-        .get<any>(url, { params })
-        .toPromise();
 
-      if (response && Array.isArray(response.comments)) {
-        const newComments = response.comments.map((comment: any) => ({
-          username: comment.username,
-          text: comment.text,
-          commenteddate: new Date(comment.commenteddate),
-          imageurl: comment.profileimage,
-          userid: comment.userid,
-          commentid: comment.commentid,
-        }));
+                  this.commentForm.reset();
+                }
+              });
+            }
 
-        this.isthelastcommentLoaing = newComments.length === this.limit;
-        this.comments = loadMore ? [...this.comments, ...newComments] : newComments;
-        this.offset += this.limit;
 
-        this.comments$ = of(this.comments); // Update Observable
-        console.log(this.comments);
+            console.log('Comment added successfully:', response);
+          },
+          error: error => {
+            console.error('There was an error!', error);
+          }
+        });
 
       } else {
-        this.comments$ = of([]);
-        this.isthelastcommentLoaing = false;
+        this.http.post(this.APIURL + 'add_comment', formData).subscribe({
+          next: (response: any) => {
+            this.getComments();
+            console.log(response.message);
+            this.numberofcomments++;
+            this.isSubmitting = false;
+            alert("Comment added successfully");
+            this.commentForm.reset();
+            
+          },
+          error: error => {
+            console.error('There was an error!', error);
+          }
+        });
       }
 
-      this.cdref.detectChanges();
-    } catch (error: any) {
-      console.error('Error fetching comments:', error);
-      this.comments$ = of([]);
-      this.isthelastcommentLoaing = false;
-      this.cdref.detectChanges();
+
     }
   }
-
- 
-
 
 
 
