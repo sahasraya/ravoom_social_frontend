@@ -6,7 +6,7 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ImageLargerComponent } from '../../widgets/image-larger/image-larger.component';
 import { ReporttingComponent } from '../../widgets/reportting/reportting.component';
 import { environment } from '../../../environments/environment';
-import { lastValueFrom } from 'rxjs';
+import { lastValueFrom, Observable, of } from 'rxjs';
 
 @Component({
   selector: 'app-comment',
@@ -57,6 +57,8 @@ export class CommentComponent implements OnInit {
   images: any[] = [];
   isSubmitting: boolean = false;
 
+  comments$: Observable<any[]> = of([]);
+  
   constructor(private route: ActivatedRoute, private http: HttpClient, private fb: FormBuilder, private router: Router,private cdref: ChangeDetectorRef) {
     this.commentForm = this.fb.group({
       commenttext: ['', [Validators.required]],
@@ -691,16 +693,18 @@ async getfollowingstatus(postowneruserid:any):Promise<void>{
 
     const params = new HttpParams()
       .set('postid', this.postid!.toString())
-      .set('limit', '10')
+      .set('limit', this.limit.toString())
       .set('offset', this.offset.toString());
 
-    const url = this.groupornormalpost === "g"
-      ? `${this.APIURL}get_comments_group`
+    const url = this.groupornormalpostinput === 'g' 
+      ? `${this.APIURL}get_comments_group` 
       : `${this.APIURL}get_comments`;
 
     try {
-      const response = await lastValueFrom(this.http.get<any>(url, { params }));
-      
+      const response = await this.http
+        .get<any>(url, { params })
+        .toPromise();
+
       if (response && Array.isArray(response.comments)) {
         const newComments = response.comments.map((comment: any) => ({
           username: comment.username,
@@ -708,25 +712,31 @@ async getfollowingstatus(postowneruserid:any):Promise<void>{
           commenteddate: new Date(comment.commenteddate),
           imageurl: comment.profileimage,
           userid: comment.userid,
-          commentid: comment.commentid
+          commentid: comment.commentid,
         }));
 
-        this.isthelastcommentLoaing = newComments.length === 10;
+        this.isthelastcommentLoaing = newComments.length === this.limit;
         this.comments = loadMore ? [...this.comments, ...newComments] : newComments;
-        this.offset += 10;
+        this.offset += this.limit;
+
+        this.comments$ = of(this.comments); // Update Observable
+        console.log(this.comments);
+
       } else {
-        this.comments = [];
+        this.comments$ = of([]);
         this.isthelastcommentLoaing = false;
       }
-      
+
       this.cdref.detectChanges();
     } catch (error: any) {
-      console.error("Error fetching comments:", error);
-      this.comments = [];
+      console.error('Error fetching comments:', error);
+      this.comments$ = of([]);
       this.isthelastcommentLoaing = false;
       this.cdref.detectChanges();
     }
   }
+
+ 
 
 
 
