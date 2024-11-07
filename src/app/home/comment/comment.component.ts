@@ -6,6 +6,7 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ImageLargerComponent } from '../../widgets/image-larger/image-larger.component';
 import { ReporttingComponent } from '../../widgets/reportting/reportting.component';
 import { environment } from '../../../environments/environment';
+import { lastValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-comment',
@@ -539,66 +540,50 @@ async getfollowingstatus(postowneruserid:any):Promise<void>{
       : `${this.APIURL}get_comments`;
   
     try {
-      this.http.get<any>(url, { params }).subscribe({
-        next: (response: any) => {
-          try {
-            if (response && Array.isArray(response.comments)) {
-              const newComments = response.comments.map((comment: any) => ({
-                username: comment.username,
-                text: comment.text,
-                commenteddate: new Date(comment.commenteddate),
-                imageurl: comment.profileimage,
-                userid: comment.userid,
-                commentid: comment.commentid
-              }));
+      const response = await lastValueFrom(this.http.get<any>(url, { params }));
+      
+      if (response && Array.isArray(response.comments)) {
+        const newComments = response.comments.map((comment: any) => ({
+          username: comment.username,
+          text: comment.text,
+          commenteddate: new Date(comment.commenteddate),
+          imageurl: comment.profileimage,
+          userid: comment.userid,
+          commentid: comment.commentid
+        }));
   
-              this.isthelastcommentLoaing = newComments.length === 10;
+        this.isthelastcommentLoaing = newComments.length === 10;
   
-              if (loadMore) {
-                this.comments = [...this.comments, ...newComments];
-              } else {
-                this.comments = newComments;
-                console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" + this.comments);
-
-              }
+        this.comments = loadMore ? [...this.comments, ...newComments] : newComments;
   
-              // Trigger change detection to update the DOM
-              this.cdref.detectChanges();
+        this.offset += 10;
+      } else {
+        this.comments = [];
+        console.log("No comments found or comments is not an array.");
+        this.isthelastcommentLoaing = false;
+      }
   
-              this.offset += 10;
-            } else {
-              this.comments = [];
-              console.log("No comments found or comments is not an array.");
-              this.isthelastcommentLoaing = false;
-              this.cdref.detectChanges(); // Refresh DOM on empty response
-            }
-          } catch (err) {
-            console.error("Error processing comments:", err);
-            this.comments = [];
-            this.isthelastcommentLoaing = false;
-            this.cdref.detectChanges(); // Refresh DOM on error
-          }
-        },
-        error: (error: any) => {
-          console.log("Error fetching comments:", error.message);
-          if (error.message === "No comments found") {
-            console.log('No comments');
-          } else if (error.status === "404") {
-            console.log('No comments found, 404 error');
-          } else {
-            console.log('An unexpected error occurred:', error);
-          }
-          this.cdref.detectChanges(); // Refresh DOM on error
-        }
-      });
-    } catch (err) {
-      console.error("Error making the request:", err);
+      // Trigger change detection to update the DOM
+      this.cdref.detectChanges();
+      
+    } catch (error:any) {
+      console.error("Error fetching comments:", error);
+  
       this.comments = [];
       this.isthelastcommentLoaing = false;
-      this.cdref.detectChanges(); // Refresh DOM on catch block
+  
+      if (error.message === "No comments found") {
+        console.log('No comments');
+      } else if (error.status === "404") {
+        console.log('No comments found, 404 error');
+      } else {
+        console.log('An unexpected error occurred:', error);
+      }
+  
+      // Trigger change detection to update the DOM on error
+      this.cdref.detectChanges();
     }
   }
-
 
   
 
