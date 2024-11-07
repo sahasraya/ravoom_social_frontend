@@ -693,6 +693,7 @@ async getfollowingstatus(postowneruserid:any):Promise<void>{
 
 
   async onSubmit(postid: any, userid: any, username: string, userprofile: any): Promise<void> {
+    this.getComments();
 
     this.isSubmitting = true;
 
@@ -718,6 +719,9 @@ async getfollowingstatus(postowneruserid:any):Promise<void>{
         this.http.post(this.APIURL + 'add_comment_group', formData).subscribe({
           next: (response: any) => {
             this.getComments();
+            this.getComments();
+            this.getComments();
+
             this.numberofcomments++;
             this.isSubmitting = false;
 
@@ -756,6 +760,8 @@ async getfollowingstatus(postowneruserid:any):Promise<void>{
       } else {
         this.http.post(this.APIURL + 'add_comment', formData).subscribe({
           next: (response: any) => {
+            this.getComments();
+            this.getComments();
             this.getComments();
 
             this.numberofcomments++;

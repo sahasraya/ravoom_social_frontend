@@ -200,6 +200,8 @@
       <div *ngIf="!isthelastcomment" class="commentholderouter">
         <h3>Comments</h3>
 
+        <button (click)="getComments()">load comments</button>
+
 
 
         <form [formGroup]="commentForm" (ngSubmit)="onSubmit(post.postid,post.userid,post.username,post.userprofile)">
