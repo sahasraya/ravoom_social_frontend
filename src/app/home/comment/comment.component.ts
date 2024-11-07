@@ -6,7 +6,18 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ImageLargerComponent } from '../../widgets/image-larger/image-larger.component';
 import { ReporttingComponent } from '../../widgets/reportting/reportting.component';
 import { environment } from '../../../environments/environment';
-import { interval, Subscription } from 'rxjs';
+
+
+interface Comment {
+  username: string;
+  text: string;
+  commenteddate: Date;
+  imageurl: string | null;
+  userid: string;
+  commentid: string;
+}
+
+
 
 @Component({
   selector: 'app-comment',
@@ -60,9 +71,6 @@ export class CommentComponent implements OnInit {
   isSubmitting: boolean = false;
   showEditPopup: boolean = false;
 
-  refreshInterval: number = 5000; // Refresh every 5 seconds
-  refreshSubscription: Subscription | null = null;
-
   constructor(private route: ActivatedRoute, private http: HttpClient, private fb: FormBuilder, private router: Router,private cdref: ChangeDetectorRef) {
     this.commentForm = this.fb.group({
       commenttext: ['', [Validators.required]],
@@ -88,11 +96,6 @@ export class CommentComponent implements OnInit {
     this.checkuseridtoroutecommentscreen = this.route.snapshot.paramMap.get('uid') || '';
     this.getpostcommentCount(this.postid);
     this.getComments();
-
-    this.refreshSubscription = interval(this.refreshInterval).subscribe(() => {
-      this.getComments(false); // Reload comments without loading more
-    });
-    
   }
   
 
@@ -573,25 +576,45 @@ async getfollowingstatus(postowneruserid:any):Promise<void>{
  
 
   async getComments(loadMore: boolean = false): Promise<void> {
-  
+    // If not loading more, reset the offset
     if (!loadMore) {
       this.offset = 0;
     }
-
+  
+    // Prepare the new comments to append (this is done before the API call)
+    const newComments: Comment[] = this.comments.map((comment) => ({
+      username: comment.username,
+      text: comment.text,
+      commenteddate: new Date(comment.commenteddate),
+      imageurl: comment.imageurl,
+      userid: comment.userid,
+      commentid: comment.commentid
+    }));
+  
+    console.log(newComments);
+    // Append the new comments to the local comments array before the API call
+    if (!loadMore) {
+      this.comments = [...newComments, ...this.comments];
+    } else {
+      this.comments = [...this.comments, ...newComments];
+    }
+  
+    // API parameters
     const params = new HttpParams()
       .set('postid', this.postid!.toString())
       .set('limit', '10')
       .set('offset', this.offset.toString());
-
+  
     const url = this.groupornormalpost === "g" 
       ? `${this.APIURL}get_comments_group` 
       : `${this.APIURL}get_comments`;
-
+  
     try {
-      this.http.get<any>(url, { params }).subscribe({
-        next: (response: any) => {
+      // Perform the API call
+      this.http.get<{ comments: any[] }>(url, { params }).subscribe({
+        next: (response) => {
           if (response && Array.isArray(response.comments)) {
-            const newComments = response.comments.map((comment: any) => ({
+            const newCommentsFromAPI: Comment[] = response.comments.map((comment) => ({
               username: comment.username,
               text: comment.text,
               commenteddate: new Date(comment.commenteddate),
@@ -599,15 +622,22 @@ async getfollowingstatus(postowneruserid:any):Promise<void>{
               userid: comment.userid,
               commentid: comment.commentid
             }));
-
-            this.isthelastcommentLoaing = newComments.length === 10;
-
+  
+            // Set the flag for the last comment
+            this.isthelastcommentLoaing = newCommentsFromAPI.length === 10;
+  
             if (loadMore) {
-              this.comments = [...this.comments, ...newComments];
+              // Append the new comments from the API to the current list
+              this.comments = [...this.comments, ...newCommentsFromAPI];
             } else {
-              this.comments = newComments;
+              // Append only unique comments to avoid duplicates
+              const uniqueComments = newCommentsFromAPI.filter(
+                (incomingComment: Comment) => !this.comments.some(existing => existing.commentid === incomingComment.commentid)
+              );
+              this.comments = [...uniqueComments, ...this.comments];
             }
-
+  
+            // Update the offset
             this.offset += 10;
           } else {
             this.comments = [];
@@ -625,6 +655,8 @@ async getfollowingstatus(postowneruserid:any):Promise<void>{
       this.isthelastcommentLoaing = false;
     }
   }
+  
+
 
   
 
