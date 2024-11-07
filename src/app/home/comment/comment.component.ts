@@ -754,7 +754,7 @@ async getfollowingstatus(postowneruserid:any):Promise<void>{
             this.getComments();
             this.getComments();
             this.getComments();
-
+            console.log(response.message);
             this.numberofcomments++;
             this.isSubmitting = false;
             alert("Comment added successfully");
