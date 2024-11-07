@@ -6,6 +6,7 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ImageLargerComponent } from '../../widgets/image-larger/image-larger.component';
 import { ReporttingComponent } from '../../widgets/reportting/reportting.component';
 import { environment } from '../../../environments/environment';
+import { interval, Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-comment',
@@ -59,6 +60,9 @@ export class CommentComponent implements OnInit {
   isSubmitting: boolean = false;
   showEditPopup: boolean = false;
 
+  refreshInterval: number = 5000; // Refresh every 5 seconds
+  refreshSubscription: Subscription | null = null;
+
   constructor(private route: ActivatedRoute, private http: HttpClient, private fb: FormBuilder, private router: Router,private cdref: ChangeDetectorRef) {
     this.commentForm = this.fb.group({
       commenttext: ['', [Validators.required]],
@@ -84,6 +88,11 @@ export class CommentComponent implements OnInit {
     this.checkuseridtoroutecommentscreen = this.route.snapshot.paramMap.get('uid') || '';
     this.getpostcommentCount(this.postid);
     this.getComments();
+
+    this.refreshSubscription = interval(this.refreshInterval).subscribe(() => {
+      this.getComments(false); // Reload comments without loading more
+    });
+    
   }
   
 
@@ -564,10 +573,10 @@ async getfollowingstatus(postowneruserid:any):Promise<void>{
  
 
   async getComments(loadMore: boolean = false): Promise<void> {
+  
     if (!loadMore) {
       this.offset = 0;
     }
- 
 
     const params = new HttpParams()
       .set('postid', this.postid!.toString())
@@ -581,62 +590,41 @@ async getfollowingstatus(postowneruserid:any):Promise<void>{
     try {
       this.http.get<any>(url, { params }).subscribe({
         next: (response: any) => {
- 
-          try {
-            if (response && Array.isArray(response.comments)) {
-              const newComments = response.comments.map((comment: any) => ({
-                username: comment.username,
-                text: comment.text,
-                commenteddate: new Date(comment.commenteddate),
-                imageurl: comment.profileimage,
-                userid: comment.userid,
-                commentid: comment.commentid
-              }));
+          if (response && Array.isArray(response.comments)) {
+            const newComments = response.comments.map((comment: any) => ({
+              username: comment.username,
+              text: comment.text,
+              commenteddate: new Date(comment.commenteddate),
+              imageurl: comment.profileimage,
+              userid: comment.userid,
+              commentid: comment.commentid
+            }));
 
-              this.isthelastcommentLoaing = newComments.length === 10;
+            this.isthelastcommentLoaing = newComments.length === 10;
 
-              if (loadMore) {
-                this.comments = [...this.comments, ...newComments];  
-                console.log("loadMore" + this.comments);
-
-              } else {
-
-                this.comments = newComments;  
-                console.log("loadMoreloadMoreloadMore" +  this.comments);
-
-              }
-              this.offset += 10; 
+            if (loadMore) {
+              this.comments = [...this.comments, ...newComments];
             } else {
-              this.comments = [];
-              console.log("No comments found or comments is not an array.");
-              this.isthelastcommentLoaing = false;  
+              this.comments = newComments;
             }
-          } catch (err) {
-            console.error("Error processing comments:", err);
+
+            this.offset += 10;
+          } else {
             this.comments = [];
             this.isthelastcommentLoaing = false;
           }
         },
         error: (error: any) => {
-          alert("errorerror " + error);
-
-          console.log("Error fetching comments:", error.message);
-          if (error.message === "No comments found") {
-            console.log('No comments');
-          } else if (error.status === "404") {
-            console.log('No comments found, 404 error');
-          } else {
-            console.log('An unexpected error occurred:', error);
-          }
+          console.error("Error fetching comments:", error.message);
+          this.isthelastcommentLoaing = false;
         }
       });
     } catch (err) {
       console.error("Error making the request:", err);
-      this.comments = [];  
-      this.isthelastcommentLoaing = false;  
+      this.comments = [];
+      this.isthelastcommentLoaing = false;
     }
   }
-
 
   
 
