@@ -365,10 +365,7 @@
 
 .commentscreen-holder {
   display: block;
-  overflow-y: scroll;
-  width: max-content;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
+  overflow: scroll;
   position: fixed;
   top: 0px;
   background-color:white;
@@ -378,10 +375,7 @@
   z-index: 1000;
 }
 
-.commentscreen-holder::-webkit-scrollbar {
-  display: none;
-}
-
+ 
  
 .image-nav-controls {
   position: absolute;
