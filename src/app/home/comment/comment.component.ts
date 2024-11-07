@@ -558,6 +558,8 @@ async getfollowingstatus(postowneruserid:any):Promise<void>{
                 this.comments = [...this.comments, ...newComments];
               } else {
                 this.comments = newComments;
+                console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" + this.comments);
+
               }
   
               // Trigger change detection to update the DOM
