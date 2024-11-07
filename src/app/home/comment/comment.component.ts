@@ -528,17 +528,16 @@ async getfollowingstatus(postowneruserid:any):Promise<void>{
     if (!loadMore) {
       this.offset = 0;
     }
- 
-
+  
     const params = new HttpParams()
       .set('postid', this.postid!.toString())
       .set('limit', '10')
       .set('offset', this.offset.toString());
-
+  
     const url = this.groupornormalpost === "g" 
       ? `${this.APIURL}get_comments_group` 
       : `${this.APIURL}get_comments`;
-
+  
     try {
       this.http.get<any>(url, { params }).subscribe({
         next: (response: any) => {
@@ -552,27 +551,30 @@ async getfollowingstatus(postowneruserid:any):Promise<void>{
                 userid: comment.userid,
                 commentid: comment.commentid
               }));
-
+  
               this.isthelastcommentLoaing = newComments.length === 10;
-
+  
               if (loadMore) {
-                this.comments = [...this.comments, ...newComments];  
+                this.comments = [...this.comments, ...newComments];
               } else {
-                this.comments = newComments;  
+                this.comments = newComments;
               }
-
-            
-
-              this.offset += 10; 
+  
+              // Trigger change detection to update the DOM
+              this.cdref.detectChanges();
+  
+              this.offset += 10;
             } else {
               this.comments = [];
               console.log("No comments found or comments is not an array.");
-              this.isthelastcommentLoaing = false;  
+              this.isthelastcommentLoaing = false;
+              this.cdref.detectChanges(); // Refresh DOM on empty response
             }
           } catch (err) {
             console.error("Error processing comments:", err);
             this.comments = [];
             this.isthelastcommentLoaing = false;
+            this.cdref.detectChanges(); // Refresh DOM on error
           }
         },
         error: (error: any) => {
@@ -584,12 +586,14 @@ async getfollowingstatus(postowneruserid:any):Promise<void>{
           } else {
             console.log('An unexpected error occurred:', error);
           }
+          this.cdref.detectChanges(); // Refresh DOM on error
         }
       });
     } catch (err) {
       console.error("Error making the request:", err);
-      this.comments = [];  
-      this.isthelastcommentLoaing = false;  
+      this.comments = [];
+      this.isthelastcommentLoaing = false;
+      this.cdref.detectChanges(); // Refresh DOM on catch block
     }
   }
 
