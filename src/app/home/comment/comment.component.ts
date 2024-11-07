@@ -581,12 +581,9 @@ async getfollowingstatus(postowneruserid:any):Promise<void>{
     try {
       this.http.get<any>(url, { params }).subscribe({
         next: (response: any) => {
-
-          alert("1111111111111111111 " + response);
-          console.log("aaaaaaaaaaaaaaaaaaaaaaaaa " + response);
+ 
           try {
             if (response && Array.isArray(response.comments)) {
-              console.log("response.comments " + response.comments);
               const newComments = response.comments.map((comment: any) => ({
                 username: comment.username,
                 text: comment.text,
@@ -598,20 +595,16 @@ async getfollowingstatus(postowneruserid:any):Promise<void>{
 
               this.isthelastcommentLoaing = newComments.length === 10;
 
+              if (loadMore) {
+                this.comments = [...this.comments, ...newComments];  
+                console.log("loadMore" + this.comments);
 
-              this.comments = [...this.comments, ...newComments]; 
+              } else {
 
-              // if (loadMore) {
-              //   console.log("loadMore");
-              //   this.comments = [...this.comments, ...newComments];  
-              // } else {
-              //   console.log("loadMoreloadMoreloadMoreloadMore");
+                this.comments = newComments;  
+                console.log("loadMoreloadMoreloadMore" +  this.comments);
 
-              //   this.comments = newComments;  
-              // }
-
-            
-
+              }
               this.offset += 10; 
             } else {
               this.comments = [];
@@ -743,7 +736,7 @@ async getfollowingstatus(postowneruserid:any):Promise<void>{
 
 
 
-  onSubmit(postid: any, userid: any, username: string, userprofile: any): void {
+ async onSubmit(postid: any, userid: any, username: string, userprofile: any): Promise<void> {
 
     this.isSubmitting = true;
 

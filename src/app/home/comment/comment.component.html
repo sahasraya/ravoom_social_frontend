@@ -225,12 +225,7 @@
          
 
         <div *ngFor="let comment of comments" class="comment">
-
           
-        
-
-
-
           <div class="comment-header">
             <img *ngIf="comment.imageurl" [src]="'data:image/jpeg;base64,' + comment.imageurl" alt="User Profile Image" class="comment-userprofile">
             <div class="comment-info-holder">
