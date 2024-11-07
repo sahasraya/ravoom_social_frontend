@@ -757,36 +757,9 @@ async getfollowingstatus(postowneruserid:any):Promise<void>{
 
             this.numberofcomments++;
             this.isSubmitting = false;
-
-        
-            if (userid == this.userid) {
-              this.commentForm.reset();
-              return;
-            } else {
+            alert("Comment added successfully");
+            this.commentForm.reset();
             
-              formData.append('userid', userid);
-
-              formData.append('profileimage', userprofile);
-              formData.append('notificationtype', 'comment');
-              formData.append('currentuserid', this.userid);
-              formData.append('commenttext', this.commentForm.get('commenttext')?.value);
-              formData.append('replytext', ".");
-
-            
-                
-
-
-              this.http.post(this.APIURL + "send-notification", formData).subscribe({
-                next: (response: any) => {
-
-
-                  this.commentForm.reset();
-                }
-              });
-            }
-
-
-            console.log('Comment added successfully:', response);
           },
           error: error => {
             console.error('There was an error!', error);
