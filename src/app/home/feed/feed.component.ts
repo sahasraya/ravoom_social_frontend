@@ -3,7 +3,6 @@ import { AddPostComponent } from '../../widgets/add-post/add-post.component';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
-import { firstValueFrom } from 'rxjs';
 import { PostComponent } from '../../widgets/post/post.component';
 import { NotificationComponent } from '../notification/notification.component';
 import { CreateGroupComponent } from '../../widgets/create-group/create-group.component';
@@ -14,6 +13,7 @@ import { environment } from '../../../environments/environment';
 import { PreLoaderComponent } from '../../widgets/pre-loader/pre-loader.component';
 import { NetworkService } from '../../services/network.service';
 import { NetworkstatusComponent } from '../../widgets/networkstatus/networkstatus.component';
+import { decompressFromBase64 } from 'lz-string';
 
 
 @Component({
@@ -41,7 +41,7 @@ export class FeedComponent {
   posts: any[] = [];
   openaddpostscreenbool: boolean = false;
   APIURL = environment.APIURL;
-  limit = 5;
+  limit = 3;
   limitoption = 5;
   offset=0;
   offsetoption = 0;
@@ -84,7 +84,61 @@ export class FeedComponent {
 
   }
 
- 
+  async getPostsFeed(): Promise<void> {
+    if (this.loading) return;
+
+    this.iscontentisloading = true;
+    this.loading = true;
+
+    this.http.get<any>(`${this.APIURL}get_posts_feed?limit=${this.limit}&offset=${this.offset}`).subscribe({
+      next: (res) => {
+        // Decompress the data using lz-string
+        const decompressedData = decompressFromBase64(res.compressed_data);
+        const postsArray = decompressedData ? JSON.parse(decompressedData) : [];
+
+        if (postsArray.length > 0) {
+          this.posts = [...this.posts, ...this.processPosts(postsArray)];
+          this.offset += this.limit;
+          localStorage.setItem('offsetoffset', this.offset.toString());
+        } else {
+          console.log('No more posts to load.');
+        }
+
+        this.loading = false;
+        this.iscontentisloading = false;
+        this.cdr.detectChanges();
+      },
+      error: (error) => {
+        console.error('There was an error!', error);
+        this.loading = false;
+        this.iscontentisloading = false;
+      }
+    });
+  }
+  
+  
+    private processPosts(posts: any[]): any[] {
+      const processedPosts: any[] = [];
+      posts.forEach(post => {
+     
+        const existingPost = processedPosts.find(p => p.postid === post.postid);
+  
+        if (existingPost) {
+          if (post.image) {
+            existingPost.images.push(post.image);
+          }
+        } else {
+          const newPost = {
+            ...post,
+            images: post.posttype === 'image' && post.image ? [post.image] : []
+          };
+          processedPosts.push(newPost);
+        }
+      });
+  
+      return processedPosts;
+    }
+    
   
  private updateNetworkStatus(status: boolean) {
     if (status) {
@@ -211,62 +265,7 @@ async getuserdetails(userid:string):Promise<void>{
 
  
 
-getPostsFeed(): void {
-  if (this.loading) return;
 
-  this.iscontentisloading=true;
-
-  this.loading = true;
-  this.http.get<any[]>(`${this.APIURL}get_posts_feed?limit=${this.limit}&offset=${this.offset}`).subscribe({
-    next: (res) => {
- 
-      if (res.length > 0) {
-  
-        this.posts = [...this.posts, ...this.processPosts(res)];
-        this.offset += this.limit;
-
-    
-        localStorage.setItem("offsetoffset", this.offset.toString());
-      } else {
- 
-        console.log("No more posts to load.");
-      }
-
-      this.loading = false;
-      this.iscontentisloading=false;
-
-      this.cdr.detectChanges();
-
-    },
-    error: (error) => {
-      console.error('There was an error!', error);
-      this.loading = false;
-    }
-  });
-}
-
-
-  private processPosts(posts: any[]): any[] {
-    const processedPosts: any[] = [];
-    posts.forEach(post => {
-   
-      const existingPost = processedPosts.find(p => p.postid === post.postid);
-
-      if (existingPost) {
-        if (post.image) {
-          existingPost.images.push(post.image);
-        }
-      } else {
-        const newPost = {
-          ...post,
-          images: post.posttype === 'image' && post.image ? [post.image] : []
-        };
-        processedPosts.push(newPost);
-      }
-    });
-
-    return processedPosts;
-  }
 
   openaddpostscreen(type: string): void {
     this.postType = type;
@@ -293,7 +292,7 @@ getPostsFeed(): void {
       const scrollHeight = element.scrollHeight;
       const clientHeight = element.clientHeight;
   
-      if (scrollHeight - scrollPosition <= clientHeight + 2000 && !this.loading) {
+      if (scrollHeight - scrollPosition <= clientHeight + 3500 && !this.loading) {
           localStorage.removeItem('scrollPosition');
   
           if (this.selectedOption === "") {

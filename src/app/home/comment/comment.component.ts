@@ -528,7 +528,6 @@ async getfollowingstatus(postowneruserid:any):Promise<void>{
   async getComments(loadMore: boolean = false): Promise<void> {
     this.cdref.detectChanges();
 
-    // Set a limit for the number of comments to fetch
     this.commentslimit = 10;
 
     const params = new HttpParams()
@@ -553,7 +552,6 @@ async getfollowingstatus(postowneruserid:any):Promise<void>{
                             commentid: comment.commentid
                         }));
 
-                        // If we are loading more comments, append to existing ones
                         if (loadMore) {
                             this.comments = [...this.comments, ...newComments];
                         } else {
@@ -561,10 +559,8 @@ async getfollowingstatus(postowneruserid:any):Promise<void>{
                         }
 
                       console.log(this.comments);
-                        // Check if we got fewer comments than the limit, indicating no more data
                         this.isthelastcommentLoaing = newComments.length === this.commentslimit;
 
-                        // Trigger change detection to update the DOM
                         this.cdref.detectChanges();
                     } else {
                         this.comments = [];
