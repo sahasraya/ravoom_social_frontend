@@ -559,8 +559,8 @@ async getfollowingstatus(postowneruserid:any):Promise<void>{
                         } else {
                             this.comments = newComments;
                         }
-                      console.log(this.comments);
 
+                      console.log(this.comments);
                         // Check if we got fewer comments than the limit, indicating no more data
                         this.isthelastcommentLoaing = newComments.length === this.commentslimit;
 
@@ -593,6 +593,7 @@ async getfollowingstatus(postowneruserid:any):Promise<void>{
         this.cdref.detectChanges();
     }
 }
+
 
   
 
