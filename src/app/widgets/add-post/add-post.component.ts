@@ -147,16 +147,16 @@ export class AddPostComponent {
     this.closePost.emit();
   }
   
-  getPreview(link:any) {
+  async getPreview(link:any) {
 
     this.linkUrl =link;
-this.getLinkPreview(this.linkUrl);
+  await  this.getLinkPreview(this.linkUrl);
  
      
   }
 
 
-  getLinkPreview(url: string) {
+  async getLinkPreview(url: string):Promise<void> {
     const formData = new FormData();
     formData.append('url', url);
 
@@ -164,6 +164,8 @@ this.getLinkPreview(this.linkUrl);
       next: (data) => {
         this.linkPreviewData = data;
         this.isNoImage = this.linkPreviewData.img === '';
+        console.log("linkPreviewData " + this.linkPreviewData);
+        console.log("isNoImage " + this.isNoImage);
          
     
       },
