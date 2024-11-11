@@ -155,19 +155,27 @@ export class AddPostComponent {
      
   }
 
-
-  async getLinkPreview(url: string):Promise<void> {
+  async getLinkPreview(url: string): Promise<void> {
     const formData = new FormData();
     formData.append('url', url);
-
+  
     this.http.post<any>(`${this.APIURL}get-preview`, formData).subscribe({
       next: (data) => {
         this.linkPreviewData = data;
-        this.isNoImage = this.linkPreviewData.img === '';
-        console.log("linkPreviewData " + this.linkPreviewData);
-        console.log("isNoImage " + this.isNoImage);
-         
-    
+  
+        // Log entire link preview data
+        console.log("linkPreviewData:", this.linkPreviewData);
+  
+        // Check if image is found and log the result
+        if (this.linkPreviewData.img) {
+          console.log("Image URL found:", this.linkPreviewData.img);
+          this.isNoImage = false;
+        } else {
+          console.log("No image found.");
+          this.isNoImage = true;
+        }
+  
+        console.log("isNoImage:", this.isNoImage);  // Log the status of image availability
       },
       error: (error: HttpErrorResponse) => {
         console.error('Error fetching link preview:', error);
