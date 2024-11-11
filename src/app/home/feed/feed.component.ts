@@ -84,31 +84,38 @@ export class FeedComponent {
   getPostsFeed(): void {
     if (this.loading) return;
   
+    console.time('getPostsFeed'); // Start timer
+  
     this.iscontentisloading = true;
     this.loading = true;
   
-    this.http.get<any[]>(`${this.APIURL}get_posts_feed?limit=${this.limit}&offset=${this.offset}`).subscribe(
-      (res: any[]) => {
+    this.http.get<any[]>(`${this.APIURL}get_posts_feed?limit=${this.limit}&offset=${this.offset}`).pipe(
+      tap(() => {
+        this.iscontentisloading = true; // Show loading indicator
+      }),
+      map((res: any[]) => {
         if (res.length > 0) {
           const processedPosts = this.processPosts(res);
           this.posts = [...this.posts, ...processedPosts];
           this.offset += this.limit;
+      
         } else {
           console.log('No more posts to load.');
         }
-        this.iscontentisloading = false; // Hide loading indicator
-      },
-      (error) => {
+        return res;
+      }),
+      catchError(error => {
         console.error('There was an error!', error);
-        this.iscontentisloading = false; // Hide loading indicator in case of error
-      },
-      () => {
+        return of([]);  
+      }),
+      tap(() => {
         this.loading = false;
+        this.iscontentisloading = false;
         this.cdr.detectChanges(); 
-      }
-    );
+        console.timeEnd('getPostsFeed'); 
+      })
+    ).subscribe();
   }
-  
   
     private processPosts(posts: any[]): any[] {
       const processedPosts: any[] = [];
