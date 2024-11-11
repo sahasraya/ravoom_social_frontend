@@ -200,7 +200,7 @@
       <div *ngIf="!isthelastcomment" class="commentholderouter">
         <h3>Comments</h3>
 
-        <button (click)="getComments()">load comments</button>
+        
 
 
 
@@ -337,6 +337,11 @@
             <ul>
 
               
+              <li (click)="removeComment(comment,comment.commentid)" *ngIf="comment.userid == this.userid" class="dropdownicons">
+                <img src="../../../assets/images/edit.png" alt="">
+                Edit comment
+              </li> 
+
             
               <li (click)="removeComment(comment,comment.commentid)" *ngIf="comment.userid == this.userid" class="dropdownicons">
                 <img src="../../../assets/images/delete.png" alt="">

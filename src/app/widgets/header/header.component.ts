@@ -101,6 +101,7 @@ export class HeaderComponent implements OnInit{
     e.stopPropagation(); 
     this.optionsVisiblefilter=!this.optionsVisiblefilter;
     this.optionsVisible = !this.optionsVisible; 
+    document.body.style.overflow = ''; 
     
     switch (navigatetype) {
       case 'home':
@@ -147,19 +148,20 @@ export class HeaderComponent implements OnInit{
     this.isfilteropen=false;
     this.optionsVisible = !this.optionsVisible; 
     this.optionsVisiblefilter=!this.optionsVisiblefilter;
-
+    document.body.style.overflow = 'hidden';
   }
   toggleOptionsfilter(): void {
     this.isfilteropen=true;
     this.optionsVisiblefilter=!this.optionsVisiblefilter;
     this.optionsVisible = !this.optionsVisible; 
+    document.body.style.overflow = 'hidden';
   }
 
   closefiltermobile():void{
     this.optionsVisible = !this.optionsVisible; 
     this.optionsVisiblefilter=!this.optionsVisiblefilter;
-
-
+    document.body.style.overflow = ''; 
+ 
   }
 
 async updatethehiddenvisibility(userid:any){

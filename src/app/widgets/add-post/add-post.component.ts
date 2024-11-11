@@ -15,8 +15,7 @@ import { PreLoaderComponent } from '../pre-loader/pre-loader.component';
   selector: 'app-add-post',
   standalone: true,
   imports: [
-    CommonModule,
-    RouterOutlet,
+    CommonModule, 
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,

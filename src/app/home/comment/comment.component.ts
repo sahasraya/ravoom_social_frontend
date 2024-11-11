@@ -528,11 +528,21 @@ async getfollowingstatus(postowneruserid:any):Promise<void>{
   async getComments(loadMore: boolean = false): Promise<void> {
     this.cdref.detectChanges();
 
-    this.commentslimit = 10;
+    // Set the limit to 5 for loadMore, otherwise it's 10 as default
+    const limit = loadMore ? this.commentslimit + 5 : 10;
 
-    const params = new HttpParams()
+    // Get the last comment ID if loading more comments
+    const lastCommentId = loadMore && this.comments.length > 0 ? this.comments[this.comments.length - 1].commentid : null;
+
+    // Initialize the HttpParams
+    let params = new HttpParams()
         .set('postid', this.postid!.toString())
-        .set('commentslimit', this.commentslimit.toString());
+        .set('commentslimit', limit.toString());
+
+    // Only add last_comment_id if it's not null or undefined
+    if (lastCommentId) {
+        params = params.set('last_comment_id', lastCommentId.toString());
+    }
 
     const url = this.groupornormalpost === "g"
         ? `${this.APIURL}get_comments_group`
@@ -552,14 +562,15 @@ async getfollowingstatus(postowneruserid:any):Promise<void>{
                             commentid: comment.commentid
                         }));
 
+                        // Append new comments if loadMore is true, otherwise set the comments list
                         if (loadMore) {
                             this.comments = [...this.comments, ...newComments];
                         } else {
                             this.comments = newComments;
                         }
 
-                      console.log(this.comments);
-                        this.isthelastcommentLoaing = newComments.length === this.commentslimit;
+                        // Check if there are more comments to load (i.e., if the number of new comments is less than the limit)
+                        this.isthelastcommentLoaing = newComments.length === limit;
 
                         this.cdref.detectChanges();
                     } else {
@@ -589,7 +600,6 @@ async getfollowingstatus(postowneruserid:any):Promise<void>{
         this.cdref.detectChanges();
     }
 }
-
 
   
 
@@ -715,9 +725,7 @@ async getfollowingstatus(postowneruserid:any):Promise<void>{
 
         this.http.post(this.APIURL + 'add_comment_group', formData).subscribe({
           next: (response: any) => {
-            this.getComments();
-            this.getComments();
-            this.getComments();
+            this.getComments(); 
 
             this.numberofcomments++;
             this.isSubmitting = false;
@@ -757,9 +765,7 @@ async getfollowingstatus(postowneruserid:any):Promise<void>{
       } else {
         this.http.post(this.APIURL + 'add_comment', formData).subscribe({
           next: (response: any) => {
-            this.getComments();
-            this.getComments();
-            this.getComments();
+            this.getComments(); 
 
             this.numberofcomments++;
             this.isSubmitting = false;

@@ -61,7 +61,7 @@ export class FeedscreenUserListComponent implements OnInit {
   navigatetouser(userid: any): void {
 
 
-
+    document.body.style.overflow = ''; 
     this.router.navigate([`/home/profile/${userid}`]);
   }
 
@@ -146,6 +146,7 @@ export class FeedscreenUserListComponent implements OnInit {
 
 
   showtexts(e: Event): void {
+    document.body.style.overflow = ''; 
     e.preventDefault();
     e.stopPropagation();
     this.optionSelected.emit('text');  
@@ -157,6 +158,7 @@ export class FeedscreenUserListComponent implements OnInit {
   }
 
   showvideos(e: Event): void {
+    document.body.style.overflow = ''; 
     e.preventDefault();
     e.stopPropagation();
     this.optionSelected.emit('video');   
@@ -167,6 +169,7 @@ export class FeedscreenUserListComponent implements OnInit {
   }
 
   showlinks(e: Event): void {
+    document.body.style.overflow = ''; 
     e.preventDefault();
     e.stopPropagation();
     this.optionSelected.emit('link');  
@@ -177,6 +180,7 @@ export class FeedscreenUserListComponent implements OnInit {
   }
 
   showimages(e: Event): void {
+    document.body.style.overflow = ''; 
     e.preventDefault();
     e.stopPropagation();
     this.optionSelected.emit('image');  
@@ -187,6 +191,7 @@ export class FeedscreenUserListComponent implements OnInit {
   }
 
   showvoices(e: Event): void {
+    document.body.style.overflow = ''; 
     e.preventDefault();
     e.stopPropagation();
     this.optionSelected.emit('audio');  

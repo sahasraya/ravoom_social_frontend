@@ -3,6 +3,7 @@ import { AddPostComponent } from '../../widgets/add-post/add-post.component';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
+import { catchError, firstValueFrom, map, of, tap } from 'rxjs';
 import { PostComponent } from '../../widgets/post/post.component';
 import { NotificationComponent } from '../notification/notification.component';
 import { CreateGroupComponent } from '../../widgets/create-group/create-group.component';
@@ -13,7 +14,6 @@ import { environment } from '../../../environments/environment';
 import { PreLoaderComponent } from '../../widgets/pre-loader/pre-loader.component';
 import { NetworkService } from '../../services/network.service';
 import { NetworkstatusComponent } from '../../widgets/networkstatus/networkstatus.component';
-import { decompressFromBase64 } from 'lz-string';
 
 
 @Component({
@@ -24,13 +24,11 @@ import { decompressFromBase64 } from 'lz-string';
     AddPostComponent,
     CommonModule,
     RouterModule,
-    PostComponent,
-    NotificationComponent,
+    PostComponent, 
     CreateGroupComponent,
     HeaderComponent,
     FeedscreenUserListComponent,
-    FeedscreenGroupListComponent,
-    PreLoaderComponent,
+    FeedscreenGroupListComponent, 
     NetworkstatusComponent
   ],
   templateUrl: './feed.component.html',
@@ -41,7 +39,7 @@ export class FeedComponent {
   posts: any[] = [];
   openaddpostscreenbool: boolean = false;
   APIURL = environment.APIURL;
-  limit = 3;
+  limit = 5;
   limitoption = 5;
   offset=0;
   offsetoption = 0;
@@ -83,37 +81,32 @@ export class FeedComponent {
     });
 
   }
-
-  async getPostsFeed(): Promise<void> {
+  getPostsFeed(): void {
     if (this.loading) return;
-
+  
     this.iscontentisloading = true;
     this.loading = true;
-
-    this.http.get<any>(`${this.APIURL}get_posts_feed?limit=${this.limit}&offset=${this.offset}`).subscribe({
-      next: (res) => {
-        // Decompress the data using lz-string
-        const decompressedData = decompressFromBase64(res.compressed_data);
-        const postsArray = decompressedData ? JSON.parse(decompressedData) : [];
-
-        if (postsArray.length > 0) {
-          this.posts = [...this.posts, ...this.processPosts(postsArray)];
+  
+    this.http.get<any[]>(`${this.APIURL}get_posts_feed?limit=${this.limit}&offset=${this.offset}`).subscribe(
+      (res: any[]) => {
+        if (res.length > 0) {
+          const processedPosts = this.processPosts(res);
+          this.posts = [...this.posts, ...processedPosts];
           this.offset += this.limit;
-          localStorage.setItem('offsetoffset', this.offset.toString());
         } else {
           console.log('No more posts to load.');
         }
-
-        this.loading = false;
-        this.iscontentisloading = false;
-        this.cdr.detectChanges();
+        this.iscontentisloading = false; // Hide loading indicator
       },
-      error: (error) => {
+      (error) => {
         console.error('There was an error!', error);
+        this.iscontentisloading = false; // Hide loading indicator in case of error
+      },
+      () => {
         this.loading = false;
-        this.iscontentisloading = false;
+        this.cdr.detectChanges(); 
       }
-    });
+    );
   }
   
   
@@ -138,7 +131,9 @@ export class FeedComponent {
   
       return processedPosts;
     }
-    
+
+  
+ 
   
  private updateNetworkStatus(status: boolean) {
     if (status) {
@@ -266,7 +261,6 @@ async getuserdetails(userid:string):Promise<void>{
  
 
 
-
   openaddpostscreen(type: string): void {
     this.postType = type;
     this.openaddpostscreenbool = true;
@@ -292,7 +286,7 @@ async getuserdetails(userid:string):Promise<void>{
       const scrollHeight = element.scrollHeight;
       const clientHeight = element.clientHeight;
   
-      if (scrollHeight - scrollPosition <= clientHeight + 3500 && !this.loading) {
+      if (scrollHeight - scrollPosition <= clientHeight + 3000 && !this.loading) {
           localStorage.removeItem('scrollPosition');
   
           if (this.selectedOption === "") {

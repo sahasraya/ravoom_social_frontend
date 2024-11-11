@@ -12,7 +12,7 @@ import { CommentComponent } from '../../home/comment/comment.component';
 @Component({
   selector: 'app-post',
   standalone: true,
-  imports: [CommonModule, RouterModule, PostComponent, ImageLargerComponent,ReporttingComponent,CommentComponent],
+  imports: [CommonModule, RouterModule,ReporttingComponent,CommentComponent],
   templateUrl: './post.component.html',
   styleUrl: './post.component.css'
 })
