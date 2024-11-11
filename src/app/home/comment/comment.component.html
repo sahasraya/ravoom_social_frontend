@@ -1,8 +1,12 @@
  
 
 
+
+
+
 <div *ngIf="post" class="post-container">
 
+  
   <div class="liked_members_div_fixed" *ngIf="islikedmembereddivvisible">
     <div class="member_main_outer_holder" #memberMainOuterHolder>
      <div class="main_titile_holder">
@@ -20,23 +24,23 @@
     </div>
   </div>
 
-
-
-
-
-
-
-  
-  <div [ngSwitch]="fromwhatscreen">
-    <a *ngSwitchCase="'home'" routerLink=''>
-      <img src="../../../assets/images/backarrow.png" alt="" class="backarrow">
-    </a>
-    <a *ngSwitchCase="'pro'" [routerLink]="['/home/profile', checkuseridtoroutecommentscreen]">
-      <img src="../../../assets/images/backarrow.png" alt="" class="backarrow">
-    </a>
-  </div>
+ 
 
     <div class="post-header">
+
+      
+<div [ngSwitch]="fromwhatscreen">
+  <a *ngSwitchCase="'home'" routerLink=''>
+    <img src="../../../assets/images/backarrow.png" alt="" class="backarrow">
+  </a>
+  <a *ngSwitchCase="'pro'" [routerLink]="['/home/profile', checkuseridtoroutecommentscreen]">
+    <img src="../../../assets/images/backarrow.png" alt="" class="backarrow">
+  </a>
+</div>
+
+
+
+
       <img class="user-profile" [src]="'data:image/jpeg;base64,' + post.userprofile" alt="User Profile Image">
       <div class="user-info">
         <p class="username">{{ post.username }}</p>
@@ -45,6 +49,8 @@
       
     </div>
     <div class="post-body">
+
+      
       <small class="post-description">{{ post.postdescription }}</small>
       <p class="filepath">{{post.filepath}}</p>
    
@@ -332,15 +338,30 @@
 
 
 
+                    <form  *ngIf="commentToEdit === comment.commentid"  [formGroup]="editCommentForm" 
+                    (ngSubmit)="editcommentsubmit(post.postid, post.userid, post.username, post.userprofile, comment.commentid, comment.n_or_g)"
+                    class="editcommentsubmitform">
+                    <div class="commentinputholder">
+                      <input  type="text"  formControlName="commenttext"  placeholder="Edit comment"/>
+                      <button  type="submit" *ngIf="editCommentForm.get('commenttext')?.value">
+                        <img src="../../../assets/images/addcomment.png" alt="">
+                      </button>
+                    </div>
+                  </form>
+                  
 
           <div *ngIf="comment.showDropdown" class="dropdown-menu">
             <ul>
 
               
-              <li (click)="removeComment(comment,comment.commentid)" *ngIf="comment.userid == this.userid" class="dropdownicons">
-                <img src="../../../assets/images/edit.png" alt="">
-                Edit comment
-              </li> 
+              <li 
+              (click)="editComment(comment)" 
+              *ngIf="comment.userid == this.userid" 
+              class="dropdownicons"
+            >
+              <img src="../../../assets/images/edit.png" alt="">
+              Edit comment
+            </li>
 
             
               <li (click)="removeComment(comment,comment.commentid)" *ngIf="comment.userid == this.userid" class="dropdownicons">

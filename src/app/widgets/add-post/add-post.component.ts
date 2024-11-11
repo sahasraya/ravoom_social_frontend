@@ -145,8 +145,14 @@ export class AddPostComponent {
 
   closeAddPost():void{
     this.closePost.emit();
+    this.mackingtheoverflowcorrect();
   }
   
+  mackingtheoverflowcorrect(): void{
+    document.body.style.overflow = ''; 
+  }
+
+
   async getPreview(link:any) {
 
     this.linkUrl =link;
@@ -163,19 +169,14 @@ export class AddPostComponent {
       next: (data) => {
         this.linkPreviewData = data;
   
-        // Log entire link preview data
+        // Log the preview data, including the image URL
         console.log("linkPreviewData:", this.linkPreviewData);
   
-        // Check if image is found and log the result
         if (this.linkPreviewData.img) {
-          console.log("Image URL found:", this.linkPreviewData.img);
           this.isNoImage = false;
         } else {
-          console.log("No image found.");
           this.isNoImage = true;
         }
-  
-        console.log("isNoImage:", this.isNoImage);  // Log the status of image availability
       },
       error: (error: HttpErrorResponse) => {
         console.error('Error fetching link preview:', error);
@@ -188,6 +189,7 @@ export class AddPostComponent {
   onSubmitText(): void {
     if (this.textPostForm.valid) {
       const formData = new FormData();
+      this.mackingtheoverflowcorrect();
 
       const token = localStorage.getItem('jwt');
       if(!token){
@@ -258,7 +260,8 @@ export class AddPostComponent {
 
 
   onSubmit(): void {
-    if (this.addPostForm.valid  ) {
+    if (this.addPostForm.valid) {
+      this.mackingtheoverflowcorrect();
       this.isuploadingthepost=true;
       const token = localStorage.getItem('jwt');
       if(!token){
@@ -315,7 +318,7 @@ export class AddPostComponent {
 
   onSubmitImag(): void {
     if (this.imagePostForm.valid) {
-
+      this.mackingtheoverflowcorrect();
       const token = localStorage.getItem('jwt');
       if(!token){
         alert("Unauthorized access. Please check your credentials.");
@@ -366,7 +369,7 @@ export class AddPostComponent {
 
   onSubmitLink(): void {
     if (this.linkPostForm.valid) {
-
+      this.mackingtheoverflowcorrect();
       const token = localStorage.getItem('jwt');
       if(!token){
         alert("Unauthorized access. Please check your credentials.");
@@ -395,7 +398,7 @@ export class AddPostComponent {
   
       this.http.post(this.APIURL + 'add-post-link', formData,{headers}).subscribe({
         next: response => {
-          console.log(response);
+ 
   
           this.linkPostForm.reset();
           this.postAdded.emit();

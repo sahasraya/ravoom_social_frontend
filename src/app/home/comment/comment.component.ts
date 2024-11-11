@@ -25,6 +25,7 @@ export class CommentComponent implements OnInit {
   APIURL = environment.APIURL;
   commentForm: FormGroup;
   replayCommentForm: FormGroup;
+  editCommentForm: FormGroup;
   comments: any[] = [];
   likes: number = 0;
   showLargerImage: boolean = false;
@@ -56,6 +57,10 @@ export class CommentComponent implements OnInit {
   loadingMoreMembers = false;
   images: any[] = [];
   isSubmitting: boolean = false;
+  commentToEdit: string | null = null;
+
+
+
 
   constructor(private route: ActivatedRoute, private http: HttpClient, private fb: FormBuilder, private router: Router,private cdref: ChangeDetectorRef) {
     this.commentForm = this.fb.group({
@@ -67,6 +72,12 @@ export class CommentComponent implements OnInit {
       replaycomment: ['', [Validators.required]],
 
     });
+
+    this.editCommentForm = this.fb.group({
+      commenttext: ['', [Validators.required]],
+
+    });
+
 
   }
   ngOnInit(): void {
@@ -507,20 +518,22 @@ async getfollowingstatus(postowneruserid:any):Promise<void>{
     try {
       const params = new HttpParams().set('commentid', commentid.toString());
       const response: any = await this.http.get<any>(`${this.APIURL}get_replay_count`, { params }).toPromise();
-
+   
+  
       const updatedComments = this.comments.map(comment => {
         if (comment.commentid === commentid) {
           return { ...comment, replayscount: response.replays_count };
         }
         return comment;
       });
-
+  
       this.comments = updatedComments;
-
+  
     } catch (error) {
       console.error('Error fetching replay count:', error);
     }
   }
+  
 
 
  
@@ -528,18 +541,14 @@ async getfollowingstatus(postowneruserid:any):Promise<void>{
   async getComments(loadMore: boolean = false): Promise<void> {
     this.cdref.detectChanges();
 
-    // Set the limit to 5 for loadMore, otherwise it's 10 as default
     const limit = loadMore ? this.commentslimit + 5 : 10;
 
-    // Get the last comment ID if loading more comments
     const lastCommentId = loadMore && this.comments.length > 0 ? this.comments[this.comments.length - 1].commentid : null;
 
-    // Initialize the HttpParams
     let params = new HttpParams()
         .set('postid', this.postid!.toString())
         .set('commentslimit', limit.toString());
 
-    // Only add last_comment_id if it's not null or undefined
     if (lastCommentId) {
         params = params.set('last_comment_id', lastCommentId.toString());
     }
@@ -550,7 +559,7 @@ async getfollowingstatus(postowneruserid:any):Promise<void>{
 
     try {
         this.http.get<any>(url, { params }).subscribe({
-            next: (response: any) => {
+            next: async (response: any) => {
                 try {
                     if (response && Array.isArray(response.comments)) {
                         const newComments = response.comments.map((comment: any) => ({
@@ -559,7 +568,8 @@ async getfollowingstatus(postowneruserid:any):Promise<void>{
                             commenteddate: new Date(comment.commenteddate),
                             imageurl: comment.profileimage,
                             userid: comment.userid,
-                            commentid: comment.commentid
+                            commentid: comment.commentid,
+                            n_or_g: comment.n_or_g,
                         }));
 
                         // Append new comments if loadMore is true, otherwise set the comments list
@@ -569,8 +579,12 @@ async getfollowingstatus(postowneruserid:any):Promise<void>{
                             this.comments = newComments;
                         }
 
-                        // Check if there are more comments to load (i.e., if the number of new comments is less than the limit)
-                        this.isthelastcommentLoaing = newComments.length === limit;
+                        for (const comment of newComments) {
+                          await this.getnumberofreplays(comment.commentid);
+                      }
+                      
+                      this.isthelastcommentLoaing = newComments.length === limit;
+                      
 
                         this.cdref.detectChanges();
                     } else {
@@ -720,6 +734,7 @@ async getfollowingstatus(postowneruserid:any):Promise<void>{
       formData.append('userid', this.userid);
       formData.append('username', username);
       formData.append('userprofile', userprofile);
+      formData.append('groupornormalpost', this.groupornormalpost);
 
       if (this.groupornormalpost == "g") {
 
@@ -815,15 +830,84 @@ async getfollowingstatus(postowneruserid:any):Promise<void>{
 
 
 
+  editComment(comment: any) {
+    this.commentToEdit = comment.commentid;
+    this.editCommentForm.patchValue({ commenttext: comment.text });
+  }
+  
+  // Method to submit the edited comment
+  async editcommentsubmit(
+    postid: any, 
+    userid: any, 
+    username: string, 
+    userprofile: any, 
+    commentid: any, 
+    n_or_g: string
+  ): Promise<void> {
+    if (this.userid === '') {
+      this.router.navigate(['/auth/log-in']);
+      return;
+    }
+  
+    if (this.editCommentForm.valid) {
+      const formData = new FormData();
+      formData.append('postid', postid);
+      formData.append('commentid', commentid);
+      formData.append('edittextcomment', this.editCommentForm.get('commenttext')!.value);
+      formData.append('groupornormalpost', n_or_g);
+    
+  
+      const url = n_or_g === "n"
+        ? `${this.APIURL}update_comments`
+        : `${this.APIURL}update_comments_group`;
+  
+      try {
+        this.http.post(url, formData).subscribe({
+          next: (response:any) => {
+   
+    
+            console.log('Edit response:', response);
+            if (response.success) {
+              alert('Comment updated successfully!');
+              this.getComments();
+              this.editCommentForm.reset();
+              this.commentToEdit = null;
+            }
+          
+           
+          },
+          error: (error:any) => {
+           console.log(error.message)
+            
+            console.error('There was an error!', error);
+          }
+        });
+  
+       
+  
+      } catch (error:any  ) {
+        if (error.status === 401) {
+          alert("Unauthorized access. Please check your credentials.");
+        }
+        console.error('There was an error updating the comment!', error);
+      }
+    }
+  }
 
 
 
 
 
-  addingreplaycomment(postid: any, userid: any, username: string, userprofile: any, commentid: any, commenttext: string): void {
+
+
+
+
+
+
+
+  addingreplaycomment(postid: any, userid: any, username: string, userprofile: any, commentid: any, commenttext: string,): void {
 
  
-
     if (this.userid == '') {
       this.router.navigate(['/auth/log-in']);
       return;
@@ -841,8 +925,8 @@ async getfollowingstatus(postowneruserid:any):Promise<void>{
       formData.append('username', username);
       formData.append('userprofile', userprofile);
       formData.append('replytext', this.replayCommentForm.get('replaycomment')!.value);
-
-
+      formData.append('groupornormalpost', this.groupornormalpost);
+ 
 
       if (this.groupornormalpost == "g") {
         this.http.post(this.APIURL + 'add_replay_comment_group', formData).subscribe({
@@ -1053,6 +1137,13 @@ async getfollowingstatus(postowneruserid:any):Promise<void>{
     this.commentToBeDeleted = true;
     this.deleteingcommentid = commentID;
   }
+
+
+
+
+
+ 
+
 
 
   async removeReplayComment(relaycomment: any, replaycommentID: any): Promise<void> {

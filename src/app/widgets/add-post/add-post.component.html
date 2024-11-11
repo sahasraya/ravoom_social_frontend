@@ -71,14 +71,12 @@
   
   
   
-  <div *ngIf="imagePreviews.length > 0 && showimagepostsformbool" class="image-preview-container" >
-    <div *ngFor="let preview of imagePreviews" class="preview-wrapper">
-      <img [src]="preview" alt="Image Preview" class="previewimages">
-      <img src="../../../assets/images/close.png" alt="" class="closeicon" (click)="removeImagePreview(preview)">
-
-   
-    </div>
+ <div *ngIf="imagePreviews.length > 0 && showimagepostsformbool" class="image-preview-container">
+  <div *ngFor="let preview of imagePreviews" class="preview-wrapper">
+    <img [src]="preview" alt="Image Preview" class="preview-image">
+    <img src="../../../assets/images/close.png" alt="Remove Image" class="closeicon" (click)="removeImagePreview(preview)">
   </div>
+</div>
   
   <form  [formGroup]="imagePostForm" (ngSubmit)="onSubmitImag()" *ngIf="showimagepostsformbool">
   

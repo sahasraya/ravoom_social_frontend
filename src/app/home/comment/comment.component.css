@@ -16,6 +16,7 @@
     border-radius: 10px;
     position: relative;
     top: 25px;
+    gap: 2px;
   }
   
   .user-profile {
@@ -23,6 +24,7 @@
     height: 50px;
     border-radius: 50%;
     margin-right: 15px;
+    margin-left: 20px;
   }
   .filepath{
     font-weight: bold;
@@ -792,7 +794,7 @@ input[type="text"]:focus {
   margin-right: 8px;
 }
 
-
+ 
 
 @media (max-width: 500px) {  
   .post-container{

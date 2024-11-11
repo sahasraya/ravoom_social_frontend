@@ -269,6 +269,7 @@ async getuserdetails(userid:string):Promise<void>{
 
 
   openaddpostscreen(type: string): void {
+    document.body.style.overflow = 'hidden';
     this.postType = type;
     this.openaddpostscreenbool = true;
   }
