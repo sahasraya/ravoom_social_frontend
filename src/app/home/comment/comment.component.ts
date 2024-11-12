@@ -58,9 +58,9 @@ export class CommentComponent implements OnInit {
   images: any[] = [];
   isSubmitting: boolean = false;
   commentToEdit: string | null = null;
-
-
-
+  selectedImage: string | ArrayBuffer | null = null;
+  showcommentimage: boolean = false;
+  selectedCommentImage: string | null = null;
 
   constructor(private route: ActivatedRoute, private http: HttpClient, private fb: FormBuilder, private router: Router,private cdref: ChangeDetectorRef) {
     this.commentForm = this.fb.group({
@@ -95,6 +95,133 @@ export class CommentComponent implements OnInit {
     this.getComments();
   }
   
+
+
+
+
+
+
+
+
+
+
+
+  async onSubmit(postid: any, userid: any, username: string, userprofile: any): Promise<void> {
+    this.isSubmitting = true;
+  
+    if (this.userid == '') {
+      this.router.navigate(['/auth/log-in']);
+      return;
+    }
+  
+     
+    const commentText = this.commentForm.get('commenttext')?.value;
+    const isTextPresent = commentText && commentText.trim().length > 0;
+    const isImagePresent = !!this.selectedImage;
+  
+    if (isTextPresent || isImagePresent) {
+      const formData = new FormData();
+  
+    
+      Object.keys(this.commentForm.value).forEach(key => {
+        formData.append(key, this.commentForm.value[key]);
+      });
+  
+      const myuserid: string | null = localStorage.getItem('wmd');
+      formData.append('postid', postid);
+      formData.append('userid', this.userid);
+      formData.append('username', username);
+      formData.append('userprofile', userprofile);
+      formData.append('groupornormalpost', this.groupornormalpost);
+  
+ 
+      if (this.selectedImage) {
+        if (this.selectedImage instanceof File || this.selectedImage instanceof Blob) {
+          formData.append('selectedImage', this.selectedImage);
+        } else if (typeof this.selectedImage === 'string') {
+          const byteCharacters = atob(this.selectedImage.split(',')[1]);
+          const byteArray = new Uint8Array(byteCharacters.length);
+          for (let i = 0; i < byteCharacters.length; i++) {
+            byteArray[i] = byteCharacters.charCodeAt(i);
+          }
+          const blob = new Blob([byteArray], { type: 'image/jpeg' });
+          formData.append('selectedImage', blob);
+        }
+      }
+  
+      const endpoint = this.groupornormalpost === 'g' ? 'add_comment_group' : 'add_comment';
+  
+   
+      if (isTextPresent) {
+        formData.append('commenttext', commentText);
+      }
+  
+      this.http.post(this.APIURL + endpoint, formData).subscribe({
+        next: (response: any) => {
+          this.getComments();
+          this.numberofcomments++;
+          this.isSubmitting = false;
+          this.selectedImage = null;
+  
+          if (userid === this.userid) {
+            this.commentForm.reset();
+            return;
+          } else {
+            formData.append('userid', userid);
+            formData.append('profileimage', userprofile);
+            formData.append('notificationtype', 'comment');
+            formData.append('currentuserid', myuserid!);
+            formData.append('replytext', '.');
+  
+            this.http.post(this.APIURL + 'send-notification', formData).subscribe({
+              next: () => {
+                this.commentForm.reset();
+              }
+            });
+          }
+  
+          console.log('Comment added successfully:', response);
+        },
+        error: (error) => {
+          console.error('There was an error!', error);
+        }
+      });
+    } else {
+      this.isSubmitting = false;
+      alert('Please enter a comment or upload an image.');
+    }
+  }
+  
+
+  
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  onFileSelect(event: any): void {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.selectedImage = reader.result; 
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+  closeimagepreview(): void{
+    this.selectedImage = null;
+  }
+
+
   async getPostData(): Promise<void> {
     const storedPostData = sessionStorage.getItem(`postdata_${this.postid}`);
     
@@ -430,9 +557,7 @@ async getfollowingstatus(postowneruserid:any):Promise<void>{
 
 
 
-  onCloseLargerImage(): void {
-    this.showLargerImage = false;
-  }
+ 
 
 
 
@@ -535,8 +660,15 @@ async getfollowingstatus(postowneruserid:any):Promise<void>{
   }
   
 
-
- 
+  showTheCommentImage(commentImage: string): void {
+    this.selectedCommentImage = commentImage;
+    this.showcommentimage = true;
+  }
+  
+  onCloseLargerImage(): void {
+    this.showcommentimage = false;
+    this.selectedCommentImage = null;
+  }
 
   async getComments(loadMore: boolean = false): Promise<void> {
     this.cdref.detectChanges();
@@ -570,9 +702,10 @@ async getfollowingstatus(postowneruserid:any):Promise<void>{
                             userid: comment.userid,
                             commentid: comment.commentid,
                             n_or_g: comment.n_or_g,
+                            commentimage: comment.commentimage,
                         }));
 
-                        // Append new comments if loadMore is true, otherwise set the comments list
+                      
                         if (loadMore) {
                             this.comments = [...this.comments, ...newComments];
                         } else {
@@ -582,7 +715,9 @@ async getfollowingstatus(postowneruserid:any):Promise<void>{
                         for (const comment of newComments) {
                           await this.getnumberofreplays(comment.commentid);
                       }
+                      console.log( this.comments);
                       
+
                       this.isthelastcommentLoaing = newComments.length === limit;
                       
 
@@ -713,117 +848,7 @@ async getfollowingstatus(postowneruserid:any):Promise<void>{
 
 
 
-  async onSubmit(postid: any, userid: any, username: string, userprofile: any): Promise<void> {
-    this.getComments();
-
-    this.isSubmitting = true;
-
-    if (this.userid == '') {
-      this.router.navigate(['/auth/log-in']);
-      return;
-    }
-
-    if (this.commentForm.valid) {
-      const formData = new FormData();
-
-      Object.keys(this.commentForm.value).forEach(key => {
-        formData.append(key, this.commentForm.value[key]);
-      });
-      const myuserid: string | null = localStorage.getItem('wmd');
-      formData.append('postid', postid);
-      formData.append('userid', this.userid);
-      formData.append('username', username);
-      formData.append('userprofile', userprofile);
-      formData.append('groupornormalpost', this.groupornormalpost);
-
-      if (this.groupornormalpost == "g") {
-
-        this.http.post(this.APIURL + 'add_comment_group', formData).subscribe({
-          next: (response: any) => {
-            this.getComments(); 
-
-            this.numberofcomments++;
-            this.isSubmitting = false;
-
-            if (userid == this.userid) {
-              this.commentForm.reset();
-
-              return;
-            } else {
-              formData.append('userid', userid);
-
-              formData.append('profileimage', userprofile);
-              formData.append('notificationtype', 'comment');
-              formData.append('currentuserid', myuserid!);
-              formData.append('commenttext', this.commentForm.get('commenttext')?.value);
-              formData.append('replytext', ".");
-
-
-
-              this.http.post(this.APIURL + "send-notification", formData).subscribe({
-                next: (response: any) => {
-
-
-                  this.commentForm.reset();
-                }
-              });
-            }
-
-
-            console.log('Comment added successfully:', response);
-          },
-          error: error => {
-            console.error('There was an error!', error);
-          }
-        });
-
-      } else {
-        this.http.post(this.APIURL + 'add_comment', formData).subscribe({
-          next: (response: any) => {
-            this.getComments(); 
-
-            this.numberofcomments++;
-            this.isSubmitting = false;
-
-        
-            if (userid == this.userid) {
-              this.commentForm.reset();
-              return;
-            } else {
-            
-              formData.append('userid', userid);
-
-              formData.append('profileimage', userprofile);
-              formData.append('notificationtype', 'comment');
-              formData.append('currentuserid', this.userid);
-              formData.append('commenttext', this.commentForm.get('commenttext')?.value);
-              formData.append('replytext', ".");
-
-            
-                
-
-
-              this.http.post(this.APIURL + "send-notification", formData).subscribe({
-                next: (response: any) => {
-
-
-                  this.commentForm.reset();
-                }
-              });
-            }
-
-
-            console.log('Comment added successfully:', response);
-          },
-          error: error => {
-            console.error('There was an error!', error);
-          }
-        });
-      }
-
-
-    }
-  }
+  
 
 
 

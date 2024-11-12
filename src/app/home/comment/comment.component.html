@@ -210,19 +210,32 @@
 
 
 
-        <form [formGroup]="commentForm" (ngSubmit)="onSubmit(post.postid,post.userid,post.username,post.userprofile)">
-    
-  
-          <div class="commentinputholder">
-      
-            <input type="text" formControlName="commenttext" placeholder="Add comment" #commenttext>
-            <button type="submit" *ngIf="commenttext.value && !isSubmitting">
-              <img src="../../../assets/images/addcomment.png" alt="Add comment">
-            </button>
-            <img src="../../../assets/images/preloader.gif" alt="Loading" *ngIf="isSubmitting" class="preloadaddingcomment">
+        <form [formGroup]="commentForm" (ngSubmit)="onSubmit(post.postid, post.userid, post.username, post.userprofile)">
+          <div class="commentinputholderouter">
+            <div class="commentinputholder">
+              <input type="text" formControlName="commenttext" placeholder="Add comment" #commenttext>
+              
+              <button type="submit" *ngIf="commenttext.value && !isSubmitting || selectedImage">
+                <img src="../../../assets/images/addcomment.png" alt="Add comment">
+              </button>
+          
+              <button type="button" *ngIf="!commenttext.value" (click)="fileInput.click()">
+                <img src="../../../assets/images/imagepost.png" alt="Add comment">
+              </button>
+          
+              <input type="file" #fileInput (change)="onFileSelect($event)" style="display: none" accept="image/*">
+              
+            
+                <img src="../../../assets/images/preloader.gif" alt="Loading" *ngIf="isSubmitting" class="preloadaddingcomment">
+           
+          
+            </div>
+              <div class="previewholderouter">
+                <img src="../../../assets/images/close.png" alt="" (click)="closeimagepreview()" class="closeiconimagepreview" *ngIf="selectedImage">
+                <img [src]="selectedImage" alt="Selected Image" class="image-preview" *ngIf="selectedImage"> 
+              </div>
+
           </div>
-       
-       
         </form>
  
 
@@ -232,13 +245,7 @@
          </div>
          
 
-        <div *ngFor="let comment of comments" class="comment">
-
-          
-        
-
-
-
+        <div *ngFor="let comment of comments" class="comment"> 
           <div class="comment-header">
             <img *ngIf="comment.imageurl" [src]="'data:image/jpeg;base64,' + comment.imageurl" alt="User Profile Image" class="comment-userprofile">
             <div class="comment-info-holder">
@@ -254,7 +261,18 @@
 
           </div>
           <p class="commenttext">{{ comment.text }}</p>
-           
+
+
+          <app-image-larger 
+          *ngIf="showcommentimage" 
+          [imageUrl]="'data:image/jpeg;base64,' + selectedCommentImage" 
+          (close)="onCloseLargerImage()">
+        </app-image-larger>
+
+          
+            <div *ngIf="comment.commentimage"  (click)="showTheCommentImage(comment.commentimage)">
+              <img [src]="'data:image/jpeg;base64,' + comment.commentimage" alt="Comment Image" class="comment-image">
+            </div>
 
 
         
