@@ -4,6 +4,7 @@ import { Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren, Afte
 import { Router, RouterModule } from '@angular/router';
 import { CommentComponent } from '../comment/comment.component';
 import { environment } from '../../../environments/environment';
+import { useridexported } from '../../auth/const/const';
 
 @Component({
   selector: 'app-video-slider',
@@ -38,7 +39,7 @@ export class VideoSliderComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.getAllVideoPosts();
-    this.userid = localStorage.getItem('wmd') || '';
+    this.userid = useridexported;
   
 
   }

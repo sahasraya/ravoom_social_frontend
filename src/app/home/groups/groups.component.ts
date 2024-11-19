@@ -9,6 +9,7 @@ import { FormsModule } from '@angular/forms';
 import { warn } from 'node:console';
 import { ImageLargerComponent } from '../../widgets/image-larger/image-larger.component';
 import { environment } from '../../../environments/environment';
+import { useridexported } from '../../auth/const/const';
 
 @Component({
   selector: 'app-groups',
@@ -64,15 +65,7 @@ export class GroupsComponent implements OnInit{
     this.groupid = this.route.snapshot.paramMap.get('groupid')!;
     this.getGroupDetails(this.groupid);
     this.getPostsFeed();
-
-
-    if (isPlatformBrowser(this.platformId)) {
- 
-      this.userid = localStorage.getItem('wmd') || '';
- 
-    }
-    
- 
+    this.userid = useridexported;
     this.getnumberofgroupfollowers(this.groupid);
    
     if (this.userid != '') {

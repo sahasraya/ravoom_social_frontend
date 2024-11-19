@@ -5,6 +5,7 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { PLATFORM_ID } from '@angular/core';
 import { Router } from '@angular/router';
 import { environment } from '../../../environments/environment';
+import { useridexported } from '../../auth/const/const';
 
 @Component({
   selector: 'app-create-group',
@@ -38,11 +39,11 @@ export class CreateGroupComponent implements OnInit{
 
   }
   ngOnInit(): void {
-    if (isPlatformBrowser(this.platformId)) {
+   
  
-      this.userid = localStorage.getItem('wmd') || '';
+      this.userid = useridexported;
  
-    }
+    
   }
 
 

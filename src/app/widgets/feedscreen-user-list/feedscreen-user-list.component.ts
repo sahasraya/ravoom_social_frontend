@@ -4,6 +4,7 @@ import { Component, ElementRef, EventEmitter, HostListener, OnInit, Output, View
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { environment } from '../../../environments/environment';
+import { useridexported } from '../../auth/const/const';
 
 @Component({
   selector: 'app-feedscreen-user-list',
@@ -36,7 +37,7 @@ export class FeedscreenUserListComponent implements OnInit {
   ngOnInit(): void {
 
 
-    this.userid = localStorage.getItem('wmd') || '';
+    this.userid =useridexported;
     if (this.userid != '') {
 
       this.getUserList();

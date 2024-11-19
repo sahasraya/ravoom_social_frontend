@@ -5,6 +5,7 @@ import { Router, RouterModule } from '@angular/router';
 import { log } from 'console';
 import { NotificationService } from './notification.service';
 import { environment } from '../../../environments/environment';
+import { useridexported } from '../../auth/const/const';
 
 @Component({
   selector: 'app-notification',
@@ -28,7 +29,7 @@ export class NotificationComponent implements OnInit {
   constructor(private http: HttpClient,private router:Router,private notificationService: NotificationService,private cdref: ChangeDetectorRef,private eRef: ElementRef) {}
 
   ngOnInit(): void {
-    this.currentUserId = localStorage.getItem('wmd') || '';
+    this.currentUserId =   useridexported;
  
     this.notificationService.getNotificationEvent().subscribe(() => {
       this.getNotifications();

@@ -7,13 +7,13 @@ import { PostComponent } from '../../widgets/post/post.component';
 import { AddPostComponent } from '../../widgets/add-post/add-post.component';
 import { ImageLargerComponent } from '../../widgets/image-larger/image-larger.component';
 import { environment } from '../../../environments/environment';
+import { useridexported } from '../../auth/const/const';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
   imports: [
     CommonModule,
-    RouterOutlet,
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
@@ -67,7 +67,7 @@ export class ProfileComponent   {
 
     this.route.paramMap.subscribe(params => {
     this.userid = params.get('uid')!;
-    this.getfrommethoduserid = localStorage.getItem('wmd') || '';
+    this.getfrommethoduserid = useridexported;
       this.loadInitialData();
  
 

@@ -10,7 +10,6 @@ import { environment } from '../../../environments/environment';
   standalone: true,
   imports: [
     CommonModule,
-    RouterOutlet,
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,

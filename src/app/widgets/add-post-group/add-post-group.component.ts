@@ -6,6 +6,7 @@ import { RouterModule } from '@angular/router';
 import { PLATFORM_ID } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { PreLoaderComponent } from '../pre-loader/pre-loader.component';
+import { useridexported } from '../../auth/const/const';
 
 @Component({
   selector: 'app-add-post-group',
@@ -89,11 +90,9 @@ export class AddPostGroupComponent {
   }
 
   ngOnInit(): void {
-    if (isPlatformBrowser(this.platformId)) {
- 
-      this.userid = localStorage.getItem('wmd') || '';
- 
-    }
+    
+      this.userid = useridexported;
+  
  
 
   }

@@ -45,8 +45,8 @@
         <button (click)="showrequests()"  [class.selected]="showrequestsBool" class="navigationsbuttons" *ngIf="groupownerid == userid">Requests ({{userRequests.length}})</button>
         <button (click)="adduser()"  [class.selected]="showadduserBool" class="navigationsbuttons" *ngIf="groupownerid == userid">Add User</button>
         <button (click)="settings()"  [class.selected]="showsettingsBool" class="navigationsbuttons" *ngIf="groupownerid == userid">Setings</button>
-
-        <div class="button-holder" *ngIf="this.currunusertype !='admin'">
+ 
+        <div class="button-holder" *ngIf="this.currunusertype !='admin' && userid !=''">
             <span (click)="joingroup(group.groupid)">{{btntext}}</span>
           </div>
 

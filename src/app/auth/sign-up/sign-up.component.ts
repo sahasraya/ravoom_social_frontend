@@ -7,12 +7,12 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { PreLoaderComponent } from '../../widgets/pre-loader/pre-loader.component';
 import { environment } from '../../../environments/environment';
 import { NetworkService } from '../../services/network.service';
+import { UserIdEncryptionService } from '../../services/user-id-encryption.service';
 @Component({
   selector: 'app-sign-up',
   standalone: true,
   imports: [
     CommonModule,
-    RouterOutlet,
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
@@ -55,7 +55,7 @@ export class SignUpComponent implements OnInit{
   };
 
 
-  constructor(private fb: FormBuilder, private http: HttpClient,private router:Router,private networkService: NetworkService) {
+  constructor(private fb: FormBuilder, private http: HttpClient,private router:Router,private networkService: NetworkService,private userIdEncryptionService: UserIdEncryptionService) {
     this.signUpForm = this.fb.group({
       username: ['', Validators.required],
       emailaddress: ['', [Validators.required, Validators.email]],
@@ -233,17 +233,18 @@ allPasswordConditionsMet(): boolean {
     localStorage.setItem('doc', '25');
   
     localStorage.setItem('wmd', userId);
-    localStorage.setItem('ger', userId);
-    localStorage.setItem('fat', userId);
-    localStorage.setItem('mainsource', userId);
-    localStorage.setItem('ud', userId);
+    localStorage.setItem('ger', '30491aDdwqf');
+    localStorage.setItem('fat', 'new set');
+    localStorage.setItem('mainsource', 'web');
+    localStorage.setItem('ud', 'no');
     localStorage.setItem('www', '34');
     localStorage.setItem('reload', 'false');
   
     localStorage.removeItem('username');
     localStorage.removeItem('emailaddress');
     localStorage.removeItem('phonenumber');
-  
+   
+
     this.signUpForm.reset();
     this.isPasswordFieldFocused = false;
     this.signUpForm.patchValue({ profileimage: null });

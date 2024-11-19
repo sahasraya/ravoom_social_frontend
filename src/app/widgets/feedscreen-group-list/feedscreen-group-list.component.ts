@@ -4,6 +4,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { environment } from '../../../environments/environment';
+import { useridexported } from '../../auth/const/const';
 
 @Component({
   selector: 'app-feedscreen-group-list',
@@ -25,7 +26,7 @@ export class FeedscreenGroupListComponent implements OnInit {
   ngOnInit(): void {
     this.checkdataavaibleinsession();
  
-      this.userid = localStorage.getItem('wmd') || '';
+      this.userid = useridexported;
   
   }
 

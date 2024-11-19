@@ -11,6 +11,7 @@ import { FeedscreenUserListComponent } from '../feedscreen-user-list/feedscreen-
 import { FeedscreenGroupListComponent } from '../feedscreen-group-list/feedscreen-group-list.component';
 import { PrivacyPolicyComponent } from '../../home/privacy-policy/privacy-policy.component';
 import { AttributesComponent } from '../../home/attributes/attributes.component';
+import { useridexported } from '../../auth/const/const';
  
 
 @Component({
@@ -60,7 +61,7 @@ export class HeaderComponent implements OnInit{
   constructor(private notificationService: NotificationService,private http:HttpClient,private renderer: Renderer2,private router:Router) {}
 
   ngOnInit(): void {
-    this.userid = localStorage.getItem('wmd') || '';
+    this.userid = useridexported;
     if(this.userid !=''){
       this.getuserdetails(this.userid);
     }

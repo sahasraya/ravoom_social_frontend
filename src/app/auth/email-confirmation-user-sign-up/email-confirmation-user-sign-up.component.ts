@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { environment } from '../../../environments/environment';
+import { UserIdEncryptionService } from '../../services/user-id-encryption.service';
 
 @Component({
   selector: 'app-email-confirmation-user-sign-up',
@@ -16,7 +17,7 @@ export class EmailConfirmationUserSignUpComponent  implements OnInit{
   userid:string ="" ;
   APIURL = environment.APIURL;
   
-  constructor(private route:ActivatedRoute,private http:HttpClient,private router:Router){}
+  constructor(private route:ActivatedRoute,private http:HttpClient,private router:Router,private userIdEncryptionService: UserIdEncryptionService){}
 
   ngOnInit(): void {
     this.userid = this.route.snapshot.paramMap.get('uid')!;
@@ -33,7 +34,7 @@ export class EmailConfirmationUserSignUpComponent  implements OnInit{
         next: response => {
      
 
-          localStorage.setItem('ppd', 'no');
+            localStorage.setItem('ppd', 'no');
             localStorage.setItem('name', 'normal');
             localStorage.setItem('core', 'never');
             localStorage.setItem('appd', 'AkfwpkfpMMkwppge');
@@ -47,20 +48,14 @@ export class EmailConfirmationUserSignUpComponent  implements OnInit{
 
             localStorage.setItem('wmd', this.userid);
 
-            localStorage.setItem('ger', this.userid);
-            localStorage.setItem('fat', this.userid);
-            localStorage.setItem('mainsource', this.userid);
-            localStorage.setItem('ud', this.userid);
+            localStorage.setItem('ger', '30491aDdwqf');
+            localStorage.setItem('fat', 'new set');
+            localStorage.setItem('mainsource', 'web');
+            localStorage.setItem('ud', 'no');
 
             localStorage.setItem('www', '34');
             localStorage.setItem('reload', 'false');
-
-            
-
-             
-
-
-
+           
 
         },
         error: error => {

@@ -8,6 +8,7 @@ import { FeedscreenGroupListComponent } from '../../widgets/feedscreen-group-lis
 import { FeedscreenUserListComponent } from '../../widgets/feedscreen-user-list/feedscreen-user-list.component';
 import { UserlistToFollowComponent } from '../userlist-to-follow/userlist-to-follow.component';
 import { environment } from '../../../environments/environment';
+import { useridexported } from '../../auth/const/const';
 
 
 @Component({
@@ -33,13 +34,11 @@ export class FollowersFeedComponent {
   constructor(private http: HttpClient, private cdr: ChangeDetectorRef,@Inject(PLATFORM_ID) private platformId: Object) {}
 
   ngOnInit(): void {
-    if (isPlatformBrowser(this.platformId)) {
- 
-      this.userid = localStorage.getItem('wmd') || '';
-    this.getFollowersPostsFeed();
-
- 
+    this.userid = useridexported;
+    if (this.userid) {
+      this.getFollowersPostsFeed();
     }
+     
   }
 
   getFollowersPostsFeed(): void {

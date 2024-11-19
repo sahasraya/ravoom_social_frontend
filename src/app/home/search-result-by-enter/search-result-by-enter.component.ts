@@ -7,6 +7,7 @@ import { SharedServiceService } from '../../services/shared-service.service';
 import { environment } from '../../../environments/environment';
 import { ProfileComponent } from '../profile/profile.component';
 import { HeaderComponent } from '../../widgets/header/header.component';
+import { useridexported } from '../../auth/const/const';
 
 @Component({
   selector: 'app-search-result-by-enter',
@@ -79,7 +80,7 @@ export class SearchResultByEnterComponent  implements OnInit{
       this.getUser(this.searchtext);
       this.getGroup(this.searchtext);
 
-      this.userid = localStorage.getItem('wmd') || '';
+      this.userid = useridexported;
       
       
     });

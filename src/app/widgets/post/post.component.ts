@@ -8,6 +8,7 @@ import { ReporttingComponent } from '../reportting/reportting.component';
 import { SharedServiceService } from '../../services/shared-service.service';
 import { environment } from '../../../environments/environment';
 import { CommentComponent } from '../../home/comment/comment.component';
+import { useridexported } from '../../auth/const/const';
 
 @Component({
   selector: 'app-post',
@@ -68,7 +69,7 @@ export class PostComponent implements OnInit {
     this.getpostcommentCount();
     this.getfollowingstatus(this.post.userid);
     if (isPlatformBrowser(this.platformId)) {
-      this.userid = localStorage.getItem('wmd') || '';
+      this.userid = useridexported;
       if(this.userid){
         this.getisaddedtofav(this.post,this.post.postid);
       }
@@ -404,7 +405,7 @@ closememebrslikeddiv(e:Event):void{
 
   async getfollowingstatus(postownerid: any): Promise<void> {
     if (this.post) {
-      const myuserid: string | null = localStorage.getItem('wmd');
+      const myuserid: string | null = useridexported;
 
 
       if (myuserid) {
@@ -629,7 +630,7 @@ closememebrslikeddiv(e:Event):void{
       return;
     }
 
-    const myuserid: string | null = localStorage.getItem('wmd');
+    const myuserid: string | null = useridexported;
     const formData = new FormData();
     formData.append('postid', postid.toString());
     formData.append('userid', userid.toString());

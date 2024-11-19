@@ -6,6 +6,7 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ImageLargerComponent } from '../../widgets/image-larger/image-larger.component';
 import { ReporttingComponent } from '../../widgets/reportting/reportting.component';
 import { environment } from '../../../environments/environment';
+import { useridexported } from '../../auth/const/const';
 
 @Component({
   selector: 'app-comment',
@@ -89,7 +90,7 @@ export class CommentComponent implements OnInit {
     
     this.getPostData();
     this.getpostlikecount();
-    this.userid = localStorage.getItem('wmd') || '';
+    this.userid = useridexported;
     this.checkuseridtoroutecommentscreen = this.route.snapshot.paramMap.get('uid') || '';
     this.getpostcommentCount(this.postid);
     this.getComments();
@@ -127,7 +128,7 @@ export class CommentComponent implements OnInit {
         formData.append(key, this.commentForm.value[key]);
       });
   
-      const myuserid: string | null = localStorage.getItem('wmd');
+      const myuserid: string | null = useridexported;
       formData.append('postid', postid);
       formData.append('userid', this.userid);
       formData.append('username', username);
@@ -975,7 +976,7 @@ async getfollowingstatus(postowneruserid:any):Promise<void>{
               this.replayCommentForm.reset();
               return;
             }else{
-              const myuserid: string | null = localStorage.getItem('wmd');
+              const myuserid: string | null = useridexported;
 
               formData.append('profileimage', userprofile);
               formData.append('notificationtype', 'replaycomment');
@@ -1024,7 +1025,7 @@ async getfollowingstatus(postowneruserid:any):Promise<void>{
               this.replayCommentForm.reset();
               return;
             }else{
-              const myuserid: string | null = localStorage.getItem('wmd');
+              const myuserid: string | null = useridexported;
 
               formData.append('profileimage', userprofile);
               formData.append('notificationtype', 'replaycomment');

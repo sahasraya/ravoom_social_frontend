@@ -4,6 +4,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { environment } from '../../../environments/environment';
+import { useridexported } from '../../auth/const/const';
 
 @Component({
   selector: 'app-reset-password',
@@ -72,7 +73,7 @@ export class ResetPasswordComponent implements OnInit{
 
   }
   ngOnInit(): void {
-    this.userid = localStorage.getItem('wmd') || '';
+    this.userid = useridexported;
   }
 
 

@@ -14,6 +14,7 @@ import { environment } from '../../../environments/environment';
 import { PreLoaderComponent } from '../../widgets/pre-loader/pre-loader.component';
 import { NetworkService } from '../../services/network.service';
 import { NetworkstatusComponent } from '../../widgets/networkstatus/networkstatus.component';
+import { useridexported } from '../../auth/const/const';
 
 
 @Component({
@@ -69,7 +70,7 @@ export class FeedComponent {
    
     setTimeout(() => {
       this.getPostsFeed();
-      this.userid = localStorage.getItem('wmd') || '';
+      this.userid  = useridexported;
       if (this.userid) {
         this.getuserdetails(this.userid);
       }

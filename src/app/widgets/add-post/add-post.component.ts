@@ -9,6 +9,7 @@ import { isPlatformBrowser } from '@angular/common';
 import { PLATFORM_ID } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { PreLoaderComponent } from '../pre-loader/pre-loader.component';
+import { useridexported } from '../../auth/const/const';
  
 
 @Component({
@@ -98,12 +99,10 @@ export class AddPostComponent {
   }
 
   ngOnInit(): void {
-     this.checkposttype(this.postType);
-    if (isPlatformBrowser(this.platformId)) {
+    this.checkposttype(this.postType);
+    this.userid = useridexported;
  
-      this.userid = localStorage.getItem('wmd') || '';
- 
-    }
+  
 
 
   }

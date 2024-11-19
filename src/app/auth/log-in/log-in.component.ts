@@ -5,13 +5,13 @@ import { Router, RouterModule, RouterOutlet } from '@angular/router';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { environment } from '../../../environments/environment';
+import { UserIdEncryptionService } from '../../services/user-id-encryption.service';
 
 @Component({
   selector: 'app-log-in',
   standalone: true,
   imports: [
     CommonModule,
-    RouterOutlet,
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
@@ -32,7 +32,7 @@ export class LogInComponent implements OnInit {
 
 
   
-  constructor(private fb: FormBuilder,private http:HttpClient,private router:Router){
+  constructor(private fb: FormBuilder,private http:HttpClient,private router:Router,private userIdEncryptionService: UserIdEncryptionService){
     this.loginForm = this.fb.group({
       emailaddress: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required],
@@ -77,12 +77,13 @@ export class LogInComponent implements OnInit {
             localStorage.setItem('doc', '25');
 
             localStorage.setItem('wmd', response.userid);
-            localStorage.setItem('ger', response.userid);
-            localStorage.setItem('fat', response.userid);
-            localStorage.setItem('mainsource', response.userid);
-            localStorage.setItem('ud', response.userid);
+            localStorage.setItem('ger', '30491aDdwqf');
+            localStorage.setItem('fat', 'new set');
+            localStorage.setItem('mainsource', 'web');
+            localStorage.setItem('ud', 'no');
             localStorage.setItem('www', '34');
             localStorage.setItem('reload', 'false');
+            
 
             this.router.navigate(['']).then(() => {
               location.reload();

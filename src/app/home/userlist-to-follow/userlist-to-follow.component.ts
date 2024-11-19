@@ -3,6 +3,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { environment } from '../../../environments/environment';
+import { useridexported } from '../../auth/const/const';
 
 @Component({
   selector: 'app-userlist-to-follow',
@@ -24,7 +25,7 @@ export class UserlistToFollowComponent  implements OnInit{
 
   ngOnInit(): void {
 
-    this.currentUserId = localStorage.getItem('wmd') || '';
+    this.currentUserId = useridexported;
     this.getuserlisttofollow( );
   }
 
