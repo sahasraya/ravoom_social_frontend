@@ -1,11 +1,19 @@
+
+
+ 
+
+
+
 <div *ngIf="!post.deleted" class="post">
+
+
 
   <div class="liked_members_div_fixed" *ngIf="islikedmembereddivvisible">
     <div class="member_main_outer_holder" #memberMainOuterHolder>
      <div class="main_titile_holder">
       <h3>Members Who Liked</h3>
      </div>
-      <img src="../../../assets/images/close.png" alt="" class="closeicon" (click)="closememebrslikeddiv($event)" loading="lazy">
+      <img src="../../../assets/images/close.png" alt="" class="closeicon" (click)="closememebrslikeddiv($event)" >
   
       <div class="main_member_holder" *ngFor="let member of likedMembers">
         <img [src]="member.profileimage" alt="Profile Image" loading="lazy">
@@ -25,7 +33,7 @@
 
 
    <div class="reporting-screen" *ngIf="showreportscreenBool" >
-    <img src="../../../assets/images/close.png" alt="" class="closeicon" (click)="closeReportScreen()" loading="lazy">
+    <img src="../../../assets/images/close.png" alt="" class="closeicon" (click)="closeReportScreen()" >
     <app-reportting [type]="postreport"></app-reportting>
    </div>
 
@@ -34,7 +42,7 @@
     <div class="bottom-message" *ngIf="addedtofav"><span>{{favtext}}</span></div>
  
     <div *ngIf="profileImageUrl" class="profile-image-container">
-      <img *ngIf="profileImageUrl" [src]="profileImageUrl" alt="User Profile Image" class="profile-image" loading="lazy" />
+      <img *ngIf="profileImageUrl" [src]="profileImageUrl" alt="User Profile Image" class="profile-image"  />
       <div class="green-dot" *ngIf="onlinestatus"></div>
     </div>
 
@@ -59,17 +67,17 @@
               
                     
                   
-                    <img src="../../../assets/images/threedots.png" alt=""   (click)="toggleDropdown($event, post)" class="dropdown-toggle" *ngIf="this.userid !=''" loading="lazy">
+                    <img src="../../../assets/images/threedots.png" alt=""   (click)="toggleDropdown($event, post)" class="dropdown-toggle" *ngIf="this.userid !=''" >
 
                   </div>
                   <div *ngIf="post.showDropdown" class="dropdown-menu">
                     <ul>
                       <li (click)="removePost(post.postid)" *ngIf="post.userid == this.userid" class="dropdownicons">
-                        <img src="../../../assets/images/delete.png" alt="" loading="lazy">
+                        <img src="../../../assets/images/delete.png" alt="" >
                         Delete
                       </li>
-                      <li (click)="showreportscreen()">  <img src="../../../assets/images/complain.png" alt="" loading="lazy"> Report</li>
-                      <li (click)="savepost($event,post.postid,post)">  <img src="../../../assets/images/save.png" alt="" loading="lazy">   {{ post.isSaved ? 'Remove from favorites' : 'Save' }}</li>
+                      <li (click)="showreportscreen()">  <img src="../../../assets/images/complain.png" alt="" > Report</li>
+                      <li (click)="savepost($event,post.postid,post)">  <img src="../../../assets/images/save.png" alt="" >   {{ post.isSaved ? 'Remove from favorites' : 'Save' }}</li>
                       
                     </ul>
                   </div>
@@ -107,12 +115,12 @@
     <span class="numberofimages" *ngIf="post.images.length > 1">{{ post.images.length }}</span>
     
     <!-- Display the current image -->
-    <img [src]="imageUrl" alt="Post Image" (click)="getthecomments($event, post.postid, post.n_or_g)" class="mainimage" loading="lazy" />
+    <img [src]="imageUrl" alt="Post Image" (click)="getthecomments($event, post.postid, post.n_or_g)" class="mainimage"  />
   
     <!-- Navigation buttons when there are multiple images -->
     <div *ngIf="post.images.length > 1" class="image-nav-controls">
-      <img src="../../../assets/images/left-arrow.png" alt="" (click)="prevImage()" title="prevImage" loading="lazy">
-      <img src="../../../assets/images/right-arrow.png" alt="" (click)="nextImage()" title="nextImage" loading="lazy">
+      <img src="../../../assets/images/left-arrow.png" alt="" (click)="prevImage()" title="prevImage" >
+      <img src="../../../assets/images/right-arrow.png" alt="" (click)="nextImage()" title="nextImage" >
      
     </div>
 
@@ -130,7 +138,7 @@
 
 
   <div *ngIf="post.posttype === 'group'" class="imageholder">
-    <img   [src]="groupImageUrl" alt="Post group"  loading="lazy"  />
+    <img   [src]="groupImageUrl" alt="Post group"    />
     
   </div>
 
@@ -165,7 +173,7 @@
 
   <div *ngIf="post.posttype === 'link'" class="imageholder">
    
-    <img [src]="post.textbody" alt="" (click)="getthecomments($event, post.postid,post.n_or_g)" loading="lazy">
+    <img [src]="post.textbody" alt="" (click)="getthecomments($event, post.postid,post.n_or_g)" >
     
 </div>
 
@@ -200,7 +208,7 @@
      </span> -->
 
      <span class="comment-button" (click)="getthecomments($event, post.postid,post.n_or_g)" *ngIf="post.posttype != 'group'">
-      <img src="../../../assets/images/comment.png" alt="" title="add comment" loading="lazy"><span *ngIf="comments > 0"> {{ comments }}</span>
+      <img src="../../../assets/images/comment.png" alt="" title="add comment" ><span *ngIf="comments > 0"> {{ comments }}</span>
      </span>
 
  
@@ -219,7 +227,7 @@
 
 
   <div [ngClass]="{'hiddencommentdiv': !getthecommentsBool, 'commentscreen-holder': getthecommentsBool}">
-    <img src="../../../assets/images/close.png" alt="" class="closeicon" (click)="closememebrslikeddiv($event)" loading="lazy">
+    <img src="../../../assets/images/close.png" alt="" class="closeicon" (click)="closememebrslikeddiv($event)" >
 
     <app-comment 
         *ngIf="getthecommentsBool && selectedPostId === post.postid" 
@@ -228,8 +236,11 @@
 </div>
 
 
-
 </div>
+
+
+
+
 
 
 

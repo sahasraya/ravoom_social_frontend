@@ -9,6 +9,7 @@ import { SharedServiceService } from '../../services/shared-service.service';
 import { environment } from '../../../environments/environment';
 import { CommentComponent } from '../../home/comment/comment.component';
 import { useridexported } from '../../auth/const/const';
+ 
 
 @Component({
   selector: 'app-post',
@@ -59,6 +60,7 @@ export class PostComponent implements OnInit {
   selectedPostId: string | null = null;
   backgroundStyle: { [key: string]: string } = {};
   currentImageIndex: number = 0;
+  loadingSkeleton: boolean = false;
 
 
 
@@ -88,6 +90,8 @@ export class PostComponent implements OnInit {
       this.checkTheOnlineStatus(this.post.userid);
 
     }
+    
+    
   }
 
   ngAfterContentChecked() {

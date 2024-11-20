@@ -158,6 +158,7 @@
   position: sticky;
   top: 550px;
   margin-top: 66px;
+  justify-content: center;
 }
 .left-user-holder{
   flex: 1;

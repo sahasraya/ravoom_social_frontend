@@ -84,6 +84,7 @@
 
 <div class="feed-container">
 
+
   
 
   <div class="posttypeholder" *ngIf="userid !=''">
@@ -154,15 +155,18 @@
 
   <div class="posts-container">
 
- 
+  
+
     <div class="selectedoptionholderbuttons" *ngIf="selectedOption !=''">
       <img src="../../../assets/images/close.png" alt="" class="backarrow"  (click)="gobackfromviodes($event)" title="close options">
         <img src="../../../assets/images/morevideos.png" alt="" class="morevidoeicon" (click)="gotovideoslider($event)" title="open viode slider">
     </div>
   
     <div *ngFor="let post of posts; let i = index"  >
-      <app-post [post]="post" (delete)="handlePostDelete(i)"></app-post>
+      <app-post [post]="post"   (delete)="handlePostDelete(i)"></app-post>
     </div>
+
+    
 
 
 
@@ -182,7 +186,6 @@
 
   </div>
 </div>
-
 
 
 
@@ -222,9 +225,12 @@
 
 
 
-
-<img src="../../../assets/images/preloader.gif" alt="" class="iscontentisloadingpost" *ngIf="iscontentisloading">
+<app-skeleton-widget   *ngIf="loading"></app-skeleton-widget>
 
 
 
 </div>
+
+
+
+

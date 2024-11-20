@@ -1,20 +1,19 @@
-import { ChangeDetectorRef, Component, HostListener } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, HostListener, Output } from '@angular/core';
 import { AddPostComponent } from '../../widgets/add-post/add-post.component';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
-import { catchError, firstValueFrom, map, of, tap } from 'rxjs';
+import { catchError, map, of, tap } from 'rxjs';
 import { PostComponent } from '../../widgets/post/post.component';
-import { NotificationComponent } from '../notification/notification.component';
 import { CreateGroupComponent } from '../../widgets/create-group/create-group.component';
 import { HeaderComponent } from '../../widgets/header/header.component';
 import { FeedscreenUserListComponent } from '../../widgets/feedscreen-user-list/feedscreen-user-list.component';
 import { FeedscreenGroupListComponent } from '../../widgets/feedscreen-group-list/feedscreen-group-list.component';
 import { environment } from '../../../environments/environment';
-import { PreLoaderComponent } from '../../widgets/pre-loader/pre-loader.component';
 import { NetworkService } from '../../services/network.service';
 import { NetworkstatusComponent } from '../../widgets/networkstatus/networkstatus.component';
 import { useridexported } from '../../auth/const/const';
+import { SkeletonWidgetComponent } from '../../widgets/skeleton-widget/skeleton-widget.component';
 
 
 @Component({
@@ -30,13 +29,15 @@ import { useridexported } from '../../auth/const/const';
     HeaderComponent,
     FeedscreenUserListComponent,
     FeedscreenGroupListComponent, 
-    NetworkstatusComponent
+    NetworkstatusComponent,
+    SkeletonWidgetComponent
   ],
   templateUrl: './feed.component.html',
   styleUrl: './feed.component.css'
 })
 export class FeedComponent {
 
+  
   posts: any[] = [];
   openaddpostscreenbool: boolean = false;
   APIURL = environment.APIURL;
@@ -53,7 +54,6 @@ export class FeedComponent {
   user: any;
   selectedOption: string = '';
   username:string = "";
-  iscontentisloading:boolean=true;
   isOnline: boolean = false;
   isLowConnection: boolean = false;
   networkstatus: string = 'offline';  
@@ -81,18 +81,23 @@ export class FeedComponent {
       this.updateNetworkStatus(status);
     });
 
+   
+
   }
-  getPostsFeed(): void {
+ 
+
+
+
+  async getPostsFeed(): Promise<void> {
     if (this.loading) return;
   
-    console.time('getPostsFeed'); // Start timer
   
-    this.iscontentisloading = true;
+  
     this.loading = true;
+
   
     this.http.get<any[]>(`${this.APIURL}get_posts_feed?limit=${this.limit}&offset=${this.offset}`).pipe(
       tap(() => {
-        this.iscontentisloading = true; // Show loading indicator
       }),
       map((res: any[]) => {
         if (res.length > 0) {
@@ -111,10 +116,11 @@ export class FeedComponent {
       }),
       tap(() => {
         this.loading = false;
-        this.iscontentisloading = false;
+        
         this.cdr.detectChanges(); 
-        console.timeEnd('getPostsFeed'); 
+  
       })
+      
     ).subscribe();
   }
   
