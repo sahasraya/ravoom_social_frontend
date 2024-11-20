@@ -697,7 +697,7 @@ async getfollowingstatus(postowneruserid:any):Promise<void>{
                     if (response && Array.isArray(response.comments)) {
                         const newComments = response.comments.map((comment: any) => ({
                             username: comment.username,
-                            text: comment.text,
+                            text: comment.text =="null" ? "" : comment.text ,
                             commenteddate: new Date(comment.commenteddate),
                             imageurl: comment.profileimage,
                             userid: comment.userid,
