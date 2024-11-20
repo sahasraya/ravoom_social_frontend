@@ -1,4 +1,5 @@
 <div class="search-container" (click)="stopPropagation($event)">
+
   <div class="search-box">
     <img src="../../../assets/images/search.png" alt="search icon" class="search-icon" width="25">
     <input type="text" placeholder="Search here..." [(ngModel)]="searchText" (input)="searchResult()"
@@ -7,6 +8,10 @@
   </div>
 
   <div *ngIf="user && user.length" class="results-container">
+
+ 
+
+
     <div class="imageholdersearch">
       <span>Users <img src="../../../assets/images/search.png" alt="" class="searchresultnormalimage"></span>
     </div>
@@ -23,6 +28,9 @@
   </div>
 
   <div *ngIf="group && group.length" class="results-container">
+
+ 
+
     <div class="imageholdersearch">
       <span>Groups <img src="../../../assets/images/search.png" alt="" class="searchresultnormalimage"></span>
     </div>
@@ -86,8 +94,7 @@
 
       </li>
     </ul>
-
-    <app-popular-post></app-popular-post>
+ 
 
   </div>
 

@@ -10,7 +10,7 @@ import { environment } from '../../../environments/environment';
 @Component({
   selector: 'app-search',
   standalone: true,
-  imports: [CommonModule,FormsModule,RouterModule,RouterOutlet,PopularPostComponent],
+  imports: [CommonModule,FormsModule,RouterModule,PopularPostComponent],
   templateUrl: './search.component.html',
   styleUrl: './search.component.css'
 })

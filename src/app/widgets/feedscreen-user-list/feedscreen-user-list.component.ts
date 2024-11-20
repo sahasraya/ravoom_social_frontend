@@ -5,11 +5,12 @@ import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { environment } from '../../../environments/environment';
 import { useridexported } from '../../auth/const/const';
+import { SkeletonWidgetPopularGroupsAndUsersComponent } from '../skeleton-widget-popular-groups-and-users/skeleton-widget-popular-groups-and-users.component';
 
 @Component({
   selector: 'app-feedscreen-user-list',
   standalone: true,
-  imports: [RouterModule, CommonModule, FormsModule],
+  imports: [RouterModule, CommonModule, FormsModule,SkeletonWidgetPopularGroupsAndUsersComponent],
   templateUrl: './feedscreen-user-list.component.html',
   styleUrl: './feedscreen-user-list.component.css'
 })
@@ -17,21 +18,13 @@ export class FeedscreenUserListComponent implements OnInit {
 
 
   APIURL = environment.APIURL;
-
   @Output() optionSelected: EventEmitter<string> = new EventEmitter<string>();
   @Output() feedMethodCalled: EventEmitter<string> = new EventEmitter<string>();
- 
-
-
-
   userList: any[] =[];
-
   userid: string = "";
   screen: string = "";
-
-
-
-
+  isloadinguserlist: boolean = false;
+ 
   constructor(private http: HttpClient, private router: Router) { }
 
   ngOnInit(): void {
@@ -42,20 +35,39 @@ export class FeedscreenUserListComponent implements OnInit {
 
       this.getUserList();
 
-    } else {
-
-
+    } else { 
       this.userList = [];
-
-
-
-
-
+ 
     }
 
   }
 
 
+  async getUserList(): Promise<void> {
+    if (this.isloadinguserlist) return;
+
+    this.isloadinguserlist = true;
+
+    const formData = new FormData();
+    formData.append('currentuserid', this.userid);
+
+    this.http.post<any>(`${this.APIURL}get_userlist`, formData).subscribe({
+      next: (response: any[]) => {
+        this.userList = response;
+
+        this.userList.forEach((user: any) => {
+          if (user.profileimage) {
+            user.profileimageUrl = this.createBlobUrl(user.profileimage, 'image/jpeg');
+          }
+        });
+        this.isloadinguserlist = false;
+      },
+      error: (error: HttpErrorResponse) => {
+        this.isloadinguserlist = false;
+        console.error('There was an error!', error);
+      }
+    });
+  }
  
 
 
@@ -89,29 +101,6 @@ export class FeedscreenUserListComponent implements OnInit {
  
 
 
-  async getUserList(): Promise<void> {
-    const formData = new FormData();
-    formData.append('currentuserid', this.userid);
-
- 
-
-    this.http.post<any>(`${this.APIURL}get_userlist`, formData).subscribe({
-      next: (response: any[]) => {
-        this.userList = response;
-
-
-        this.userList.forEach((user: any) => {
-          if (user.profileimage) {
-            user.profileimageUrl = this.createBlobUrl(user.profileimage, 'image/jpeg');
-          }
-        });
-        
-      },
-      error: (error: HttpErrorResponse) => {
-        console.error('There was an error!', error);
-      }
-    });
-  }
 
 
 

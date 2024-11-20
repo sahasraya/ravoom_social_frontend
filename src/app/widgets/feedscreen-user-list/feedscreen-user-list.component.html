@@ -62,6 +62,9 @@
 
     
     <div class="userholder"  *ngIf="userid != ''">
+
+        <app-skeleton-widget-popular-groups-and-users *ngIf="isloadinguserlist"></app-skeleton-widget-popular-groups-and-users>
+
         <a *ngFor="let user of userList"  >
             <div class="group" (click)="navigatetouser(user.userid)">
                 <img [src]="user.profileimageUrl" alt="user Image" class="img">

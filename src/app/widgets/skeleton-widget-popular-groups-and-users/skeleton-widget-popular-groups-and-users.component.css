@@ -1,0 +1,8 @@
+.skeleton-header{
+   display: flex;
+   flex-direction: row;
+}
+.inner-skeliton-holder{
+    display: flex;
+    flex-direction: column;
+}

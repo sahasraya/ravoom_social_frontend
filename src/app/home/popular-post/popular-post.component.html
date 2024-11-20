@@ -14,7 +14,7 @@
 </div>
 
 
-
+<app-skeleton-widget-search *ngIf="isloadingposts"></app-skeleton-widget-search>
 
 
 <div class="outer-holder" *ngIf="showVideoPostsBool">
@@ -33,7 +33,10 @@
       <video [src]="post.filepath" controls class="viodefile"></video>
   
       </div>
-      <small>{{ calculateTimeAgo(post.posteddate) }}</small>
+      <div class="time-holder">
+        <img src="../../../assets/images/calender.png" alt="calender" class="calendericon">
+        <small>{{ calculateTimeAgo(post.posteddate) }}</small>
+      </div>
     </div>
 </div>
 </div>
@@ -63,7 +66,10 @@
      <img src="../../../assets/images/audiopost.png" alt="" class="audioimage">
   
       </div>
-      <small>{{ calculateTimeAgo(post.posteddate) }}</small>
+      <div class="time-holder">
+        <img src="../../../assets/images/calender.png" alt="calender" class="calendericon">
+        <small>{{ calculateTimeAgo(post.posteddate) }}</small>
+      </div>
     </div>
 </div>
 </div>
@@ -95,7 +101,10 @@
       <img *ngIf="post.postUrl" [src]="post.postUrl" alt="postUrl Image" class="postimage">
   
       </div>
-      <small>{{ calculateTimeAgo(post.posteddate) }}</small>
+      <div class="time-holder">
+        <img src="../../../assets/images/calender.png" alt="calender" class="calendericon">
+        <small>{{ calculateTimeAgo(post.posteddate) }}</small>
+      </div>
     </div>
 </div>
 </div>
@@ -123,7 +132,10 @@
       </div>
   
       </div>
-      <small>{{ calculateTimeAgo(post.posteddate) }}</small>
+      <div class="time-holder">
+        <img src="../../../assets/images/calender.png" alt="calender" class="calendericon">
+        <small>{{ calculateTimeAgo(post.posteddate) }}</small>
+      </div>
     </div>
 </div>
 </div>
@@ -150,7 +162,10 @@
 
   </div>
 
-  <small>{{ calculateTimeAgo(post.posteddate) }}</small>
+  <div class="time-holder">
+    <img src="../../../assets/images/calender.png" alt="calender" class="calendericon">
+    <small>{{ calculateTimeAgo(post.posteddate) }}</small>
+  </div>
 
 </div>
 
@@ -187,7 +202,10 @@
       <img *ngIf="post.postUrl" [src]="post.postUrl" alt="groupimagepost Image" class="postimage">
   
       </div>
-      <small>{{ calculateTimeAgo(post.posteddate) }}</small>
+      <div class="time-holder">
+        <img src="../../../assets/images/calender.png" alt="calender" class="calendericon">
+        <small>{{ calculateTimeAgo(post.posteddate) }}</small>
+      </div>
     </div>
 </div>
 </div>

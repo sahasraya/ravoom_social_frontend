@@ -3,11 +3,13 @@ import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { environment } from '../../../environments/environment';
+import { NgxSkeletonLoaderModule } from 'ngx-skeleton-loader';
+import { SkeletonWidgetSearchComponent } from '../../widgets/skeleton-widget-search/skeleton-widget-search.component';
 
 @Component({
   selector: 'app-popular-post',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule,NgxSkeletonLoaderModule,SkeletonWidgetSearchComponent],
   templateUrl: './popular-post.component.html',
   styleUrl: './popular-post.component.css'
 })
@@ -29,6 +31,7 @@ export class PopularPostComponent  implements OnInit{
   showTextPostsBool: boolean = false;
   showLinkPostsBool: boolean = false;
   showGroupPostsBool: boolean = false;
+  isloadingposts: boolean = false;
 
 
 
@@ -43,6 +46,9 @@ constructor(private http:HttpClient,private router:Router){}
 
 
   async getpopularpostsfromlikes(): Promise<void> {
+    if (this.isloadingposts) return;
+    this.isloadingposts = true;
+
     this.http.get<{ posts: any[], like_counts: any[] }>(this.APIURL + "get-popular-posts-from-like-count").subscribe({
       next: (res) => {
         this.popularPosts = res.posts;
@@ -100,10 +106,10 @@ constructor(private http:HttpClient,private router:Router){}
         this.showLinkPostsBool = this.linkPosts.length > 0;
         this.showGroupPostsBool = this.groupPosts.length > 0;
   
-        console.log("Popular Posts:", this.popularPosts);
-        console.log("Like Counts:", this.likeCounts);
+        this.isloadingposts = false;
       },
       error: (err) => {
+        this.isloadingposts = false;
         console.error('Error fetching popular posts:', err);
       }
     });

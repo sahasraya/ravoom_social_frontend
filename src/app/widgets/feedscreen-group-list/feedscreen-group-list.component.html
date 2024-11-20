@@ -4,6 +4,7 @@
    </div>
 
         <div class="inner-group-holder">
+            <app-skeleton-widget-popular-groups-and-users *ngIf="isloaidnggroups"></app-skeleton-widget-popular-groups-and-users>
             
             <a *ngFor="let group of populargrouplist"  (click) ="navigatetogroup(group.grouptype,group.groupid,group.groupownerid,group.groupname)">
                 <div class="group">

@@ -5,11 +5,12 @@ import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { environment } from '../../../environments/environment';
 import { useridexported } from '../../auth/const/const';
+import { SkeletonWidgetPopularGroupsAndUsersComponent } from '../skeleton-widget-popular-groups-and-users/skeleton-widget-popular-groups-and-users.component';
 
 @Component({
   selector: 'app-feedscreen-group-list',
   standalone: true,
-  imports: [CommonModule,RouterModule,FormsModule],
+  imports: [CommonModule,RouterModule,FormsModule,SkeletonWidgetPopularGroupsAndUsersComponent],
   templateUrl: './feedscreen-group-list.component.html',
   styleUrl: './feedscreen-group-list.component.css'
 })
@@ -17,36 +18,28 @@ export class FeedscreenGroupListComponent implements OnInit {
 
   APIURL = environment.APIURL;
   populargrouplist:any [] = [];
-  userid:string="";
+  userid: string = "";
+  isloaidnggroups: boolean = false;
+
   private encryptionPassword: string = 'fhwkehfkjhAJhkKJWHRKWHEjhewpofiepwomvdkAoirep'; 
 
 
   constructor(private http:HttpClient,private router:Router){}
 
   ngOnInit(): void {
-    this.checkdataavaibleinsession();
+    this.getPopularGroups();
  
       this.userid = useridexported;
   
   }
 
-  checkdataavaibleinsession(): void {
-    const encryptedData = sessionStorage.getItem('populargroups');
-    if (encryptedData) {
-      this.loadGroupsFromSessionStorage(encryptedData);
-    } else {
-      this.getPopularGroups();
-    }
-  }
-
-  async loadGroupsFromSessionStorage(encryptedData: string): Promise<void> {
-    const decryptedData = await this.decryptData(encryptedData, this.encryptionPassword);
-    if (decryptedData) {
-      this.populargrouplist = JSON.parse(decryptedData); 
-    }
-  }
+ 
 
   async getPopularGroups(): Promise<void> {
+    if (this.isloaidnggroups) return;
+
+    this.isloaidnggroups = true;
+
     this.http.post<any[]>(`${this.APIURL}get_populargroup`, new FormData()).subscribe({
       next: (response: any[]) => {
         this.populargrouplist = response;
@@ -57,14 +50,19 @@ export class FeedscreenGroupListComponent implements OnInit {
           }
         });
 
- 
-        this.storeGroupsInSessionStorage(this.populargrouplist);
+        this.isloaidnggroups = false;
       },
       error: (error: HttpErrorResponse) => {
+        this.isloaidnggroups = false;
         console.error('There was an error!', error);
       }
     });
   }
+
+
+
+
+
 
   async storeGroupsInSessionStorage(groups: any[]): Promise<void> {
     const encryptedData = await this.encryptData(JSON.stringify(groups), this.encryptionPassword);
