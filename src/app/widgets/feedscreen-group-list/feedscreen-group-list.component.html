@@ -1,10 +1,20 @@
+
+<div class="selected-grup-holder" *ngIf="selectedGroupId" >
+    <img src="../../../assets/images/close.png" alt="" (click)="closeselectedgroup()" class="closeicon">
+    <app-groups [selectedgroupid]="selectedGroupId" class="theselectedgroupdetails"></app-groups>
+
+</div>
+
 <div class="heading-holder">
-    <span>Popular Groups</span>
+    <span *ngIf="!selectedGroupId">Popular Groups</span>
     
    </div>
 
         <div class="inner-group-holder">
             <app-skeleton-widget-popular-groups-and-users *ngIf="isloaidnggroups"></app-skeleton-widget-popular-groups-and-users>
+
+
+           
             
             <a *ngFor="let group of populargrouplist"  (click) ="navigatetogroup(group.grouptype,group.groupid,group.groupownerid,group.groupname)">
                 <div class="group">

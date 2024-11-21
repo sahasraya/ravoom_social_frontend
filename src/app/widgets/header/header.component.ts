@@ -86,6 +86,27 @@ export class HeaderComponent implements OnInit{
 
   }
 
+  navigateToScreen(screen: string): void {
+    document.body.style.overflow = ''; 
+    switch (screen) {
+      case 'signup':
+        this.router.navigate(['/auth/sign-up']);
+        break;
+      case 'login':
+        this.router.navigate(['/auth/log-in']);
+        break;
+      case 'globe':
+        this.router.navigate(['']);  
+        break;
+      case 'home':
+        this.router.navigate(['/home/followers-feed']);
+        break;
+      default:
+        console.warn('Invalid screen name:', screen);
+        break;
+    }
+  }
+
 
   closepopgroupsmobile(): void{
     this.isclikedpopulargroups = false;

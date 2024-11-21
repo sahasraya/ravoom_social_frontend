@@ -34,14 +34,14 @@
     <app-search class="header-search"> </app-search>
 
     <div class="right-side">
-      <a routerLink="/auth/sign-up" *ngIf="userid == ''" class="signuplogin">Sign Up</a>
-      <a routerLink="/auth/log-in" *ngIf="userid == ''" class="signuplogin">Log In</a>
+      <a   *ngIf="userid == ''" class="signuplogin" (click)="navigateToScreen('signup')">Sign Up</a>
+      <a routerLink="/auth/log-in" *ngIf="userid == ''" class="signuplogin" (click)="navigateToScreen('login')">Log In</a>
    
       <app-add-post *ngIf="openaddpostscreenbool" (closePost)="openaddpostscreenbool = false"></app-add-post>
 
    
-      <a routerLink=""><img src="../../../assets/images/globe.png" alt="" class="globelicon"  *ngIf="userid != ''"></a>
-      <a routerLink="/home/followers-feed"><img src="../../../assets/images/home.png" alt="" class="homeicon"  *ngIf="userid != ''"></a>
+      <a  ><img src="../../../assets/images/globe.png" alt="" class="globelicon"  *ngIf="userid != ''" (click)="navigateToScreen('globe')"></a>
+      <a  ><img src="../../../assets/images/home.png" alt="" class="homeicon"  *ngIf="userid != ''"(click)="navigateToScreen('home')"></a>
 
       <img src="../../../assets/images/filter.png" alt="" class="imagetextvoicefiltericonmobile" (click)="toggleOptionsfilter()" >
       <img src="../../../assets/images/menuicon.png" alt="" class="filtericonmobile" (click)="toggleOptions()" >

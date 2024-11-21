@@ -1,12 +1,10 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { ChangeDetectorRef, Component, HostListener, Inject, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, HostListener, Inject, Input, OnInit, SimpleChanges } from '@angular/core';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { AddPostGroupComponent } from '../../widgets/add-post-group/add-post-group.component';
 import { PostComponent } from '../../widgets/post/post.component';
-import { PLATFORM_ID } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { warn } from 'node:console';
+import { FormsModule } from '@angular/forms'; 
 import { ImageLargerComponent } from '../../widgets/image-larger/image-larger.component';
 import { environment } from '../../../environments/environment';
 import { useridexported } from '../../auth/const/const';
@@ -22,6 +20,8 @@ import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 })
 export class GroupsComponent implements OnInit{
 
+  @Input() selectedgroupid: string = "";
+  
   groupid:string="";
   APIURL = environment.APIURL;
   group: any;
@@ -62,10 +62,13 @@ export class GroupsComponent implements OnInit{
   showimageupdatedbanner:boolean = false;
 
 
-  constructor(private sanitizer: DomSanitizer,private route: ActivatedRoute, private http: HttpClient,private cdr: ChangeDetectorRef,@Inject(PLATFORM_ID) private platformId: Object,private router:Router) {}
+  constructor(private sanitizer: DomSanitizer,private route: ActivatedRoute, private http: HttpClient,private cdr: ChangeDetectorRef,private router:Router) {}
 
   ngOnInit(): void {
     this.groupid = this.route.snapshot.paramMap.get('groupid')!;
+    if (this.selectedgroupid) {
+      this.groupid = this.selectedgroupid;
+    }
     this.getGroupDetails(this.groupid);
     this.getPostsFeed();
     this.userid = useridexported;
@@ -80,6 +83,8 @@ export class GroupsComponent implements OnInit{
    
   }
 
+ 
+  
   imageCropped(event: ImageCroppedEvent): void {
     this.croppedBackgroundImage = this.sanitizer.bypassSecurityTrustUrl(event.objectUrl!);
     this.uploadCroppedBackgroundImage(event.blob!);
@@ -120,7 +125,8 @@ export class GroupsComponent implements OnInit{
     console.log('Failed to load image');
   }
 
-    async getGroupDetails(groupid: string): Promise<void> {
+  async getGroupDetails(groupid: string): Promise<void> {
+      
     const formData = new FormData();
     formData.append('groupid', groupid);
 

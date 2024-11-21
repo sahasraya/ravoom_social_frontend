@@ -6,11 +6,12 @@ import { Router, RouterModule } from '@angular/router';
 import { environment } from '../../../environments/environment';
 import { useridexported } from '../../auth/const/const';
 import { SkeletonWidgetPopularGroupsAndUsersComponent } from '../skeleton-widget-popular-groups-and-users/skeleton-widget-popular-groups-and-users.component';
+import { GroupsComponent } from '../../home/groups/groups.component';
 
 @Component({
   selector: 'app-feedscreen-group-list',
   standalone: true,
-  imports: [CommonModule,RouterModule,FormsModule,SkeletonWidgetPopularGroupsAndUsersComponent],
+  imports: [CommonModule,RouterModule,FormsModule,SkeletonWidgetPopularGroupsAndUsersComponent,GroupsComponent],
   templateUrl: './feedscreen-group-list.component.html',
   styleUrl: './feedscreen-group-list.component.css'
 })
@@ -20,6 +21,7 @@ export class FeedscreenGroupListComponent implements OnInit {
   populargrouplist:any [] = [];
   userid: string = "";
   isloaidnggroups: boolean = false;
+  selectedGroupId: string = "";
 
   private encryptionPassword: string = 'fhwkehfkjhAJhkKJWHRKWHEjhewpofiepwomvdkAoirep'; 
 
@@ -33,7 +35,48 @@ export class FeedscreenGroupListComponent implements OnInit {
   
   }
 
- 
+  closeselectedgroup(): void{
+    document.body.style.overflow = ''; 
+    this.selectedGroupId = "";
+  }
+
+  async navigatetogroup(grouptype:any,groupid:any,groupownerid:any,groupname:string):Promise<void>{
+    document.body.style.overflow = 'hidden';
+    if (grouptype === "public") {
+      // this.router.navigate(['home/group', groupid]);
+      this.selectedGroupId = groupid; 
+    } else if (groupownerid == this.userid) {
+      // this.router.navigate(['home/group', groupid]);
+      this.selectedGroupId = groupid; 
+    } else {
+
+
+
+      const formData = new FormData();
+      formData.append('groupid', groupid);
+      formData.append('groupownerid', groupownerid);
+      formData.append('myuserid', this.userid);
+
+      try {
+        const response = await this.http.post<any>(`${this.APIURL}ask_permission_from_admin_to_join_group`, formData).toPromise();
+
+        if (response.message === "requestsent") {
+          alert("Wait till the permission from " + groupname);
+        } else if (response.message === "requestaccepted") {
+          this.selectedGroupId = groupid; 
+          // this.router.navigate(['home/group', groupid]);
+        } else {
+          alert(response.message);
+        }
+      } catch (error) {
+        console.error('There was an error!', error);
+        alert('There was an error sending the permission request. Please try again later.');
+      }
+
+    }
+    
+  }
+
 
   async getPopularGroups(): Promise<void> {
     if (this.isloaidnggroups) return;
@@ -163,39 +206,7 @@ export class FeedscreenGroupListComponent implements OnInit {
 
 
 
-  async navigatetogroup(grouptype:any,groupid:any,groupownerid:any,groupname:string):Promise<void>{
- 
-    if (grouptype === "public") {
-      this.router.navigate(['home/group', groupid]);
-    } else if (groupownerid == this.userid) {
-      this.router.navigate(['home/group', groupid]);
-    } else {
-
-
-
-      const formData = new FormData();
-      formData.append('groupid', groupid);
-      formData.append('groupownerid', groupownerid);
-      formData.append('myuserid', this.userid);
-
-      try {
-        const response = await this.http.post<any>(`${this.APIURL}ask_permission_from_admin_to_join_group`, formData).toPromise();
-
-        if (response.message === "requestsent") {
-          alert("Wait till the permission from " + groupname);
-        } else if (response.message === "requestaccepted") {
-          this.router.navigate(['home/group', groupid]);
-        } else {
-          alert(response.message);
-        }
-      } catch (error) {
-        console.error('There was an error!', error);
-        alert('There was an error sending the permission request. Please try again later.');
-      }
-
-    }
-    
-  }
+  
  
 
 

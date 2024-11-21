@@ -1,12 +1,13 @@
 <div class="group-main-holder" *ngIf="group">
 
   
-<a routerLink='' class="gobackatag">
+<a routerLink='' class="gobackatag" *ngIf="!selectedgroupid">
     <img src="../../../assets/images/backarrow.png" alt="" class="backarrow" >  
 </a>
 
-    <div *ngIf="group.groupbackgroundimage" class="groupbackgroundimage" (click)="onImageClick()">
-        <img [src]="groupbackgroundimage" alt="Group Background Image" class="groupbackgroundimage">
+    <div *ngIf="group.groupbackgroundimage" class="groupbackgroundimage" >
+        <img [src]="groupbackgroundimage" alt="Group Background Image" class="groupbackgroundimage" (click)="onImageClick()">
+        <div class="icon-wrapper" (click)="settings()"><img src="../../../assets/images/camera.png" alt=""> </div>
         <div class="overlay"></div>
       </div>
 

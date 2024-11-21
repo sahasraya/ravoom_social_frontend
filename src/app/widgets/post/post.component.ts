@@ -121,8 +121,8 @@ export class PostComponent implements OnInit {
     
     this.cdref.detectChanges();
   }
-
-
+  
+ 
   loadCurrentImage(): void {
     const image = this.post.images[this.currentImageIndex];
     this.imageUrl = this.createBlobUrl(image, 'image/jpeg');
@@ -138,6 +138,7 @@ export class PostComponent implements OnInit {
       'justify-content': 'center',
       'border-radius': '10px',
       'position': 'relative',
+      'z-index' :'-1',
     };
   }
 
