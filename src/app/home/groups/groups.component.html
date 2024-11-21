@@ -287,11 +287,36 @@
 
 
  <div *ngIf="showsettingsBool" class="group-settings-holder">
+
+      <div  class="bannerClass"  *ngIf="showimageupdatedbanner" >
+        <span class="bannertext">Updated</span>
+      </div>
+
+
     <input type="text" [value]="group.groupname" #groupname (input)="updatethegroupname(group.groupname,groupname.value)">
   
    
     <div class="groupsettingimageholder">
-    <img [src]="groupbackgroundimage" alt="Group Background Image" class="groupbackgroundimageupdate">
+
+        
+
+        <div class="image-cropper-container"  *ngIf="imageChangedEvent">
+            <small>Grag and crop the image</small>
+            <image-cropper
+             
+              [imageChangedEvent]="imageChangedEvent"
+              [maintainAspectRatio]="true"
+              [aspectRatio]="16 / 9"
+              format="png"
+              (imageCropped)="imageCropped($event)"
+              (imageLoaded)="imageLoaded($event)"
+              (cropperReady)="cropperReady()"
+              (loadImageFailed)="loadImageFailed()">
+            </image-cropper>
+          </div>
+
+
+    <img [src]="groupbackgroundimage" alt="Group Background Image" class="groupbackgroundimageupdate" *ngIf="!imageChangedEvent">
    
     <div class="setting-btn-holder">
         <label for="backgroudimage" class="file-input-label">Update Background Image</label>

@@ -1,11 +1,12 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Injectable, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { environment } from '../../environments/environment';
  
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
+ 
 })
 export class SharedServiceService {
 

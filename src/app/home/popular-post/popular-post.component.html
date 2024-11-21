@@ -6,7 +6,7 @@
 
 
 
-<div *ngIf="videoPosts.length ==0 && audioPosts.length ==0 && imagePosts.length ==0 && textPosts.length ==0 && linkPosts.length ==0 && groupPosts.length ==0" class="no-posts-div">
+<div *ngIf="videoPosts.length ==0 && audioPosts.length ==0 && imagePosts.length ==0 && textPosts.length ==0 && linkPosts.length ==0 && groupPosts.length ==0 && !isloadingposts"  class="no-posts-div">
   No Popular Posts Found 
   <img src="../../../assets/images/like.png" alt="">
  

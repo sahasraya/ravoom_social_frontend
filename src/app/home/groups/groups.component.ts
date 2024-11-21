@@ -10,11 +10,13 @@ import { warn } from 'node:console';
 import { ImageLargerComponent } from '../../widgets/image-larger/image-larger.component';
 import { environment } from '../../../environments/environment';
 import { useridexported } from '../../auth/const/const';
+import { ImageCroppedEvent, ImageCropperComponent } from 'ngx-image-cropper';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-groups',
   standalone: true,
-  imports: [CommonModule,AddPostGroupComponent,PostComponent,FormsModule,ImageLargerComponent,RouterModule],
+  imports: [CommonModule,AddPostGroupComponent,PostComponent,FormsModule,ImageLargerComponent,RouterModule,ImageCropperComponent],
   templateUrl: './groups.component.html',
   styleUrl: './groups.component.css'
 })
@@ -55,11 +57,12 @@ export class GroupsComponent implements OnInit{
   groupownerid:string = "";
   groupbackgroundimageupdateddate:string="";
   groupimageupdateddate:string="";
+  imageChangedEvent: Event | null = null;
+  croppedBackgroundImage: SafeUrl = '';
+  showimageupdatedbanner:boolean = false;
 
 
-
-
-  constructor(private route: ActivatedRoute, private http: HttpClient,private cdr: ChangeDetectorRef,@Inject(PLATFORM_ID) private platformId: Object,private router:Router) {}
+  constructor(private sanitizer: DomSanitizer,private route: ActivatedRoute, private http: HttpClient,private cdr: ChangeDetectorRef,@Inject(PLATFORM_ID) private platformId: Object,private router:Router) {}
 
   ngOnInit(): void {
     this.groupid = this.route.snapshot.paramMap.get('groupid')!;
@@ -77,7 +80,45 @@ export class GroupsComponent implements OnInit{
    
   }
 
+  imageCropped(event: ImageCroppedEvent): void {
+    this.croppedBackgroundImage = this.sanitizer.bypassSecurityTrustUrl(event.objectUrl!);
+    this.uploadCroppedBackgroundImage(event.blob!);
+  }
 
+  uploadCroppedBackgroundImage(croppedImageBlob: Blob): void {
+    const formData = new FormData();
+    formData.append('groupid', this.groupid);
+    formData.append('backgroundimage', croppedImageBlob, 'background.png');
+
+ 
+    this.http.post<any>(this.APIURL + 'update-backgroundimage', formData).subscribe({
+      next: (response: any) => {
+        if (response.message === "done") {
+          this.showimageupdatedbanner = true;
+          this.getGroupDetails(this.groupid);
+          setTimeout(() => {
+            this.showimageupdatedbanner = false;
+          }, 2000);
+        }
+      },
+      error: error => {
+        console.error('Error uploading cropped image!', error);
+      }
+    });
+  }
+
+
+  imageLoaded(image: any): void {
+    console.log('Image loaded into the cropper');
+  }
+
+  cropperReady(): void {
+    console.log('Cropper is ready');
+  }
+
+  loadImageFailed(): void {
+    console.log('Failed to load image');
+  }
 
     async getGroupDetails(groupid: string): Promise<void> {
     const formData = new FormData();
@@ -146,36 +187,32 @@ export class GroupsComponent implements OnInit{
     this.showSmallergroupLargerImage = false;
   }
 
-
-  onBackgroundImageSelected(event: Event): void {
+ onBackgroundImageSelected(event: Event): void {
     const file = (event.target as HTMLInputElement).files?.[0];
     this.BGimagechanched = true;
     if (file) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        this.groupbackgroundimage = reader.result as string;
-      };
-      reader.readAsDataURL(file);
+     
+      this.imageChangedEvent = event;
 
       const formData = new FormData();
       formData.append('groupid', this.groupid);
       formData.append('backgroundimage', file);
+
   
       this.http.post<any>(this.APIURL + 'update-backgroundimage', formData).subscribe({
         next: (response: any) => {
-           
           if (response.message === "done") {
-            alert("Background image updated successfully!");
+            this.showimageupdatedbanner = true;
             this.getGroupDetails(this.groupid);
+            setTimeout(() => {
+              this.showimageupdatedbanner = false;
+            }, 2000);
           }
         },
         error: error => {
           console.error('There was an error posting the data!', error);
         }
       });
-
-
-
     }
   }
 
@@ -802,7 +839,9 @@ async changeusertypemodtouser(user: any, userid: any): Promise<void> {
    this.showfollowersBool = false;
    this.showrequestsBool = false;
    this.showadduserBool = false;
-   this.showsettingsBool = false;
+    this.showsettingsBool = false;
+    this.setimageupdatetonotmal();
+    
 
   }
 
@@ -812,7 +851,7 @@ async changeusertypemodtouser(user: any, userid: any): Promise<void> {
    this.showrequestsBool = false;
    this.showadduserBool = false;
    this.showsettingsBool = false;
-
+   this.setimageupdatetonotmal();
   }
 
   showrequests():void{
@@ -821,7 +860,7 @@ async changeusertypemodtouser(user: any, userid: any): Promise<void> {
    this.showrequestsBool = true;
    this.showadduserBool = false;
    this.showsettingsBool = false;
-
+   this.setimageupdatetonotmal();
   }
 
   adduser():void{
@@ -830,7 +869,7 @@ async changeusertypemodtouser(user: any, userid: any): Promise<void> {
     this.showrequestsBool = false;
     this.showadduserBool = true;
     this.showsettingsBool = false;
-
+    this.setimageupdatetonotmal();
   }
 
 
@@ -840,6 +879,13 @@ async changeusertypemodtouser(user: any, userid: any): Promise<void> {
     this.showrequestsBool = false;
     this.showadduserBool = false;
     this.showsettingsBool = true;
+    this.setimageupdatetonotmal();
+  }
+
+  setimageupdatetonotmal(): void{
+    this.imageChangedEvent = null;
+    this.croppedBackgroundImage = '';
+    this.showimageupdatedbanner = false;
   }
 
 }

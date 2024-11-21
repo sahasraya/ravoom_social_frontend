@@ -28,6 +28,7 @@
     "express": "^4.18.2",
     "link-preview-generator": "^1.1.0",
     "lz-string": "^1.5.0",
+    "ngx-image-cropper": "^8.1.1",
     "ngx-link-preview": "^1.2.0",
     "ngx-skeleton-loader": "^9.0.0",
     "or": "^0.2.0",

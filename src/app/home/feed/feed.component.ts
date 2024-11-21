@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, EventEmitter, HostListener, Output } from '@angular/core';
 import { AddPostComponent } from '../../widgets/add-post/add-post.component';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpClientModule, HttpErrorResponse } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { catchError, map, of, tap } from 'rxjs';
@@ -30,7 +30,8 @@ import { SkeletonWidgetComponent } from '../../widgets/skeleton-widget/skeleton-
     FeedscreenUserListComponent,
     FeedscreenGroupListComponent, 
     NetworkstatusComponent,
-    SkeletonWidgetComponent
+    SkeletonWidgetComponent,
+    HttpClientModule
   ],
   templateUrl: './feed.component.html',
   styleUrl: './feed.component.css'
