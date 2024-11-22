@@ -10,11 +10,12 @@ import { environment } from '../../../environments/environment';
 import { useridexported } from '../../auth/const/const';
 import { ImageCroppedEvent, ImageCropperComponent } from 'ngx-image-cropper';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import { SkeletonWidgetGroupComponent } from '../../widgets/skeleton-widget-group/skeleton-widget-group.component';
 
 @Component({
   selector: 'app-groups',
   standalone: true,
-  imports: [CommonModule,AddPostGroupComponent,PostComponent,FormsModule,ImageLargerComponent,RouterModule,ImageCropperComponent],
+  imports: [CommonModule,AddPostGroupComponent,PostComponent,FormsModule,ImageLargerComponent,RouterModule,ImageCropperComponent ,SkeletonWidgetGroupComponent],
   templateUrl: './groups.component.html',
   styleUrl: './groups.component.css'
 })
@@ -60,7 +61,7 @@ export class GroupsComponent implements OnInit{
   imageChangedEvent: Event | null = null;
   croppedBackgroundImage: SafeUrl = '';
   showimageupdatedbanner:boolean = false;
-
+  groupdataisloading: boolean = false;
 
   constructor(private sanitizer: DomSanitizer,private route: ActivatedRoute, private http: HttpClient,private cdr: ChangeDetectorRef,private router:Router) {}
 
@@ -126,13 +127,19 @@ export class GroupsComponent implements OnInit{
   }
 
   async getGroupDetails(groupid: string): Promise<void> {
-      
+    if (this.groupdataisloading) return;
+  
+    this.groupdataisloading = true;
+    console.log("this.groupdataisloading " + this.groupdataisloading);
+
     const formData = new FormData();
     formData.append('groupid', groupid);
 
     try {
         const response = await this.http.post<any>(`${this.APIURL}get_group_details`, formData).toPromise();
-        this.group = response;
+       this.group = response;
+      
+      
 
         this.grouptype= this.group.grouptype;
         this.groupname = this.group.groupname;
@@ -170,11 +177,24 @@ export class GroupsComponent implements OnInit{
                 this.userList.push(user);
             }
         });
+      
+      this.groupdataisloading = false;
+      console.log("this.groupdataisloading " + this.groupdataisloading);
 
     } catch (error) {
+       this.groupdataisloading = false;
         console.error('There was an error!', error);
     }
-}
+     finally {
+    this.groupdataisloading = false;
+  }
+  }
+  
+
+
+
+
+
   onImageClick(): void {
     this.showLargerImage = true;
   }

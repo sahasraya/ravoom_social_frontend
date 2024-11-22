@@ -68,7 +68,10 @@ export class PostComponent implements OnInit {
   ngOnInit(): void {
     this.checkuseridtoroutecommentscreen = this.route.snapshot.paramMap.get('uid')!; 
     this.getpostlikecount();
-    this.getpostcommentCount();
+    if (this.post.postid) {
+      this.getpostcommentCount();
+    }
+    
     this.getfollowingstatus(this.post.userid);
     if (isPlatformBrowser(this.platformId)) {
       this.userid = useridexported;

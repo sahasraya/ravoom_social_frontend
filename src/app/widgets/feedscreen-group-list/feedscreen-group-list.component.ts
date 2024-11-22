@@ -85,6 +85,7 @@ export class FeedscreenGroupListComponent implements OnInit {
 
     this.http.post<any[]>(`${this.APIURL}get_populargroup`, new FormData()).subscribe({
       next: (response: any[]) => {
+        this.isloaidnggroups = false;
         this.populargrouplist = response;
 
         this.populargrouplist.forEach((group: any) => {
@@ -93,7 +94,6 @@ export class FeedscreenGroupListComponent implements OnInit {
           }
         });
 
-        this.isloaidnggroups = false;
       },
       error: (error: HttpErrorResponse) => {
         this.isloaidnggroups = false;

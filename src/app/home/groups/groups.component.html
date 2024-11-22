@@ -1,3 +1,8 @@
+
+<div  class="group-main-holder">
+  <app-skeleton-widget-group *ngIf="groupdataisloading"></app-skeleton-widget-group>
+</div>
+
 <div class="group-main-holder" *ngIf="group">
 
   
@@ -6,8 +11,8 @@
 </a>
 
     <div *ngIf="group.groupbackgroundimage" class="groupbackgroundimage" >
-        <img [src]="groupbackgroundimage" alt="Group Background Image" class="groupbackgroundimage" (click)="onImageClick()">
-        <div class="icon-wrapper" (click)="settings()"><img src="../../../assets/images/camera.png" alt=""> </div>
+        <img [src]="groupbackgroundimage" alt="Group Background Image" class="groupbackgroundimage" (click)="onImageClick()" >
+        <div class="icon-wrapper" (click)="settings()" *ngIf="groupownerid == userid"><img src="../../../assets/images/camera.png" alt="" > </div>
         <div class="overlay"></div>
       </div>
 
