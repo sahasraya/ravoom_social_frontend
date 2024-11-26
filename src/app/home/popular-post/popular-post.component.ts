@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { environment } from '../../../environments/environment';
 import { NgxSkeletonLoaderModule } from 'ngx-skeleton-loader';
@@ -35,7 +35,7 @@ export class PopularPostComponent  implements OnInit{
 
 
 
-constructor(private http:HttpClient,private router:Router){}
+constructor(private http:HttpClient,private router:Router,private cdr:ChangeDetectorRef){}
 
   ngOnInit(): void {
     this.getpopularpostsfromlikes();
@@ -47,69 +47,78 @@ constructor(private http:HttpClient,private router:Router){}
 
   async getpopularpostsfromlikes(): Promise<void> {
     if (this.isloadingposts) return;
+  
     this.isloadingposts = true;
-
+    this.cdr.detectChanges(); // Ensure UI updates when loading starts.
+  
     this.http.get<{ posts: any[], like_counts: any[] }>(this.APIURL + "get-popular-posts-from-like-count").subscribe({
       next: (res) => {
-        this.popularPosts = res.posts;
-        this.likeCounts = res.like_counts;
+        if (res && res.posts) {
+          this.popularPosts = res.posts;
+          this.likeCounts = res.like_counts || [];
   
-        this.imagePosts = [];
-        this.audioPosts = [];
-        this.videoPosts = [];
-        this.textPosts = [];
-        this.linkPosts = [];
-        this.groupPosts = [];
+          this.imagePosts = [];
+          this.audioPosts = [];
+          this.videoPosts = [];
+          this.textPosts = [];
+          this.linkPosts = [];
+          this.groupPosts = [];
   
-        this.popularPosts.forEach(post => {
-          if (post.userprofile) {
-            post.userprofileUrl = this.createBlobUrl(post.userprofile, 'image/jpeg');
-          }
-  
-          if (post.posttype === 'image' && post.post) {
-            post.postUrl = this.createBlobUrl(post.post, 'image/jpeg');
-            this.imagePosts.push(post);
-          } else if (post.posttype === 'audio') {
-            this.audioPosts.push(post);
-          } else if (post.posttype === 'video') {
-            const base64Data = post.post;
-
-            try {
-              const blob = this.convertBase64ToBlob(base64Data, 'video/mp4');
-              post.filepath = URL.createObjectURL(blob);
-            } catch (error) {
-              console.error('Error converting video post:', error);
+          this.popularPosts.forEach(post => {
+            if (post.userprofile) {
+              post.userprofileUrl = this.createBlobUrl(post.userprofile, 'image/jpeg');
             }
   
-            this.videoPosts.push(post);
-
-          } else if (post.posttype === 'text') {
-            this.textPosts.push(post);
-          }
-          else if (post.posttype === 'link') {
-            this.linkPosts.push(post);
-           
-          }
-          else if (post.posttype === 'group') {
-            post.postUrl = this.createBlobUrl(post.post, 'image/jpeg');
-
-            this.groupPosts.push(post);
-           
-          }
-
-        });
+            switch (post.posttype) {
+              case 'image':
+                if (post.post) {
+                  post.postUrl = this.createBlobUrl(post.post, 'image/jpeg');
+                  this.imagePosts.push(post);
+                }
+                break;
+              case 'audio':
+                this.audioPosts.push(post);
+                break;
+              case 'video':
+                try {
+                  const blob = this.convertBase64ToBlob(post.post, 'video/mp4');
+                  post.filepath = URL.createObjectURL(blob);
+                } catch (error) {
+                  console.error('Error converting video post:', error);
+                }
+                this.videoPosts.push(post);
+                break;
+              case 'text':
+                this.textPosts.push(post);
+                break;
+              case 'link':
+                this.linkPosts.push(post);
+                break;
+              case 'group':
+                if (post.post) {
+                  post.postUrl = this.createBlobUrl(post.post, 'image/jpeg');
+                }
+                this.groupPosts.push(post);
+                break;
+            }
+          });
   
-        this.showImagePostsBool = this.imagePosts.length > 0;
-        this.showAudioPostsBool = this.audioPosts.length > 0;
-        this.showVideoPostsBool = this.videoPosts.length > 0;
-        this.showTextPostsBool = this.textPosts.length > 0;
-        this.showLinkPostsBool = this.linkPosts.length > 0;
-        this.showGroupPostsBool = this.groupPosts.length > 0;
+          this.showImagePostsBool = this.imagePosts.length > 0;
+          this.showAudioPostsBool = this.audioPosts.length > 0;
+          this.showVideoPostsBool = this.videoPosts.length > 0;
+          this.showTextPostsBool = this.textPosts.length > 0;
+          this.showLinkPostsBool = this.linkPosts.length > 0;
+          this.showGroupPostsBool = this.groupPosts.length > 0;
+        } else {
+          console.warn('No posts found in response.');
+        }
   
         this.isloadingposts = false;
+        this.cdr.detectChanges();  
       },
       error: (err) => {
         this.isloadingposts = false;
+        this.cdr.detectChanges();  
         console.error('Error fetching popular posts:', err);
       }
     });
