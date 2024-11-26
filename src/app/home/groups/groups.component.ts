@@ -179,7 +179,6 @@ export class GroupsComponent implements OnInit{
         });
       
       this.groupdataisloading = false;
-      console.log("this.groupdataisloading " + this.groupdataisloading);
 
     } catch (error) {
        this.groupdataisloading = false;

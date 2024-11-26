@@ -46,7 +46,7 @@ export class FeedComponent {
   limitoption = 5;
   offset=0;
   offsetoption = 0;
-  loading = false;
+  loading:boolean = false;
   loadingoption = false;
   iscreatenewgroupopen: boolean = false;
   showoptionsmenu:boolean=false;  
@@ -91,39 +91,36 @@ export class FeedComponent {
 
   async getPostsFeed(): Promise<void> {
     if (this.loading) return;
-  
-  
-  
-    this.loading = true;
 
-  
+    this.loading = true;
+    this.cdr.detectChanges();  
+
     this.http.get<any[]>(`${this.APIURL}get_posts_feed?limit=${this.limit}&offset=${this.offset}`).pipe(
-      tap(() => {
-      }),
-      map((res: any[]) => {
-        if (res.length > 0) {
-          const processedPosts = this.processPosts(res);
-          this.posts = [...this.posts, ...processedPosts];
-          this.offset += this.limit;
-      
-        } else {
-          console.log('No more posts to load.');
-        }
-        return res;
-      }),
-      catchError(error => {
-        console.error('There was an error!', error);
-        return of([]);  
-      }),
-      tap(() => {
-        this.loading = false;
-        
-        this.cdr.detectChanges(); 
-  
-      })
-      
+        map((res: any[]) => {
+            if (res.length > 0) {
+                const processedPosts = this.processPosts(res);
+                this.posts = [...this.posts, ...processedPosts];
+                this.offset += this.limit;
+            } else {
+                console.log('No more posts to load.');
+                this.loading = false;
+                this.cdr.detectChanges();  
+            }
+            return res;
+        }),
+        catchError(error => {
+            this.loading = false;
+            this.cdr.detectChanges(); 
+            console.error('There was an error!', error);
+            return of([]);  
+        }),
+        tap(() => {
+            this.loading = false;
+            this.cdr.detectChanges();  
+        })
     ).subscribe();
-  }
+}
+
   
     private processPosts(posts: any[]): any[] {
       const processedPosts: any[] = [];
@@ -306,7 +303,8 @@ async getuserdetails(userid:string):Promise<void>{
           localStorage.removeItem('scrollPosition');
   
           if (this.selectedOption === "") {
-              this.getPostsFeed();   
+            this.getPostsFeed();  
+            this.loading = false;
           } else {
               this.getPostsFromOption(this.selectedOption);  
           }
