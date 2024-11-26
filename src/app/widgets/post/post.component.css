@@ -24,7 +24,7 @@
   text-decoration: underline;
 }
 .groupname {
-  max-width: 90%;  
+  max-width: 550px;  
   white-space: nowrap; 
   overflow: hidden; 
   text-overflow: ellipsis; 
