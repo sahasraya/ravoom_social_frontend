@@ -70,9 +70,7 @@ export class FeedComponent implements OnInit,OnDestroy {
   ngOnInit(): void {
     console.log('Component initialized');
     setTimeout(() => {
-      if (!this.posts.length) {
-        this.getPostsFeed();  
-      }
+      this.getPostsFeed()
       this.userid  = useridexported;
       if (this.userid) {
         this.getuserdetails(this.userid);
@@ -95,58 +93,50 @@ export class FeedComponent implements OnInit,OnDestroy {
 
   async getPostsFeed(): Promise<void> {
     if (this.loading) return;
-
+  
     this.loading = true;
     this.cdr.detectChanges();  
-
+  
+    // Make the HTTP request to fetch the posts with the current limit and offset
     this.http.get<any[]>(`${this.APIURL}get_posts_feed?limit=${this.limit}&offset=${this.offset}`).pipe(
-        map((res: any[]) => {
-            if (res.length > 0) {
-                const processedPosts = this.processPosts(res);
-                this.posts = [...this.posts, ...processedPosts];
-                this.offset += this.limit;
-            } else {
-                console.log('No more posts to load.');
-                this.loading = false;
-                this.cdr.detectChanges();  
-            }
-            return res;
-        }),
-        catchError(error => {
-            this.loading = false;
-            this.cdr.detectChanges(); 
-            console.error('There was an error!', error);
-            return of([]);  
-        }),
-        tap(() => {
-            this.loading = false;
-            this.cdr.detectChanges();  
-        })
-    ).subscribe();
-}
-
-  
-    private processPosts(posts: any[]): any[] {
-      const processedPosts: any[] = [];
-      posts.forEach(post => {
-     
-        const existingPost = processedPosts.find(p => p.postid === post.postid);
-  
-        if (existingPost) {
-          if (post.image) {
-            existingPost.images.push(post.image);
-          }
+      map((res: any[]) => {
+        if (res.length > 0) {
+          const processedPosts = this.processPosts(res);
+          this.posts = [...this.posts, ...processedPosts];  // Add new posts to the existing ones
+          this.offset += this.limit;  // Increment the offset by the limit for the next request
         } else {
-          const newPost = {
-            ...post,
-            images: post.posttype === 'image' && post.image ? [post.image] : []
-          };
-          processedPosts.push(newPost);
+          console.log('No more posts to load.');
         }
-      });
+      }),
+      catchError(error => {
+        console.error('There was an error!', error);
+        return of([]);  
+      }),
+      tap(() => {
+        this.loading = false;
+        this.cdr.detectChanges();  // Trigger change detection
+      })
+    ).subscribe();
+  }
   
-      return processedPosts;
-    }
+  private processPosts(posts: any[]): any[] {
+    const processedPosts: any[] = [];
+   
+    posts.forEach(post => {
+      const existingPost = this.posts.find(p => p.postid === post.postid);
+      if (!existingPost) {
+        // Add post only if it does not already exist
+        const newPost = {
+          ...post,
+          images: post.posttype === 'image' && post.image ? [post.image] : []
+        };
+        processedPosts.push(newPost);
+      }
+    });
+  
+    return processedPosts;
+  }
+  
 
   
  
