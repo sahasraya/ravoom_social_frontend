@@ -95,13 +95,13 @@ export class PostComponent implements OnInit {
     
     
   }
-
   ngAfterContentChecked() {
+    // Prevent multiple processing by checking if URLs are already set
     if (this.post.posttype === 'image' && !this.imageUrl) {
-      this.profileImageUrl = this.createBlobUrl(this.post.userprofile, 'image/jpeg');
-
+      if (!this.profileImageUrl) {
+        this.profileImageUrl = this.createBlobUrl(this.post.userprofile, 'image/jpeg');
+      }
       this.loadCurrentImage();
-      
     } else if (this.post.posttype === 'audio' && !this.audioUrl) {
       const base64Data = this.post.post;
       const blob = this.convertBase64ToBlobAudio(base64Data);
@@ -119,12 +119,20 @@ export class PostComponent implements OnInit {
       }
     }
   
+    // Cleanup unused URLs after processing
     this.cleanupUnusedUrls();
     
+    // Trigger change detection only after necessary processing
     this.cdref.detectChanges();
   }
   
- 
+  createBlobUrl(base64: string, contentType: string): string {
+    // Avoid redundant creation of blob URL by checking for empty base64
+    if (!base64 || base64 === '') return ''; 
+    const blob = this.base64ToBlob(base64, contentType);
+    return URL.createObjectURL(blob);
+  }
+
   loadCurrentImage(): void {
     const image = this.post.images[this.currentImageIndex];
     this.imageUrl = this.createBlobUrl(image, 'image/jpeg');
@@ -583,11 +591,7 @@ closememebrslikeddiv(e:Event):void{
 
   
 
-  createBlobUrl(base64: string, contentType: string): string {
-    const blob = this.base64ToBlob(base64, contentType);
-    return URL.createObjectURL(blob);
-  }
-  
+ 
   
   
   
