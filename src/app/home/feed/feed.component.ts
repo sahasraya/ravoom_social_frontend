@@ -120,12 +120,19 @@ export class FeedComponent implements OnInit,OnDestroy {
   }
   
   private processPosts(posts: any[]): any[] {
+     
     const processedPosts: any[] = [];
-   
     posts.forEach(post => {
-      const existingPost = this.posts.find(p => p.postid === post.postid);
-      if (!existingPost) {
-        // Add post only if it does not already exist
+   
+      const existingPost = processedPosts.find(p => p.postid === post.postid);
+
+      
+
+      if (existingPost) {
+        if (post.image) {
+          existingPost.images.push(post.image);
+        }
+      } else {
         const newPost = {
           ...post,
           images: post.posttype === 'image' && post.image ? [post.image] : []
@@ -133,7 +140,7 @@ export class FeedComponent implements OnInit,OnDestroy {
         processedPosts.push(newPost);
       }
     });
-  
+
     return processedPosts;
   }
   
