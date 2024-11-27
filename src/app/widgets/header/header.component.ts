@@ -96,7 +96,7 @@ export class HeaderComponent implements OnInit{
         this.router.navigate(['/auth/log-in']);
         break;
       case 'globe':
-        this.router.navigate(['']);  
+        this.router.navigate(['/']);  
         break;
       case 'home':
         this.router.navigate(['/home/followers-feed']);

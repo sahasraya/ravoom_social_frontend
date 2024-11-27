@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, EventEmitter, HostListener, Output } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, HostListener, OnDestroy, OnInit, Output } from '@angular/core';
 import { AddPostComponent } from '../../widgets/add-post/add-post.component';
 import { HttpClient, HttpClientModule, HttpErrorResponse } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
@@ -36,7 +36,7 @@ import { SkeletonWidgetComponent } from '../../widgets/skeleton-widget/skeleton-
   templateUrl: './feed.component.html',
   styleUrl: './feed.component.css'
 })
-export class FeedComponent {
+export class FeedComponent implements OnInit,OnDestroy {
 
   
   posts: any[] = [];
@@ -68,9 +68,11 @@ export class FeedComponent {
   constructor(private http: HttpClient, private cdr: ChangeDetectorRef,private router:Router,private networkService: NetworkService) {}
 
   ngOnInit(): void {
-   
+    console.log('Component initialized');
     setTimeout(() => {
-      this.getPostsFeed();
+      if (!this.posts.length) {
+        this.getPostsFeed();  
+      }
       this.userid  = useridexported;
       if (this.userid) {
         this.getuserdetails(this.userid);
@@ -86,7 +88,9 @@ export class FeedComponent {
 
   }
  
-
+  ngOnDestroy(): void {
+    console.log('Component destroyed');
+  }
 
 
   async getPostsFeed(): Promise<void> {

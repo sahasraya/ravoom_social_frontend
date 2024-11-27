@@ -7,10 +7,11 @@ import { PostComponent } from '../../widgets/post/post.component';
 import { FormsModule } from '@angular/forms'; 
 import { ImageLargerComponent } from '../../widgets/image-larger/image-larger.component';
 import { environment } from '../../../environments/environment';
-import { useridexported } from '../../auth/const/const';
+import { secretKey, useridexported } from '../../auth/const/const';
 import { ImageCroppedEvent, ImageCropperComponent } from 'ngx-image-cropper';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { SkeletonWidgetGroupComponent } from '../../widgets/skeleton-widget-group/skeleton-widget-group.component';
+import * as CryptoJS from 'crypto-js';
 
 @Component({
   selector: 'app-groups',
@@ -128,27 +129,96 @@ export class GroupsComponent implements OnInit{
 
   async getGroupDetails(groupid: string): Promise<void> {
     if (this.groupdataisloading) return;
-  
-    this.groupdataisloading = true;
-    console.log("this.groupdataisloading " + this.groupdataisloading);
 
+    // Check if the group data exists in sessionStorage
+    const storedData = sessionStorage.getItem(groupid);
+    if (storedData) {
+        try {
+            // Decrypt the stored data if it exists
+            const { encryptedData, hmac } = JSON.parse(storedData);
+
+            // Verify HMAC to check data integrity (optional step)
+            const groupDetailsString = CryptoJS.AES.decrypt(encryptedData, secretKey).toString(CryptoJS.enc.Utf8);
+            const recalculatedHmac = CryptoJS.HmacSHA512(groupDetailsString, secretKey);
+            const recalculatedHmacBase64 = CryptoJS.enc.Base64.stringify(recalculatedHmac);
+
+            if (recalculatedHmacBase64 === hmac) {
+                // HMAC is valid, use the decrypted data
+                const groupDetails = JSON.parse(groupDetailsString);
+
+                // Assign the group details to the object
+                this.group = groupDetails; // Store the whole group data object
+
+                // Extract properties from the group object
+                this.grouptype = groupDetails.grouptype;
+                this.groupname = groupDetails.groupname;
+                this.groupownerid = groupDetails.groupownerid;
+                this.groupbackgroundimageupdateddate = groupDetails.groupbackgroundimageupdateddate;
+                this.groupimageupdateddate = groupDetails.groupimageupdateddate;
+
+                this.groupimage = groupDetails.groupimage;
+                this.groupbackgroundimage = groupDetails.groupbackgroundimage;
+
+                // If users already exist, update the user lists instead of clearing them
+                groupDetails.users.forEach((user: any) => {
+                    console.log('Processing user:', user);
+                    // Check if user is an object and not a number (404 or any other invalid value)
+                    if (user && typeof user === 'object' && user.profileimage !== undefined) {
+                        // Process profileimage if it exists
+                        user.profileimageBlobUrl = user.profileimage ? this.createBlobUrl(user.profileimage, 'image/jpeg') : null;
+                        console.log('User profile image Blob URL:', user.profileimageBlobUrl);
+
+                        // Check if user already exists in the list before adding them
+                        let userExists = false;
+                        if (user.status === 0) {
+                            // Check for duplicates in userRequests
+                            userExists = this.userRequests.some(existingUser => existingUser.userId === user.userId);
+                            if (!userExists) {
+                                this.userRequests.push(user);
+                            }
+                        } else {
+                            // Check for duplicates in userList
+                            userExists = this.userList.some(existingUser => existingUser.userId === user.userId);
+                            if (!userExists) {
+                                this.userList.push(user);
+                            }
+                        }
+                    } else {
+                        console.warn('Invalid user data or profileimage is missing:', user); // Log invalid data
+                    }
+                });
+
+                this.groupdataisloading = false;
+                return;  // Exit the function as the data is already available in sessionStorage
+            } else {
+                console.error("HMAC verification failed. Data may be corrupted.");
+            }
+        } catch (error) {
+            console.error("Error while processing session storage data:", error);
+            this.groupdataisloading = false;
+        }
+    }
+    
+
+    // If data is not in sessionStorage, proceed with API call
+    this.groupdataisloading = true;
     const formData = new FormData();
     formData.append('groupid', groupid);
 
     try {
         const response = await this.http.post<any>(`${this.APIURL}get_group_details`, formData).toPromise();
-       this.group = response;
-      
-      
 
-        this.grouptype= this.group.grouptype;
+        if (!response || response.error) {
+            throw new Error('Failed to load group details.');
+        }
+
+        this.group = response; // Store the whole group data object
+        this.grouptype = this.group.grouptype;
         this.groupname = this.group.groupname;
         this.groupownerid = this.group.groupownerid;
         this.groupbackgroundimageupdateddate = this.group.groupbackgroundimageupdateddate;
         this.groupimageupdateddate = this.group.groupimageupdateddate;
-      
 
-       
         if (this.group.groupimage) {
             this.groupimage = this.createBlobUrl(this.group.groupimage, 'image/jpeg');
         }
@@ -156,39 +226,73 @@ export class GroupsComponent implements OnInit{
             this.groupbackgroundimage = this.createBlobUrl(this.group.groupbackgroundimage, 'image/jpeg');
         }
 
-       
         this.userList = [];
         this.userRequests = [];
 
-       
         this.group.users.forEach((user: any) => {
-            if (user.profileimage) {
-                user.profileimageBlobUrl = this.createBlobUrl(user.profileimage, 'image/jpeg');
-            } else {
-                user.profileimageBlobUrl = null;
-            }
+            console.log(user);
+            if (user && typeof user === 'object' && user.profileimage !== undefined) {
+                // Process profileimage if it exists
+                user.profileimageBlobUrl = user.profileimage ? this.createBlobUrl(user.profileimage, 'image/jpeg') : null;
 
-            if (user.status === 0) {
-              
-                this.userRequests.push(user);
+                // Check if user already exists in the list before adding them
+                let userExists = false;
+                if (user.status === 0) {
+                    // Check for duplicates in userRequests
+                    userExists = this.userRequests.some(existingUser => existingUser.userId === user.userId);
+                    if (!userExists) {
+                        this.userRequests.push(user);
+                    }
+                } else {
+                    // Check for duplicates in userList
+                    userExists = this.userList.some(existingUser => existingUser.userId === user.userId);
+                    if (!userExists) {
+                        this.userList.push(user);
+                    }
+                }
             } else {
- 
-
-                this.userList.push(user);
+                console.warn('Invalid user data or profileimage is missing:', user); // Log invalid user data
             }
         });
-      
-      this.groupdataisloading = false;
 
+        // Encrypt the details and store them in sessionStorage
+        const groupDetails = {
+            grouptype: this.grouptype,
+            groupname: this.groupname,
+            groupownerid: this.groupownerid,
+            groupbackgroundimageupdateddate: this.groupbackgroundimageupdateddate,
+            groupimageupdateddate: this.groupimageupdateddate,
+            groupimage: this.groupimage,
+            groupbackgroundimage: this.groupbackgroundimage,
+            users: this.group.users
+        };
+
+        const groupDetailsString = JSON.stringify(groupDetails);
+
+        // HMAC-SHA512 for integrity check (optional step)
+        const hmacDigest = CryptoJS.HmacSHA512(groupDetailsString, secretKey);
+        const hmacBase64 = CryptoJS.enc.Base64.stringify(hmacDigest);
+
+        // Encrypt the details using AES
+        const encryptedData = CryptoJS.AES.encrypt(groupDetailsString, secretKey).toString();
+
+        // Store the encrypted data and HMAC in sessionStorage
+        sessionStorage.setItem(groupid, JSON.stringify({
+            encryptedData: encryptedData,
+            hmac: hmacBase64
+        }));
+
+        this.groupdataisloading = false;
     } catch (error) {
-       this.groupdataisloading = false;
+        this.groupdataisloading = false;
         console.error('There was an error!', error);
+    } finally {
+        this.groupdataisloading = false;
     }
-     finally {
-    this.groupdataisloading = false;
-  }
-  }
-  
+}
+
+
+
 
 
 
@@ -403,8 +507,11 @@ export class GroupsComponent implements OnInit{
         response.forEach((user: any) => {
           if (user.profile) {
             user.profileBlobUrl = this.createBlobUrl(user.profile, 'image/jpeg');
+       
           } else {
-            user.profileBlobUrl = null;  
+            // user.profileBlobUrl = null;  
+            // alert("11111111111111");
+
           }
   
           this.curruntuserisFollowedList.push(user);

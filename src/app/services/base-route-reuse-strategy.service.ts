@@ -1,28 +1,30 @@
 import { RouteReuseStrategy, ActivatedRouteSnapshot, DetachedRouteHandle } from '@angular/router';
 
-export class CurtomRouteReuseStrategy implements RouteReuseStrategy {
-  private storedRoutes = new Map<string, DetachedRouteHandle>();
+export abstract class BaseRouteReuseStrategy implements RouteReuseStrategy {
+  protected storedRoutes = new Map<string, DetachedRouteHandle>(); // To store routes and their cached components
 
   shouldDetach(route: ActivatedRouteSnapshot): boolean {
-    // Return true if this route should be reused (based on custom logic, e.g. route data)
+    // Use route data or other conditions to determine if the route should be detached (cached)
     return route.data && route.data['reuseRoute'] ? true : false;
   }
 
   store(route: ActivatedRouteSnapshot, detachedTree: DetachedRouteHandle): void {
-    // Store the detached route in a map for later reuse
+    // Store the route and its component for later reuse
     if (route.data && route.data['reuseRoute']) {
+      console.log('Storing route:', route.routeConfig?.path);
       this.storedRoutes.set(route.routeConfig?.path!, detachedTree);
     }
   }
 
   shouldAttach(route: ActivatedRouteSnapshot): boolean {
-    // Only attach the stored route if it's present in the map
+    // Return true if there's a stored component for the route
     return !!route.data && !!this.storedRoutes.get(route.routeConfig?.path!);
   }
 
   retrieve(route: ActivatedRouteSnapshot): DetachedRouteHandle | null {
-    // Retrieve the stored route if it exists
+    // Retrieve the stored route from the map, if available
     if (route.data && route.data['reuseRoute']) {
+      console.log('Retrieving stored route:', route.routeConfig?.path);
       return this.storedRoutes.get(route.routeConfig?.path!) || null;
     }
     return null;
@@ -30,6 +32,7 @@ export class CurtomRouteReuseStrategy implements RouteReuseStrategy {
 
   shouldReuseRoute(future: ActivatedRouteSnapshot, curr: ActivatedRouteSnapshot): boolean {
     // Prevent re-initialization if the future and current routes are the same
+    // This ensures the route is reused based on the path (or other custom logic)
     return future.routeConfig === curr.routeConfig;
   }
 }
