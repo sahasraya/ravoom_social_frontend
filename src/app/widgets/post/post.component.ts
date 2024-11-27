@@ -1,8 +1,7 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular/common/http';
 import { ChangeDetectorRef, Component, ElementRef, EventEmitter, HostListener, Inject, Input, OnInit, Output, Renderer2, ViewChild } from '@angular/core';
-import { ActivatedRoute, Route, Router, RouterModule } from '@angular/router';
-import { ImageLargerComponent } from '../image-larger/image-larger.component';
+import { ActivatedRoute, Route, Router, RouterModule } from '@angular/router'; 
 import { PLATFORM_ID } from '@angular/core';
 import { ReporttingComponent } from '../reportting/reportting.component';
 import { SharedServiceService } from '../../services/shared-service.service';
@@ -64,7 +63,7 @@ export class PostComponent implements OnInit {
 
 
 
-  constructor(private cdref: ChangeDetectorRef,private renderer: Renderer2, private http: HttpClient, private router: Router, @Inject(PLATFORM_ID) private platformId: Object, private route: ActivatedRoute,private sharedservice:SharedServiceService,) { }
+  constructor(private cdref: ChangeDetectorRef,  private http: HttpClient, private router: Router, @Inject(PLATFORM_ID) private platformId: Object, private route: ActivatedRoute,private sharedservice:SharedServiceService,) { }
   ngOnInit(): void {
     this.checkuseridtoroutecommentscreen = this.route.snapshot.paramMap.get('uid')!; 
     this.getpostlikecount();

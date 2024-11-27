@@ -47,7 +47,7 @@
 
     <div class="navigation-holder">
         <button (click)="showhome()"  [class.selected]="showhomeBool" class="navigationsbuttons">Home</button>
-        <button (click)="showfollowers()"  [class.selected]="showfollowersBool" class="navigationsbuttons">Followers ({{userList.length -1}})</button>
+        <button (click)="showfollowers()"  [class.selected]="showfollowersBool" class="navigationsbuttons">Followers ({{userList.length}})</button>
         <button (click)="showrequests()"  [class.selected]="showrequestsBool" class="navigationsbuttons" *ngIf="groupownerid == userid">Requests ({{userRequests.length}})</button>
         <button (click)="adduser()"  [class.selected]="showadduserBool" class="navigationsbuttons" *ngIf="groupownerid == userid">Add User</button>
         <button (click)="settings()"  [class.selected]="showsettingsBool" class="navigationsbuttons" *ngIf="groupownerid == userid">Setings</button>

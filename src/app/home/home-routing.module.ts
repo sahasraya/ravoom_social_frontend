@@ -59,6 +59,7 @@ const routes: Routes = [
       {
         path: 'group/:groupid',
         loadComponent: () => import('./groups/groups.component').then((m) => m.GroupsComponent),
+        runGuardsAndResolvers: 'pathParamsChange'
       },
     ],
   },

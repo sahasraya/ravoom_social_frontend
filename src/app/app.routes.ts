@@ -1,7 +1,7 @@
 import { RouteReuseStrategy, RouterModule, Routes } from '@angular/router';
 import { NgModule } from '@angular/core';
 import { FeedComponent } from './home/feed/feed.component';
-import { CurtomRouteReuseStrategy } from './services/custom-route-reuse-strategy';
+import { CustomReuseStrategy } from './services/custom-route-reuse-strategy';  
 
 export const routes: Routes = [
   { path: '', component: FeedComponent, pathMatch: 'full', data: { reuseRoute: true } },
@@ -23,7 +23,7 @@ export const routes: Routes = [
   providers: [
     {
       provide: RouteReuseStrategy,
-      useClass: CurtomRouteReuseStrategy,
+      useClass: CustomReuseStrategy, 
     },
   ],
 })
