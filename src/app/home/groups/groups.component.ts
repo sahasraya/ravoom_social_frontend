@@ -75,7 +75,6 @@ export class GroupsComponent implements OnInit{
   
 
     const cachedData = this.groupStateService.getState(this.groupid);
-    console.log(cachedData);
     if (cachedData) {
       this.groupData = cachedData;
       this.group = this.groupData;  
@@ -151,7 +150,6 @@ export class GroupsComponent implements OnInit{
       this.groupbackgroundimageupdateddate = this.group.groupbackgroundimageupdateddate;
       this.groupimageupdateddate = this.group.groupimageupdateddate;
 
-      // Process images and users
       if (this.group.groupimage) {
         this.groupimage = this.createBlobUrl(this.group.groupimage, 'image/jpeg');
       }
@@ -176,7 +174,6 @@ export class GroupsComponent implements OnInit{
         }
       });
 
-      // Store the fetched data in cache for future use
       this.groupStateService.saveState(groupid, this.group);
 
       this.groupdataisloading = false;

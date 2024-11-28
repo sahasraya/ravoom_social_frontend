@@ -1,13 +1,14 @@
-import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { HttpClient, HttpClientModule, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { ChangeDetectorRef, Component, HostListener, Input, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ActivatedRoute, Router, RouterModule, RouterOutlet } from '@angular/router';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { PostComponent } from '../../widgets/post/post.component';
 import { AddPostComponent } from '../../widgets/add-post/add-post.component';
 import { ImageLargerComponent } from '../../widgets/image-larger/image-larger.component';
 import { environment } from '../../../environments/environment';
 import { useridexported } from '../../auth/const/const';
+import { ProfileStateService } from '../../services/profile.service';
 
 @Component({
   selector: 'app-profile',
@@ -43,7 +44,6 @@ export class ProfileComponent   {
   openaddpostscreenbool: boolean = false;
   username:string = "";
   followButtonText:string= "Follow";
- 
   showfeedBool:boolean = true;
   showoptionsmenu:boolean=false;
   showfavelistBool:boolean = false;
@@ -54,39 +54,41 @@ export class ProfileComponent   {
 
   user: any;
   userfrommethod:any;
+  profileData:any;
   posts:any[]=[];
   iamfollowinguserslist: any[] = [];
   iamfolloweduserslist: any[] = [];
   faveposts: any[] = [];
 
-  constructor(private fb: FormBuilder, private http: HttpClient, private route: ActivatedRoute,private cdref: ChangeDetectorRef,private router:Router) { }
+  constructor( private profileStateService:ProfileStateService, private http: HttpClient, private route: ActivatedRoute,private cdref: ChangeDetectorRef,private router:Router) { }
 
   ngOnInit(): void {
-
- 
-
     this.route.paramMap.subscribe(params => {
     this.userid = params.get('uid')!;
     this.getfrommethoduserid = useridexported;
       this.loadInitialData();
- 
-
       if (this.profileowneruid) {
       this.getUserDetails(this.profileowneruid);
         
       } else if (this.userid != '') {
       
-      this.getUserDetails(this.userid);
-      this.getiamfolloinguserlist(this.userid);
-      this.getiamfolloeduserlist(this.userid);
-      this.getuserdetailsFrommethod(this.getfrommethoduserid);
-      this.getfavList(this.userid);
-      this.getfollowingstatus(this.getfrommethoduserid);
+        const cachedData = this.profileStateService.getState(this.userid);
+        if (cachedData) {
+          this.profileData = cachedData;
+          this.user = this.profileData;  
+          this.processProfileDetails(); 
+        } else {
+          this.getUserDetails(this.userid);
+        }
+        
+        this.getiamfolloinguserlist(this.userid);
+        this.getiamfolloeduserlist(this.userid);
+        this.getuserdetailsFrommethod(this.getfrommethoduserid);
+        this.getfavList(this.userid);
+        this.getfollowingstatus(this.getfrommethoduserid);
     }  
     
-      else {
-       
-        
+      else {  
       this.iamfollowinguserslist = [];
       this.iamfolloweduserslist= [];
       this.userfrommethod = null;
@@ -97,25 +99,177 @@ export class ProfileComponent   {
 
   }
 
+
   loadInitialData(): void {
     this.posts = [];  
-    this.offset = 0;  
-    if (this.profileowneruid) {
- 
-      this.getPostsFeed(this.profileowneruid);
-      if (this.getfrommethoduserid) {
-        this.userid = this.getfrommethoduserid;
-        this.getfollowingstatus(this.profileowneruid);
+    this.offset = 0;
+  
+  
+    const cachedPosts = this.profileStateService.getState(this.userid);
 
-      }
-     
-
+    if (cachedPosts) {
+      this.posts = cachedPosts.posts;   
+      this.offset = this.posts.length;
+      this.processProfilePostsdata(); 
+    
     } else {
 
-      this.getPostsFeed(this.userid);
-      
+      if (this.profileowneruid) {
+        this.getPostsFeed(this.profileowneruid);
+        if (this.getfrommethoduserid) {
+          this.userid = this.getfrommethoduserid;
+          this.getfollowingstatus(this.profileowneruid);
+        }
+      } else {
+        this.getPostsFeed(this.userid);
+      }
     }
   }
+
+  processProfilePostsdata(): void {
+    // Log the cached posts for debugging
+    console.log('Processing cached posts:', this.posts);
+  
+    // If the cached posts exist and are an array, set them to the posts array
+    if (Array.isArray(this.posts)) {
+      // Set the posts data to the relevant array, in case you have multiple arrays like 'posts', 'faveposts', etc.
+      this.faveposts = this.posts.filter(post => post.isFavorite); // Example: Filter favorite posts if any logic exists
+      this.iamfollowinguserslist = this.posts.filter(post => post.isFollowing); // Example: Filter posts of users you're following, if such logic exists
+  
+      // Format any other data (like dates or additional post processing)
+      this.posts = this.posts.map((post: any) => ({
+        ...post,
+        formattedDate: this.formatDate(post.createdAt), // Format date as needed
+      }));
+    }
+  
+    // Trigger change detection if posts are displayed in the UI
+    this.cdref.detectChanges();
+  }
+  
+
+
+
+  // loadInitialData(): void {
+  //   this.posts = [];  
+  //   this.offset = 0;  
+  //   if (this.profileowneruid) {
+ 
+  //     this.getPostsFeed(this.profileowneruid);
+  //     if (this.getfrommethoduserid) {
+  //       this.userid = this.getfrommethoduserid;
+  //       this.getfollowingstatus(this.profileowneruid);
+
+  //     }
+     
+
+  //   } else {
+
+  //     this.getPostsFeed(this.userid);
+      
+  //   }
+  // }
+
+  processProfileDetails(): void {
+    if (!this.profileData) {
+      console.error("No profile data to process.");
+      return;
+    }
+  
+    // Process username
+    this.username = this.profileData.username || "Unknown User";
+  
+    // Process profile image
+    if (this.profileData.profileImage) {
+      this.profileImageUrl = this.createBlobUrl(this.profileData.profileImage, "image/jpeg");
+    } else {
+      this.profileImageUrl = "assets/default-profile.png"; // Default image if not available
+    }
+  
+    // Handle user-specific attributes
+    if (this.profileData.followingStatus !== undefined) {
+      this.followButtonText = this.profileData.followingStatus ? "Following" : "Follow";
+    }
+  
+    // Process posts if available
+    if (Array.isArray(this.profileData.posts)) {
+      this.posts = this.profileData.posts.map((post: any) => ({
+        ...post,
+        formattedDate: this.formatDate(post.createdAt), // Example: format post dates
+      }));
+    }
+  
+    if (Array.isArray(this.profileData.favoritePosts)) {
+      this.faveposts = this.profileData.favoritePosts;
+    }
+  
+    if (Array.isArray(this.profileData.iamFollowing)) {
+      this.iamfollowinguserslist = this.profileData.iamFollowing;
+    }
+  
+    if (Array.isArray(this.profileData.iamFollowed)) {
+      this.iamfolloweduserslist = this.profileData.iamFollowed;
+    }
+  
+  }
+  
+  formatDate(dateString: string): string {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+    });
+  }
+
+  async getPostsFeed(userid:string): Promise<void> {
+    if (this.loading) return;
+    this.loading = true;
+    const formDataUser = new FormData();
+    formDataUser.append('userid', userid);
+    formDataUser.append('limit', this.limit.toString());
+    formDataUser.append('offset', this.offset.toString());
+
+    try {
+      const response = await this.http.post<any[]>(`${this.APIURL}get_posts_feed_user`, formDataUser).toPromise();
+      this.posts = [...this.posts, ...this.processPosts(response!)];
+      this.offset += this.limit;
+      const updatedProfileData = { ...this.profileData, posts: this.posts };
+      this.profileStateService.saveState(userid, updatedProfileData);
+      this.cdref.detectChanges();
+    } catch (error) {
+      console.error('There was an error!', error);
+    } finally {
+      this.loading = false;
+    }
+  }
+
+  async getUserDetails(userid: string): Promise<void> {
+    const formData = new FormData();
+    formData.append('userid', userid.toString());
+  
+    this.http.post<any>(`${this.APIURL}get_user_details`, formData).subscribe({
+      next: (response: any) => {
+        this.user = response;
+        this.username = response.username;
+  
+        this.profileStateService.saveState(userid, response);
+        this.profileData = response;
+  
+        this.processProfileDetails();
+      },
+      error: (error: HttpErrorResponse) => {
+        console.error("There was an error!", error);
+      },
+    });
+  }
+  
+
+
+
+
+
+  
 
 
   async iamstartedtofollow(iamfollowinguserid: any): Promise<void> {
@@ -151,20 +305,12 @@ export class ProfileComponent   {
 
 
   async getfollowingstatus(postownerid: any): Promise<void> {
-    
-
-     
-        let params = new HttpParams()
+    let params = new HttpParams()
           .set('postownerid', this.userid.toString())
           .set('userid', postownerid.toString());
 
-      
-
         try {
           const response: any = await this.http.get<any>(`${this.APIURL}following-status`, { params }).toPromise();
-          console.log(response);
-
-
 
           if (response.exists) {
             this.followButtonText = "Following";
@@ -288,26 +434,7 @@ export class ProfileComponent   {
       }
     });
   }
- async getPostsFeed(userid:string): Promise<void> {
-    if (this.loading) return;
-    this.loading = true;
- 
-    const formDataUser = new FormData();
-    formDataUser.append('userid', userid);
-    formDataUser.append('limit', this.limit.toString());
-    formDataUser.append('offset', this.offset.toString());
 
-    try {
-      const response = await this.http.post<any[]>(`${this.APIURL}get_posts_feed_user`, formDataUser).toPromise();
-      this.posts = [...this.posts, ...this.processPosts(response!)];
-      this.offset += this.limit;
-      this.cdref.detectChanges();
-    } catch (error) {
-      console.error('There was an error!', error);
-    } finally {
-      this.loading = false;
-    }
-  }
 
  base64ToBlob(base64: string, contentType: string = ''): Blob {
   const byteCharacters = atob(base64);
@@ -346,30 +473,7 @@ openaddpostscreen(type: string): void {
   this.openaddpostscreenbool = true;
 }
 
-  getUserDetails(userid: string): void {
-   
-
-
-    const formData = new FormData();
-    formData.append('userid', userid.toString());
-    
  
-
-    this.http.post<any>(`${this.APIURL}get_user_details`, formData).subscribe({
-      next: (response:any) => {
-        
-        this.user = response; 
-        this.username = response.username;
-   
-
-  
-      },
-      error: (error: HttpErrorResponse) => {
-        console.error('There was an error!', error);
-         
-      }
-    });
-  }
 
 
 
