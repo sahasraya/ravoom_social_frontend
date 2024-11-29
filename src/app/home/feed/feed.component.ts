@@ -73,10 +73,11 @@ export class FeedComponent implements OnInit {
     setTimeout(() => {
       const cachedPostsData = this.mainfeedStateService.getState('posts');
       if (cachedPostsData) {
+ 
         this.posts = cachedPostsData;
         this.processPostsDetails();
       } else {
-
+     
         this.getPostsFeed(); 
       }
 
@@ -119,12 +120,29 @@ export class FeedComponent implements OnInit {
   
   
     if (scrollPosition) {
-      // Restore the scroll position after the content is loaded
       setTimeout(() => {
         window.scrollTo(0, parseInt(scrollPosition, 10));   
       }, 100);
     }
   }
+
+  onOptionSelected(option: string): void {
+    this.selectedOption = option;
+    this.posts = [];
+    this.offsetoption = 0;
+
+   
+    this.getPostsFromOption(this.selectedOption);
+  
+  
+    
+  }
+  
+  saveScrollPosition(): void {
+    localStorage.setItem('scrollPositionMainFeed', window.scrollY.toString());
+  }
+
+  
 
   @HostListener('window:scroll', ['$event'])
   onScroll(event: Event): void {
@@ -269,16 +287,7 @@ async getuserdetails(userid:string):Promise<void>{
   }
 
 
-  onOptionSelected(option: string): void {
-    this.selectedOption = option;
-    this.posts = [];
-    this.offsetoption = 0;
-
-    this.getPostsFromOption(this.selectedOption);
  
-  
-    
-  }
 
   async getPostsFromOption(selectedOption: string): Promise<void> {
     if (this.loadingoption) return;
@@ -353,9 +362,6 @@ async getuserdetails(userid:string):Promise<void>{
     this.getPostsFeed();  
   }
 
-  saveScrollPosition(): void {
-    localStorage.setItem('scrollPositionMainFeed', window.scrollY.toString());
-  }
 
  
   
