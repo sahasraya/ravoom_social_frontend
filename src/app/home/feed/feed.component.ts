@@ -14,6 +14,7 @@ import { NetworkService } from '../../services/network.service';
 import { NetworkstatusComponent } from '../../widgets/networkstatus/networkstatus.component';
 import { useridexported } from '../../auth/const/const';
 import { SkeletonWidgetComponent } from '../../widgets/skeleton-widget/skeleton-widget.component';
+import { MainfeedStateService } from '../../services/main-feed.service';
 
 
 @Component({
@@ -36,7 +37,7 @@ import { SkeletonWidgetComponent } from '../../widgets/skeleton-widget/skeleton-
   templateUrl: './feed.component.html',
   styleUrl: './feed.component.css'
 })
-export class FeedComponent implements OnInit,OnDestroy {
+export class FeedComponent implements OnInit {
 
   
   posts: any[] = [];
@@ -61,16 +62,25 @@ export class FeedComponent implements OnInit,OnDestroy {
   networkstatustext: string = 'You are offline';
   hideNetworkStatus: boolean = false;
   wasOnline: boolean = false;
-  
+  postData: any;
   
  
 
-  constructor(private http: HttpClient, private cdr: ChangeDetectorRef,private router:Router,private networkService: NetworkService) {}
+  constructor(private mainfeedStateService: MainfeedStateService,private http: HttpClient, private cdr: ChangeDetectorRef,private router:Router,private networkService: NetworkService) {}
 
   ngOnInit(): void {
-    console.log('Component initialized');
+  
     setTimeout(() => {
-      this.getPostsFeed()
+      const cachedPostsData = this.mainfeedStateService.getState('posts');
+      if (cachedPostsData) {
+        this.posts = cachedPostsData;
+        this.processPostsDetails();
+      } else {
+
+        this.getPostsFeed(); 
+      }
+
+      
       this.userid  = useridexported;
       if (this.userid) {
         this.getuserdetails(this.userid);
@@ -86,48 +96,97 @@ export class FeedComponent implements OnInit,OnDestroy {
 
   }
  
-  ngOnDestroy(): void {
-    console.log('Component destroyed');
+ 
+ 
+
+  processPostsDetails(): void {
+    this.posts = this.posts.map(post => {
+      post.formattedDate = new Date(post.timestamp).toLocaleString();
+
+      if (!post.content) {
+        post.content = 'No content available';
+      }
+
+      this.restoreScrollPosition();
+
+      return post;
+    });
   }
 
+
+  restoreScrollPosition(): void {
+    const scrollPosition = localStorage.getItem('scrollPositionMainFeed');
+  
+  
+    if (scrollPosition) {
+      // Restore the scroll position after the content is loaded
+      setTimeout(() => {
+        window.scrollTo(0, parseInt(scrollPosition, 10));   
+      }, 100);
+    }
+  }
+
+  @HostListener('window:scroll', ['$event'])
+  onScroll(event: Event): void {
+    this.saveScrollPosition();
+      const element = document.documentElement;
+      const scrollPosition = element.scrollTop;
+      const scrollHeight = element.scrollHeight;
+      const clientHeight = element.clientHeight;
+  
+      if (scrollHeight - scrollPosition <= clientHeight + 3000 && !this.loading) {
+        
+  
+          if (this.selectedOption === "") {
+            this.getPostsFeed();  
+            this.loading = false;
+          } else {
+              this.getPostsFromOption(this.selectedOption);  
+          }
+      }
+  }
 
   async getPostsFeed(): Promise<void> {
     if (this.loading) return;
   
     this.loading = true;
-    this.cdr.detectChanges();  
+    this.cdr.detectChanges();
   
-    // Make the HTTP request to fetch the posts with the current limit and offset
     this.http.get<any[]>(`${this.APIURL}get_posts_feed?limit=${this.limit}&offset=${this.offset}`).pipe(
       map((res: any[]) => {
         if (res.length > 0) {
-          const processedPosts = this.processPosts(res);
-          this.posts = [...this.posts, ...processedPosts];  // Add new posts to the existing ones
-          this.offset += this.limit;  // Increment the offset by the limit for the next request
+          const newPosts = this.filterDuplicatePosts(res);  // Filter out posts that are already loaded
+          const processedPosts = this.processPosts(newPosts); // Process new posts
+          this.posts = [...this.posts, ...processedPosts]; // Append the new posts to the current posts list
+          this.offset += this.limit;
         } else {
           console.log('No more posts to load.');
         }
+  
+        this.mainfeedStateService.saveState('posts', this.posts);  // Cache the updated list of posts
       }),
       catchError(error => {
         console.error('There was an error!', error);
-        return of([]);  
+        return of([]);
       }),
       tap(() => {
         this.loading = false;
-        this.cdr.detectChanges();  // Trigger change detection
+        this.cdr.detectChanges();
       })
     ).subscribe();
   }
   
+  // Method to filter out already loaded posts by postid
+  private filterDuplicatePosts(posts: any[]): any[] {
+    const existingPostIds = new Set(this.posts.map(post => post.postid));  // Create a set of already existing post IDs
+    return posts.filter(post => !existingPostIds.has(post.postid)); // Only include posts that are not in the existing set
+  }
+  
   private processPosts(posts: any[]): any[] {
-     
     const processedPosts: any[] = [];
     posts.forEach(post => {
-   
       const existingPost = processedPosts.find(p => p.postid === post.postid);
-
-      
-
+  
       if (existingPost) {
         if (post.image) {
           existingPost.images.push(post.image);
@@ -140,9 +199,10 @@ export class FeedComponent implements OnInit,OnDestroy {
         processedPosts.push(newPost);
       }
     });
-
+  
     return processedPosts;
   }
+  
   
 
   
@@ -293,24 +353,11 @@ async getuserdetails(userid:string):Promise<void>{
     this.getPostsFeed();  
   }
 
-  @HostListener('window:scroll', ['$event'])
-  onScroll(event: Event): void {
-      const element = document.documentElement;
-      const scrollPosition = element.scrollTop;
-      const scrollHeight = element.scrollHeight;
-      const clientHeight = element.clientHeight;
-  
-      if (scrollHeight - scrollPosition <= clientHeight + 3000 && !this.loading) {
-          localStorage.removeItem('scrollPosition');
-  
-          if (this.selectedOption === "") {
-            this.getPostsFeed();  
-            this.loading = false;
-          } else {
-              this.getPostsFromOption(this.selectedOption);  
-          }
-      }
+  saveScrollPosition(): void {
+    localStorage.setItem('scrollPositionMainFeed', window.scrollY.toString());
   }
+
+ 
   
   
 }
