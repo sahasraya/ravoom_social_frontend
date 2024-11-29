@@ -143,6 +143,12 @@ export class ForgetPasswordComponent  {
       },
       error: error => {
         console.error('There was an error posting the data!', error);
+        this.showinvalidcredentioalsbanner = true;
+        this.message = "Something went wrong. Please try again later.";
+  
+        setTimeout(() => {
+          this.showinvalidcredentioalsbanner = false;
+        }, 3000);
       }
     });
   }
