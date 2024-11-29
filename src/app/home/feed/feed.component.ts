@@ -142,8 +142,17 @@ export class FeedComponent implements OnInit {
     localStorage.setItem('scrollPositionMainFeed', window.scrollY.toString());
   }
 
-  
 
+
+
+
+
+
+
+
+
+
+  
   @HostListener('window:scroll', ['$event'])
   onScroll(event: Event): void {
     this.saveScrollPosition();
@@ -173,15 +182,15 @@ export class FeedComponent implements OnInit {
     this.http.get<any[]>(`${this.APIURL}get_posts_feed?limit=${this.limit}&offset=${this.offset}`).pipe(
       map((res: any[]) => {
         if (res.length > 0) {
-          const newPosts = this.filterDuplicatePosts(res);  // Filter out posts that are already loaded
-          const processedPosts = this.processPosts(newPosts); // Process new posts
-          this.posts = [...this.posts, ...processedPosts]; // Append the new posts to the current posts list
+          const newPosts = this.filterDuplicatePosts(res);   
+          const processedPosts = this.processPosts(newPosts); 
+          this.posts = [...this.posts, ...processedPosts];   
           this.offset += this.limit;
         } else {
           console.log('No more posts to load.');
         }
   
-        this.mainfeedStateService.saveState('posts', this.posts);  // Cache the updated list of posts
+        this.mainfeedStateService.saveState('posts', this.posts);   
       }),
       catchError(error => {
         console.error('There was an error!', error);
@@ -194,10 +203,9 @@ export class FeedComponent implements OnInit {
     ).subscribe();
   }
   
-  // Method to filter out already loaded posts by postid
   private filterDuplicatePosts(posts: any[]): any[] {
-    const existingPostIds = new Set(this.posts.map(post => post.postid));  // Create a set of already existing post IDs
-    return posts.filter(post => !existingPostIds.has(post.postid)); // Only include posts that are not in the existing set
+    const existingPostIds = new Set(this.posts.map(post => post.postid));  
+    return posts.filter(post => !existingPostIds.has(post.postid));  
   }
   
   private processPosts(posts: any[]): any[] {

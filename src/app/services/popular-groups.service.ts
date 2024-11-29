@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 @Injectable({
   providedIn: 'root',
 })
-export class MainfeedStateService {
+export class PopularGroupStateService {
   private state: { [key: string]: any } = {};
 
   saveState(key: string, data: any): void {

@@ -7,6 +7,7 @@ import { environment } from '../../../environments/environment';
 import { useridexported } from '../../auth/const/const';
 import { SkeletonWidgetPopularGroupsAndUsersComponent } from '../skeleton-widget-popular-groups-and-users/skeleton-widget-popular-groups-and-users.component';
 import { GroupsComponent } from '../../home/groups/groups.component';
+import { PopularGroupStateService } from '../../services/popular-groups.service';
 
 @Component({
   selector: 'app-feedscreen-group-list',
@@ -26,14 +27,59 @@ export class FeedscreenGroupListComponent implements OnInit {
   private encryptionPassword: string = 'fhwkehfkjhAJhkKJWHRKWHEjhewpofiepwomvdkAoirep'; 
 
 
-  constructor(private http:HttpClient,private router:Router){}
+  constructor(private popularGroupStateService:PopularGroupStateService,private http:HttpClient,private router:Router){}
 
   ngOnInit(): void {
-    this.getPopularGroups();
- 
+    const cachedData = this.popularGroupStateService.getState('popularegroups');
+    if (cachedData) {
+       
+      this.populargrouplist = cachedData;
+      this.processpopulargroupsDetails();
+    } else {
+      
+
+      this.getPopularGroups();
+    }
+    
       this.userid = useridexported;
   
   }
+  processpopulargroupsDetails(): void {
+    this.populargrouplist.forEach((group) => {
+      if (group.groupimage && !group.groupImageUrl) {
+        group.groupImageUrl = this.createBlobUrl(group.groupimage, 'image/jpeg');
+      }
+    });
+  }
+
+
+
+  async getPopularGroups(): Promise<void> {
+    if (this.isloaidnggroups) return;
+
+    this.isloaidnggroups = true;
+
+    this.http.post<any[]>(`${this.APIURL}get_populargroup`, new FormData()).subscribe({
+      next: (response: any[]) => {
+        this.isloaidnggroups = false;
+        this.populargrouplist = response;
+
+        this.populargrouplist.forEach((group: any) => {
+          if (group.groupimage) {
+            group.groupImageUrl = this.createBlobUrl(group.groupimage, 'image/jpeg');
+          }
+        });
+        this.popularGroupStateService.saveState('popularegroups', this.populargrouplist);
+
+      },
+      error: (error: HttpErrorResponse) => {
+        this.isloaidnggroups = false;
+        console.error('There was an error!', error);
+      }
+    });
+  }
+
+
 
   closeselectedgroup(): void{
     document.body.style.overflow = ''; 
@@ -78,29 +124,7 @@ export class FeedscreenGroupListComponent implements OnInit {
   }
 
 
-  async getPopularGroups(): Promise<void> {
-    if (this.isloaidnggroups) return;
 
-    this.isloaidnggroups = true;
-
-    this.http.post<any[]>(`${this.APIURL}get_populargroup`, new FormData()).subscribe({
-      next: (response: any[]) => {
-        this.isloaidnggroups = false;
-        this.populargrouplist = response;
-
-        this.populargrouplist.forEach((group: any) => {
-          if (group.groupimage) {
-            group.groupImageUrl = this.createBlobUrl(group.groupimage, 'image/jpeg');
-          }
-        });
-
-      },
-      error: (error: HttpErrorResponse) => {
-        this.isloaidnggroups = false;
-        console.error('There was an error!', error);
-      }
-    });
-  }
 
 
 
