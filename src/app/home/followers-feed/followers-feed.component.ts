@@ -9,6 +9,7 @@ import { FeedscreenUserListComponent } from '../../widgets/feedscreen-user-list/
 import { UserlistToFollowComponent } from '../userlist-to-follow/userlist-to-follow.component';
 import { environment } from '../../../environments/environment';
 import { useridexported } from '../../auth/const/const';
+import { MainfeedStateService } from '../../services/main-feed.service';
 
 
 @Component({
@@ -31,15 +32,52 @@ export class FollowersFeedComponent {
   userid: string = "";
   showtheuserlisttofollowBool:boolean = false;
 
-  constructor(private http: HttpClient, private cdr: ChangeDetectorRef,@Inject(PLATFORM_ID) private platformId: Object) {}
+  constructor(private mainfeedStateService: MainfeedStateService,private http: HttpClient, private cdr: ChangeDetectorRef,@Inject(PLATFORM_ID) private platformId: Object) {}
 
   ngOnInit(): void {
     this.userid = useridexported;
     if (this.userid) {
-      this.getFollowersPostsFeed();
+      const cachedPostsData = this.mainfeedStateService.getState('followingposts');
+      if (cachedPostsData) {
+ 
+        this.posts = cachedPostsData;
+        this.processPostsDetails();
+      } else {
+     
+        this.getFollowersPostsFeed(); 
+      }
+
+    
     }
      
   }
+
+  processPostsDetails(): void {
+    this.posts = this.posts.map(post => {
+      post.formattedDate = new Date(post.timestamp).toLocaleString();
+
+      if (!post.content) {
+        post.content = 'No content available';
+      }
+
+      this.restoreScrollPosition();
+
+      return post;
+    });
+  }
+
+
+  restoreScrollPosition(): void {
+    const scrollPosition = localStorage.getItem('scrollPositionFollowingMainFeed');
+  
+  
+    if (scrollPosition) {
+      setTimeout(() => {
+        window.scrollTo(0, parseInt(scrollPosition, 10));   
+      }, 100);
+    }
+  }
+
 
   getFollowersPostsFeed(): void {
     if (this.loading) return;
@@ -55,6 +93,9 @@ export class FollowersFeedComponent {
         this.offset += this.limit;
         this.loading = false;
         this.cdr.detectChanges();  
+
+        this.mainfeedStateService.saveState('followingposts', this.posts); 
+
       },
       error: (error) => {
         console.error('There was an error!', error);
@@ -115,12 +156,23 @@ export class FollowersFeedComponent {
 
   @HostListener('window:scroll', ['$event'])
   onScroll(event: Event): void {
+    this.saveScrollPosition();
+
     const element = document.documentElement;
-    if (element.scrollHeight - element.scrollTop === element.clientHeight) {
-      localStorage.removeItem('scrollPosition');
+    const scrollPosition = element.scrollTop;
+    const scrollHeight = element.scrollHeight;
+    const clientHeight = element.clientHeight;
+
+
+  
+    if (scrollHeight - scrollPosition <= clientHeight + 3000 && !this.loading) {
 
       this.getFollowersPostsFeed();
     }
+  }
+
+  saveScrollPosition(): void {
+    localStorage.setItem('scrollPositionFollowingMainFeed', window.scrollY.toString());
   }
 
   

@@ -32,16 +32,7 @@
 .nav-links a:hover{
   color: rgba(0, 0, 0, 0.5);
 }
-.nav-links a::after {
-    content: '';
-    position: absolute;
-    width: 0;
-    height: 2px;
-    display: block;
-    background: white;
-    transition: width .3s;
-    bottom: -5px;
-}
+ 
 
 .nav-links a:hover::after {
     width: 100%;

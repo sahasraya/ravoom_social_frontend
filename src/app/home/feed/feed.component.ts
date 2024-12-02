@@ -117,6 +117,7 @@ export class FeedComponent implements OnInit {
 
   restoreScrollPosition(): void {
     const scrollPosition = localStorage.getItem('scrollPositionMainFeed');
+   
   
   
     if (scrollPosition) {
@@ -138,31 +139,32 @@ export class FeedComponent implements OnInit {
     
   }
   
+
+
+
+
+
+
+
+
+
+
+
   saveScrollPosition(): void {
+    
     localStorage.setItem('scrollPositionMainFeed', window.scrollY.toString());
   }
-
-
-
-
-
-
-
-
-
-
-
   
   @HostListener('window:scroll', ['$event'])
   onScroll(event: Event): void {
-    this.saveScrollPosition();
+  
       const element = document.documentElement;
       const scrollPosition = element.scrollTop;
       const scrollHeight = element.scrollHeight;
       const clientHeight = element.clientHeight;
   
       if (scrollHeight - scrollPosition <= clientHeight + 3000 && !this.loading) {
-        
+        this.saveScrollPosition();
   
           if (this.selectedOption === "") {
             this.getPostsFeed();  
@@ -184,7 +186,8 @@ export class FeedComponent implements OnInit {
         if (res.length > 0) {
           const newPosts = this.filterDuplicatePosts(res);   
           const processedPosts = this.processPosts(newPosts); 
-          this.posts = [...this.posts, ...processedPosts];   
+          const sortedPosts = this.sortPostsByTime(processedPosts);
+          this.posts = [...this.posts, ...sortedPosts];   
           this.offset += this.limit;
         } else {
           console.log('No more posts to load.');
@@ -203,6 +206,25 @@ export class FeedComponent implements OnInit {
     ).subscribe();
   }
   
+  private sortPostsByTime(posts: any[]): any[] {
+    const currentTime = new Date();
+  
+    return posts.sort((a, b) => {
+      const aPostedDate = new Date(a.posteddate);
+      const bPostedDate = new Date(b.posteddate);
+  
+      const aTimeDiff = (currentTime.getTime() - aPostedDate.getTime()) / (1000 * 60);
+      const bTimeDiff = (currentTime.getTime() - bPostedDate.getTime()) / (1000 * 60);
+  
+      const aIsNew = aTimeDiff <= 10;
+      const bIsNew = bTimeDiff <= 10;
+  
+      if (aIsNew && !bIsNew) return -1;   
+      if (!aIsNew && bIsNew) return 1;   
+  
+      return 0;   
+    });
+  }
   private filterDuplicatePosts(posts: any[]): any[] {
     const existingPostIds = new Set(this.posts.map(post => post.postid));  
     return posts.filter(post => !existingPostIds.has(post.postid));  
