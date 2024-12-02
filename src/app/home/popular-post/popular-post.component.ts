@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { environment } from '../../../environments/environment';
 import { NgxSkeletonLoaderModule } from 'ngx-skeleton-loader';
 import { SkeletonWidgetSearchComponent } from '../../widgets/skeleton-widget-search/skeleton-widget-search.component';
+import { SearchService } from '../../services/search.service';
 
 @Component({
   selector: 'app-popular-post',
@@ -16,7 +17,8 @@ import { SkeletonWidgetSearchComponent } from '../../widgets/skeleton-widget-sea
 export class PopularPostComponent  implements OnInit{
 
   APIURL = environment.APIURL;
-  videoUrl:string = "";
+  videoUrl: string = "";
+  posts: any[] = [];
   popularPosts: any[] = [];
   likeCounts: any[] = [];
   imagePosts: any[] = [];
@@ -35,93 +37,114 @@ export class PopularPostComponent  implements OnInit{
 
 
 
-constructor(private http:HttpClient,private router:Router,private cdr:ChangeDetectorRef){}
+constructor( private searchService:SearchService, private http:HttpClient,private router:Router,private cdr:ChangeDetectorRef){}
 
-  ngOnInit(): void {
+ngOnInit(): void {
+  const cachedPostsData = this.searchService.getState('searchedposts');
+  console.log('Cached posts data:', cachedPostsData);
+
+  if (cachedPostsData) {
+    this.popularPosts = cachedPostsData;
+    this.categorizePosts();  
+    this.processPostsDetails();
+  } else {
     this.getpopularpostsfromlikes();
   }
+}
 
+  processPostsDetails(): void {
+    this.popularPosts.forEach((post) => {
+      if (post.timestamp) {
+        post.formattedDate = new Date(post.timestamp).toLocaleString();
+      }
+      if (!post.content) {
+        post.content = 'No content available';
+      }
+    });
 
+    this.showImagePostsBool = this.imagePosts.length > 0;
+    this.showAudioPostsBool = this.audioPosts.length > 0;
+    this.showVideoPostsBool = this.videoPosts.length > 0;
+    this.showTextPostsBool = this.textPosts.length > 0;
+    this.showLinkPostsBool = this.linkPosts.length > 0;
+    this.showGroupPostsBool = this.groupPosts.length > 0;
+  }
 
+  categorizePosts(): void {
+    this.imagePosts = [];
+    this.audioPosts = [];
+    this.videoPosts = [];
+    this.textPosts = [];
+    this.linkPosts = [];
+    this.groupPosts = [];
+
+    this.popularPosts.forEach((post) => {
+      switch (post.posttype) {
+        case 'image':
+          if (post.post) {
+            post.postUrl = this.createBlobUrl(post.post, 'image/jpeg');
+            this.imagePosts.push(post);
+          }
+          break;
+        case 'audio':
+          this.audioPosts.push(post);
+          break;
+        case 'video':
+          try {
+            const blob = this.convertBase64ToBlob(post.post, 'video/mp4');
+            post.filepath = URL.createObjectURL(blob);
+          } catch (error) {
+            console.error('Error converting video post:', error);
+          }
+          this.videoPosts.push(post);
+          break;
+        case 'text':
+          this.textPosts.push(post);
+          break;
+        case 'link':
+          this.linkPosts.push(post);
+          break;
+        case 'group':
+          if (post.post) {
+            post.postUrl = this.createBlobUrl(post.post, 'image/jpeg');
+          }
+          this.groupPosts.push(post);
+          break;
+      }
+    });
+  }
 
 
   async getpopularpostsfromlikes(): Promise<void> {
     if (this.isloadingposts) return;
-  
+
     this.isloadingposts = true;
-    this.cdr.detectChanges(); // Ensure UI updates when loading starts.
-  
-    this.http.get<{ posts: any[], like_counts: any[] }>(this.APIURL + "get-popular-posts-from-like-count").subscribe({
-      next: (res) => {
-        if (res && res.posts) {
-          this.popularPosts = res.posts;
-          this.likeCounts = res.like_counts || [];
-  
-          this.imagePosts = [];
-          this.audioPosts = [];
-          this.videoPosts = [];
-          this.textPosts = [];
-          this.linkPosts = [];
-          this.groupPosts = [];
-  
-          this.popularPosts.forEach(post => {
-            if (post.userprofile) {
-              post.userprofileUrl = this.createBlobUrl(post.userprofile, 'image/jpeg');
-            }
-  
-            switch (post.posttype) {
-              case 'image':
-                if (post.post) {
-                  post.postUrl = this.createBlobUrl(post.post, 'image/jpeg');
-                  this.imagePosts.push(post);
-                }
-                break;
-              case 'audio':
-                this.audioPosts.push(post);
-                break;
-              case 'video':
-                try {
-                  const blob = this.convertBase64ToBlob(post.post, 'video/mp4');
-                  post.filepath = URL.createObjectURL(blob);
-                } catch (error) {
-                  console.error('Error converting video post:', error);
-                }
-                this.videoPosts.push(post);
-                break;
-              case 'text':
-                this.textPosts.push(post);
-                break;
-              case 'link':
-                this.linkPosts.push(post);
-                break;
-              case 'group':
-                if (post.post) {
-                  post.postUrl = this.createBlobUrl(post.post, 'image/jpeg');
-                }
-                this.groupPosts.push(post);
-                break;
-            }
-          });
-  
-          this.showImagePostsBool = this.imagePosts.length > 0;
-          this.showAudioPostsBool = this.audioPosts.length > 0;
-          this.showVideoPostsBool = this.videoPosts.length > 0;
-          this.showTextPostsBool = this.textPosts.length > 0;
-          this.showLinkPostsBool = this.linkPosts.length > 0;
-          this.showGroupPostsBool = this.groupPosts.length > 0;
-        } else {
-          console.warn('No posts found in response.');
-        }
-  
-        this.isloadingposts = false;
-        this.cdr.detectChanges();  
-      },
-      error: (err) => {
-        this.isloadingposts = false;
-        this.cdr.detectChanges();  
-        console.error('Error fetching popular posts:', err);
-      }
-    });
+    this.cdr.detectChanges();
+
+    this.http
+      .get<{ posts: any[]; like_counts: any[] }>(
+        `${this.APIURL}get-popular-posts-from-like-count`
+      )
+      .subscribe({
+        next: (res) => {
+          if (res && res.posts) {
+            this.popularPosts = res.posts;
+            this.likeCounts = res.like_counts || [];
+            this.categorizePosts();  
+            this.searchService.saveState('searchedposts', this.popularPosts); 
+            this.processPostsDetails();
+          } else {
+            console.warn('No posts found in response.');
+          }
+          this.isloadingposts = false;
+          this.cdr.detectChanges();
+        },
+        error: (err) => {
+          this.isloadingposts = false;
+          this.cdr.detectChanges();
+          console.error('Error fetching popular posts:', err);
+        },
+      });
   }
 
   convertBase64ToBlob(base64: string, mimeType: string): Blob {

@@ -119,15 +119,12 @@ export class PostComponent implements OnInit {
       }
     }
   
-    // Cleanup unused URLs after processing
     this.cleanupUnusedUrls();
     
-    // Trigger change detection only after necessary processing
     this.cdref.detectChanges();
   }
   
   createBlobUrl(base64: string, contentType: string): string {
-    // Avoid redundant creation of blob URL by checking for empty base64
     if (!base64 || base64 === '') return ''; 
     const blob = this.base64ToBlob(base64, contentType);
     return URL.createObjectURL(blob);

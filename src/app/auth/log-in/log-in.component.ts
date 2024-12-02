@@ -6,6 +6,7 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { environment } from '../../../environments/environment';
 import { UserIdEncryptionService } from '../../services/user-id-encryption.service';
+import { GoogleAuthComponent } from '../google-auth/google-auth.component';
 
 @Component({
   selector: 'app-log-in',
@@ -15,7 +16,8 @@ import { UserIdEncryptionService } from '../../services/user-id-encryption.servi
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
-    RouterModule
+    RouterModule,
+    GoogleAuthComponent
   ],
   templateUrl: './log-in.component.html',
   styleUrl: './log-in.component.css'

@@ -15,6 +15,7 @@ import { NetworkstatusComponent } from '../../widgets/networkstatus/networkstatu
 import { useridexported } from '../../auth/const/const';
 import { SkeletonWidgetComponent } from '../../widgets/skeleton-widget/skeleton-widget.component';
 import { MainfeedStateService } from '../../services/main-feed.service';
+import { MainfeedSelectedStateService } from '../../services/main-feed-selected.service';
 
 
 @Component({
@@ -66,7 +67,7 @@ export class FeedComponent implements OnInit {
   
  
 
-  constructor(private mainfeedStateService: MainfeedStateService,private http: HttpClient, private cdr: ChangeDetectorRef,private router:Router,private networkService: NetworkService) {}
+  constructor(private mainfeedSelectedStateService:MainfeedSelectedStateService, private mainfeedStateService: MainfeedStateService,private http: HttpClient, private cdr: ChangeDetectorRef,private router:Router,private networkService: NetworkService) {}
 
   ngOnInit(): void {
   
@@ -100,19 +101,7 @@ export class FeedComponent implements OnInit {
  
  
 
-  processPostsDetails(): void {
-    this.posts = this.posts.map(post => {
-      post.formattedDate = new Date(post.timestamp).toLocaleString();
-
-      if (!post.content) {
-        post.content = 'No content available';
-      }
-
-      this.restoreScrollPosition();
-
-      return post;
-    });
-  }
+ 
 
 
   restoreScrollPosition(): void {
@@ -127,17 +116,6 @@ export class FeedComponent implements OnInit {
     }
   }
 
-  onOptionSelected(option: string): void {
-    this.selectedOption = option;
-    this.posts = [];
-    this.offsetoption = 0;
-
-   
-    this.getPostsFromOption(this.selectedOption);
-  
-  
-    
-  }
   
 
 
@@ -318,7 +296,33 @@ async getuserdetails(userid:string):Promise<void>{
 
 
  
+  onOptionSelected(option: string): void {
+    this.selectedOption = option;
+    this.posts = [];
+    this.offsetoption = 0;
 
+    const cachedPostsData = this.mainfeedSelectedStateService.getState(`posts_${option}`);
+    if (cachedPostsData) {
+        this.posts = cachedPostsData;
+        this.processPostsDetails();
+    } else {
+        this.getPostsFromOption(this.selectedOption);
+    }
+}
+  
+ processPostsDetails(): void {
+    this.posts = this.posts.map(post => {
+      post.formattedDate = new Date(post.timestamp).toLocaleString();
+
+      if (!post.content) {
+        post.content = 'No content available';
+      }
+
+      this.restoreScrollPosition();
+
+      return post;
+    });
+  }
   async getPostsFromOption(selectedOption: string): Promise<void> {
     if (this.loadingoption) return;
 
@@ -335,6 +339,7 @@ async getuserdetails(userid:string):Promise<void>{
         this.posts = [...this.posts, ...this.processPosts(response)];
  
         this.offsetoption += this.limitoption;
+        this.mainfeedSelectedStateService.saveState(`posts_${selectedOption}`, this.posts);
         this.loadingoption = false;
         this.cdr.detectChanges();  
       },
