@@ -20,6 +20,9 @@
       <button (click)="showiamfollowinguserlist()" [class.selected]="showiamfollowinguserlistBool" class="navigationsbuttons">Following ({{iamfollowinguserslist.length}})</button>
       <button (click)="showiamfolloeduserlist()" [class.selected]="showiamfolloeduserlistBool" class="navigationsbuttons">Followed ({{iamfolloweduserslist.length}})</button>
       <button (click)="showfavelist()" [class.selected]="showfavelistBool" class="navigationsbuttons" *ngIf="userid == userfrommethod?.userid">Saved</button>
+
+      <button (click)="showblockedlist()" [class.selected]="showblockedlistBool" class="navigationsbuttons" *ngIf="userid == userfrommethod?.userid">Blocked ({{blockedusers.length}})</button>
+
     </div>
 
 
@@ -213,9 +216,41 @@
     
 
         <div class="noiamfollowinguserlist" *ngIf="faveposts.length == 0">
-          <p>No saved posts</p>
-</div>
+          <p>No Saved Posts</p>
+                </div>
       </div>
+
+
+
+      <div *ngIf="showblockedlistBool" class="posts-container">
+        <div *ngFor="let user of blockedusers" class="user-card">
+
+          <div class="user-profile">
+            <img *ngIf="user.blockeduserprofile" [src]="user.blockeduserprofile" alt="Profile Image" class="userprofileimage">
+            <div class="user-details">
+             <div>
+              <span> {{ user.username }}</span>
+              <small ><b> : {{ user.blockeddate  | date: 'mediumDate' }}</b></small>
+
+             </div>
+              <small *ngIf="user.blockeddate">{{ user.blockeddate | date: 'shortTime' }}</small>
+            </div>
+
+             
+             <span class="unblockbtn" (click)="unblockuser(user.blockeduserid )">Unblock</span>
+            
+          </div>
+
+
+
+        </div>
+
+ 
+          <div class="noiamfollowinguserlist" *ngIf="blockedusers.length == 0">
+            <p>No Blocked Users</p>
+          </div>
+      </div>
+      
 
 
 

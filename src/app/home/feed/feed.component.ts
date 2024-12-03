@@ -98,8 +98,59 @@ export class FeedComponent implements OnInit {
    
 
   }
- 
- 
+
+
+  onPostRemoved(postId: number): void {
+    const postIndex = this.posts.findIndex(post => post.postid === postId);
+    if (postIndex !== -1) {
+      this.posts.splice(postIndex, 1);   
+    }
+  }
+
+
+  
+  async getPostsFeed(): Promise<void> {
+    if (this.loading) return;
+    this.loading = true;
+    this.cdr.detectChanges();
+  
+    let url = `${this.APIURL}get_posts_feed?limit=${this.limit}&offset=${this.offset}`;
+  
+    if (useridexported) {
+      url += `&useridexported=${useridexported}`;
+    }
+  
+    this.http.get<any[]>(url).pipe(
+      map((res: any[]) => {
+        if (res.length > 0) {
+          const newPosts = this.filterDuplicatePosts(res);
+          const processedPosts = this.processPosts(newPosts);
+          const sortedPosts = this.sortPostsByTime(processedPosts);
+  
+          this.posts = [...this.posts, ...sortedPosts];
+  
+          this.offset += this.limit;
+  
+          console.log(this.offset);
+          this.nomorepoststoload = false;
+        } else {
+          this.nomorepoststoload = true;
+          console.log('No more posts to load.');
+        }
+  
+        this.mainfeedStateService.saveState('posts', this.posts);
+      }),
+      catchError(error => {
+        console.error('There was an error!', error);
+        return of([]);
+      }),
+      tap(() => {
+        this.loading = false;
+        this.cdr.detectChanges();
+      })
+    ).subscribe();
+  }
+  
  
 
  
@@ -144,11 +195,9 @@ export class FeedComponent implements OnInit {
     const scrollHeight = element.scrollHeight;
     const clientHeight = element.clientHeight;
   
-    // Check if the user has scrolled near the bottom and we're not already loading
     if (scrollHeight - scrollPosition <= clientHeight + 500 && !this.loading && !this.nomorepoststoload) {
       this.saveScrollPosition();
   
-      // Load posts based on selected option or default option
       if (this.selectedOption === "") {
         this.getPostsFeed();
       } else {
@@ -157,42 +206,7 @@ export class FeedComponent implements OnInit {
     }
   }
   
-  async getPostsFeed(): Promise<void> {
-    if (this.loading) return;
-  
-    this.loading = true;
-    this.cdr.detectChanges();
-  
-    this.http.get<any[]>(`${this.APIURL}get_posts_feed?limit=${this.limit}&offset=${this.offset}`).pipe(
-      map((res: any[]) => {
-        if (res.length > 0) {
-          const newPosts = this.filterDuplicatePosts(res);
-          const processedPosts = this.processPosts(newPosts);
-          const sortedPosts = this.sortPostsByTime(processedPosts);
-          
-          this.posts = [...this.posts, ...sortedPosts];
-  
-          this.offset += this.limit;
-  
-          console.log(this.offset); 
-          this.nomorepoststoload = false;
-        } else {
-          this.nomorepoststoload = true;  
-          console.log('No more posts to load.');
-        }
-  
-        this.mainfeedStateService.saveState('posts', this.posts);   
-      }),
-      catchError(error => {
-        console.error('There was an error!', error);
-        return of([]);
-      }),
-      tap(() => {
-        this.loading = false;
-        this.cdr.detectChanges();
-      })
-    ).subscribe();
-  }
+
 
   
   private sortPostsByTime(posts: any[]): any[] {
@@ -413,3 +427,6 @@ async getuserdetails(userid:string):Promise<void>{
   
   
 }
+
+
+ 

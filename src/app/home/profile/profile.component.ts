@@ -47,6 +47,7 @@ export class ProfileComponent   {
   showfeedBool:boolean = true;
   showoptionsmenu:boolean=false;
   showfavelistBool:boolean = false;
+  showblockedlistBool:boolean = false;
   loading = false;
   loadingfav = false;
   showiamfolloeduserlistBool:boolean = false;
@@ -59,6 +60,7 @@ export class ProfileComponent   {
   iamfollowinguserslist: any[] = [];
   iamfolloweduserslist: any[] = [];
   faveposts: any[] = [];
+  blockedusers: any[] = [];
 
   constructor( private profileStateService:ProfileStateService, private http: HttpClient, private route: ActivatedRoute,private cdref: ChangeDetectorRef,private router:Router) { }
 
@@ -86,6 +88,7 @@ export class ProfileComponent   {
         this.getuserdetailsFrommethod(this.getfrommethoduserid);
         this.getfavList(this.userid);
         this.getfollowingstatus(this.getfrommethoduserid);
+        this.getblockedlist(this.userid);
     }  
     
       else {  
@@ -125,25 +128,58 @@ export class ProfileComponent   {
       }
     }
   }
+  async unblockuser(blockeduserid: string): Promise<void> {
+    const formData = new FormData();
+    formData.append('blockeduserid', blockeduserid); // Remove extra space after 'blockeduserid'
+  
+    this.http.post<any>(`${this.APIURL}remove_blocked_user`, formData).subscribe({
+      next: (response: any) => {
+        // Use '==' for comparison instead of '='
+        if (response.message === "removed") {
+          alert("User unblocked successfully");
+          this.getblockedlist(this.userid); // Refresh the list after unblocking
+        }
+      },
+      error: (error: HttpErrorResponse) => {
+        console.error('Error unblocking user:', error);
+      }
+    });
+  }
+  
+  async getblockedlist(userid:string): Promise<void>{
+    const formDataUser = new FormData();
+    formDataUser.append('userid', userid); 
 
-  processProfilePostsdata(): void {
-    // Log the cached posts for debugging
-    console.log('Processing cached posts:', this.posts);
+    try {
+      const response: any = await this.http.post<any[]>(`${this.APIURL}get_blocked_user_list`, formDataUser).toPromise();
+      if (response) {
+        this.blockedusers = response.blocked_users;
+        this.blockedusers.forEach(user => {
+          if (user.blockeduserprofile) {
+            user.blockeduserprofile = this.createBlobUrl(user.blockeduserprofile, 'image/jpeg');  
+          }
+        });
+      }
+       
+    } catch (error) {
+      console.error('There was an error!', error);
+    } 
+  }
+
+  processProfilePostsdata(): void { 
+
   
-    // If the cached posts exist and are an array, set them to the posts array
     if (Array.isArray(this.posts)) {
-      // Set the posts data to the relevant array, in case you have multiple arrays like 'posts', 'faveposts', etc.
-      this.faveposts = this.posts.filter(post => post.isFavorite); // Example: Filter favorite posts if any logic exists
-      this.iamfollowinguserslist = this.posts.filter(post => post.isFollowing); // Example: Filter posts of users you're following, if such logic exists
+      
+      this.faveposts = this.posts.filter(post => post.isFavorite); 
+      this.iamfollowinguserslist = this.posts.filter(post => post.isFollowing);  
   
-      // Format any other data (like dates or additional post processing)
       this.posts = this.posts.map((post: any) => ({
         ...post,
-        formattedDate: this.formatDate(post.createdAt), // Format date as needed
+        formattedDate: this.formatDate(post.createdAt),  
       }));
     }
   
-    // Trigger change detection if posts are displayed in the UI
     this.cdref.detectChanges();
   }
   
@@ -176,26 +212,22 @@ export class ProfileComponent   {
       return;
     }
   
-    // Process username
     this.username = this.profileData.username || "Unknown User";
   
-    // Process profile image
     if (this.profileData.profileImage) {
       this.profileImageUrl = this.createBlobUrl(this.profileData.profileImage, "image/jpeg");
     } else {
-      this.profileImageUrl = "assets/default-profile.png"; // Default image if not available
+      this.profileImageUrl = "assets/default-profile.png";  
     }
   
-    // Handle user-specific attributes
     if (this.profileData.followingStatus !== undefined) {
       this.followButtonText = this.profileData.followingStatus ? "Following" : "Follow";
     }
   
-    // Process posts if available
     if (Array.isArray(this.profileData.posts)) {
       this.posts = this.profileData.posts.map((post: any) => ({
         ...post,
-        formattedDate: this.formatDate(post.createdAt), // Example: format post dates
+        formattedDate: this.formatDate(post.createdAt), 
       }));
     }
   
@@ -551,7 +583,8 @@ showfeed():void{
   this.showfeedBool = true;
   this.showiamfolloeduserlistBool = false;
   this.showiamfollowinguserlistBool = false;
-  this.showfavelistBool=false;
+  this.showfavelistBool = false;
+  this.showblockedlistBool = false;
 }
  
 
@@ -559,7 +592,8 @@ showiamfollowinguserlist():void{
   this.showfeedBool = false;
   this.showiamfolloeduserlistBool = false;
   this.showiamfollowinguserlistBool = true;
-  this.showfavelistBool=false;
+  this.showfavelistBool = false;
+  this.showblockedlistBool = false;
 
 }
 
@@ -567,15 +601,26 @@ showiamfolloeduserlist():void{
   this.showfeedBool = false;
   this.showiamfolloeduserlistBool = true;
   this.showiamfollowinguserlistBool = false;
-  this.showfavelistBool=false;
+  this.showfavelistBool = false;
+  this.showblockedlistBool = false;
 
 }
 showfavelist():void{
   this.showfeedBool = false;
   this.showiamfolloeduserlistBool = false;
   this.showiamfollowinguserlistBool = false;
-  this.showfavelistBool=true;
-}
+  this.showfavelistBool = true;
+  this.showblockedlistBool = false;
+  }
+  
+  showblockedlist():void{
+    this.showfeedBool = false;
+    this.showblockedlistBool = true;
+    this.showiamfolloeduserlistBool = false;
+    this.showiamfollowinguserlistBool = false;
+    this.showfavelistBool=false;
+  }
+
 
 
  

@@ -24,6 +24,7 @@ export class PostComponent implements OnInit {
   @Output() delete = new EventEmitter<void>();
   @ViewChild('memberMainOuterHolder') memberMainOuterHolder!: ElementRef<HTMLDivElement>;
   @Output() postRemoved = new EventEmitter<number>();
+  @Output() userBlocked = new EventEmitter<number>();
 
 
   postreport = 'postreport'; 
@@ -60,8 +61,11 @@ export class PostComponent implements OnInit {
   backgroundStyle: { [key: string]: string } = {};
   currentImageIndex: number = 0;
   loadingSkeleton: boolean = false;
-
-
+  countdown: number = 10;  
+  countdownInterval: any;
+  showUndoDiv: boolean = false;
+  userunblocked: boolean = false;
+  shouldShowConfirmAlert:boolean = true;
 
   constructor(private cdref: ChangeDetectorRef,  private http: HttpClient, private router: Router, @Inject(PLATFORM_ID) private platformId: Object, private route: ActivatedRoute,private sharedservice:SharedServiceService,) { }
   ngOnInit(): void {
@@ -75,11 +79,12 @@ export class PostComponent implements OnInit {
     if (isPlatformBrowser(this.platformId)) {
       this.userid = useridexported;
       if(this.userid){
-        this.getisaddedtofav(this.post,this.post.postid);
+        this.getisaddedtofav(this.post, this.post.postid);
+        this.checkisamemberofgroup(this.userid);
       }
 
     }
-    this.checkisamemberofgroup(this.userid);
+    
     if (this.post.posttype === 'video') {
       const base64Data = this.post.post;
       try {
@@ -96,7 +101,7 @@ export class PostComponent implements OnInit {
     
   }
   ngAfterContentChecked() {
-    // Prevent multiple processing by checking if URLs are already set
+   
     if (this.post.posttype === 'image' && !this.imageUrl) {
       if (!this.profileImageUrl) {
         this.profileImageUrl = this.createBlobUrl(this.post.userprofile, 'image/jpeg');
@@ -123,6 +128,78 @@ export class PostComponent implements OnInit {
     
     this.cdref.detectChanges();
   }
+  
+  undoBlock(blockeduserid: string, blockedusername: string) {
+    this.userunblocked = true;
+    this.showUndoDiv = false;  
+    clearInterval(this.countdownInterval); 
+    
+    setTimeout(() => {
+      this.userunblocked = false;
+    }, 3000);
+
+      
+ 
+    this.countdown = 10;   
+
+    if (this.post.userid === this.userid) {
+      this.post.deleted = false;  
+      this.userBlocked.emit(this.post.postid);  
+      
+    }
+
+    this.shouldShowConfirmAlert = false;
+    this.blockuser(blockeduserid, blockedusername);
+    this.shouldShowConfirmAlert = true;
+  }
+ 
+
+  async blockuser(blockeduserid: string, blockedusername: string): Promise<void> {
+    if (this.shouldShowConfirmAlert) {
+      const result = confirm("Do you need to block " + blockedusername);
+      if (!result) {
+        return;   
+      }
+    }
+      const formData = new FormData();
+      formData.append('blockeduserid', blockeduserid);
+      formData.append('curruntuserid', this.userid);
+
+      this.http.post<any>(`${this.APIURL}blocking_user`, formData).subscribe({
+        next: (response: any) => {
+          if (response.message === "blocked") {
+            console.log("User blocked successfully");
+
+            if (this.post.userid === blockeduserid) {
+              this.post.deleted = true;  
+              this.startUndoTimer();
+            }
+
+          }
+        },
+        error: (error: HttpErrorResponse) => {
+          console.error('Error while blocking user:', error);
+        }
+      });
+ 
+  }
+
+  startUndoTimer() {
+    this.showUndoDiv = true;  
+    this.cdref.detectChanges();   
+ 
+    this.countdownInterval = setInterval(() => {
+  
+
+      this.countdown--;
+      if (this.countdown <= 0) {
+        clearInterval(this.countdownInterval);  
+        this.showUndoDiv = false;   
+        this.cdref.detectChanges();   
+      }
+    }, 1000);   
+  }
+
   
   createBlobUrl(base64: string, contentType: string): string {
     if (!base64 || base64 === '') return ''; 

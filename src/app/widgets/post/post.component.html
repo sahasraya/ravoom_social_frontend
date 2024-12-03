@@ -3,10 +3,23 @@
  
 
 
+  <div class="fixed-bottom-div" *ngIf="showUndoDiv">
+    <span>User Blocked <b>{{ countdown }}</b> </span>
+    <button class="undo-btn" (click)="undoBlock(post.userid ,post.username)">Undo</button>
+  </div>
+
+
+  <div class="fixed-bottom-div-unblocked" *ngIf="userunblocked">
+    <span>User Unblocked </span>
+     
+  </div>
+
+  
 
 <div *ngIf="!post.deleted" class="post">
 
 
+ 
 
   <div class="liked_members_div_fixed" *ngIf="islikedmembereddivvisible">
     <div class="member_main_outer_holder" #memberMainOuterHolder>
@@ -79,6 +92,13 @@
                       </li>
                       <li (click)="showreportscreen()">  <img src="../../../assets/images/complain.png" alt="" > Report</li>
                       <li (click)="savepost($event,post.postid,post)">  <img src="../../../assets/images/save.png" alt="" >   {{ post.isSaved ? 'Remove from favorites' : 'Save' }}</li>
+
+
+                       <li (click)="blockuser(post.userid ,post.username)" *ngIf="post.userid != this.userid" class="dropdownicons">
+                        <img src="../../../assets/images/blocked.png" alt="" >
+                        Block
+                      </li>
+
                       
                     </ul>
                   </div>
@@ -236,6 +256,11 @@
         [postid]="selectedPostId" [groupornormalpostinput]="groupornormalpost">
     </app-comment>
 </div>
+
+
+
+
+
 
 
 </div>

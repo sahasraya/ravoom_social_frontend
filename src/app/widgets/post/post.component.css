@@ -402,11 +402,11 @@
   transform: scale(1.1);  
 }
 
-/* Active effect */
+ 
 .image-nav-controls img:active {
-  background-color: #d0d0d0; /* Darker background when clicked */
-  transform: scale(1.05); /* Slightly shrink when clicked */
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* Add shadow to give a pressing effect */
+  background-color: #d0d0d0;  
+  transform: scale(1.05);  
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);  
 }
 
 .numberofimages{
@@ -606,6 +606,61 @@ outline:none;
 .profile-holder{
   position: fixed;
 }
+
+
+.fixed-bottom-div {
+  position: fixed;
+  width: 30vw;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color:var(--primarycolor);
+  color: white;
+  text-align: center;
+  padding: 10px;
+  font-size: 16px;
+  z-index: 1000;
+  margin: 10px auto;
+  border-radius: 40px;
+ 
+}
+.fixed-bottom-div-unblocked{
+  position: fixed;
+  width: 30vw;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color:rgb(0, 156, 0);
+  color: white;
+  text-align: center;
+  padding: 10px;
+  font-size: 16px;
+  z-index: 1000;
+  margin: 10px auto;
+  border-radius: 40px;
+}
+.fixed-bottom-div.show {
+  display: block;
+}
+
+.countdown-timer {
+  font-weight: bold;
+  color: #ff0000;
+}
+
+.undo-btn {
+  background-color: white;
+  cursor: pointer;
+  border: none;
+  color: black;
+  font-weight: bold;
+  border-radius: 25px;
+  margin-left: 10px;
+  padding: 5px;
+}
+
+
+
 
 @media (max-width: 500px) {  
   .username{
