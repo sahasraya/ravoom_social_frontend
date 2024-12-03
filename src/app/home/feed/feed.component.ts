@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, EventEmitter, HostListener, OnDestroy, OnInit, Output } from '@angular/core';
+import { ChangeDetectorRef, Component, HostListener, OnInit } from '@angular/core';
 import { AddPostComponent } from '../../widgets/add-post/add-post.component';
 import { HttpClient, HttpClientModule, HttpErrorResponse } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
@@ -64,6 +64,7 @@ export class FeedComponent implements OnInit {
   hideNetworkStatus: boolean = false;
   wasOnline: boolean = false;
   postData: any;
+  nomorepoststoload: boolean = false;
   
  
 
@@ -133,26 +134,29 @@ export class FeedComponent implements OnInit {
     localStorage.setItem('scrollPositionMainFeed', window.scrollY.toString());
   }
   
+ 
+
+
   @HostListener('window:scroll', ['$event'])
   onScroll(event: Event): void {
+    const element = document.documentElement;
+    const scrollPosition = element.scrollTop;
+    const scrollHeight = element.scrollHeight;
+    const clientHeight = element.clientHeight;
   
-      const element = document.documentElement;
-      const scrollPosition = element.scrollTop;
-      const scrollHeight = element.scrollHeight;
-      const clientHeight = element.clientHeight;
+    // Check if the user has scrolled near the bottom and we're not already loading
+    if (scrollHeight - scrollPosition <= clientHeight + 500 && !this.loading && !this.nomorepoststoload) {
+      this.saveScrollPosition();
   
-      if (scrollHeight - scrollPosition <= clientHeight + 3000 && !this.loading) {
-        this.saveScrollPosition();
-  
-          if (this.selectedOption === "") {
-            this.getPostsFeed();  
-            this.loading = false;
-          } else {
-              this.getPostsFromOption(this.selectedOption);  
-          }
+      // Load posts based on selected option or default option
+      if (this.selectedOption === "") {
+        this.getPostsFeed();
+      } else {
+        this.getPostsFromOption(this.selectedOption);  
       }
+    }
   }
-
+  
   async getPostsFeed(): Promise<void> {
     if (this.loading) return;
   
@@ -162,12 +166,18 @@ export class FeedComponent implements OnInit {
     this.http.get<any[]>(`${this.APIURL}get_posts_feed?limit=${this.limit}&offset=${this.offset}`).pipe(
       map((res: any[]) => {
         if (res.length > 0) {
-          const newPosts = this.filterDuplicatePosts(res);   
-          const processedPosts = this.processPosts(newPosts); 
+          const newPosts = this.filterDuplicatePosts(res);
+          const processedPosts = this.processPosts(newPosts);
           const sortedPosts = this.sortPostsByTime(processedPosts);
-          this.posts = [...this.posts, ...sortedPosts];   
+          
+          this.posts = [...this.posts, ...sortedPosts];
+  
           this.offset += this.limit;
+  
+          console.log(this.offset); 
+          this.nomorepoststoload = false;
         } else {
+          this.nomorepoststoload = true;  
           console.log('No more posts to load.');
         }
   
@@ -183,6 +193,7 @@ export class FeedComponent implements OnInit {
       })
     ).subscribe();
   }
+
   
   private sortPostsByTime(posts: any[]): any[] {
     const currentTime = new Date();
