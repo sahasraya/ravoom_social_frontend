@@ -90,7 +90,9 @@ export class SearchResultByEnterComponent  implements OnInit{
  
 
   closeprofilewindow(): void{
-    this.isclickedtoshowuser= false 
+    alert("111111111111111111");
+    this.isclickedtoshowuser = false 
+    
   }
    
   showtheuserprofile(event: Event, navigatingprofileuserid: string): void {
@@ -194,20 +196,7 @@ loadMoreVideos(e:Event) {
 }
 
 
-loadMoreTextImageLink(e: Event) {
-  e.preventDefault();
-  e.stopPropagation();
 
-  const scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
-
-  this.offsettextimagelink += this.limittextimagelink;
-
-  this.getImageTextImageLink(this.searchtext).then(() => {
-    setTimeout(() => {
-      window.scrollTo({ top: scrollPosition, behavior: 'auto' });
-    }, 0);   
-  });
-}
 
 
 
@@ -222,10 +211,10 @@ loadMoreUser() {
 
 
 async getTextLink(searchtext: string) {
-  if (!this.moreDataAvailablelink) {
-    console.log('No more data to load.');
-    return;
-  }
+  // if (!this.moreDataAvailablelink) {
+  //   console.log('No more data to load.');
+  //   return;
+  // }
 
   const formData = new FormData();
   formData.append('searchtext', searchtext);
@@ -277,20 +266,7 @@ async getTextLink(searchtext: string) {
 
 
 
-
-
-
-
-
-
-
-
-async getImageTextImageLink(searchtext: string) {
-  if (!this.moreDataAvailabletextimagelink) {
-    console.log('No more data to load.');
-    return;
-  }
-
+async getImageTextImageLink(searchtext: string, clearPosts: boolean = false) {
   const formData = new FormData();
   formData.append('searchtext', searchtext);
   formData.append('limit', this.limittextimagelink.toString());
@@ -299,12 +275,14 @@ async getImageTextImageLink(searchtext: string) {
   return new Promise<void>((resolve, reject) => {
     this.http.post<any>(`${this.APIURL}search-enter-press-result-image-link-text`, formData).subscribe({
       next: (response: any) => {
-        const newPosts = this.processPosts(response);
+        // Clear the array before adding new posts each time
+        this.ImageTextLinkPosts.length = 0; // This clears the array
 
-        this.ImageTextLinkPosts.push(...newPosts);
+        // Append the new posts to the existing array
+        this.ImageTextLinkPosts.push(...response);
 
-        this.moreDataAvailabletextimagelink = newPosts.length === this.limittextimagelink;
-
+        // Check if more data is available
+        this.moreDataAvailabletextimagelink = response.length === this.limittextimagelink;
 
         resolve();
       },
@@ -315,6 +293,28 @@ async getImageTextImageLink(searchtext: string) {
     });
   });
 }
+
+loadMoreTextImageLink(e: Event) {
+  e.preventDefault();
+  e.stopPropagation();
+
+  const scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
+
+  this.offsettextimagelink += this.limittextimagelink;
+
+  // Pass false here to append data
+  this.getImageTextImageLink(this.searchtext, false);
+}
+
+// When performing a new search or first load
+performNewSearch(searchtext: string) {
+  // Set offset to 0 to start from the beginning
+  this.offsettextimagelink = 0;
+  
+  // Pass true here to clear existing posts before loading new data
+  this.getImageTextImageLink(searchtext, true);
+}
+
 
 
 
@@ -438,7 +438,8 @@ async getUser(searchtext: string): Promise<void> {
 
 
 
-  async getVideos(searchtext: string):Promise<void> {
+  async getVideos(searchtext: string): Promise<void> {
+ 
     const formData = new FormData();
     formData.append('searchtext', searchtext);
     formData.append('limit', this.limitvideo.toString());
