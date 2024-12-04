@@ -342,6 +342,8 @@ border: 1px solid rgb(43,149,236);
   }
  .button-holder{
   width: 100vw;
+  overflow: scroll;
+  margin-bottom: 10px;
  }
   
 }

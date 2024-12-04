@@ -173,3 +173,26 @@ font-weight: normal;
   border: 1px solid #ccc;
 
 }
+
+.skeliton-holder{
+  position: absolute;
+  top: 50px;
+  background-color: white;
+  border-radius: 20px;
+  width: 100%;
+}
+
+
+
+
+
+@media (max-width: 500px) {  
+   
+  .skeliton-holder  {
+   
+   height: 100vh;
+    
+}
+ 
+
+}

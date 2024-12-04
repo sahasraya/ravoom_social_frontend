@@ -663,6 +663,10 @@ outline:none;
 
 
 @media (max-width: 500px) {  
+
+  .fixed-bottom-div ,.fixed-bottom-div-unblocked{
+    width: 95vw;
+  }
   .username{
     max-width: 200px;       
     white-space: nowrap;    

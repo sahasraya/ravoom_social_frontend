@@ -6,12 +6,13 @@ import { Router, RouterModule, RouterOutlet } from '@angular/router';
 import { PopularPostComponent } from '../../home/popular-post/popular-post.component';
 import { environment } from '../../../environments/environment';
 import { SearchService } from '../../services/search.service';
+import { SkeletonWidgetTypingSearchComponent } from '../skeleton-widget-typing-search/skeleton-widget-typing-search.component';
  
 
 @Component({
   selector: 'app-search',
   standalone: true,
-  imports: [CommonModule,FormsModule,RouterModule,PopularPostComponent],
+  imports: [CommonModule,FormsModule,RouterModule,PopularPostComponent,SkeletonWidgetTypingSearchComponent],
   templateUrl: './search.component.html',
   styleUrl: './search.component.css'
 })
@@ -23,7 +24,8 @@ export class SearchComponent implements OnInit{
   user:any=[];
   group:any=[];
   searchText: string = '';
-  isFacoused:boolean = false;
+  isFacoused: boolean = false;
+  isloading: boolean = false;
 
   searchUsers: any=[];
  
@@ -42,6 +44,34 @@ export class SearchComponent implements OnInit{
 
   }
 
+
+  async searchResult(): Promise<void> {
+    this.isFacoused = false;
+  
+    if (this.isloading) return; // Prevent querying if already loading
+    this.isloading = true; // Set loading to true when starting query
+  
+    const formData = new FormData();
+    formData.append('query', this.searchText);
+  
+    // Send HTTP request
+    this.http.post<any>(`${this.APIURL}search-result`, formData).subscribe({
+      next: response => {
+        this.isloading = false;  // Stop loading when response is received
+        this.user = response.users;
+        this.group = response.groups;
+      },
+      error: (error: HttpErrorResponse) => {
+        this.isloading = false;  // Stop loading on error
+        console.error('There was an error!', error);
+      }
+    });
+  }
+  
+
+
+
+
   stopPropagation(event: Event) {
     event.stopPropagation();
   }
@@ -58,22 +88,7 @@ this.isFacoused = true;
     this.group = [];
   }
   
-  async searchResult(): Promise<void> {
-    this.isFacoused = false;
-  
-    const formData = new FormData();
-    formData.append('query', this.searchText);
-  
-    this.http.post<any>(`${this.APIURL}search-result`, formData).subscribe({
-      next: response => {
-        this.user = response.users;
-        this.group = response.groups;
-      },
-      error: (error: HttpErrorResponse) => {
-        console.error('There was an error!', error);
-      }
-    });
-  }
+ 
 
 
   addToLocalStorage(username: string, profileImage: string, userid: any) {

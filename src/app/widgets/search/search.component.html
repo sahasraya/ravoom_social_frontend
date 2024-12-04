@@ -7,12 +7,22 @@
       <img src="../../../assets/images/close.png" alt="" class="closeiconsearch" *ngIf="searchText" (click)="clearSearch()">
   </div>
 
-  <div *ngIf="user && user.length" class="results-container">
+  <div class="skeliton-holder"  *ngIf="isloading">
+    <app-skeleton-widget-typing-search>
+
+  
+    </app-skeleton-widget-typing-search>
+
+  </div>
+
 
  
 
 
-    <div class="imageholdersearch">
+
+  <div *ngIf="user && user.length" class="results-container">
+    
+ <div class="imageholdersearch">
       <span>Users <img src="../../../assets/images/search.png" alt="" class="searchresultnormalimage"></span>
     </div>
     <ul class="user-list">
@@ -29,7 +39,7 @@
 
   <div *ngIf="group && group.length" class="results-container">
 
- 
+    
 
     <div class="imageholdersearch">
       <span>Groups <img src="../../../assets/images/search.png" alt="" class="searchresultnormalimage"></span>
