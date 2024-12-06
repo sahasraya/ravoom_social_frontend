@@ -22,7 +22,9 @@ export class VideoSliderComponent implements OnInit, AfterViewInit {
   offset = 0;
   limit = 15;
   isLoading = false;
-  getthecommentsBool:boolean = false;
+  getthecommentsBool: boolean = false;
+  dropdownVisible: boolean = false;
+  copiedURL: boolean = false;
   selectedPostId: string | null = null;
   videoList: any[] = [];
   userid:string = "";
@@ -31,7 +33,7 @@ export class VideoSliderComponent implements OnInit, AfterViewInit {
 
   screen: string = 'screen'; 
   viode_inner_holder_responsiveness:string = 'viode_inner_holder_pc';
- 
+  dropdownStates: { [key: string]: boolean } = {};
 
   private scrollListener!: () => void;
 
@@ -55,7 +57,11 @@ export class VideoSliderComponent implements OnInit, AfterViewInit {
   }
 
  
- 
+  toggleDropdown(event: MouseEvent, videoId: string): void {
+    this.dropdownStates[videoId] = !this.dropdownStates[videoId];
+    
+    event.stopPropagation();
+  }
 
   async getpostlikecount(postid: any): Promise<number> {
   
@@ -135,6 +141,27 @@ export class VideoSliderComponent implements OnInit, AfterViewInit {
         this.getAllVideoPosts();
       }
     }
+  }
+  copylink(postid: string, n_or_g: string, event: MouseEvent): void {
+    const postURL = `https://ravoom.com/home/comment/${postid}/${n_or_g}/home`;
+    
+    navigator.clipboard.writeText(postURL).then(() => {
+      this.copiedURL = true;
+
+      this.dropdownStates[postid] = false; 
+
+      setTimeout(() => {
+        this.copiedURL = false;
+      }, 3000);
+    }).catch((err) => {
+      this.copiedURL = true;
+      this.dropdownStates[postid] = false;
+
+      setTimeout(() => {
+        this.copiedURL = false;
+      }, 3000);
+      console.error('Failed to copy post link:', err);
+    });
   }
 
   async getAllVideoPosts(): Promise<void> {
@@ -256,7 +283,6 @@ async addliketoviode(e:Event,video: any,viodeid:any,postowerid:any,userprofile:a
         });
       }
 
-      // Handle success response
     },
     error: error => {
       console.error('There was an error!', error);

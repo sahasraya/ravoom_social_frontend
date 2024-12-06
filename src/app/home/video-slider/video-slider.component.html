@@ -17,12 +17,24 @@
 
  
       <div [ngClass]="viode_inner_holder_responsiveness" *ngIf="!(getthecommentsBool && selectedPostId === video.postid)">
-        
+
+        <div class="bottom-message" *ngIf="copiedURL"><span>Copied</span></div>
 
                  <div class="inner1-holder">
                   <div class="video-wrapper">
                   <span class="overlay-text">{{video.username}}</span>
                   <span class="overlay-text-duration" >{{ calculateTimeAgo(video.posteddate) }}</span>
+
+                  <div class="icon-wrapper-menu" (click)="toggleDropdown($event, video.postid)">
+                    <img src="../../../assets/images/threedots.png" alt="threedots-image">
+                  </div>
+              
+                  <div *ngIf="dropdownStates[video.postid]" class="dropdown-menu">
+                    <ul (click)="copylink(video.postid ,video.n_or_g,$event)">
+                      <li> <img src="../../../assets/images/copy.png" alt=""> Copy</li>
+                    </ul>
+                  </div>
+
                   <div class="video-description">
                     <span class="viodediscription"  >{{ video.postdescription }}</span>
                    
