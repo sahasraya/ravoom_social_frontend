@@ -932,7 +932,25 @@ closememebrslikeddiv(e:Event):void{
   }
 
 
+  copypostlink(postid: string, n_or_g: string): void {
+    const postURL = `https://ravoom.com/home/comment/${postid}/${n_or_g}/home`;
   
+    navigator.clipboard.writeText(postURL).then(() => {
+      this.addedtofav = true;
+      this.favtext = "Copied";
+      setTimeout(() => {
+        this.addedtofav=false;
+      }, 5000);
+
+    }).catch((err) => {
+      this.favtext = err;
+      this.addedtofav = true;
+      setTimeout(() => {
+        this.addedtofav=false;
+      }, 5000);
+      console.error('Failed to copy post link:', err);
+    });
+  }
 
 
 

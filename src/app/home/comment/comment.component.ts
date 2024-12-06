@@ -7,6 +7,7 @@ import { ImageLargerComponent } from '../../widgets/image-larger/image-larger.co
 import { ReporttingComponent } from '../../widgets/reportting/reportting.component';
 import { environment } from '../../../environments/environment';
 import { useridexported } from '../../auth/const/const';
+import { CommentPostStateService } from '../../services/comment-post.service';
 
 @Component({
   selector: 'app-comment',
@@ -63,7 +64,7 @@ export class CommentComponent implements OnInit {
   showcommentimage: boolean = false;
   selectedCommentImage: string | null = null;
 
-  constructor(private route: ActivatedRoute, private http: HttpClient, private fb: FormBuilder, private router: Router,private cdref: ChangeDetectorRef) {
+  constructor(private commentPostStateService:CommentPostStateService, private route: ActivatedRoute, private http: HttpClient, private fb: FormBuilder, private router: Router,private cdref: ChangeDetectorRef) {
     this.commentForm = this.fb.group({
       commenttext: ['', [Validators.required]],
 
@@ -96,7 +97,79 @@ export class CommentComponent implements OnInit {
     this.getComments();
   }
   
+  async getPostData(): Promise<void> {
+    const cacheKey = `postdata_${this.postid}`;
+    const cacheData = this.commentPostStateService.getState(cacheKey);
+  
+    if (cacheData) {
+      this.post = cacheData.post;
+      this.images = cacheData.images || [];
+  
+      if (this.post.posttype === 'video') {
+        const videoBlob = this.convertBase64ToBlob(this.post.post, 'video/mp4');
+        this.post.videoUrl = URL.createObjectURL(videoBlob);
+      } else if (this.post.posttype === 'audio') {
+        const audioBlob = this.convertBase64ToBlobAudio(this.post.post);
+        this.post.audioUrl = URL.createObjectURL(audioBlob);
+      }
+  
+      this.getfollowingstatus(this.post.userid);
+      return;
+    }
 
+    const formData = new FormData();
+    formData.append('postid', this.postid!);
+  
+    const url = this.groupornormalpost === 'g' ? `${this.APIURL}get_post_group` : `${this.APIURL}get_post`;
+  
+    this.http.post<any>(url, formData).subscribe({
+      next: (response) => {
+        this.post = response;
+  
+        if (this.post.posttype === 'image') {
+          const formDataImage = new FormData();
+          formDataImage.append('postid', this.postid!);
+          const imageUrl = this.groupornormalpost === 'g' ? `${this.APIURL}get_images_group` : `${this.APIURL}get_images`;
+  
+          this.http.post<any>(imageUrl, formDataImage).subscribe({
+            next: (imageResponse) => {
+              this.images = imageResponse.map((img: any) =>
+                this.createBlobUrl(img.image, 'image/jpeg')
+              );
+  
+              const postDataToStore = {
+                post: this.post,
+                images: this.images,
+              };
+              this.commentPostStateService.saveState(cacheKey, postDataToStore);
+            },
+            error: (error: HttpErrorResponse) => {
+              console.error('Error loading images!', error);
+            },
+          });
+        } else if (this.post.posttype === 'video') {
+          const videoBlob = this.convertBase64ToBlob(this.post.post, 'video/mp4');
+          this.post.videoUrl = URL.createObjectURL(videoBlob);
+        } else if (this.post.posttype === 'audio') {
+          const audioBlob = this.convertBase64ToBlobAudio(this.post.post);
+          this.post.audioUrl = URL.createObjectURL(audioBlob);
+        }
+  
+        if (this.post.posttype !== 'image') {
+          const postDataToStore = {
+            post: this.post,
+            images: [],
+          };
+          this.commentPostStateService.saveState(cacheKey, postDataToStore);
+        }
+  
+        this.getfollowingstatus(this.post.userid);
+      },
+      error: (error: HttpErrorResponse) => {
+        console.error('There was an error!', error);
+      },
+    });
+  }
 
 
 
@@ -223,76 +296,7 @@ export class CommentComponent implements OnInit {
   }
 
 
-  async getPostData(): Promise<void> {
-    const storedPostData = sessionStorage.getItem(`postdata_${this.postid}`);
-    
-    if (storedPostData) {
-      const decryptedData = JSON.parse(atob(storedPostData));
-  
-      this.post = decryptedData.post;
-  
-      if (decryptedData.images && decryptedData.images.length > 0) {
-        this.images = decryptedData.images;  
-      }
-  
-      if (this.post.posttype === "video") {
-        const videoBlob = this.convertBase64ToBlob(this.post.post, 'video/mp4');
-        this.post.videoUrl = URL.createObjectURL(videoBlob);
-      } else if (this.post.posttype === "audio") {
-        const audioBlob = this.convertBase64ToBlobAudio(this.post.post);
-        this.post.audioUrl = URL.createObjectURL(audioBlob);
-      }
-  
-      this.getfollowingstatus(this.post.userid);
-      return;  
-    }
-  
-    const formData = new FormData();
-    formData.append('postid', this.postid!);
-  
-    const url = this.groupornormalpost === "g" ? `${this.APIURL}get_post_group` : `${this.APIURL}get_post`;
-  
-    this.http.post<any>(url, formData).subscribe({
-      next: (response) => {
-        this.post = response;
-  
-        if (this.post.posttype === "image") {
-          const formDataimage = new FormData();
-          formDataimage.append('postid', this.postid!);
-          const imageUrl = this.groupornormalpost === "g" ? `${this.APIURL}get_images_group` : `${this.APIURL}get_images`;
-  
-          this.http.post<any>(imageUrl, formDataimage).subscribe({
-            next: (imageResponse) => {
-              this.images = imageResponse.map((img: any) =>
-                this.createBlobUrl(img.image, 'image/jpeg')  
-              );
-  
-              const postDataToStore = {
-                post: this.post,
-                images: this.images,  
-              };
-              const encodedPostData = btoa(JSON.stringify(postDataToStore));
-              sessionStorage.setItem(`postdata_${this.postid}`, encodedPostData);
-            },
-            error: (error: HttpErrorResponse) => {
-              console.error('Error loading images!', error);
-            },
-          });
-        } else if (this.post.posttype === "video") {
-          const videoBlob = this.convertBase64ToBlob(this.post.post, 'video/mp4');
-          this.post.videoUrl = URL.createObjectURL(videoBlob);
-        } else if (this.post.posttype === "audio") {
-          const audioBlob = this.convertBase64ToBlobAudio(this.post.post);
-          this.post.audioUrl = URL.createObjectURL(audioBlob);
-        }
-  
-        this.getfollowingstatus(this.post.userid);
-      },
-      error: (error: HttpErrorResponse) => {
-        console.error('There was an error!', error);
-      },
-    });
-  }
+ 
 
 
 

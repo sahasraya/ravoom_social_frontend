@@ -90,7 +90,6 @@ export class SearchResultByEnterComponent  implements OnInit{
  
 
   closeprofilewindow(): void{
-    alert("111111111111111111");
     this.isclickedtoshowuser = false 
     
   }
