@@ -82,7 +82,7 @@
   .post-media img,.image-post-media img, .post-media video ,.linkholder img{
  
     width: 100%;
-    height: 50%;
+    height: 55vh;
     text-align: center;
     display: block;
     object-fit: cover;  

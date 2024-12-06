@@ -30,6 +30,7 @@
  
   max-width: 100%;  
   border-radius: 10px;
+  height: 75vh;
   
 }
 
@@ -77,11 +78,25 @@
   margin-bottom: 10px;
 }
 
-.profile-container img{
+ 
+.profile-image{
   border-radius: 50%;
-  width: 80px;
-  height: 80px;
+  width: 40px;
+  height: 40px;
 }
+.profile-image.spinning {
+  animation: spin 20s linear infinite; 
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg); 
+  }
+  100% {
+    transform: rotate(360deg); /
+  }
+}
+
 .postdetails{
   display: flex;
   flex-direction: column;
@@ -100,15 +115,38 @@
  
 }
 
- .inner1-holder{
+.inner1-holder {
   display: flex;
   flex-direction: row;
-  width: 100%;
   margin: 0 auto;
   justify-content: center;
- 
   align-items: flex-end;
- }
+}
+
+.video-wrapper {
+  position: relative;
+}
+ 
+.overlay-text {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  color: white;
+  font-size: 1em;
+  font-weight: bold;
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+  z-index: 10;
+}
+
+.overlay-text-duration {
+  position: absolute;
+  top: 30px;
+  left: 10px;
+  color: white;
+  font-size: 12px; 
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+  z-index: 10;
+}
 
 
 .functions-btn-holder{
@@ -145,7 +183,7 @@ cursor: pointer;
 }
 .commentscreen-holder {
   overflow-y: scroll;  
-  width:max-content;  
+  width:100vw;  
   scrollbar-width: none; 
   -ms-overflow-style: none; 
 }
@@ -154,15 +192,45 @@ cursor: pointer;
   display: none;  
 }
 
-.viodediscription{
-  max-width: 60vw;
-  display: block;  
+ 
+.video-description {
+  position: absolute;
+  left: 10px;
+  bottom: 70px;
+  right: 10px;
+  max-height: 95px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  z-index: 101;
+  color: #FFFFFF;
   
-  word-wrap: break-word;  
-  overflow-wrap: break-word;  
-  white-space: normal;
-  margin-bottom: 10px;
+  border-radius: 10px;  
+  padding: 10px;  
 }
+
+ 
+.video-description::-webkit-scrollbar {
+  width: 2px;  
+}
+
+.video-description::-webkit-scrollbar-thumb {
+  background-color: #FFFFFF;  
+  border-radius: 10px; 
+}
+
+.video-description::-webkit-scrollbar-track {
+  background-color: #f1f1f1;  
+  border-radius: 10px;  
+}
+
+ 
+
+.see-more {
+  color: blue;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
 .like-icon-holder{
   display: flex;
   flex-direction: column;
@@ -246,8 +314,6 @@ cursor: pointer;
     width: 100vw;
   }
   .video {
-   
- 
     max-width: 95vw;   
     
   }
@@ -255,7 +321,20 @@ cursor: pointer;
   .screen{
     width: 95vw;
   }
-   
+   .viode_inner_holder_pc{
+    margin-top: 60px;
+   }
+   .closeicon[_ngcontent-ng-c3235546419] {
+    padding: 7px;
+    width: 30px;
+    background-color: var(--icon-backgroud-color);
+    border-radius: 50%;
+    position: absolute;
+    top: 70px;
+    right: 5px;
+    cursor: pointer;
+    transition: transform 0.5s, background-color 0.5s;
+}
   
 }
 
