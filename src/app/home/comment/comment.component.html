@@ -51,7 +51,28 @@
     <div class="post-body">
 
       
-      <small class="post-description">{{ post.postdescription }}</small>
+      <div class="post-description-container">
+        <small 
+          class="post-description" 
+          [ngStyle]="{
+            'display': '-webkit-box',
+            '-webkit-line-clamp': showFullDescription ? 'unset' : maxLines,
+            '-webkit-box-orient': 'vertical',
+            'overflow': 'hidden'
+          }">
+          {{ post.postdescription }}
+        </small>
+        
+        <button 
+          *ngIf="post.postdescription && isTextOverflowing()"
+          class="see-more-btn" 
+          (click)="toggleDescription()">
+          {{ showFullDescription ? 'See Less' : 'See More' }}
+        </button>
+      </div>
+
+
+      
       <p class="filepath">{{post.filepath}}</p>
    
       <a [href]="post.thelink" target="_blank">{{post.thelink}}</a>

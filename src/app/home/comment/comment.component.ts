@@ -63,6 +63,9 @@ export class CommentComponent implements OnInit {
   selectedImage: string | ArrayBuffer | null = null;
   showcommentimage: boolean = false;
   selectedCommentImage: string | null = null;
+  maxLines: number = 3;
+  showFullDescription: boolean = false;
+
 
   constructor(private commentPostStateService:CommentPostStateService, private route: ActivatedRoute, private http: HttpClient, private fb: FormBuilder, private router: Router,private cdref: ChangeDetectorRef) {
     this.commentForm = this.fb.group({
@@ -97,6 +100,20 @@ export class CommentComponent implements OnInit {
     this.getComments();
   }
   
+  isTextOverflowing(): boolean {
+  const element = document.querySelector('.post-description');
+  if (!element) return false;
+  
+    const height = element.clientHeight;
+    console.log(height);
+  return height > 50;
+}
+
+  toggleDescription(): void {
+    this.showFullDescription = !this.showFullDescription;
+  }
+
+
   async getPostData(): Promise<void> {
     const cacheKey = `postdata_${this.postid}`;
     const cacheData = this.commentPostStateService.getState(cacheKey);

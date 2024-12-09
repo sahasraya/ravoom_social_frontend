@@ -131,7 +131,6 @@ export class FeedComponent implements OnInit {
   
           this.offset += this.limit;
   
-          console.log(this.offset);
           this.nomorepoststoload = false;
         } else {
           this.nomorepoststoload = true;
@@ -195,7 +194,7 @@ export class FeedComponent implements OnInit {
     const scrollHeight = element.scrollHeight;
     const clientHeight = element.clientHeight;
   
-    if (scrollHeight - scrollPosition <= clientHeight + 500 && !this.loading && !this.nomorepoststoload) {
+    if (scrollHeight - scrollPosition <= clientHeight + 1000 && !this.loading && !this.nomorepoststoload) {
       this.saveScrollPosition();
   
       if (this.selectedOption === "") {

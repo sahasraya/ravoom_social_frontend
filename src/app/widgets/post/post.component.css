@@ -516,7 +516,7 @@ max-width: 100%;
 }
 
 .postdiscription{
-  max-width: 680px;
+  max-width: 100%;
   display: block;  
   
   word-wrap: break-word;  

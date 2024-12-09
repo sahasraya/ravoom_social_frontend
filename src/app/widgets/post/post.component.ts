@@ -113,7 +113,11 @@ export class PostComponent implements OnInit {
       this.audioUrl = URL.createObjectURL(blob);
     } else if (this.post.posttype === 'text' && !this.profileImageUrl) {
       this.profileImageUrl = this.createBlobUrl(this.post.userprofile, 'image/jpeg');
-    } else if (this.post.posttype === 'link' && !this.profileImageUrl) {
+    }
+    else if (this.post.posttype === 'video' && !this.profileImageUrl) {
+      this.profileImageUrl = this.createBlobUrl(this.post.userprofile, 'image/jpeg');
+    }
+    else if (this.post.posttype === 'link' && !this.profileImageUrl) {
       this.profileImageUrl = this.createBlobUrl(this.post.userprofile, 'image/jpeg');
     } else if (this.post.posttype === 'group') {
       if (!this.profileImageUrl) {
