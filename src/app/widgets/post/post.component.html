@@ -42,13 +42,20 @@
 
 
 
+  
 
 
 
    <div class="reporting-screen" *ngIf="showreportscreenBool" >
     <img src="../../../assets/images/close.png" alt="" class="closeicon" (click)="closeReportScreen()" >
-    <app-reportting [type]="postreport"></app-reportting>
+    <app-reportting [type]="postreport" [selectedreportPostId]="selectedreportPostId" [selectedrepostpostowneruid]="selectedrepostpostowneruid"></app-reportting>
    </div>
+
+
+
+
+
+
 
   <div class="post-header">
     
@@ -90,7 +97,7 @@
                         <img src="../../../assets/images/delete.png" alt="" >
                         Delete
                       </li>
-                      <li (click)="showreportscreen()" *ngIf="this.userid !=''">  <img src="../../../assets/images/complain.png" alt="" *ngIf="this.userid !=''"> Report</li>
+                      <li (click)="showreportscreen(post)" *ngIf="this.userid !=''">  <img src="../../../assets/images/complain.png" alt="" *ngIf="this.userid !=''"> Report</li>
                       <li (click)="savepost($event,post.postid,post)" *ngIf="this.userid !=''">  <img src="../../../assets/images/save.png" alt="" >   {{ post.isSaved ? 'Remove from favorites' : 'Save' }}</li>
 
 

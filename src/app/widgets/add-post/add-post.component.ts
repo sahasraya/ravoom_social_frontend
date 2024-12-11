@@ -1,11 +1,10 @@
 import { Component, EventEmitter, Inject, Input, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'; 
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, Router, RouterModule, RouterOutlet } from '@angular/router';
+import {  RouterModule } from '@angular/router';
 import { HttpClient, HttpClientModule, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgxLinkPreviewModule } from 'ngx-link-preview';
-import { isPlatformBrowser } from '@angular/common';  
 import { PLATFORM_ID } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { PreLoaderComponent } from '../pre-loader/pre-loader.component';
@@ -168,8 +167,6 @@ export class AddPostComponent {
       next: (data) => {
         this.linkPreviewData = data;
   
-        // Log the preview data, including the image URL
-        console.log("linkPreviewData:", this.linkPreviewData);
   
         if (this.linkPreviewData.img) {
           this.isNoImage = false;

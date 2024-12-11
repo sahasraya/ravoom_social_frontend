@@ -41,7 +41,6 @@ constructor( private searchService:SearchService, private http:HttpClient,privat
 
 ngOnInit(): void {
   const cachedPostsData = this.searchService.getState('searchedposts');
-  console.log('Cached posts data:', cachedPostsData);
 
   if (cachedPostsData) {
     this.popularPosts = cachedPostsData;

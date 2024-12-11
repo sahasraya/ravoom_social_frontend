@@ -27,7 +27,7 @@ export class PostComponent implements OnInit {
   @Output() userBlocked = new EventEmitter<number>();
 
 
-  postreport = 'postreport'; 
+  postreport:string = 'postreport'; 
   imageUrl: string = '';
   profileImageUrl: string = '';
   groupImageUrl: string = '';
@@ -50,7 +50,9 @@ export class PostComponent implements OnInit {
   likedMembers:any[]=[];
   groupid:string="";
   favtext:string="";
-  likedornottext :string = "";
+  likedornottext: string = "";
+  selectedreportPostId: string = '';
+  selectedrepostpostowneruid: string = "";
   offset = 0;
   limit = 10;
   loadingMoreMembers = false;
@@ -958,8 +960,10 @@ closememebrslikeddiv(e:Event):void{
 
 
 
-  showreportscreen():void{
-  this.showreportscreenBool=true;
+  showreportscreen(post:any):void{
+    this.showreportscreenBool = true;
+    this.selectedreportPostId = post.postid;  
+    this.selectedrepostpostowneruid = post.userid;
   }
   closeReportScreen():void{
   this.showreportscreenBool=false;

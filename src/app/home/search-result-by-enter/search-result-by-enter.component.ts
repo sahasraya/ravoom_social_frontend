@@ -263,9 +263,73 @@ async getTextLink(searchtext: string) {
 
 
 
+async getVideos(searchtext: string): Promise<void> {
+ 
+  const formData = new FormData();
+  formData.append('searchtext', searchtext);
+  formData.append('limit', this.limitvideo.toString());
+  formData.append('offset', this.offsetvideo.toString());
+
+  this.http.post<any>(`${this.APIURL}search-enter-press-result`, formData).subscribe({
+    next: response => {
+   
+      this.responseObject = response;
+
+      if (this.offsetvideo === 0) {
+
+        this.videoPosts = [];
+      }
+
+      
+      this.responseObject.forEach((post: any) => {
+     
+        if (post.userprofile) {
+          post.userprofileUrl = this.createBlobUrl(post.userprofile, 'image/jpeg'); 
+        }
+
+        if (post.post) {
+        
+          const base64Data = post.post;
+            const blob = this.convertBase64ToBlob(base64Data, 'video/mp4');
+            post.postUrl = URL.createObjectURL(blob);
+            
+        }
+
+  
+        this.videoPosts.push(post);
+        this.moreDataAvailablevideo = response.length === this.limitvideo;
+        
+        
+    
+        if(this.videoPosts.length > 0){
+
+          this.showImagetextLinkPostsBool = false;
+          this.showAudioPostsBool = false;
+          this.showImagePostsBool = false;
+          this.showTextPostsBool = false;
+          this.showLinkPostsBool = false;
+          this.showVideoPostsBool = true ;
+          this.showTextLinkPostsBool = false;
+          this.showUserBool =false;
+          this.showGroupBool= false;
+  
+        }
 
 
-async getImageTextImageLink(searchtext: string, clearPosts: boolean = false) {
+      });
+
+
+
+    },
+    error: (error: HttpErrorResponse) => {
+      console.error('There was an error!', error);
+    }
+  });
+}
+
+  
+
+async getImageTextImageLink(searchtext: string, clearPosts: boolean = false): Promise<void> {
   const formData = new FormData();
   formData.append('searchtext', searchtext);
   formData.append('limit', this.limittextimagelink.toString());
@@ -274,25 +338,60 @@ async getImageTextImageLink(searchtext: string, clearPosts: boolean = false) {
   return new Promise<void>((resolve, reject) => {
     this.http.post<any>(`${this.APIURL}search-enter-press-result-image-link-text`, formData).subscribe({
       next: (response: any) => {
-        // Clear the array before adding new posts each time
-        this.ImageTextLinkPosts.length = 0; // This clears the array
+        if (clearPosts) {
+          this.ImageTextLinkPosts = [];
+        }
 
-        // Append the new posts to the existing array
-        this.ImageTextLinkPosts.push(...response);
+        const uniquePosts = this.filterDuplicatePosts(response);
 
-        // Check if more data is available
+        const processedPosts = this.processPosts(uniquePosts);
+
+        this.ImageTextLinkPosts.push(...processedPosts);
+
+
         this.moreDataAvailabletextimagelink = response.length === this.limittextimagelink;
 
         resolve();
       },
       error: (error: HttpErrorResponse) => {
         console.error('There was an error!', error);
+
         reject(error);
       }
     });
   });
 }
 
+private filterDuplicatePosts(posts: any[]): any[] {
+  const existingPostIds = new Set(this.ImageTextLinkPosts.map(post => post.postid));  
+  return posts.filter(post => !existingPostIds.has(post.postid));  
+}
+
+private processPosts(posts: any[]): any[] {
+  const processedPosts: any[] = [];
+  posts.forEach(post => {
+    const existingPost = processedPosts.find(p => p.postid === post.postid);
+
+    if (existingPost) {
+      if (post.image) {
+        existingPost.images.push(post.image);
+      }
+    } else {
+      const newPost = {
+        ...post,
+        images: post.posttype === 'image' && post.image ? [post.image] : []
+      };
+      processedPosts.push(newPost);
+    }
+  });
+
+  return processedPosts;   
+}
+
+
+  
+  
+  
 loadMoreTextImageLink(e: Event) {
   e.preventDefault();
   e.stopPropagation();
@@ -319,10 +418,7 @@ performNewSearch(searchtext: string) {
 
 
 async getUser(searchtext: string): Promise<void> {
-  if (!this.moreDataAvailableuser) {
-    console.log('No more data to load.');
-    return;
-  }
+  
 
   const formData = new FormData();
   formData.append('searchtext', searchtext);
@@ -406,28 +502,7 @@ async getUser(searchtext: string): Promise<void> {
   
 
 
-  private processPosts(posts: any[]): any[] {
-    const processedPosts: any[] = [];
-  
-    posts.forEach(post => {
    
-      const existingPost = processedPosts.find(p => p.postid === post.postid);
-
-      if (existingPost) {
-        if (post.image) {
-          existingPost.images.push(post.image);
-        }
-      } else {
-        const newPost = {
-          ...post,
-          images: post.posttype === 'image' && post.image ? [post.image] : []
-        };
-        processedPosts.push(newPost);
-      }
-    });
-
-    return processedPosts;
-  }
 
 
 
@@ -436,74 +511,8 @@ async getUser(searchtext: string): Promise<void> {
 
 
 
-
-  async getVideos(searchtext: string): Promise<void> {
- 
-    const formData = new FormData();
-    formData.append('searchtext', searchtext);
-    formData.append('limit', this.limitvideo.toString());
-    formData.append('offset', this.offsetvideo.toString());
-
-    this.http.post<any>(`${this.APIURL}search-enter-press-result`, formData).subscribe({
-      next: response => {
-     
-        this.responseObject = response;
-
-        if (this.offsetvideo === 0) {
-  
-          this.videoPosts = [];
-        }
-
-        
 
  
-
-        this.responseObject.forEach((post: any) => {
-       
-          if (post.userprofile) {
-            post.userprofileUrl = this.createBlobUrl(post.userprofile, 'image/jpeg'); 
-          }
-
-          if (post.post) {
-          
-            const base64Data = post.post;
-              const blob = this.convertBase64ToBlob(base64Data, 'video/mp4');
-              post.postUrl = URL.createObjectURL(blob);
-              
-
-              
-          }
-
-    
-          this.videoPosts.push(post);
-          this.moreDataAvailablevideo = response.length === this.limitvideo;
-      
-          if(this.videoPosts.length > 0){
-
-            this.showImagetextLinkPostsBool = false;
-            this.showAudioPostsBool = false;
-            this.showImagePostsBool = false;
-            this.showTextPostsBool = false;
-            this.showLinkPostsBool = false;
-            this.showVideoPostsBool = true ;
-            this.showTextLinkPostsBool = false;
-            this.showUserBool =false;
-            this.showGroupBool= false;
-    
-          }
-
-
-        });
-
-
-
-      },
-      error: (error: HttpErrorResponse) => {
-        console.error('There was an error!', error);
-      }
-    });
-  }
-
 
 
 

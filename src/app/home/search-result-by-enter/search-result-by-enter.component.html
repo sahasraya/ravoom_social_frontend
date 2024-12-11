@@ -1,6 +1,6 @@
 <div class="main-outer-holder-search">
   <div class="navinationbuttonholder">
-    <button (click)="showTextImageLinkPosts()"  [class.selected]="showImagetextLinkPostsBool" class="navigationsbuttons">Posts ({{ImageTextLinkPosts.length}})</button>
+    <button (click)="showTextImageLinkPosts()"  [class.selected]="showImagetextLinkPostsBool" class="navigationsbuttons">All ({{ImageTextLinkPosts.length}})</button>
   <button (click)="showAudioPosts()"  [class.selected]="showAudioPostsBool" class="navigationsbuttons">Audios ({{audioPosts.length}})</button>
   <button (click)="showVideoPosts()"  [class.selected]="showVideoPostsBool" class="navigationsbuttons">Videos ({{videoPosts.length}})</button>
   <button (click)="showTextLinkPosts()"  [class.selected]="showTextLinkPostsBool" class="navigationsbuttons">Texts & Links ({{TextLinkPosts.length}})</button>
@@ -22,7 +22,8 @@
     <div class="posts-container" *ngIf="ImageTextLinkPosts.length > 0"> 
    
       <div *ngFor="let post of ImageTextLinkPosts; let i = index">
-        <app-post [post]="post" ></app-post>
+ 
+        <app-post [post]="post"></app-post>
       </div>
   
      
@@ -58,7 +59,7 @@
   
   
       
-      <div class="div-button-holder" *ngIf="videoPosts.length > 0">
+      <div class="div-button-holder" *ngIf="moreDataAvailablevideo">
         <span (click)="loadMoreVideos($event)" class="loadmorebutton"  >Load More</span>
       </div>
   
@@ -112,119 +113,7 @@
   
   
   
-  
-  
-  <!-- <div class="image-post-holder" *ngIf="showImagePostsBool">
-      <div *ngFor="let post of imagePosts" class="main-outer-holder">
-  
-      
-              <div class="inner-holder">
-                  <div class="profile-image-holder">
-                      <img *ngIf="post.userprofileUrl" [src]="post.userprofileUrl" alt="Profile Image" class="profileimage">
-      
-                       <div class="details">
-                          <p>{{ post.username }}</p>
-                          <p>{{ calculateTimeAgo(post.posteddate) }}</p>
-                       </div>
-                  </div>
-      
-                  <img *ngIf="post.postUrl" [src]="post.postUrl" alt="Post Image" class="post">
-              </div>
-  
-  
-              <p>{{ post.postdescription }}</p>
-   
-        
-      </div>
-  
-  
-  
-      <div class="nodatamessage" *ngIf="imagePosts.length==0">
-        <p>no audio files found</p>
-      </div>
-  
-    </div> -->
-    
-    
-  
-  
-  
-  
-  
-  
-  
-  
-    <!-- <div class="image-post-holder" *ngIf="showLinkPostsBool">
-      <div *ngFor="let post of linkPosts" class="main-outer-holder">
-  
-      
-              <div class="inner-holder">
-                  <div class="profile-image-holder">
-                      <img *ngIf="post.userprofileUrl" [src]="post.userprofileUrl" alt="Profile Image" class="profileimage">
-      
-                       <div class="details">
-                          <p>{{ post.username }}</p>
-                          <p>{{ calculateTimeAgo(post.posteddate) }}</p>
-                       </div>
-                  </div>
-      
-                  <div  class="previewdiv">
-                    <h3>{{ post.filepath }}</h3>
-                    
-                    <img [src]="post.textbody" alt="{{ post.title }}" class="post">
-                    <a [href]="post.thelink" target="_blank">{{ post.thelink }}</a>
-                  </div>
-  
-              </div>
-  
-  
-              <p>{{ post.postdescription }}</p>
-   
-        
-      </div>
-  
-  
-  
-      <div class="nodatamessage" *ngIf="linkPosts.length==0">
-        <p>no link files found</p>
-      </div>
-  
-    </div> -->
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  <!-- <div class="text-post-holder" *ngIf="showTextPostsBool">
-    <div *ngFor="let post of textPosts" class="main-outer-holder">
-      <div class="inner-holder">
-        <div class="profile-image-holder">
-            <img *ngIf="post.userprofileUrl" [src]="post.userprofileUrl" alt="Profile Image" class="profileimage">
-  
-             <div class="details">
-                <p>{{ post.username }}</p>
-                <p>{{ calculateTimeAgo(post.posteddate) }}</p>
-             </div>
-        </div>
-  
-       
-    </div>
-    <div class="inner-text-post-holder" [style.background-color]="post.textcolor">
-      <p >{{ post.textbody }}</p>
-    </div>
-    
-    </div>
-  
-    <div class="nodatamessage" *ngIf="textPosts.length==0">
-      <p>no text files found</p>
-    </div>
-   
-  </div> -->
-  
+ 
   
   
   
@@ -250,40 +139,7 @@
     </div>
   
    
-  
-  
-    <!-- <div *ngFor="let post of TextLinkPosts" class="main-outer-holder">
-      <div class="inner-holder">
-        <div class="profile-image-holder">
-          <img *ngIf="post.userprofileUrl" [src]="post.userprofileUrl" alt="Profile Image" class="profileimage">
-          <div class="details">
-            <p>{{ post.username }}</p>
-            <p>{{ calculateTimeAgo(post.posteddate) }}</p>
-          </div>
-        </div>
-  
-    
-    
-  
-        <ng-container *ngIf="post.posttype === 'text'">
-          <div class="inner-text-post-holder" [style.background-color]="post.textcolor">
-            <p>{{ post.textbody }}</p>
-          </div>
-        </ng-container>
-  
-        <ng-container *ngIf="post.posttype === 'link'">
-          <div class="previewdiv">
-            <h3>{{ post.filepath }}</h3>
-            <img *ngIf="post.textbody" [src]="post.textbody" alt="{{ post.title }}" class="post">
-            <a [href]="post.thelink" target="_blank">{{ post.thelink }}</a>
-          </div>
-        </ng-container>
-  
-      </div>
-  
-     
-      <p>{{ post.postdescription }}</p>
-    </div> -->
+ 
   
    
     

@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClient, HttpClientModule, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ActivatedRoute, RouterModule, RouterOutlet } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule, RouterOutlet } from '@angular/router';
 import { environment } from '../../../environments/environment';
 
 @Component({
@@ -50,7 +50,7 @@ export class SettingsComponent implements OnInit{
 
 
 
-  constructor(private fb: FormBuilder, private http: HttpClient, private route: ActivatedRoute) {
+  constructor(private fb: FormBuilder, private http: HttpClient, private route: ActivatedRoute,private router: Router) {
     this.updateForm = this.fb.group({
       username: ['', Validators.required],
       emailaddress: ['', [Validators.required, Validators.email]],
@@ -62,15 +62,13 @@ export class SettingsComponent implements OnInit{
   ngOnInit(): void {
     this.userid = this.route.snapshot.paramMap.get('uid');
     this.getUserDetails();
-
-    
  
-
-
   }
 
 
- 
+  navigatetoresetscreen(): void{
+    this.router.navigate(['/home/reset-password']);
+  }
 
   showaccount():void{
   this.showaccountBool=true;

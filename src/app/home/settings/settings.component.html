@@ -24,19 +24,25 @@
 
   
 
-  <label for="mediafile" class="file-input-label">Upload profile</label>
-  <input type="file" class="updatebackgroundimage" id="mediafile" (change)="onProfileImageSelected($event)" style="display: none;">
+ 
+  <input type="file" class="updatebackgroundimage" id="mediafile" (change)="onProfileImageSelected($event)" style="display: none;" accept="image/*">
 
   <div class="image-holder" *ngIf="!isprofileimageselected">
-    <img *ngIf="user?.profileimage" [src]="'data:image/jpeg;base64,' + user?.profileimage" alt="Profile Image">
+  
+    <label for="mediafile" class="file-input-label"><img src="../../../assets/images/camera.png" alt=""></label>
+    <img *ngIf="user?.profileimage" [src]="'data:image/jpeg;base64,' + user?.profileimage" class="Profile-Image" alt="Profile Image">
 
   </div>
-
-  <img *ngIf="profileimage && isprofileimageselected" [src]="profileimage" alt="Profile Image"  >
-
  
-   <a routerLink="/home/reset-password" class="resetpassword">reset-password</a>
+  <img *ngIf="profileimage && isprofileimageselected" [src]="profileimage" alt="Profile Image"  class="Profile-Image">
+ 
+ 
+ <div class="bottom-btn-holder">
+
+  <button type="button"  (click)="navigatetoresetscreen()">Reset Password</button>
   <button type="submit"     *ngIf="updateForm.valid ">Update</button>
+
+ </div>
 </form>
 
 
@@ -45,8 +51,4 @@
 
 
 
-
-
-<div class="showprofilesettings" *ngIf="showprofileBool">
-<h1>dwdad</h1>
-</div>
+ 

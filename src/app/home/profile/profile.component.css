@@ -296,7 +296,13 @@ background-color: rgba(43,149,236, 0.1);
 color: rgb(43,149,236);
 border: 1px solid rgb(43,149,236);
 }
-
+.groupbuttonholder{
+  display: flex;
+  flex-direction: row;
+}
+.groupbuttonholder button {
+  margin: 10px;
+}
 .joinbtn{
   color: white;
   font-size: 15px;

@@ -26,6 +26,7 @@ export class SearchComponent implements OnInit{
   searchText: string = '';
   isFacoused: boolean = false;
   isloading: boolean = false;
+  ispressentere: boolean = true;
 
   searchUsers: any=[];
  
@@ -48,21 +49,22 @@ export class SearchComponent implements OnInit{
   async searchResult(): Promise<void> {
     this.isFacoused = false;
   
-    if (this.isloading) return; // Prevent querying if already loading
-    this.isloading = true; // Set loading to true when starting query
+    if (this.isloading) return;  
+    this.isloading = true; 
+    this.ispressentere = true;
   
     const formData = new FormData();
     formData.append('query', this.searchText);
   
-    // Send HTTP request
+ 
     this.http.post<any>(`${this.APIURL}search-result`, formData).subscribe({
       next: response => {
-        this.isloading = false;  // Stop loading when response is received
+        this.isloading = false;   
         this.user = response.users;
         this.group = response.groups;
       },
       error: (error: HttpErrorResponse) => {
-        this.isloading = false;  // Stop loading on error
+        this.isloading = false;   
         console.error('There was an error!', error);
       }
     });
@@ -115,6 +117,7 @@ this.isFacoused = true;
       const query = this.searchText;
 
       this.searchResult();
+      this.ispressentere = false;
  
  
       this.router.navigate(['/home/result', query]);

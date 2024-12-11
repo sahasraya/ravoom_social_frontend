@@ -1,19 +1,23 @@
 import { CommonModule } from '@angular/common';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Component, Input, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-
+import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { environment } from '../../../environments/environment';
 @Component({
   selector: 'app-reportting',
   standalone: true,
-  imports: [CommonModule,ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './reportting.component.html',
-  styleUrl: './reportting.component.css'
+  styleUrls: ['./reportting.component.css']
 })
-export class ReporttingComponent implements OnInit{
+export class ReporttingComponent implements OnInit {
   @Input() type: string | undefined;
+  @Input() selectedreportPostId: string | undefined;
+  @Input() selectedrepostpostowneruid: string | undefined;
 
   reportFormGroup: FormGroup;
-  showNudityBool: boolean = false; 
+  selectedOption: string | undefined;
+  showNudityBool: boolean = false;
   showBullyingBool: boolean = false;
   showSelfInjuryBool: boolean = false;
   showViolenceBool: boolean = false;
@@ -23,21 +27,22 @@ export class ReporttingComponent implements OnInit{
   showFalseInfoBool: boolean = false;
   showIntellectualPropertyBool: boolean = false;
   showNotSeeBool: boolean = false;
-  showSecondPage:boolean=false;
-  secondScreenOptioValueSelected:boolean =false;
-  reporttype:string="";
+  showSecondPage: boolean = false;
+  secondScreenOptioValueSelected: boolean = false;
+  reporttype: string = "";
 
-  constructor(private fb: FormBuilder) {
-    this.reportFormGroup = this.fb.group({
-        
-    });
+  APIURL = environment.APIURL;
+
+  constructor(private fb: FormBuilder,private http:HttpClient) {
+    this.reportFormGroup = this.fb.group({});
   }
+
   ngOnInit(): void {
-   if(this.type =="postreport"){
-     this.reporttype="post";
-   }else if(this.type =="comment"){
-    this.reporttype="comment";
-   }
+    if (this.type === "postreport") {
+      this.reporttype = "post";
+    } else if (this.type === "comment") {
+      this.reporttype = "comment";
+    }
   }
 
   chackradiovalue(event: Event): void {
@@ -90,26 +95,45 @@ export class ReporttingComponent implements OnInit{
     this.showFalseInfoBool = false;
     this.showIntellectualPropertyBool = false;
     this.showNotSeeBool = false;
-    this.showSecondPage=true;
+    this.showSecondPage = true;
   }
 
   chackradiovalueoption(event: Event): void {
     const inputElement = event.target as HTMLInputElement;
     if (inputElement && inputElement.type === 'radio') {
-   
-      this.secondScreenOptioValueSelected= true;
-      // alert(`Selected additional option: ${inputElement.value}`);
+      this.secondScreenOptioValueSelected = true;
+      this.selectedOption = inputElement.value;
     }
   }
 
   async onreportsubmit(): Promise<void> {
-    this.showSecondPage=false;
+    this.showSecondPage = false;
+    if (this.selectedOption && this.selectedreportPostId && this.selectedrepostpostowneruid) {
+
+      const formData = new FormData();
+      formData.append('selectedOption', this.selectedOption);
+      formData.append('selectedreportPostId', this.selectedreportPostId);
+      formData.append('selectedrepostpostowneruid', this.selectedrepostpostowneruid);
+    
+      this.http.post<any>(`${this.APIURL}report_post`, formData).subscribe({
+        next: (reponse:any) => {
+          if (reponse.message == "Report submitted successfully, email sent.") {
+            alert("Your report is submited");
+         }
+    
+    
+          
+        },
+        error: (error: HttpErrorResponse) => {
+          console.error('Error fetching link preview:', error);
+        }
+      });
+      
+    }
   }
 
-
-  goback():void{
-    this.showSecondPage=false;
-    this.secondScreenOptioValueSelected= false;
-
+  goback(): void {
+    this.showSecondPage = false;
+    this.secondScreenOptioValueSelected = false;
   }
 }

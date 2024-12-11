@@ -23,6 +23,12 @@
 
       <button (click)="showblockedlist()" [class.selected]="showblockedlistBool" class="navigationsbuttons" *ngIf="userid == userfrommethod?.userid">Blocked ({{blockedusers.length}})</button>
 
+
+      <button (click)="showgrouplist()" [class.selected]="showgrouplistBool" class="navigationsbuttons" *ngIf="userid == userfrommethod?.userid">Groups  </button>
+
+
+      
+
     </div>
 
 
@@ -252,6 +258,77 @@
       </div>
       
 
+
+
+
+
+
+
+
+      <div *ngIf="showgrouplistBool" class="posts-container">
+        <div   class="groupbuttonholder">
+
+           
+      <button (click)="showmygrouplist()" [class.selected]="showmygrouplistBool" class="navigationsbuttons" >My Groups ({{mygroups.length}})  </button>
+
+      <button (click)="showfollowinggrouplist()" [class.selected]="showfollowinggrouplistBool" class="navigationsbuttons"  >Following  ({{iamfollowinggroups.length}}) </button>
+        </div>
+
+
+        <div class="my-group-list" *ngIf="showmygrouplistBool">
+
+          <div *ngFor="let group of mygroups" class="user-card">
+
+            <div class="user-profile">
+              <img *ngIf="group.groupimage" [src]="group.groupimage" alt="Profile Image" class="userprofileimage">
+              <div class="user-details">
+               <div>
+                <a [routerLink]="['/home/group', group.groupid]">{{ group.groupname }}</a>
+                <small ><b> : {{ group.createdate  | date: 'mediumDate' }}</b></small>
+  
+               </div>
+                <small  >{{ group.createdate | date: 'shortTime' }}</small>
+              </div>
+  
+               
+              
+            </div>
+  
+  
+  
+          </div>
+
+        </div>
+
+        <div class="following-group-list" *ngIf="showfollowinggrouplistBool">
+          <div *ngFor="let group of iamfollowinggroups" class="user-card">
+
+            <div class="user-profile">
+              <img *ngIf="group.groupimage" [src]="group.groupimage" alt="Profile Image" class="userprofileimage">
+              <div class="user-details">
+               <div>
+                <a [routerLink]="['/home/group', group.groupid]">{{ group.groupname }}</a>
+               
+  
+               </div>
+               <small > following </small>
+              </div>
+  
+               
+              
+            </div>
+  
+  
+  
+          </div>
+        </div>
+
+ 
+          <!-- <div class="noiamfollowinguserlist" *ngIf="blockedusers.length == 0">
+            <p>No Blocked Users</p>
+          </div> -->
+
+      </div>
 
 
 

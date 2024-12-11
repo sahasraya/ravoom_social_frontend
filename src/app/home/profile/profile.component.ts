@@ -48,6 +48,9 @@ export class ProfileComponent   {
   showoptionsmenu:boolean=false;
   showfavelistBool:boolean = false;
   showblockedlistBool:boolean = false;
+  showgrouplistBool:boolean = false;
+  showmygrouplistBool:boolean = true;
+  showfollowinggrouplistBool:boolean = false;
   loading = false;
   loadingfav = false;
   showiamfolloeduserlistBool:boolean = false;
@@ -61,6 +64,8 @@ export class ProfileComponent   {
   iamfolloweduserslist: any[] = [];
   faveposts: any[] = [];
   blockedusers: any[] = [];
+  mygroups: any[] = [];
+  iamfollowinggroups: any[] = [];
 
   constructor( private profileStateService:ProfileStateService, private http: HttpClient, private route: ActivatedRoute,private cdref: ChangeDetectorRef,private router:Router) { }
 
@@ -89,6 +94,8 @@ export class ProfileComponent   {
         this.getfavList(this.userid);
         this.getfollowingstatus(this.getfrommethoduserid);
         this.getblockedlist(this.userid);
+        this.getmygrouplist(this.userid);
+        this.getiamfollowinggrouplist(this.userid);
     }  
     
       else {  
@@ -130,14 +137,13 @@ export class ProfileComponent   {
   }
   async unblockuser(blockeduserid: string): Promise<void> {
     const formData = new FormData();
-    formData.append('blockeduserid', blockeduserid); // Remove extra space after 'blockeduserid'
+    formData.append('blockeduserid', blockeduserid);  
   
     this.http.post<any>(`${this.APIURL}remove_blocked_user`, formData).subscribe({
       next: (response: any) => {
-        // Use '==' for comparison instead of '='
         if (response.message === "removed") {
           alert("User unblocked successfully");
-          this.getblockedlist(this.userid); // Refresh the list after unblocking
+          this.getblockedlist(this.userid);  
         }
       },
       error: (error: HttpErrorResponse) => {
@@ -165,6 +171,52 @@ export class ProfileComponent   {
       console.error('There was an error!', error);
     } 
   }
+
+  async getmygrouplist(userid: string): Promise<void> {
+    const formDataUser = new FormData();
+    formDataUser.append('userid', userid); 
+  
+    try {
+      const response: any = await this.http.post<any[]>(`${this.APIURL}get_my_group_list`, formDataUser).toPromise();
+      if (response && response.serialized_groups) {
+        this.mygroups = response.serialized_groups;   
+  
+        this.mygroups.forEach(group => {
+          if (group.groupimage) {
+            group.groupimage = this.createBlobUrl(group.groupimage, 'image/jpeg');  
+          }
+        });
+   
+      }
+    } catch (error) {
+      console.error('There was an error!', error);
+    }
+  }
+  
+  async getiamfollowinggrouplist(userid: string): Promise<void> {
+    const formDataUser = new FormData();
+    formDataUser.append('userid', userid);   
+  
+    try {
+      const response: any = await this.http.post<any[]>(`${this.APIURL}get_iamfollowing_group_list`, formDataUser).toPromise();
+      
+      if (response && response.serialized_my_follwoing_groups) {
+        this.iamfollowinggroups = response.serialized_my_follwoing_groups;    
+    
+        this.iamfollowinggroups.forEach(group => {
+          if (group.groupimage) {
+            group.groupimage = this.createBlobUrl(group.groupimage, 'image/jpeg');  
+          }
+        });
+        
+ 
+      }
+    } catch (error) {
+      console.error('There was an error!', error);   
+    }
+  }
+  
+
 
   processProfilePostsdata(): void { 
 
@@ -585,6 +637,7 @@ showfeed():void{
   this.showiamfollowinguserlistBool = false;
   this.showfavelistBool = false;
   this.showblockedlistBool = false;
+  this.showgrouplistBool = false;
 }
  
 
@@ -594,6 +647,7 @@ showiamfollowinguserlist():void{
   this.showiamfollowinguserlistBool = true;
   this.showfavelistBool = false;
   this.showblockedlistBool = false;
+  this.showgrouplistBool = false;
 
 }
 
@@ -603,6 +657,7 @@ showiamfolloeduserlist():void{
   this.showiamfollowinguserlistBool = false;
   this.showfavelistBool = false;
   this.showblockedlistBool = false;
+  this.showgrouplistBool = false;
 
 }
 showfavelist():void{
@@ -611,6 +666,7 @@ showfavelist():void{
   this.showiamfollowinguserlistBool = false;
   this.showfavelistBool = true;
   this.showblockedlistBool = false;
+  this.showgrouplistBool = false;
   }
   
   showblockedlist():void{
@@ -618,9 +674,28 @@ showfavelist():void{
     this.showblockedlistBool = true;
     this.showiamfolloeduserlistBool = false;
     this.showiamfollowinguserlistBool = false;
-    this.showfavelistBool=false;
+    this.showfavelistBool = false;
+    this.showgrouplistBool = false;
   }
 
+  showgrouplist():void{
+    this.showfeedBool = false;
+    this.showblockedlistBool = false;
+    this.showiamfolloeduserlistBool = false;
+    this.showiamfollowinguserlistBool = false;
+    this.showfavelistBool = false;
+    this.showgrouplistBool = true;
+  }
+
+  showmygrouplist(): void{
+    this.showmygrouplistBool = true;
+    this.showfollowinggrouplistBool = false;
+    
+  }
+  showfollowinggrouplist(): void{
+    this.showmygrouplistBool = false;
+    this.showfollowinggrouplistBool = true;
+  }
 
 
  
