@@ -283,7 +283,7 @@
               <img *ngIf="group.groupimage" [src]="group.groupimage" alt="Profile Image" class="userprofileimage">
               <div class="user-details">
                <div>
-                <a [routerLink]="['/home/group', group.groupid]">{{ group.groupname }}</a>
+                <a [routerLink]="['/home/group', group.groupid]" class="groupname">{{ group.groupname }}</a>
                 <small ><b> : {{ group.createdate  | date: 'mediumDate' }}</b></small>
   
                </div>
@@ -293,11 +293,13 @@
                
               
             </div>
-  
+            
   
   
           </div>
-
+          <div class="noiamfollowinguserlist" *ngIf="mygroups.length == 0">
+            <p>No My Groups</p>
+          </div>
         </div>
 
         <div class="following-group-list" *ngIf="showfollowinggrouplistBool">
@@ -321,6 +323,12 @@
   
   
           </div>
+
+          <div class="noiamfollowinguserlist" *ngIf="iamfollowinggroups.length == 0">
+            <p>No Following Groups</p>
+          </div>
+
+
         </div>
 
  

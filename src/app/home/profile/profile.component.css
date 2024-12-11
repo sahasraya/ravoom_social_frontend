@@ -319,6 +319,14 @@ border: 1px solid rgb(43,149,236);
   background-color: var(--primary-faded);
   color: var(--primarycolor);
 }
+.groupname {
+  display: inline-block;       /* Ensures it behaves like a block but takes up only as much space as its content */
+  max-width: 300px;            /* Limits the width to 300px */
+  white-space: nowrap;         /* Prevents text from wrapping to the next line */
+  overflow: hidden;            /* Hides any text that overflows the element's width */
+  text-overflow: ellipsis;     /* Adds the '...' at the end of the overflowing text */
+}
+
 
 .ravoomtext{
   margin-left: 5px;
