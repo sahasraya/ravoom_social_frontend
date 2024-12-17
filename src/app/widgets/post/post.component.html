@@ -139,7 +139,7 @@
   <a [href]="post.thelink" target="_blank" class="link-wrapper" *ngIf="post.posttype === 'link'">{{post.thelink}}</a>
 
   <div *ngIf="post.posttype === 'text'" class="textholder">
-    <div class="text-holder" [style.background-color]="post.textcolor" (click)="getthecomments($event, post.postid,post.n_or_g)">
+    <div class="text-holder"   (click)="getthecomments($event, post.postid,post.n_or_g)">
       <p class="text-post-text">{{ post.textbody }}</p>
     </div>
   </div>

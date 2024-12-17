@@ -125,11 +125,11 @@ button:disabled {
 }
 
 .inner-preview {
-  border: 1px solid #ddd;
+  border: 2px solid black;
   padding: 1rem;
   width: 100%;
   border-radius: 10px;
-  background-color: black;  
+  background-color: white;  
   word-wrap: break-word; 
   overflow-wrap: break-word;  
   white-space: normal;  
@@ -137,7 +137,7 @@ button:disabled {
 
 .inner-preview h4 {
 
-  color: white;
+  color: black;
   text-align: center;
   font-weight: bold;
   margin: 0;
