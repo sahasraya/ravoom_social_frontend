@@ -1,3 +1,4 @@
+declare var google: any;
 import { CommonModule } from '@angular/common';
 import { Component, ElementRef, EventEmitter, HostListener, OnInit, Output, Renderer2, ViewChild } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
@@ -272,6 +273,7 @@ async updatethehiddenvisibility(userid:any){
       next: (response:any) => {
         
         this.user = response;  
+    
       },
       error: (error: HttpErrorResponse) => {
         console.error('There was an error!', error);
@@ -302,18 +304,22 @@ async updatethehiddenvisibility(userid:any){
       console.log(headers);
       this.http.post(this.APIURL + 'logout', {}, { headers }).subscribe({
         next: (response: any) => {
-          console.log('Logged out successfully');
-         
-          localStorage.clear();
-          
-        
+          console.log(response);
+          const signupwithgoole = localStorage.getItem('signupwithgmail');
+          if (signupwithgoole == "true") {
+            google.accounts.id.disableAutoSelect();
+            localStorage.clear(); 
+            location.reload();
+          } else {
+            localStorage.clear(); 
           this.showSignOutMessage = true;
-
-      
           setTimeout(() => {
             this.showSignOutMessage = false;
             location.reload();
           }, 3000);
+          }
+         
+          
         },
         error: (error) => {
           console.error('Logout error:', error);

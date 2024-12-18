@@ -8,6 +8,7 @@ import { PreLoaderComponent } from '../../widgets/pre-loader/pre-loader.componen
 import { environment } from '../../../environments/environment';
 import { NetworkService } from '../../services/network.service';
 import { UserIdEncryptionService } from '../../services/user-id-encryption.service';
+import { GoogleAuthComponent } from '../google-auth/google-auth.component';
 @Component({
   selector: 'app-sign-up',
   standalone: true,
@@ -17,7 +18,8 @@ import { UserIdEncryptionService } from '../../services/user-id-encryption.servi
     FormsModule,
     ReactiveFormsModule,
     RouterModule,
-    PreLoaderComponent
+    PreLoaderComponent,
+    GoogleAuthComponent
   ],
   templateUrl: './sign-up.component.html',
   styleUrls: ['./sign-up.component.css']
@@ -55,7 +57,7 @@ export class SignUpComponent implements OnInit{
   };
 
 
-  constructor(private fb: FormBuilder, private http: HttpClient,private router:Router,private networkService: NetworkService,private userIdEncryptionService: UserIdEncryptionService) {
+  constructor(private fb: FormBuilder, private http: HttpClient,private router:Router) {
     this.signUpForm = this.fb.group({
       username: ['', Validators.required],
       emailaddress: ['', [Validators.required, Validators.email]],
@@ -243,6 +245,7 @@ allPasswordConditionsMet(): boolean {
     localStorage.removeItem('username');
     localStorage.removeItem('emailaddress');
     localStorage.removeItem('phonenumber');
+    localStorage.setItem('signupwithgmail', 'false');
    
 
     this.signUpForm.reset();

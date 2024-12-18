@@ -16,8 +16,7 @@ import { GoogleAuthComponent } from '../google-auth/google-auth.component';
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
-    RouterModule,
-    GoogleAuthComponent
+    RouterModule
   ],
   templateUrl: './log-in.component.html',
   styleUrl: './log-in.component.css'

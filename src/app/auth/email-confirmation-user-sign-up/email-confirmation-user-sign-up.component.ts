@@ -55,6 +55,7 @@ export class EmailConfirmationUserSignUpComponent  implements OnInit{
 
             localStorage.setItem('www', '34');
             localStorage.setItem('reload', 'false');
+            localStorage.setItem('signupwithgmail', 'false');
            
 
         },

@@ -1,4 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+declare var google: any;
+import { Component, OnInit } from '@angular/core'; 
+import { environment } from '../../../environments/environment';
+import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 
 declare global {
@@ -9,75 +12,96 @@ declare global {
 
 @Component({
   selector: 'app-google-auth',
-  standalone:true,
+  standalone: true,
   templateUrl: './google-auth.component.html',
   styleUrls: ['./google-auth.component.css']
 })
 export class GoogleAuthComponent implements OnInit {
+  APIURL = environment.APIURL;
+  
+  constructor(private http: HttpClient, private router: Router) {}
 
-  constructor(private http: HttpClient) {}
+  ngOnInit(): void {
+    google.accounts.id.initialize({
+      client_id: '901070769685-o08sp7oa9q92r1s1lk8drk716c5i07gb.apps.googleusercontent.com',
+      callback: (resp: any) => this.handelLogin(resp)
+    });
 
-  ngOnInit() {
-    // Load Google Sign-In button on page load
-    this.loadGoogleApiScript().then(() => {
-      this.loadGoogleSignInButton();
-    }).catch(error => {
-      console.error('Google API script failed to load', error);
+    google.accounts.id.renderButton(document.getElementById("google-btn"), {
+      theme: 'filled_blue',
+      size: 'large',
+      shape: 'rectangle',
+      window: 350
     });
   }
 
-  // Dynamically load the Google API script
-  loadGoogleApiScript(): Promise<void> {
-    return new Promise((resolve, reject) => {
-      if (window.gapi) {
-        // If gapi is already loaded, resolve immediately
-        resolve();
-        return;
-      }
+  handelLogin(response: any) {
+    if (response) {
+      // Extract the JWT token from Google response
+      const jwtToken = response.credential; 
+      
+      // Store JWT in localStorage
+      localStorage.setItem('jwt', jwtToken); 
 
-      const script = document.createElement('script');
-      script.src = 'https://apis.google.com/js/platform.js';
-      script.async = true;
-      script.defer = true;
-      script.onload = () => resolve();
-      script.onerror = (error) => reject(error);
+      const payLoad = this.decodeToken(jwtToken); // Decode the JWT to extract user details
+      
+      const formData = new FormData();
+      formData.append('username', payLoad.name);
+      formData.append('birthdate', '1990-01-01');  
+      formData.append('emailaddress', payLoad.email);
+      formData.append('profileimage', payLoad.picture);
 
-      document.head.appendChild(script);
-    });
-  }
+      console.log('JWT Token:', jwtToken);
+      console.log('Payload:', payLoad);
+      
+      // Post data to FastAPI backend
+      this.http.post(this.APIURL + 'sign-up-with-google', formData).subscribe({
+        next: (response: any) => {
+          if (response.message === "Email address already exists") {
+            alert("Email address already exists");
+          } 
+          else if (response.message === "User created successfully") {
+            // Store other user-related data in localStorage
+            localStorage.setItem('ppd', 'no');
+            localStorage.setItem('name', 'normal');
+            localStorage.setItem('core', 'never');
+            localStorage.setItem('appd', 'AkfwpkfpMMkwppge');
+            localStorage.setItem('ud', 'AASfeeg2332Afwfafwa');
+            localStorage.setItem('s', '2');
+            localStorage.setItem('g', '34');
+            localStorage.setItem('21', '5g2');
+            localStorage.setItem('cap', 'np');
+            localStorage.setItem('uid', 'Jfwgw2wfAfwawwgAd');
+            localStorage.setItem('doc', '25');
+            localStorage.setItem('wmd', response.userid);
+            localStorage.setItem('ger', '30491aDdwqf');
+            localStorage.setItem('fat', 'new set');
+            localStorage.setItem('mainsource', 'web');
+            localStorage.setItem('ud', 'no');
+            localStorage.setItem('www', '34');
+            localStorage.setItem('reload', 'false');
+            localStorage.setItem('signupwithgmail', 'true');
 
-  loadGoogleSignInButton() {
-    // Check if gapi is available before calling load
-    if (window.gapi) {
-      window.gapi.load('auth2', () => {
-        const auth2 = window.gapi.auth2.init({
-          client_id: '901070769685-o08sp7oa9q92r1s1lk8drk716c5i07gb.apps.googleusercontent.com', // Your Google Client ID
-        });
-
-        auth2.attachClickHandler(document.getElementById('google-signin-button'), {},
-          (googleUser: any) => this.onSignIn(googleUser),
-          (error: any) => this.onSignInError(error)
-        );
+            // Hard reload the page to apply changes
+            window.location.href = '/'; 
+          }
+        },
+        error: error => {
+          console.error('There was an error!', error);
+        }
       });
-    } else {
-      console.error('gapi is not available');
+
+      console.log('Logged In User Details:', payLoad);
     }
   }
 
-  onSignIn(googleUser: any) {
-    const idToken = googleUser.getAuthResponse().id_token;
-
-    // Send the ID token to the backend for validation and user authentication
-    this.http.post('http://your-backend-url/authentication_user_by_email', { idToken })
-      .subscribe(response => {
-        console.log('User authenticated', response);
-        // Handle the successful authentication here (e.g., save user data, redirect, etc.)
-      }, error => {
-        console.error('Authentication failed', error);
-      });
-  }
-
-  onSignInError(error: any) {
-    console.error('Google sign-in error', error);
+  decodeToken(token: string): any {
+    try {
+      const payload = token.split('.')[1];
+      return JSON.parse(atob(payload));
+    } catch (error) {
+      console.error('Error decoding token:', error);
+      return null;
+    }
   }
 }
