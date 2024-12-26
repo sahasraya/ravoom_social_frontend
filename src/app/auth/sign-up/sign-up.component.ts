@@ -43,7 +43,7 @@ export class SignUpComponent implements OnInit{
   errormessage:string = "";
   isPasswordFieldFocused: boolean = false;
   issigninup:boolean=false;
-
+  isPrivacyPolicyChecked: boolean = false; 
 
   correctImage = '../../../assets/images/correct.png';
   wrongImage = '../../../assets/images/wrong.png';
@@ -61,7 +61,6 @@ export class SignUpComponent implements OnInit{
     this.signUpForm = this.fb.group({
       username: ['', Validators.required],
       emailaddress: ['', [Validators.required, Validators.email]],
-      phonenumber: ['', Validators.required],
       password: ['', Validators.required],
       reenterpassword: ['', Validators.required],
       birthdate: ['', Validators.required],
@@ -92,6 +91,9 @@ export class SignUpComponent implements OnInit{
     
 
 
+  }
+  onPrivacyPolicyCheckboxClick() {
+    this.isPrivacyPolicyChecked = !this.isPrivacyPolicyChecked;
   }
 
  togglePasswordVisibility() {

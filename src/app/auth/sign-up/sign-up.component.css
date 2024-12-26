@@ -355,7 +355,12 @@ button:hover {
   opacity: 1;
 }
 
-
+.condition-holder{
+  margin-top: 10px;
+}
+.condition-holder input{
+  cursor: pointer;
+}
 
 
 @media (max-width: 500px) {  

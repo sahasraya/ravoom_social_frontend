@@ -37,13 +37,11 @@ export class GoogleAuthComponent implements OnInit {
 
   handelLogin(response: any) {
     if (response) {
-      // Extract the JWT token from Google response
       const jwtToken = response.credential; 
       
-      // Store JWT in localStorage
       localStorage.setItem('jwt', jwtToken); 
 
-      const payLoad = this.decodeToken(jwtToken); // Decode the JWT to extract user details
+      const payLoad = this.decodeToken(jwtToken);  
       
       const formData = new FormData();
       formData.append('username', payLoad.name);
@@ -51,17 +49,15 @@ export class GoogleAuthComponent implements OnInit {
       formData.append('emailaddress', payLoad.email);
       formData.append('profileimage', payLoad.picture);
 
-      console.log('JWT Token:', jwtToken);
-      console.log('Payload:', payLoad);
-      
-      // Post data to FastAPI backend
+  
       this.http.post(this.APIURL + 'sign-up-with-google', formData).subscribe({
         next: (response: any) => {
+   
           if (response.message === "Email address already exists") {
+
             alert("Email address already exists");
           } 
-          else if (response.message === "User created successfully") {
-            // Store other user-related data in localStorage
+          else if (response.message === "User created successfully" ) {
             localStorage.setItem('ppd', 'no');
             localStorage.setItem('name', 'normal');
             localStorage.setItem('core', 'never');
@@ -86,14 +82,24 @@ export class GoogleAuthComponent implements OnInit {
             window.location.href = '/'; 
           }
         },
-        error: error => {
+        error: (error) => {
           console.error('There was an error!', error);
+          if (error.status === 400) {
+ 
+
+            alert('This Email address already exists');
+            
+          } else {
+            alert('An error occurred. Please try again later.');
+          }
         }
       });
 
       console.log('Logged In User Details:', payLoad);
     }
   }
+
+ 
 
   decodeToken(token: string): any {
     try {

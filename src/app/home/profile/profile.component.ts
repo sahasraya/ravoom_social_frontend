@@ -237,26 +237,7 @@ export class ProfileComponent   {
   
 
 
-
-  // loadInitialData(): void {
-  //   this.posts = [];  
-  //   this.offset = 0;  
-  //   if (this.profileowneruid) {
  
-  //     this.getPostsFeed(this.profileowneruid);
-  //     if (this.getfrommethoduserid) {
-  //       this.userid = this.getfrommethoduserid;
-  //       this.getfollowingstatus(this.profileowneruid);
-
-  //     }
-     
-
-  //   } else {
-
-  //     this.getPostsFeed(this.userid);
-      
-  //   }
-  // }
 
   processProfileDetails(): void {
     if (!this.profileData) {

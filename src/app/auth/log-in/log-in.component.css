@@ -165,7 +165,10 @@ text-align: center;
   }
 
 
-
+.goolebtnholder{
+  width: 30vw;
+  margin: 30px auto;
+}
   
 @media (max-width: 500px) {  
   .main-image{

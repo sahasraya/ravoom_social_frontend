@@ -83,13 +83,13 @@
           <input id="emailaddress" formControlName="emailaddress" type="email" placeholder="Email Address" #emailInput>
         </div>
       
-        <div>
+        <!-- <div>
           <label for="phonenumber">
             <div class="icon-wrapper">
               <img src="../../../assets/images/telephone.png" alt="">
             </div> Phone Number *</label>
           <input id="phonenumber" formControlName="phonenumber" type="number" placeholder="Phone Number">
-        </div>
+        </div> -->
       
         <div>
         
@@ -176,17 +176,26 @@
         
         <!-- <button type="submit"   *ngIf="age! > 18 && signUpForm.valid && allPasswordConditionsMet()"> Sign Up</button> -->
     
-       
-        <button 
-        type="submit" 
-        [disabled]="!(age! > 18 && signUpForm.valid && allPasswordConditionsMet())"
-        [ngClass]="{
-          'disabled-button': !(age! > 18 && signUpForm.valid && allPasswordConditionsMet()),
-          'enabled-button': age! > 18 && signUpForm.valid && allPasswordConditionsMet()
-        }">
-        Sign Up
-      </button>
+        <div class="condition-holder">
+          <input 
+            type="checkbox" 
+            id="privacyPolicyCheckbox" 
+            [(ngModel)]="isPrivacyPolicyChecked"
+            (click)="onPrivacyPolicyCheckboxClick()">
+          I have read and agree to Ravoom.com's 
+          <a routerLink="/home/privacy-policy">Privacy Policy</a>
+        </div>
       
+        <button 
+  type="submit" 
+  [disabled]="!isPrivacyPolicyChecked || !signUpForm.valid || !allPasswordConditionsMet()"
+  [ngClass]="{
+    'disabled-button': !isPrivacyPolicyChecked || !signUpForm.valid || !allPasswordConditionsMet(),
+    'enabled-button': isPrivacyPolicyChecked && signUpForm.valid && allPasswordConditionsMet()
+  }">
+  Sign Up
+</button>
+
       
     
         
