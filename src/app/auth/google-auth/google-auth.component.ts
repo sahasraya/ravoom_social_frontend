@@ -1,4 +1,5 @@
 declare var google: any;
+
 import { Component, OnInit } from '@angular/core'; 
 import { environment } from '../../../environments/environment';
 import { Router } from '@angular/router';
@@ -18,31 +19,104 @@ declare global {
 })
 export class GoogleAuthComponent implements OnInit {
   APIURL = environment.APIURL;
-  
- 
-  constructor(private router: Router) {}
+
+  constructor(private router: Router, private http: HttpClient) {}
 
   ngOnInit(): void {
-    // Initialize any necessary configurations, if needed, but no need for Google SDK now
+    // Initialize Google Identity Services
+    google.accounts.id.initialize({
+      client_id: '901070769685-o08sp7oa9q92r1s1lk8drk716c5i07gb.apps.googleusercontent.com',
+      callback: (response: any) => this.handleLogin(response)
+    });
+
+    // Render the Google sign-in button
+    google.accounts.id.renderButton(
+      document.getElementById("google-btn"),
+      {
+        theme: 'filled_blue',
+        size: 'large',
+        shape: 'rectangle',
+        window: 350
+      }
+    );
   }
 
-  // Handle the click event to navigate to the Google OAuth URL
+  // Handle the click event to trigger Google authentication
   onGoogleAuthClick(): void {
-    // Define the Google OAuth URL with the relevant query parameters
-    const googleOAuthUrl = 'https://accounts.google.com/o/oauth2/v2/auth/oauthchooseaccount?' +
-      'client_id=901070769685-o08sp7oa9q92r1s1lk8drk716c5i07gb.apps.googleusercontent.com' +
-      '&scope=openid%20email%20profile' +
-      '&response_type=id_token' +
-      '&gsiwebsdk=gis_attributes' +
-      '&redirect_uri=http%3A%2F%2Flocalhost%3A4200' +  // This should be your app's URL
-      '&response_mode=form_post' +
-      '&origin=http%3A%2F%2Flocalhost%3A4200' +
-      '&display=popup' +
-      '&prompt=select_account' +
-      '&gis_params=ChVodHRwOi8vbG9jYWxob3N0OjQyMDASFWh0dHA6Ly9sb2NhbGhvc3Q6NDIwMBgHKhZmYUk5NklMOU02aDkxUHJidDJrc29RMkg5MDEwNzA3Njk2ODUtbzA4c3A3b2E5cTkycjFzMWxrOGRyazcxNmM1aTA3Z2IuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb204AUJAZDczYWI1NWQ3MTcwZTcxODlmMWI0NGQxMzNhOGIyNjUzMDY5NjU4NWNmZTc5YmUwMmU4OWNlNjE0MWRlYmE5Yg' +
-      '&service=lso&o2v=1&ddm=1&flowName=GeneralOAuthFlow';
+    google.accounts.id.prompt(); // This will trigger the Google sign-in prompt
+  }
 
-    // Redirect the user to the Google OAuth URL
-    window.location.href = googleOAuthUrl;
+  handleLogin(response: any) {
+    if (response) {
+      const jwtToken = response.credential; 
+      
+      localStorage.setItem('jwt', jwtToken); 
+
+      const payLoad = this.decodeToken(jwtToken);  
+      
+      const formData = new FormData();
+      formData.append('username', payLoad.name);
+      formData.append('birthdate', '1990-01-01');  
+      formData.append('emailaddress', payLoad.email);
+      formData.append('profileimage', payLoad.picture);
+
+      // Send login data to your backend API (sign-up or login with Google)
+      this.http.post(this.APIURL + 'sign-up-with-google', formData).subscribe({
+        next: (response: any) => {
+          if (response.message === "Email address already exists") {
+            alert("Email address already exists");
+          } 
+          else if (response.message === "User created successfully") {
+            this.handleSuccessfulLogin(response);
+          }
+        },
+        error: (error) => {
+          console.error('There was an error!', error);
+          if (error.status === 400) {
+            alert('This Email address already exists');
+          } else {
+            alert('An error occurred. Please try again later.');
+          }
+        }
+      });
+
+      console.log('Logged In User Details:', payLoad);
+    }
+  }
+
+  handleSuccessfulLogin(response: any) {
+    // Set user details in localStorage after successful login/signup
+    localStorage.setItem('ppd', 'no');
+    localStorage.setItem('name', 'normal');
+    localStorage.setItem('core', 'never');
+    localStorage.setItem('appd', 'AkfwpkfpMMkwppge');
+    localStorage.setItem('ud', 'AASfeeg2332Afwfafwa');
+    localStorage.setItem('s', '2');
+    localStorage.setItem('g', '34');
+    localStorage.setItem('21', '5g2');
+    localStorage.setItem('cap', 'np');
+    localStorage.setItem('uid', 'Jfwgw2wfAfwawwgAd');
+    localStorage.setItem('doc', '25');
+    localStorage.setItem('wmd', response.userid);
+    localStorage.setItem('ger', '30491aDdwqf');
+    localStorage.setItem('fat', 'new set');
+    localStorage.setItem('mainsource', 'web');
+    localStorage.setItem('ud', 'no');
+    localStorage.setItem('www', '34');
+    localStorage.setItem('reload', 'false');
+    localStorage.setItem('signupwithgmail', 'true');
+
+    // Redirect to the home page after successful signup/login
+    window.location.href = 'https://www.ravoom.com/';
+  }
+
+  decodeToken(token: string): any {
+    try {
+      const payload = token.split('.')[1];
+      return JSON.parse(atob(payload));
+    } catch (error) {
+      console.error('Error decoding token:', error);
+      return null;
+    }
   }
 }
