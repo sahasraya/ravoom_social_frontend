@@ -23,33 +23,55 @@ export class GoogleAuthComponent implements OnInit {
   constructor(private router: Router, private http: HttpClient) {}
 
   ngOnInit(): void {
-    // Initialize Google Identity Services
-    google.accounts.id.initialize({
-      client_id: '901070769685-o08sp7oa9q92r1s1lk8drk716c5i07gb.apps.googleusercontent.com',
-      callback: (response: any) => this.handleLogin(response)
-    });
+    // Ensure the Google SDK is loaded before initializing
+    if (typeof google !== 'undefined' && google.accounts) {
+      // Initialize Google Identity Services
+      google.accounts.id.initialize({
+        client_id: '901070769685-o08sp7oa9q92r1s1lk8drk716c5i07gb.apps.googleusercontent.com',
+        callback: (response: any) => this.handleLogin(response)
+      });
 
-    // Render the Google sign-in button
-    google.accounts.id.renderButton(
-      document.getElementById("google-btn"),
-      {
-        theme: 'filled_blue',
-        size: 'large',
-        shape: 'rectangle',
-        window: 350
-      }
-    );
+      // Render the Google sign-in button
+      this.renderGoogleButton();
+    } else {
+      console.error('Google API not available');
+    }
+  }
+
+  // Render Google sign-in button into the div
+  renderGoogleButton(): void {
+    const googleBtnContainer = document.getElementById("google-btn-wrapper");
+
+    if (googleBtnContainer) {
+      google.accounts.id.renderButton(
+        googleBtnContainer, 
+        {
+          theme: 'filled_blue',
+          size: 'large',
+          shape: 'rectangle',
+          window: 350
+        }
+      );
+    } else {
+      console.error("Google button container not found");
+    }
   }
 
   // Handle the click event to trigger Google authentication
   onGoogleAuthClick(): void {
-    google.accounts.id.prompt(); // This will trigger the Google sign-in prompt
+    // Ensure the prompt is called after the button is rendered and initialized
+    if (google && google.accounts) {
+      google.accounts.id.prompt();  // Trigger the Google sign-in prompt
+    } else {
+      console.error("Google Sign-In API is not ready");
+    }
   }
 
-  handleLogin(response: any) {
+  handleLogin(response: any): void {
     if (response) {
       const jwtToken = response.credential; 
       
+      // Store JWT token in localStorage
       localStorage.setItem('jwt', jwtToken); 
 
       const payLoad = this.decodeToken(jwtToken);  
@@ -65,8 +87,7 @@ export class GoogleAuthComponent implements OnInit {
         next: (response: any) => {
           if (response.message === "Email address already exists") {
             alert("Email address already exists");
-          } 
-          else if (response.message === "User created successfully") {
+          } else if (response.message === "User created successfully") {
             this.handleSuccessfulLogin(response);
           }
         },
@@ -84,7 +105,7 @@ export class GoogleAuthComponent implements OnInit {
     }
   }
 
-  handleSuccessfulLogin(response: any) {
+  handleSuccessfulLogin(response: any): void {
     // Set user details in localStorage after successful login/signup
     localStorage.setItem('ppd', 'no');
     localStorage.setItem('name', 'normal');
@@ -117,6 +138,6 @@ export class GoogleAuthComponent implements OnInit {
     } catch (error) {
       console.error('Error decoding token:', error);
       return null;
-    }
+    }   
   }
 }
