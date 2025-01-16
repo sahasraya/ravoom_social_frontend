@@ -457,7 +457,17 @@ border: 1px solid #ccc;
 padding: 10px;  
 
 }
-
+.nolinkimagefound{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.nolinkimagefound img{
+  width: 30%;
+  position: relative;
+  margin-bottom: 15px;
+}
 .text-post-text {
 margin: 0;
 color: black;

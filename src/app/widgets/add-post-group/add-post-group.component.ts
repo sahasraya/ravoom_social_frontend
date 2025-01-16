@@ -44,7 +44,7 @@ export class AddPostGroupComponent {
   showimagepostsformbool:boolean =false;
   showlinkpostformbool:boolean =false;
   isuploadingthepost:boolean=false;
- 
+  previewisloading: boolean = false;
  
   
   linkPreviewData: any = null;
@@ -108,10 +108,11 @@ export class AddPostGroupComponent {
     this.closePost.emit();
   }
   
-  getPreview(link:any) {
+  async getPreview(link:any) {
 
-    this.linkUrl =link;
-this.getLinkPreview(this.linkUrl);
+    this.linkUrl = link;
+    this.previewisloading = true;
+    await   this.getLinkPreview(this.linkUrl);
 
  
      
@@ -125,10 +126,11 @@ this.getLinkPreview(this.linkUrl);
     this.http.post<any>(`${this.APIURL}get-preview`, formData).subscribe({
       next: (data) => {
         this.linkPreviewData = data;
-         
+        this.previewisloading = false;
         this.linkPostForm.controls['img'].updateValueAndValidity();
       },
       error: (error: HttpErrorResponse) => {
+        this.previewisloading = false;
         console.error('Error fetching link preview:', error);
       }
     });

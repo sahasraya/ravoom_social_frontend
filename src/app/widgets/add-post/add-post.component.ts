@@ -55,6 +55,7 @@ export class AddPostComponent {
   showimagepostsformbool:boolean =false;
   showlinkpostformbool:boolean =false;
   isNoImage: boolean = false;
+  previewisloading: boolean = false;
   
   linkPreviewData: any = null;
 
@@ -153,8 +154,9 @@ export class AddPostComponent {
 
   async getPreview(link:any) {
 
-    this.linkUrl =link;
-  await  this.getLinkPreview(this.linkUrl);
+    this.linkUrl = link;
+    this.previewisloading = true;
+    await  this.getLinkPreview(this.linkUrl);
  
      
   }
@@ -166,6 +168,7 @@ export class AddPostComponent {
     this.http.post<any>(`${this.APIURL}get-preview`, formData).subscribe({
       next: (data) => {
         this.linkPreviewData = data;
+        this.previewisloading = false;
   
   
         if (this.linkPreviewData.img) {
@@ -175,6 +178,7 @@ export class AddPostComponent {
         }
       },
       error: (error: HttpErrorResponse) => {
+        this.previewisloading = false;
         console.error('Error fetching link preview:', error);
       }
     });

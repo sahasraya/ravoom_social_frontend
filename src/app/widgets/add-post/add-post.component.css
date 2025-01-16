@@ -135,7 +135,11 @@
     white-space: normal;  
  
   }
-  
+  .loadingpreview{
+    text-align: center;
+    display: block;
+    margin-top: 10px;
+  }
   .inner-preview h4 {
  
     color: black;

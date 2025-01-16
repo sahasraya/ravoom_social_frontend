@@ -181,14 +181,17 @@
       <div *ngIf="linkPreviewData" class="previewdiv">
         <h3>{{ linkPreviewData.title }}</h3>
         <p>{{ linkPreviewData.description }}</p>
-        <img [src]="linkPreviewData.img" alt="{{ linkPreviewData.title }}">
-        <!-- <a [href]="linkPreviewData.url" target="_blank">{{ linkPreviewData.domain }}</a> -->
-      </div>
+        <img [src]="linkPreviewData.img" alt="{{ linkPreviewData.title }}" *ngIf="linkPreviewData.img">
 
+        <small class="loadingpreview" *ngIf="!linkPreviewData.img">No image found</small>
+        <!-- <a [href]="linkPreviewData.url" target="_blank">{{ linkPreviewData.domain }}</a> -->
+       
+      </div>
+      <small class="loadingpreview" *ngIf="previewisloading">Loading...</small>
     </div>
-     
+ 
   
-    <button type="submit" [disabled]="!linkPostForm.valid" class="submit-button">Add link</button>
+    <button type="submit" [disabled]="!linkPostForm.valid && !previewisloading" class="submit-button">Add link</button>
   </form>
 
 

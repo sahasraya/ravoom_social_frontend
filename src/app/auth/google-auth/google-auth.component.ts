@@ -1,5 +1,4 @@
 declare var google: any;
-
 import { Component, OnInit } from '@angular/core'; 
 import { environment } from '../../../environments/environment';
 import { Router } from '@angular/router';
@@ -19,59 +18,27 @@ declare global {
 })
 export class GoogleAuthComponent implements OnInit {
   APIURL = environment.APIURL;
-
-  constructor(private router: Router, private http: HttpClient) {}
+  
+  constructor(private http: HttpClient, private router: Router) {}
 
   ngOnInit(): void {
-    // Ensure the Google SDK is loaded before initializing
-    if (typeof google !== 'undefined' && google.accounts) {
-      // Initialize Google Identity Services
-      google.accounts.id.initialize({
-        client_id: '901070769685-o08sp7oa9q92r1s1lk8drk716c5i07gb.apps.googleusercontent.com',
-        callback: (response: any) => this.handleLogin(response)
-      });
+    google.accounts.id.initialize({
+      client_id: '901070769685-o08sp7oa9q92r1s1lk8drk716c5i07gb.apps.googleusercontent.com',
+      callback: (resp: any) => this.handelLogin(resp)
+    });
 
-      // Render the Google sign-in button
-      this.renderGoogleButton();
-    } else {
-      console.error('Google API not available');
-    }
+    google.accounts.id.renderButton(document.getElementById("google-btn"), {
+      theme: 'filled_blue',
+      size: 'large',
+      shape: 'rectangle',
+      window: 350
+    });
   }
 
-  // Render Google sign-in button into the div
-  renderGoogleButton(): void {
-    const googleBtnContainer = document.getElementById("google-btn-wrapper");
-
-    if (googleBtnContainer) {
-      google.accounts.id.renderButton(
-        googleBtnContainer, 
-        {
-          theme: 'filled_blue',
-          size: 'large',
-          shape: 'rectangle',
-          window: 350
-        }
-      );
-    } else {
-      console.error("Google button container not found");
-    }
-  }
-
-  // Handle the click event to trigger Google authentication
-  onGoogleAuthClick(): void {
-    // Ensure the prompt is called after the button is rendered and initialized
-    if (google && google.accounts) {
-      google.accounts.id.prompt();  // Trigger the Google sign-in prompt
-    } else {
-      console.error("Google Sign-In API is not ready");
-    }
-  }
-
-  handleLogin(response: any): void {
+  handelLogin(response: any) {
     if (response) {
       const jwtToken = response.credential; 
       
-      // Store JWT token in localStorage
       localStorage.setItem('jwt', jwtToken); 
 
       const payLoad = this.decodeToken(jwtToken);  
@@ -82,19 +49,46 @@ export class GoogleAuthComponent implements OnInit {
       formData.append('emailaddress', payLoad.email);
       formData.append('profileimage', payLoad.picture);
 
-      // Send login data to your backend API (sign-up or login with Google)
+  
       this.http.post(this.APIURL + 'sign-up-with-google', formData).subscribe({
         next: (response: any) => {
+   
           if (response.message === "Email address already exists") {
+
             alert("Email address already exists");
-          } else if (response.message === "User created successfully") {
-            this.handleSuccessfulLogin(response);
+          } 
+          else if (response.message === "User created successfully" ) {
+            localStorage.setItem('ppd', 'no');
+            localStorage.setItem('name', 'normal');
+            localStorage.setItem('core', 'never');
+            localStorage.setItem('appd', 'AkfwpkfpMMkwppge');
+            localStorage.setItem('ud', 'AASfeeg2332Afwfafwa');
+            localStorage.setItem('s', '2');
+            localStorage.setItem('g', '34');
+            localStorage.setItem('21', '5g2');
+            localStorage.setItem('cap', 'np');
+            localStorage.setItem('uid', 'Jfwgw2wfAfwawwgAd');
+            localStorage.setItem('doc', '25');
+            localStorage.setItem('wmd', response.userid);
+            localStorage.setItem('ger', '30491aDdwqf');
+            localStorage.setItem('fat', 'new set');
+            localStorage.setItem('mainsource', 'web');
+            localStorage.setItem('ud', 'no');
+            localStorage.setItem('www', '34');
+            localStorage.setItem('reload', 'false');
+            localStorage.setItem('signupwithgmail', 'true');
+
+            // Hard reload the page to apply changes
+            window.location.href = 'https://www.ravoom.com/';
           }
         },
         error: (error) => {
           console.error('There was an error!', error);
           if (error.status === 400) {
+ 
+
             alert('This Email address already exists');
+            
           } else {
             alert('An error occurred. Please try again later.');
           }
@@ -105,31 +99,7 @@ export class GoogleAuthComponent implements OnInit {
     }
   }
 
-  handleSuccessfulLogin(response: any): void {
-    // Set user details in localStorage after successful login/signup
-    localStorage.setItem('ppd', 'no');
-    localStorage.setItem('name', 'normal');
-    localStorage.setItem('core', 'never');
-    localStorage.setItem('appd', 'AkfwpkfpMMkwppge');
-    localStorage.setItem('ud', 'AASfeeg2332Afwfafwa');
-    localStorage.setItem('s', '2');
-    localStorage.setItem('g', '34');
-    localStorage.setItem('21', '5g2');
-    localStorage.setItem('cap', 'np');
-    localStorage.setItem('uid', 'Jfwgw2wfAfwawwgAd');
-    localStorage.setItem('doc', '25');
-    localStorage.setItem('wmd', response.userid);
-    localStorage.setItem('ger', '30491aDdwqf');
-    localStorage.setItem('fat', 'new set');
-    localStorage.setItem('mainsource', 'web');
-    localStorage.setItem('ud', 'no');
-    localStorage.setItem('www', '34');
-    localStorage.setItem('reload', 'false');
-    localStorage.setItem('signupwithgmail', 'true');
-
-    // Redirect to the home page after successful signup/login
-    window.location.href = 'https://www.ravoom.com/';
-  }
+ 
 
   decodeToken(token: string): any {
     try {
@@ -138,6 +108,6 @@ export class GoogleAuthComponent implements OnInit {
     } catch (error) {
       console.error('Error decoding token:', error);
       return null;
-    }   
+    }
   }
 }

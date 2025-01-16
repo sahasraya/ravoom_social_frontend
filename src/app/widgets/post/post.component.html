@@ -209,6 +209,12 @@
   <div *ngIf="post.posttype === 'link'" class="imageholder">
    
     <img [src]="post.textbody" alt="" (click)="getthecomments($event, post.postid,post.n_or_g)" >
+
+    <div class="nolinkimagefound" *ngIf="!post.textbody">
+      <img src="../../../assets/images/imagepost.png" alt="no link image"    >
+      <small>No Link Image Found</small>
+    </div>
+    
     
 </div>
 
