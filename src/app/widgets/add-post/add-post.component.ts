@@ -106,6 +106,7 @@ export class AddPostComponent {
 
 
   }
+  //aaaaaaaaaaaaaaaaa
  
   checkposttype(postType:string):void{
 
