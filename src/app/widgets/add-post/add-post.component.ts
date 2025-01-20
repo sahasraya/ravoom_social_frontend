@@ -170,6 +170,7 @@ export class AddPostComponent {
   //aaaaaaaaaaa
   //aaaaaaaaaaadsad
   //aaaaaaaaaaa
+  //aaaaaaaaaaa
   async getLinkPreview(url: string): Promise<void> {
     const formData = new FormData();
     formData.append('url', url);
