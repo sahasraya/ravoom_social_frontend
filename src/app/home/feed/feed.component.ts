@@ -16,7 +16,20 @@ import { useridexported } from '../../auth/const/const';
 import { SkeletonWidgetComponent } from '../../widgets/skeleton-widget/skeleton-widget.component';
 import { MainfeedStateService } from '../../services/main-feed.service';
 import { MainfeedSelectedStateService } from '../../services/main-feed-selected.service';
+import { QuillModule } from 'ngx-quill';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { getLinkPreview } from 'link-preview-js';
 
+
+interface PreviewData {
+  title?: string;
+  description?: string;
+  url?: string;
+  images?: string[];
+  mediaType?: string;
+  contentType?: string;
+  favicons?: string[];
+}
 
 @Component({
   selector: 'app-feed',
@@ -33,7 +46,10 @@ import { MainfeedSelectedStateService } from '../../services/main-feed-selected.
     FeedscreenGroupListComponent, 
     NetworkstatusComponent,
     SkeletonWidgetComponent,
-    HttpClientModule
+    HttpClientModule,
+    QuillModule,
+    FormsModule,
+    ReactiveFormsModule
   ],
   templateUrl: './feed.component.html',
   styleUrl: './feed.component.css'
@@ -65,10 +81,16 @@ export class FeedComponent implements OnInit {
   wasOnline: boolean = false;
   postData: any;
   nomorepoststoload: boolean = false;
-  
+  textPostForm: FormGroup;
+  linkPreviewData: PreviewData | null = null;
  
 
-  constructor(private mainfeedSelectedStateService:MainfeedSelectedStateService, private mainfeedStateService: MainfeedStateService,private http: HttpClient, private cdr: ChangeDetectorRef,private router:Router,private networkService: NetworkService) {}
+  constructor(private fb: FormBuilder,private mainfeedSelectedStateService: MainfeedSelectedStateService, private mainfeedStateService: MainfeedStateService, private http: HttpClient, private cdr: ChangeDetectorRef, private router: Router, private networkService: NetworkService) {
+    this.textPostForm = this.fb.group({
+      textPostdescription: ['', Validators.required],
+      textPostbody: ['', Validators.required],
+    });
+  }
 
   ngOnInit(): void {
   
@@ -98,6 +120,44 @@ export class FeedComponent implements OnInit {
    
 
   }
+  quillConfig = {
+    toolbar: [
+      ['bold', 'italic', 'underline'],        // toggled buttons
+      [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+      [{ 'header': [1, 2, 3, false] }],
+      [{ 'align': [] }],
+      ['link', 'image']
+    ]
+  };
+
+
+  onContentChanged(event: any): void {
+    const text = event.text;
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
+    const matchedUrls = text.match(urlRegex);
+
+    if (matchedUrls && matchedUrls.length > 0) {
+      const latestUrl = matchedUrls[matchedUrls.length - 1];
+      this.fetchLinkPreview(latestUrl);
+    }
+  }
+
+fetchLinkPreview(url: string): void {
+  const proxyUrl = `http://localhost:8000/get_link_preview?url=${encodeURIComponent(url)}`;
+
+  this.http.get(proxyUrl).subscribe({
+    next: (data: PreviewData) => {
+      this.linkPreviewData = data;
+      console.log(this.linkPreviewData);
+      this.cdr.detectChanges();
+    },
+    error: (error) => {
+      console.error('Error fetching link preview', error);
+    }
+  });
+}
+
+
 
 
   onPostRemoved(postId: number): void {
@@ -295,6 +355,7 @@ async getuserdetails(userid:string):Promise<void>{
       }
     });
   }
+
 
   
 

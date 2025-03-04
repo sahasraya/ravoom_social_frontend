@@ -107,6 +107,7 @@ export class PostComponent implements OnInit {
     if (this.post.posttype === 'image' && !this.imageUrl) {
       if (!this.profileImageUrl) {
         this.profileImageUrl = this.createBlobUrl(this.post.userprofile, 'image/jpeg');
+        console.log( "a          " +this.profileImageUrl);
       }
       this.loadCurrentImage();
     } else if (this.post.posttype === 'audio' && !this.audioUrl) {

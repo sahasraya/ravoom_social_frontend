@@ -240,15 +240,18 @@ export class ProfileComponent   {
  
 
   processProfileDetails(): void {
+ 
     if (!this.profileData) {
       console.error("No profile data to process.");
       return;
     }
   
     this.username = this.profileData.username || "Unknown User";
-  
     if (this.profileData.profileImage) {
       this.profileImageUrl = this.createBlobUrl(this.profileData.profileImage, "image/jpeg");
+ 
+
+  
     } else {
       this.profileImageUrl = "assets/default-profile.png";  
     }

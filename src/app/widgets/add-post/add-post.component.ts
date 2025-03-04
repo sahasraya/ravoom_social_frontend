@@ -4,11 +4,12 @@ import { CommonModule } from '@angular/common';
 import {  RouterModule } from '@angular/router';
 import { HttpClient, HttpClientModule, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { NgxLinkPreviewModule } from 'ngx-link-preview';
+ 
 import { PLATFORM_ID } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { PreLoaderComponent } from '../pre-loader/pre-loader.component';
 import { useridexported } from '../../auth/const/const';
+import { QuillModule } from 'ngx-quill';
  
 
 @Component({
@@ -19,9 +20,9 @@ import { useridexported } from '../../auth/const/const';
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
-    RouterModule,
-    NgxLinkPreviewModule,
-    PreLoaderComponent
+    RouterModule, 
+    PreLoaderComponent, 
+
   ],
   templateUrl: './add-post.component.html',
   styleUrl: './add-post.component.css'
@@ -64,6 +65,12 @@ export class AddPostComponent {
   @Output() postAdded = new EventEmitter<void>();
   @Output() closePost = new EventEmitter<void>();
 
+
+  public isBrowser = false;
+ 
+ 
+
+
   constructor(
     private fb: FormBuilder,
     private http: HttpClient,
@@ -102,12 +109,23 @@ export class AddPostComponent {
     this.checkposttype(this.postType);
     this.userid = useridexported;
  
-  
-
+ 
 
   }
-  //aaaaaaaaaaaaaaaaa
+
  
+ 
+
+
+
+
+
+
+
+
+
+
+
   checkposttype(postType:string):void{
 
     if(postType =="v" || postType == "a"){
@@ -164,14 +182,7 @@ export class AddPostComponent {
 
 
 
-  // preview
-  //new one
-  //aaaaaaaaaaa
-  //aaaaaaaaaaa
-  //aaaaaaaaaaa
-  //aaaaaaaaaaadsad
-  //aaaaaaaaaaa
-  //aaaaaaaaaaa
+ 
   async getLinkPreview(url: string): Promise<void> {
     const formData = new FormData();
     formData.append('url', url);

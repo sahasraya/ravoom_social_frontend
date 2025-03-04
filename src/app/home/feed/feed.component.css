@@ -1,53 +1,56 @@
+quill-editor {
+  min-height: 200px;
+  margin-bottom: 15px;
+  margin-top: 150px;
+}
+
 .feed-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    flex: 2;
-  }
-  
-  .posts-container {
-    width: 100%;
-  }
-  
-  h1 {
-    text-align: center;
-    margin-bottom: 20px;
-  }
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 2;
+}
 
+.posts-container {
+  width: 100%;
+}
 
+h1 {
+  text-align: center;
+  margin-bottom: 20px;
+}
 
-.button-holder-inner{
+.button-holder-inner {
   display: flex;
   gap: 10px;
 }
 
-.userdetails-holder{
+.userdetails-holder {
   display: flex;
   flex-direction: row;
   margin: 10px;
   padding: 10px;
   align-items: center;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.100);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
   justify-content: space-between;
 }
-.userdetails-holder img{
+.userdetails-holder img {
   width: 50px;
   height: 50px;
   border-radius: 50%;
 }
-.userdetails-holder  h2{
+.userdetails-holder h2 {
   opacity: 0.8;
   color: black;
   margin-left: 10px;
 }
-.posttypeholder{
+.posttypeholder {
   width: 100%;
   border-radius: 15px;
   margin-bottom: 10px;
   border: 1px solid #ccc;
-
 }
-.options-holder{
+.options-holder {
   width: 100%;
   display: flex;
   flex-direction: row;
@@ -65,15 +68,12 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 } */
 
-
-
-
-.inggerholder-image{
+.inggerholder-image {
   display: flex;
   flex-direction: row;
   align-items: center;
 }
-.creategroup{
+.creategroup {
   box-shadow: -1px 4px 6px 3px rgba(0, 0, 0, 0.1);
   padding: 10px;
   background-color: white;
@@ -81,19 +81,17 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: pointer; 
+  cursor: pointer;
   font-size: 15px;
   transition: background-color 0.3s ease;
 }
-.creategroup img{
+.creategroup img {
   width: 15px;
 
   height: 15px;
-
 }
-.creategroup:hover{
- 
-  background-color:var(--icon-hover-backgroud-color);
+.creategroup:hover {
+  background-color: var(--icon-hover-backgroud-color);
 }
 
 .closeicon {
@@ -105,11 +103,11 @@
   top: 70px;
   right: 30px;
   cursor: pointer;
-  transition: transform 0.5s, background-color 0.5s;  
+  transition: transform 0.5s, background-color 0.5s;
 }
 
 .closeicon:hover {
-  transform: rotate(90deg); 
+  transform: rotate(90deg);
   background-color: rgba(255, 255, 255, 0.644);
 }
 
@@ -131,7 +129,7 @@
   justify-content: center;
   margin-right: 10px;
   margin: 0px auto;
-  transition: transform 0.3s ease, box-shadow 0.3s ease; 
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .icon-wrapper img {
@@ -139,17 +137,16 @@
 }
 
 .icon-wrapper:hover {
-  transform: scale(1.2) rotate(15deg); 
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);  
+  transform: scale(1.2) rotate(15deg);
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
 }
 
-.optionname{
+.optionname {
   margin-top: 2px;
   color: black;
   font-size: 13px;
- 
 }
-.main-outer-holder{
+.main-outer-holder {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
@@ -160,35 +157,32 @@
   margin-top: 66px;
   justify-content: center;
 }
-.left-user-holder{
+.left-user-holder {
   flex: 1;
   position: sticky;
   top: 82px;
- 
+
   border-radius: 15px;
   height: 90vh;
   overflow-y: scroll;
-  scrollbar-width: none; 
-  -ms-overflow-style: none;  
+  scrollbar-width: none;
+  -ms-overflow-style: none;
   margin-left: 1rem;
- 
 }
 
-.heading-holder{
+.heading-holder {
   padding: 10px;
   border-bottom: 1px solid rgb(187 187 187);
   margin-left: 10px;
   margin-right: 10px;
 }
-.heading-holder span{
+.heading-holder span {
   opacity: 0.8;
 }
 
-
-
 .bg-green {
-  background-color: green; 
-  color: white; 
+  background-color: green;
+  color: white;
   position: fixed;
   bottom: 10px;
   left: 10px;
@@ -201,8 +195,8 @@
 }
 
 .bg-red {
-  background-color: red; 
-  color: white; 
+  background-color: red;
+  color: white;
   position: fixed;
   bottom: 10px;
   left: 10px;
@@ -216,17 +210,17 @@
   align-items: center;
   z-index: 1000;
 }
-.hidenetworkstatus{
- display: none;
+.hidenetworkstatus {
+  display: none;
 }
 
 .iscontentisloadingpost {
   position: fixed;
-  top: 50%; 
-  left: 50%;  
-  transform: translate(-50%, -50%);  
-  height: 35px;  
-  width: auto;  
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  height: 35px;
+  width: auto;
   text-align: center;
   z-index: 9999;
   width: 50px;
@@ -236,35 +230,18 @@
   background-color: rgba(223, 223, 223, 0.624);
 }
 
-
- 
-
- 
-
-
-
-
-
-
-
-  
-
-
-
- 
 .group-creation-wrapper {
   display: flex;
   justify-content: center;
   align-items: center;
-  position: fixed; 
+  position: fixed;
   top: 0;
   left: 0;
-  height: 100vh;  
-  width: 100vw;  
-  background: rgba(0, 0, 0, 0.5);  
-  z-index: 1000;  
+  height: 100vh;
+  width: 100vw;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
 }
-
 
 .backarrow {
   width: 40px;
@@ -278,12 +255,12 @@
   cursor: pointer;
   top: -2px;
 }
-.backarrow:hover,.morevidoeicon:hover{
+.backarrow:hover,
+.morevidoeicon:hover {
   background-color: var(--icon-backgroud-color);
-
 }
 
-.morevidoeicon{
+.morevidoeicon {
   margin-left: 15px;
   width: 40px;
   height: 40px;
@@ -297,7 +274,7 @@
   top: -2px;
 }
 
-.selectedoptionholderbuttons{
+.selectedoptionholderbuttons {
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
@@ -305,7 +282,7 @@
   padding-right: 10px;
 }
 
-.no-posts-div{
+.no-posts-div {
   background-color: var(--icon-hover-backgroud-color);
   border-radius: 15px;
   display: flex;
@@ -315,31 +292,29 @@
 
   margin-bottom: 10px;
 }
-.no-posts-div img{
+.no-posts-div img {
   width: 20%;
   opacity: 0.7;
   margin-bottom: 25px;
 }
-.ravoomittext ,.grouptext{
+.ravoomittext,
+.grouptext {
   margin-left: 5px;
 }
 
-
-
-
- 
-
-@media (max-width: 500px) {  
-  .left-user-holder,.ravoomittext ,.grouptext,.outer-right-group-holder{
-   display: none;
+@media (max-width: 500px) {
+  .left-user-holder,
+  .ravoomittext,
+  .grouptext,
+  .outer-right-group-holder {
+    display: none;
   }
 
-  .usersname{
+  .usersname {
     font-size: 17px;
     color: black;
   }
   .posts-container {
     width: 100vw;
   }
-  
 }
