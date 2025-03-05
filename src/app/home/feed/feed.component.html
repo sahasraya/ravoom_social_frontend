@@ -6,39 +6,29 @@
   *ngIf="hideNetworkStatus">
 </app-header>
 
-<!-- app.component.html -->
-<form [formGroup]="textPostForm"  >
-  <div>
-    <label for="textPostdescription">Description:</label>
-    <input id="textPostdescription" formControlName="textPostdescription" type="text" required />
-  </div>
 
-  <div>
-    <label for="textPostbody">Text Body:</label>
-    <quill-editor 
-      formControlName="textPostbody" 
-      [modules]="quillConfig"
-       (onContentChanged)="onContentChanged($event)"
-      placeholder="Write your post here...">
-    </quill-editor>
 
-    <div *ngIf="linkPreviewData" class="link-preview">
-      <h3>{{ linkPreviewData.title }}</h3>
-      <p>{{ linkPreviewData.description }}</p>
+
+<div class="gggggggggg-holder">
   
-      <!-- Display the images (if any) -->
-      <div *ngFor="let image of linkPreviewData.images">
-        <img *ngIf="image" [src]="image" alt="Preview Image" />
-      </div>
-  
-      <a [href]="linkPreviewData.url" target="_blank">{{ linkPreviewData.url }}</a>
-    </div>
+  <input
+  type="text"
+  placeholder="Enter URL"
+  (change)="fetchLinkPreviewUrl($event)"
+/>
 
-    
-  </div>
 
-  <button type="submit" [disabled]="textPostForm.invalid">Submit</button>
-</form>
+
+<div *ngIf="linkPreviewData" class="link-preview">
+  <h3>{{ linkPreviewData.title }}</h3>
+  <p>{{ linkPreviewData.description }}</p>
+  <a [href]="linkPreviewData.url" target="_blank">
+    <img [src]="linkPreviewData.image" alt="Link Preview Image" />
+  </a>
+</div>
+
+</div>
+ 
 
 
 

@@ -25,7 +25,7 @@ interface PreviewData {
   title?: string;
   description?: string;
   url?: string;
-  images?: string[];
+  image?: string[];
   mediaType?: string;
   contentType?: string;
   favicons?: string[];
@@ -83,7 +83,7 @@ export class FeedComponent implements OnInit {
   nomorepoststoload: boolean = false;
   textPostForm: FormGroup;
   linkPreviewData: PreviewData | null = null;
- 
+  private apiKey: string = '8adf6215c4be65c5494082faa9421fb0'; 
 
   constructor(private fb: FormBuilder,private mainfeedSelectedStateService: MainfeedSelectedStateService, private mainfeedStateService: MainfeedStateService, private http: HttpClient, private cdr: ChangeDetectorRef, private router: Router, private networkService: NetworkService) {
     this.textPostForm = this.fb.group({
@@ -120,6 +120,34 @@ export class FeedComponent implements OnInit {
    
 
   }
+
+
+  fetchLinkPreviewUrl(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const url = input.value.trim();
+
+    if (!url) {
+      console.warn('URL is empty');
+      return;
+    }
+
+    const proxyUrl = `https://api.linkpreview.net?key=${this.apiKey}&q=${encodeURIComponent(url)}`;
+
+    this.http.get(proxyUrl).subscribe({
+      next: (data: any) => {
+        this.linkPreviewData = data;
+        console.log(this.linkPreviewData);
+      },
+      error: (error) => {
+        console.error('Error fetching link preview', error);
+      },
+    });
+  }
+
+  
+
+
+  
   quillConfig = {
     toolbar: [
       ['bold', 'italic', 'underline'],        // toggled buttons
