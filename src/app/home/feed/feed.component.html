@@ -7,27 +7,28 @@
 </app-header>
 
 
-
-
 <div class="gggggggggg-holder">
-  
-  <input
-  type="text"
-  placeholder="Enter URL"
-  (change)="fetchLinkPreviewUrl($event)"
-/>
+  <div class="gggggggggg-holder">
+    <ckeditor
+      *ngIf="Editor && config"
+      [editor]="Editor"
+      [config]="config"
+      class="editor"
+      #ckedoter
+      (keydown)="ckeditorvalue(ckedoter)"
+    ></ckeditor>
+  </div>
 
-
-
-<div *ngIf="linkPreviewData" class="link-preview">
-  <h3>{{ linkPreviewData.title }}</h3>
-  <p>{{ linkPreviewData.description }}</p>
-  <a [href]="linkPreviewData.url" target="_blank">
-    <img [src]="linkPreviewData.image" alt="Link Preview Image" />
-  </a>
+  <!-- Display link preview -->
+  <div *ngIf="linkPreviewData" class="link-preview">
+    <h3>{{ linkPreviewData.title }}</h3>
+    <p>{{ linkPreviewData.description }}</p>
+    <img [src]="linkPreviewData.image[0]" alt="Preview image" *ngIf="linkPreviewData.image && linkPreviewData.image.length > 0">
+    <a [href]="linkPreviewData.url" target="_blank">{{ linkPreviewData.url }}</a>
+  </div>
 </div>
 
-</div>
+
  
 
 

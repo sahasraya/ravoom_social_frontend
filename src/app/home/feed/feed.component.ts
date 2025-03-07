@@ -1,7 +1,7 @@
-import { ChangeDetectorRef, Component, HostListener, OnInit } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, HostListener, Inject, OnInit, PLATFORM_ID, ViewChild } from '@angular/core';
 import { AddPostComponent } from '../../widgets/add-post/add-post.component';
 import { HttpClient, HttpClientModule, HttpErrorResponse } from '@angular/common/http';
-import { CommonModule } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { catchError, map, of, tap } from 'rxjs';
 import { PostComponent } from '../../widgets/post/post.component';
@@ -18,8 +18,9 @@ import { MainfeedStateService } from '../../services/main-feed.service';
 import { MainfeedSelectedStateService } from '../../services/main-feed-selected.service';
 import { QuillModule } from 'ngx-quill';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { getLinkPreview } from 'link-preview-js';
 
+import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic'; // Import the open-source CKEditor build
+import { CKEditorModule } from '@ckeditor/ckeditor5-angular'; // Import CKEditorModule
 
 interface PreviewData {
   title?: string;
@@ -29,6 +30,13 @@ interface PreviewData {
   mediaType?: string;
   contentType?: string;
   favicons?: string[];
+}
+
+
+// Define the expected type for the editor
+interface CKEditorType {
+  create(sourceElementOrData: HTMLElement | string, config?: any): Promise<any>;
+  EditorWatchdog: any;
 }
 
 @Component({
@@ -49,13 +57,14 @@ interface PreviewData {
     HttpClientModule,
     QuillModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    CKEditorModule,
   ],
   templateUrl: './feed.component.html',
-  styleUrl: './feed.component.css'
+  styleUrl: './feed.component.css',
 })
-export class FeedComponent implements OnInit {
-
+export class FeedComponent implements OnInit,AfterViewInit {
+  @ViewChild('ckedoter', { static: false }) ckeditorElement!: ElementRef;
   
   posts: any[] = [];
   openaddpostscreenbool: boolean = false;
@@ -83,16 +92,37 @@ export class FeedComponent implements OnInit {
   nomorepoststoload: boolean = false;
   textPostForm: FormGroup;
   linkPreviewData: PreviewData | null = null;
-  private apiKey: string = '8adf6215c4be65c5494082faa9421fb0'; 
+  
 
-  constructor(private fb: FormBuilder,private mainfeedSelectedStateService: MainfeedSelectedStateService, private mainfeedStateService: MainfeedStateService, private http: HttpClient, private cdr: ChangeDetectorRef, private router: Router, private networkService: NetworkService) {
+  private isCKEditorInitialized = false;
+
+  public Editor: CKEditorType | null = null; // Initialize as null
+  public config = {
+    toolbar: [
+      'undo', 'redo', '|',
+      'bold', 'italic', '|',
+      'link', '|', // Add the link button
+      'paragraph'
+    ],
+    licenseKey: 'GPL', // Explicitly declare GPL license
+  };
+  
+
+  constructor( @Inject(PLATFORM_ID) private platformId: Object,private fb: FormBuilder,private mainfeedSelectedStateService: MainfeedSelectedStateService, private mainfeedStateService: MainfeedStateService, private http: HttpClient, private cdr: ChangeDetectorRef, private router: Router, private networkService: NetworkService) {
     this.textPostForm = this.fb.group({
       textPostdescription: ['', Validators.required],
       textPostbody: ['', Validators.required],
     });
   }
+ 
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
+
+    if (isPlatformBrowser(this.platformId)) {
+      const { default: ClassicEditor } = await import('@ckeditor/ckeditor5-build-classic');
+      this.Editor = ClassicEditor as unknown as CKEditorType; // Cast ClassicEditor to the correct type
+    }
+    
   
     setTimeout(() => {
       const cachedPostsData = this.mainfeedStateService.getState('posts');
@@ -117,73 +147,110 @@ export class FeedComponent implements OnInit {
       this.updateNetworkStatus(status);
     });
 
-   
-
+ 
   }
 
 
-  fetchLinkPreviewUrl(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    const url = input.value.trim();
-
-    if (!url) {
-      console.warn('URL is empty');
-      return;
-    }
-
-    const proxyUrl = `https://api.linkpreview.net?key=${this.apiKey}&q=${encodeURIComponent(url)}`;
-
-    this.http.get(proxyUrl).subscribe({
-      next: (data: any) => {
-        this.linkPreviewData = data;
-        console.log(this.linkPreviewData);
-      },
-      error: (error) => {
-        console.error('Error fetching link preview', error);
-      },
-    });
-  }
-
-  
 
 
-  
-  quillConfig = {
-    toolbar: [
-      ['bold', 'italic', 'underline'],        // toggled buttons
-      [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-      [{ 'header': [1, 2, 3, false] }],
-      [{ 'align': [] }],
-      ['link', 'image']
-    ]
-  };
+  ngAfterViewInit(): void {
+    // Initialize CKEditor and listen for keystrokes
+    this.cdr.detectChanges(); // Force change detection
 
+    if (this.ckeditorElement && this.ckeditorElement.nativeElement && !this.isCKEditorInitialized) {
+      const editorElement = this.ckeditorElement.nativeElement as HTMLElement;
 
-  onContentChanged(event: any): void {
-    const text = event.text;
-    const urlRegex = /(https?:\/\/[^\s]+)/g;
-    const matchedUrls = text.match(urlRegex);
+      if (this.Editor) {
+        this.Editor.create(editorElement, {
+          ...this.config,
+        }).then(editor => {
+          this.isCKEditorInitialized = true;
 
-    if (matchedUrls && matchedUrls.length > 0) {
-      const latestUrl = matchedUrls[matchedUrls.length - 1];
-      this.fetchLinkPreview(latestUrl);
-    }
-  }
+          // Listen for changes in the editor's content
+          editor.model.document.on('change:data', () => {
+            const data = editor.getData(); // Get the current content of the editor
+            console.log('Editor content:', data); // Log the content
 
-fetchLinkPreview(url: string): void {
-  const proxyUrl = `http://localhost:8000/get_link_preview?url=${encodeURIComponent(url)}`;
+            const urlRegex = /https?:\/\/[^\s]+/g; // Regex to match URLs
+            const urls = data.match(urlRegex); // Extract all URLs from the content
 
-  this.http.get(proxyUrl).subscribe({
-    next: (data: PreviewData) => {
-      this.linkPreviewData = data;
-      console.log(this.linkPreviewData);
+            // If URLs are found, fetch the preview for the latest URL
+            if (urls && urls.length > 0) {
+              const latestUrl = urls[urls.length - 1]; // Get the most recent URL
+              this.fetchLinkPreview(latestUrl); // Fetch preview for the latest URL
+            }
+          });
+        });
+      }
+    } else {
       this.cdr.detectChanges();
-    },
-    error: (error) => {
-      console.error('Error fetching link preview', error);
+      console.error('Editor container element not found');
     }
-  });
+  }
+
+ 
+  ckeditorvalue(editorComponent: any): void {
+  
+    // Access the CKEditor instance from the CKEditorComponent
+    const editorInstance = editorComponent.editorInstance;
+  
+    if (editorInstance && editorInstance.getData) {
+      const content = editorInstance.getData(); // Get the current content of the editor
+  
+      // Use DOMParser to extract raw text content
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(content, 'text/html');
+      const rawText = doc.body.textContent || ''; // Extract text content without HTML tags
+  
+      console.log('Editor raw text content on keydown:', rawText); // Log the raw text content
+      this.fetchLinkPreview(rawText);
+    } else {
+      console.error('CKEditor instance is not available.');
+    }
+  }
+
+fetchLinkPreview(url: string) {
+  // Use Beeceptor as a proxy
+  const beeceptorUrl = `https://ravoom.free.beeceptor.com?url=${encodeURIComponent(url)}`;
+
+  // Fetch the HTML content through Beeceptor
+  this.http.get(beeceptorUrl, { responseType: 'text' }).subscribe(
+    (html: string) => {
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(html, 'text/html');
+
+      // Extract metadata from the HTML
+      const title = doc.querySelector('meta[property="og:title"]')?.getAttribute('content') ||
+        doc.querySelector('title')?.textContent ||
+        'No title available';
+
+      const description = doc.querySelector('meta[property="og:description"]')?.getAttribute('content') ||
+        doc.querySelector('meta[name="description"]')?.getAttribute('content') ||
+        'No description available';
+
+      const image = doc.querySelector('meta[property="og:image"]')?.getAttribute('content') ||
+        doc.querySelector('meta[name="twitter:image"]')?.getAttribute('content') ||
+        '';
+
+      // Update the linkPreviewData property
+      this.linkPreviewData = {
+        title: title,
+        description: description,
+        url: url,
+        image: image ? [image] : [],
+        mediaType: '',
+        contentType: '',
+        favicons: [],
+      };
+      console.log( this.linkPreviewData);
+    },
+    (error) => {
+      console.error('Error fetching link preview:', error);
+      this.linkPreviewData = null;
+    }
+  );
 }
+
 
 
 
