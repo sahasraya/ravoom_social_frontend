@@ -8,16 +8,8 @@
 
 
 <div class="gggggggggg-holder">
-  <div class="gggggggggg-holder">
-    <ckeditor
-      *ngIf="Editor && config"
-      [editor]="Editor"
-      [config]="config"
-      class="editor"
-      #ckedoter
-      (keydown)="ckeditorvalue(ckedoter)"
-    ></ckeditor>
-  </div>
+  
+  <ckeditor *ngIf="Editor" [editor]="Editor" [config]="config"></ckeditor>
 
   <!-- Display link preview -->
   <div *ngIf="linkPreviewData" class="link-preview">
