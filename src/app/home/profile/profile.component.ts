@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpClientModule, HttpErrorResponse, HttpParams } from '@angular/common/http';
-import { ChangeDetectorRef, Component, HostListener, Input, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, HostListener, Input, OnInit, Output } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { PostComponent } from '../../widgets/post/post.component';
@@ -29,7 +29,7 @@ import { ProfileStateService } from '../../services/profile.service';
 })
 export class ProfileComponent   {
   @Input() profileowneruid: string | undefined;
-
+  @Output() postAdded = new EventEmitter<void>();
  
   userid: any;
   getfrommethoduserid:any;
@@ -67,6 +67,10 @@ export class ProfileComponent   {
   mygroups: any[] = [];
   iamfollowinggroups: any[] = [];
 
+
+
+  
+  
   constructor( private profileStateService:ProfileStateService, private http: HttpClient, private route: ActivatedRoute,private cdref: ChangeDetectorRef,private router:Router) { }
 
   ngOnInit(): void {
@@ -109,7 +113,48 @@ export class ProfileComponent   {
 
   }
 
-
+  async onPostAdded(): Promise<void> {
+    this.offset = 0;          // Reset offset for fresh load
+    this.posts = [];          // Clear existing posts
+    await this.getPostsFeed(this.userid);  // Load new posts from server
+  
+    this.profileData = {
+      ...this.profileData,
+      posts: this.posts       // Update cached profileData with fresh posts
+    };
+  
+    this.processProfilePostsdata(); // Update UI with new posts
+  }
+  
+  
+  async getPostsFeed(userid: string): Promise<void> {
+    if (this.loading) return;
+    this.loading = true;
+  
+    const formDataUser = new FormData();
+    formDataUser.append('userid', userid);
+    formDataUser.append('limit', this.limit.toString());
+    formDataUser.append('offset', this.offset.toString());
+  
+    try {
+      const response = await this.http.post<any[]>(`${this.APIURL}get_posts_feed_user`, formDataUser).toPromise();
+      const newPosts = this.processPosts(response!);
+  
+      this.posts = [...this.posts, ...newPosts];
+      this.offset += this.limit;
+  
+      // ✅ Save updated profileData with new posts
+      const updatedProfileData = { ...this.profileData, posts: this.posts };
+      this.profileStateService.saveState(userid, updatedProfileData);
+  
+      this.cdref.detectChanges();
+    } catch (error) {
+      console.error('There was an error fetching posts!', error);
+    } finally {
+      this.loading = false;
+    }
+  }
+  
   loadInitialData(): void {
     this.posts = [];  
     this.offset = 0;
@@ -218,26 +263,22 @@ export class ProfileComponent   {
   
 
 
-  processProfilePostsdata(): void { 
-
-  
+  processProfilePostsdata(): void {
     if (Array.isArray(this.posts)) {
-      
       this.faveposts = this.posts.filter(post => post.isFavorite); 
       this.iamfollowinguserslist = this.posts.filter(post => post.isFollowing);  
   
       this.posts = this.posts.map((post: any) => ({
         ...post,
-        formattedDate: this.formatDate(post.createdAt),  
+        formattedDate: this.formatDate(post.createdAt),
       }));
     }
   
     this.cdref.detectChanges();
   }
   
+  
 
-
- 
 
   processProfileDetails(): void {
     if (!this.profileData) {
@@ -257,12 +298,11 @@ export class ProfileComponent   {
       this.followButtonText = this.profileData.followingStatus ? "Following" : "Follow";
     }
   
-    if (Array.isArray(this.profileData.posts)) {
-      this.posts = this.profileData.posts.map((post: any) => ({
-        ...post,
-        formattedDate: this.formatDate(post.createdAt), 
-      }));
-    }
+    // ✅ Use this.posts instead of profileData.posts
+    this.posts = (this.posts || []).map((post: any) => ({
+      ...post,
+      formattedDate: this.formatDate(post.createdAt),
+    }));
   
     if (Array.isArray(this.profileData.favoritePosts)) {
       this.faveposts = this.profileData.favoritePosts;
@@ -275,8 +315,8 @@ export class ProfileComponent   {
     if (Array.isArray(this.profileData.iamFollowed)) {
       this.iamfolloweduserslist = this.profileData.iamFollowed;
     }
-  
   }
+  
   
   formatDate(dateString: string): string {
     const date = new Date(dateString);
@@ -287,27 +327,7 @@ export class ProfileComponent   {
     });
   }
 
-  async getPostsFeed(userid:string): Promise<void> {
-    if (this.loading) return;
-    this.loading = true;
-    const formDataUser = new FormData();
-    formDataUser.append('userid', userid);
-    formDataUser.append('limit', this.limit.toString());
-    formDataUser.append('offset', this.offset.toString());
 
-    try {
-      const response = await this.http.post<any[]>(`${this.APIURL}get_posts_feed_user`, formDataUser).toPromise();
-      this.posts = [...this.posts, ...this.processPosts(response!)];
-      this.offset += this.limit;
-      const updatedProfileData = { ...this.profileData, posts: this.posts };
-      this.profileStateService.saveState(userid, updatedProfileData);
-      this.cdref.detectChanges();
-    } catch (error) {
-      console.error('There was an error!', error);
-    } finally {
-      this.loading = false;
-    }
-  }
 
   async getUserDetails(userid: string): Promise<void> {
     const formData = new FormData();
@@ -604,10 +624,10 @@ onImageClick(): void {
  
 onCloseLargerImage(): void {
   this.showLargerImage = false;
-}
-onPostAdded(): void {
-  this.getPostsFeed(this.userid);  
-}
+  }
+  
+
+
 
 
 

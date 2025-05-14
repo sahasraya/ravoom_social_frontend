@@ -134,7 +134,7 @@
   <span *ngIf="post.groupname != null" class="groupname" (click)="joingroup(post.grouptype,post.groupid,post.username,post.userid )">  {{ post.groupname }}</span>
 
  
-  <span *ngIf="post.posttype === 'link'" class="linktext">{{post.filepath}}</span>
+  <!-- <span *ngIf="post.posttype === 'link'" class="linktext">dddddddddddddddd{{post.filepath}}</span> -->
 
   <a [href]="post.thelink" target="_blank" class="link-wrapper" *ngIf="post.posttype === 'link'">{{post.thelink}}</a>
 
@@ -206,7 +206,7 @@
 
 
 
-  <div *ngIf="post.posttype === 'link'" class="imageholder">
+<div *ngIf="post.posttype === 'link'" class="imageholder">
    
     <img [src]="post.textbody" alt="" (click)="getthecomments($event, post.postid,post.n_or_g)" >
     

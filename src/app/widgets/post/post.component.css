@@ -6,31 +6,30 @@
   margin-bottom: 15px;
   border-radius: 10px;
   background-color: #fff;
- 
+
   margin: 0 auto;
 
-  font-family: 'Open Sans', sans-serif;
+  font-family: "Open Sans", sans-serif;
   margin-bottom: 15px;
-
 }
 
-.username{
+.username {
   color: var(--primarycolor);
   font-weight: bold;
   font-size: 15px;
   cursor: pointer;
 }
-.username:hover,.groupname:hover{
+.username:hover,
+.groupname:hover {
   text-decoration: underline;
 }
 .groupname {
-  max-width: 550px;  
-  white-space: nowrap; 
-  overflow: hidden; 
-  text-overflow: ellipsis; 
-  color: rgba(0, 0, 0, 0.74) ;
+  max-width: 550px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: rgba(0, 0, 0, 0.74);
   cursor: pointer;
- 
 }
 .post-header {
   display: flex;
@@ -54,33 +53,32 @@
   position: absolute;
   top: 0;
   right: 0;
-  width: 10px;  
+  width: 10px;
   height: 10px;
-  background-color: rgb(0, 219, 0); 
+  background-color: rgb(0, 219, 0);
   border-radius: 50%;
-  border: 2px solid white;  
+  border: 2px solid white;
 }
-
 
 .imageholder {
   margin-top: 10px;
   width: 100%;
-  height: var(--post-dynamic-width);  
-  background-color: #d9d9d9;  
+  height: var(--post-dynamic-width);
+  background-color: #d9d9d9;
   overflow: hidden;
-  display: flex;  
-  align-items: center; 
-  justify-content: center;  
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border-radius: 10px;
-  position: relative; 
+  position: relative;
 }
 
 .imageholder img {
-  max-width: 80%; 
-  max-height: 80%; 
-  position: absolute;   
-  filter: none;  
-  border-radius: 10px;  
+  max-width: 80%;
+  max-height: 80%;
+  position: absolute;
+  filter: none;
+  border-radius: 10px;
 }
 
 .dot-indicators {
@@ -98,22 +96,22 @@
   width: 10px;
   height: 10px;
   margin: 0 5px;
-  background-color: rgba(255, 255, 255, 0.5);  
+  background-color: rgba(255, 255, 255, 0.5);
   border-radius: 50%;
   cursor: pointer;
   transition: background-color 0.3s ease, transform 0.3s ease;
 }
 
 .dot-indicators .active-dot {
-  background-color: #fff; 
-  transform: scale(1.2); 
+  background-color: #fff;
+  transform: scale(1.2);
 }
 
 .dot-indicators span:hover {
-  background-color: rgba(255, 255, 255, 0.8);  
+  background-color: rgba(255, 255, 255, 0.8);
 }
 
-.main-outer-div-holder-image{
+.main-outer-div-holder-image {
   position: relative;
   display: flex;
   justify-content: center;
@@ -124,27 +122,27 @@
   z-index: 0;
 }
 .mainimage {
-  position: absolute;  
-  top: 50%;  
-  left: 50%;  
-  transform: translate(-50%, -50%);  
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   max-width: 80%;
   max-height: 80%;
   border-radius: 15px;
 }
- 
+
 .link-wrapper {
-  display: inline-block;  
-  max-width: 100%;  
-  overflow: hidden;  
-  text-overflow: ellipsis;  
-  white-space: nowrap;  
-  word-wrap: break-word;  
-  display: -webkit-box;  
- 
-  -webkit-box-orient: vertical;  
+  display: inline-block;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  word-wrap: break-word;
+  display: -webkit-box;
+
+  -webkit-box-orient: vertical;
 }
-.linktext{
+.linktext {
   font-weight: bold;
 }
 .link-wrapper {
@@ -152,25 +150,23 @@
   overflow: hidden;
   text-overflow: ellipsis;
   display: block;
-  max-height: 2.4em; 
-  line-height: 1.2em;  
+  max-height: 2.4em;
+  line-height: 1.2em;
 }
 
-.videoholder{
+.videoholder {
   margin-top: 10px;
   width: 100%;
   height: 50vh;
 }
 
-
-.videoholder video{
+.videoholder video {
   width: 100%;
   height: 50vh;
   border-radius: 10px;
 }
 
-
-.audioholder{
+.audioholder {
   margin-top: 10px;
   margin-bottom: 10px;
   width: 100%;
@@ -180,15 +176,13 @@
   padding: 30px 10px;
 }
 
-
-.audioholder video{
+.audioholder video {
   width: 100%;
   height: auto;
   border-radius: 10px;
 }
 
-
-.active-buttons-holder{
+.active-buttons-holder {
   margin-top: 15px;
   margin-bottom: 10px;
   display: flex;
@@ -196,35 +190,32 @@
   align-items: center;
 }
 
-
- .buttun-hodler{
+.buttun-hodler {
   display: flex;
   align-items: center;
- }
- .green-dot {
+}
+.green-dot {
   position: absolute;
   bottom: 0;
   right: 0;
-  width: 10px;  
+  width: 10px;
   height: 10px;
-  background-color: rgb(0, 219, 0); 
+  background-color: rgb(0, 219, 0);
   border-radius: 50%;
-  border: 2px solid white;  
+  border: 2px solid white;
 }
 
-.likescount{
+.likescount {
   margin-left: 2px;
   cursor: pointer;
-
 }
-.likescount:hover{
+.likescount:hover {
   text-decoration: underline;
 }
 
-
- .comment-button{
+.comment-button {
   padding: 10px;
- 
+
   border-radius: 25px;
   cursor: pointer;
   display: flex;
@@ -233,14 +224,14 @@
   margin-left: 10px;
   gap: 2px;
   transition: background-color 0.3s ease;
- }
- .comment-button:hover{
+}
+.comment-button:hover {
   background-color: var(--icon-hover-backgroud-color);
- }
+}
 
- .comment-button img{
+.comment-button img {
   width: 20px;
- }
+}
 
 .dropdown-menu {
   position: absolute;
@@ -271,8 +262,8 @@
 }
 
 .dropdown-menu img {
-  width: 20px;  
-  margin-right: 10px; 
+  width: 20px;
+  margin-right: 10px;
 }
 
 .dropdownicons {
@@ -280,12 +271,11 @@
   align-items: center;
 }
 
-.username-holder{
+.username-holder {
   position: relative;
   width: 100%;
   display: flex;
   justify-content: space-between;
-
 }
 .postownerdetailholder {
   display: flex;
@@ -295,28 +285,27 @@
   width: 100%;
 }
 
-
 .delete-confirmation-dialog {
-  position: fixed;  
+  position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background-color: red; 
-  color: white;  
+  background-color: red;
+  color: white;
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   text-align: center;
-  z-index: 1000;  
-  width: 300px;  
-  max-width: 80%;  
+  z-index: 1000;
+  width: 300px;
+  max-width: 80%;
 }
 
 .delete-confirmation-dialog p {
   margin: 0 0 10px 0;
 }
-.alert-BG{
-  position: fixed;  
+.alert-BG {
+  position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
@@ -330,31 +319,29 @@
   padding: 8px 20px;
   cursor: pointer;
   border: none;
-  background-color: #fff;  
-  color: #f44336;  
+  background-color: #fff;
+  color: #f44336;
   border-radius: 4px;
   font-size: 14px;
   transition: background-color 0.3s, color 0.3s;
 }
 
 .delete-confirmation-dialog button:hover {
-  background-color: #f44336;  
-  color: #fff; 
+  background-color: #f44336;
+  color: #fff;
 }
 
-.joinbtn{
+.joinbtn {
   color: white;
   font-size: 15px;
   border-radius: 20px;
-  background-color:var(--primarycolor);
+  background-color: var(--primarycolor);
   margin-right: 10px;
   padding: 5px 10px;
   cursor: pointer;
   transition: background-color 0.3s, color 0.3s;
-
 }
-.joinbtn:hover{
-
+.joinbtn:hover {
   background-color: var(--primary-faded);
   color: var(--primarycolor);
 }
@@ -368,15 +355,13 @@
   overflow: scroll;
   position: fixed;
   top: 0px;
-  background-color:white;
+  background-color: white;
   left: 0px;
   width: 100%;
   height: 100vh;
   z-index: 1000;
 }
 
- 
- 
 .image-nav-controls {
   position: absolute;
   width: 100%;
@@ -384,120 +369,103 @@
   justify-content: space-between;
   padding: 0 10px;
   z-index: 100;
-  top: 50%; 
-  transform: translateY(-50%); 
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .image-nav-controls img {
-  width: 40px;  
+  width: 40px;
   height: 40px;
   background-color: white;
-  border-radius: 50%;  
+  border-radius: 50%;
   padding: 10px;
   cursor: pointer;
-  transition: transform 0.3s ease, background-color 0.3s ease; 
+  transition: transform 0.3s ease, background-color 0.3s ease;
 }
 
 .image-nav-controls img:hover {
-  background-color: #f0f0f0;  
-  transform: scale(1.1);  
+  background-color: #f0f0f0;
+  transform: scale(1.1);
 }
 
- 
 .image-nav-controls img:active {
-  background-color: #d0d0d0;  
-  transform: scale(1.05);  
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);  
+  background-color: #d0d0d0;
+  transform: scale(1.05);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
 }
 
-.numberofimages{
+.numberofimages {
   width: 30px;
   height: 30px;
-  background-color:var(--icon-hover-backgroud-color);
+  background-color: var(--icon-hover-backgroud-color);
   color: black;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: 'Open Sans', sans-serif;
+  font-family: "Open Sans", sans-serif;
   font-size: 14px;
   position: absolute;
   top: 10px;
   right: 10px;
   text-align: center;
- 
 }
-.dropdown-toggle{
-width: 35px;
-cursor: pointer;
-padding: 10px;
-border-radius: 50%;
-background-color: var(--icon-backgroud-color);
+.dropdown-toggle {
+  width: 35px;
+  cursor: pointer;
+  padding: 10px;
+  border-radius: 50%;
+  background-color: var(--icon-backgroud-color);
 }
 
-.dropdown-toggle:hover{
-background-color: var(--icon-hover-backgroud-color);
-
+.dropdown-toggle:hover {
+  background-color: var(--icon-hover-backgroud-color);
 }
 .textholder {
-width: 100%;
-margin-top: 10px;
+  width: 100%;
+  margin-top: 10px;
 }
-.audiofile{
+.audiofile {
   width: 100%;
 }
 .text-holder {
-border-radius: 10px;
-height: var(--post-dynamic-width)  ;
-display: flex;
-justify-content: center;
-align-items: center;
-background-color: white;  
-border: 1px solid #ccc;
-padding: 10px;  
+  border-radius: 10px;
+  display: flex;
+  justify-content: flex-start;
 
+  background-color: white;
+  border: 1px solid #ccc;
+  padding: 10px;
 }
 
 .text-post-text {
-margin: 0;
-color: black;
-text-align: center;
-font-family: Arial, Helvetica, sans-serif;
-font-weight: bold;
-font-size: 20px;
-word-wrap: break-word;  
-max-width: 100%; 
+  margin: 0;
+  color: black;
+  text-align: left;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 20px;
+  word-wrap: break-word;
+  max-width: 100%;
 }
 
-.postdetilsholder{
+.postdetilsholder {
   display: inline;
   display: flex;
   flex-direction: column;
 }
 
-
-
-
-
-
-
-
-
 .reporting-screen {
-  position: fixed;  
+  position: fixed;
   top: 0;
   left: 0;
-  width: 100vw;  
-  height: 100vh;  
-  background-color: rgba(0, 0, 0, 0.8);  
-  display: flex; 
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000;  
+  z-index: 1000;
 }
-
-
-
 
 .closeicon {
   padding: 15px;
@@ -506,29 +474,28 @@ max-width: 100%;
   border-radius: 50%;
   position: absolute;
   cursor: pointer;
-  transition: transform 0.5s, background-color 0.5s;  
+  transition: transform 0.5s, background-color 0.5s;
   position: fixed;
   top: 70px;
   right: 10px;
 }
 
 .closeicon:hover {
-  transform: rotate(90deg); 
+  transform: rotate(90deg);
   background-color: rgba(255, 255, 255, 0.644);
 }
 
-.postdiscription{
+.postdiscription {
   max-width: 100%;
-  display: block;  
-  
-  word-wrap: break-word;  
-  overflow-wrap: break-word;  
+  display: block;
+
+  word-wrap: break-word;
+  overflow-wrap: break-word;
   white-space: normal;
   margin-bottom: 10px;
 }
 
 .liked-dot {
-    
   height: 25px;
   width: 25px;
   border-radius: 50%;
@@ -541,9 +508,8 @@ max-width: 100%;
 }
 
 .liked-dot:hover {
-  border-width: 3px;  
+  border-width: 3px;
   transform: scale(1.1);
-  
 }
 
 .dot-blue {
@@ -559,37 +525,27 @@ max-width: 100%;
 }
 
 .dot-blue:hover {
- 
-  border-width: 4px;  
+  border-width: 4px;
 }
 
-
-
-
- 
-
-
-
-.loadmorebutton{
+.loadmorebutton {
   color: white;
   font-size: 10px;
-  font-family: 'Open Sans', sans-serif;
+  font-family: "Open Sans", sans-serif;
   padding: 8px 15px;
- border-radius: 50px;
- background-color: var(--primarycolor);
- transition: background-color 0.2s;
- box-shadow: -1px 5px 10px 1px rgba(0, 0, 0, 0.2);
- cursor: pointer;
- border: none;
-margin-bottom: 2px;
-outline:none;
+  border-radius: 50px;
+  background-color: var(--primarycolor);
+  transition: background-color 0.2s;
+  box-shadow: -1px 5px 10px 1px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  border: none;
+  margin-bottom: 2px;
+  outline: none;
 }
-.loadmorebutton:hover{
+.loadmorebutton:hover {
   background-color: white;
   color: var(--primarycolor);
 }
-
-
 
 .bottom-message {
   position: fixed;
@@ -600,16 +556,14 @@ outline:none;
   color: #fff;
   padding: 15px 20px;
   border-radius: 25px;
-  
+
   transition: opacity 0.5s ease;
   z-index: 1000;
 }
 
-
-.profile-holder{
+.profile-holder {
   position: fixed;
 }
-
 
 .fixed-bottom-div {
   position: fixed;
@@ -617,7 +571,7 @@ outline:none;
   bottom: 0;
   left: 0;
   right: 0;
-  background-color:var(--primarycolor);
+  background-color: var(--primarycolor);
   color: white;
   text-align: center;
   padding: 10px;
@@ -625,15 +579,14 @@ outline:none;
   z-index: 1000;
   margin: 10px auto;
   border-radius: 40px;
- 
 }
-.fixed-bottom-div-unblocked{
+.fixed-bottom-div-unblocked {
   position: fixed;
   width: 30vw;
   bottom: 0;
   left: 0;
   right: 0;
-  background-color:rgb(0, 156, 0);
+  background-color: rgb(0, 156, 0);
   color: white;
   text-align: center;
   padding: 10px;
@@ -662,51 +615,37 @@ outline:none;
   padding: 5px;
 }
 
-
-
-
-@media (max-width: 500px) {  
-
-  .fixed-bottom-div ,.fixed-bottom-div-unblocked{
+@media (max-width: 500px) {
+  .fixed-bottom-div,
+  .fixed-bottom-div-unblocked {
     width: 95vw;
   }
-  .username{
-    max-width: 200px;       
-    white-space: nowrap;    
-    overflow: hidden;        
-    text-overflow: ellipsis; 
-    word-wrap: break-word;   
-    overflow-wrap: break-word; 
+  .username {
+    max-width: 200px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
     hyphens: auto;
   }
 
-  .imageholder ,.text-holder{
+  .imageholder,
+  .text-holder {
     height: var(--post-dynamic-width-mobile);
   }
-  .closeicon{
+  .closeicon {
     background-color: white;
     z-index: 10;
   }
 
-  .bottom-message{
+  .bottom-message {
     font-size: 13px;
     display: flex;
     justify-content: center;
     align-items: center;
   }
-  .bottom-message span{
+  .bottom-message span {
     text-align: center;
   }
- 
-
 }
-
-
-
- 
- 
- 
-
-
-
-

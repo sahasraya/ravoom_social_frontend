@@ -4,11 +4,11 @@ import { CommonModule } from '@angular/common';
 import {  RouterModule } from '@angular/router';
 import { HttpClient, HttpClientModule, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { NgxLinkPreviewModule } from 'ngx-link-preview';
 import { PLATFORM_ID } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { PreLoaderComponent } from '../pre-loader/pre-loader.component';
 import { useridexported } from '../../auth/const/const';
+import { firstValueFrom } from 'rxjs';
  
 
 @Component({
@@ -20,7 +20,6 @@ import { useridexported } from '../../auth/const/const';
     FormsModule,
     ReactiveFormsModule,
     RouterModule,
-    NgxLinkPreviewModule,
     PreLoaderComponent
   ],
   templateUrl: './add-post.component.html',
@@ -50,11 +49,16 @@ export class AddPostComponent {
   selectedColorElement: HTMLElement | null = null;
   writigtextpost:boolean =false;
 
-  showvideoaudioformbool:boolean =true;
+  showvideobool:boolean =true;
+  showaudiobool:boolean =false;
   showtextpostformbool:boolean =false;
   showimagepostsformbool:boolean =false;
-  showlinkpostformbool:boolean =false;
+  showlinkpostformbool: boolean = false;
+  characterCount = 0;
   isNoImage: boolean = false;
+  isLoadingPreview = false;
+  onselectaudioorviodeselectdiscriptiontext: string = '';
+
   
   linkPreviewData: any = null;
 
@@ -108,26 +112,43 @@ export class AddPostComponent {
  
   checkposttype(postType:string):void{
 
-    if(postType =="v" || postType == "a"){
-      this.showvideoaudioformbool =true;
+    if(postType =="v"){
+      this.showvideobool =true;
       this.showtextpostformbool =false;
+      this.showaudiobool =false;
       this.showimagepostsformbool =false;
       this.showlinkpostformbool = false;
+      
+    }else if(postType =="a"){
+      this.showvideobool =true;
+      this.showtextpostformbool =false;
+      this.showaudiobool =false;
+      this.showimagepostsformbool =false;
+      this.showlinkpostformbool = false;
+    
     }else if(postType =="i"){
-      this.showvideoaudioformbool =false;
+      this.showvideobool =false;
       this.showtextpostformbool =false;
-      this.showimagepostsformbool =true;
+      this.showimagepostsformbool = true;
+      this.showaudiobool =false;
       this.showlinkpostformbool = false;
+      
     }else if(postType == "t"){
-      this.showvideoaudioformbool =false;
+      this.showvideobool =false;
       this.showtextpostformbool =true;
-      this.showimagepostsformbool =false;
+      this.showimagepostsformbool = false;
+      this.showaudiobool =false;
       this.showlinkpostformbool = false;
+      
+
     }else if(postType =="l"){
-      this.showvideoaudioformbool =false;
+      this.showvideobool =false;
       this.showtextpostformbool =false;
-      this.showimagepostsformbool =false;
+      this.showimagepostsformbool = false;
+      this.showaudiobool =false;
       this.showlinkpostformbool = true;
+      
+
     }
 
   }
@@ -163,23 +184,25 @@ export class AddPostComponent {
     const formData = new FormData();
     formData.append('url', url);
   
-    this.http.post<any>(`${this.APIURL}get-preview`, formData).subscribe({
-      next: (data) => {
-        this.linkPreviewData = data;
+    this.isLoadingPreview = true;
+    this.linkPreviewData = null;
+    this.isNoImage = false;
   
+    try {
+      const data = await firstValueFrom(this.http.post<any>(`${this.APIURL}get-preview`, formData));
+      this.linkPreviewData = data;
   
-        if (this.linkPreviewData.img) {
-          this.isNoImage = false;
-        } else {
-          this.isNoImage = true;
-        }
-      },
-      error: (error: HttpErrorResponse) => {
-        console.error('Error fetching link preview:', error);
+      if (this.linkPreviewData.img) {
+        this.isNoImage = false;
+      } else {
+        this.isNoImage = true;
       }
-    });
+    } catch (error) {
+      console.error('Error fetching link preview:', error);
+    } finally {
+      this.isLoadingPreview = false;
+    }
   }
-
 
 
   onSubmitText(): void {
@@ -208,7 +231,6 @@ export class AddPostComponent {
   
         this.http.post(this.APIURL + 'add-post-text', formData,{headers}).subscribe({
           next: response => {
-            console.log('Response from server:', response);
 
             this.postAdded.emit();
             this.closePost.emit();
@@ -228,15 +250,22 @@ export class AddPostComponent {
   }
 
   autoResize(textarea: HTMLTextAreaElement): void {
-    if (textarea.value.trim() !== "") {
-      this.writigtextpost = true;  
-    } else {
-      this.writigtextpost = false;  
+    let text = textarea.value;
+  
+    // Enforce max character limit
+    if (text.length > 700) {
+      text = text.substring(0, 700);
+      textarea.value = text;
+      this.textPostForm.get('textPostbody')?.setValue(text); // Keep form in sync
     }
-    textarea.style.height = 'auto';  
-    textarea.style.height = `${textarea.scrollHeight}px`; 
+  
+    this.characterCount = text.length;
+  
+    // Toggle preview visibility
+    this.writigtextpost = text.trim().length > 0;
+  
+ 
   }
-
   selectColor(color: string, event: MouseEvent): void {
     this.selectedColor = color;
 
@@ -456,19 +485,74 @@ export class AddPostComponent {
 
   onImageFileSelected(event: any): void {
     const files: FileList = event.target.files;
-    this.selectedFiles = Array.from(files);  
-
- 
+    const fileArray = Array.from(files);
+  
+    this.selectedFiles = [];
     this.imagePreviews = [];
-
-    for (let file of this.selectedFiles) {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => {
-        this.imagePreviews.push(reader.result as string);
-      };
+  
+    for (let file of fileArray) {
+      if (file.size > 2 * 1024 * 1024) {
+        console.log(`Original size of "${file.name}": ${(file.size / 1024 / 1024).toFixed(2)} MB`);
+        this.compressImage(file).then((compressedFile) => {
+          console.log(`Compressed size of "${compressedFile.name}": ${(compressedFile.size / 1024 / 1024).toFixed(2)} MB`);
+          this.selectedFiles.push(compressedFile);
+  
+          const reader = new FileReader();
+          reader.readAsDataURL(compressedFile);
+          reader.onload = () => {
+            this.imagePreviews.push(reader.result as string);
+          };
+        });
+      } else {
+        this.selectedFiles.push(file);
+  
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => {
+          this.imagePreviews.push(reader.result as string);
+        };
+      }
     }
   }
+  
+  private compressImage(file: File, maxWidth = 1024, quality = 0.7): Promise<File> {
+    return new Promise((resolve, reject) => {
+      const image = new Image();
+      const reader = new FileReader();
+  
+      reader.readAsDataURL(file);
+      reader.onload = (event) => {
+        image.src = event.target?.result as string;
+      };
+  
+      image.onload = () => {
+        const canvas = document.createElement('canvas');
+        const scale = maxWidth / image.width;
+        const width = image.width > maxWidth ? maxWidth : image.width;
+        const height = image.height * (width / image.width);
+  
+        canvas.width = width;
+        canvas.height = height;
+  
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return reject('Canvas context not found');
+  
+        ctx.drawImage(image, 0, 0, width, height);
+  
+        canvas.toBlob((blob) => {
+          if (!blob) return reject('Compression failed');
+          const compressedFile = new File([blob], file.name, {
+            type: file.type,
+            lastModified: Date.now(),
+          });
+          resolve(compressedFile);
+        }, file.type, quality);
+      };
+  
+      image.onerror = (err) => reject(err);
+    });
+  }
+  
 
 
   removeImagePreview(preview: string): void {
@@ -487,34 +571,55 @@ export class AddPostComponent {
   
 
   showvideoaudioform():void{
-    this.showvideoaudioformbool =true;
+    this.showvideobool =true;
     this.showtextpostformbool =false;
     this.showimagepostsformbool =false;
     this.showlinkpostformbool = false;
+    this.showaudiobool = false;
+    this.onselectaudioorviodeselectdiscriptiontext = 'Short Discription';
+  }
+
+  showaudioform():void{
+    this.showvideobool =false;
+    this.showtextpostformbool =false;
+    this.showimagepostsformbool =false;
+    this.showlinkpostformbool = false;
+    this.showaudiobool = true;
+    this.onselectaudioorviodeselectdiscriptiontext = 'Audio Discription';
+
   }
 
 
+
   showimagepostsform():void{
-    this.showvideoaudioformbool =false;
+    this.showvideobool =false;
     this.showtextpostformbool =false;
     this.showimagepostsformbool =true;
     this.showlinkpostformbool = false;
+    this.showaudiobool = false;
+    this.onselectaudioorviodeselectdiscriptiontext = '';
+
 
   }
 
   showtextpostform():void{
-    this.showvideoaudioformbool =false;
+    this.showvideobool =false;
     this.showtextpostformbool =true;
     this.showimagepostsformbool =false;
     this.showlinkpostformbool = false;
+    this.showaudiobool = false;
+    this.onselectaudioorviodeselectdiscriptiontext = '';
 
   }
 
   showlinkpostform():void{
-    this.showvideoaudioformbool =false;
+    this.showvideobool =false;
     this.showtextpostformbool =false;
     this.showimagepostsformbool =false;
     this.showlinkpostformbool = true;
+    this.showaudiobool = false;
+    this.onselectaudioorviodeselectdiscriptiontext = '';
+
   }
 
 

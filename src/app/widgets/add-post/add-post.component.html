@@ -9,16 +9,17 @@
 
 
   <div class="btn-holder">
-    <button (click)="showvideoaudioform()" [class.selected]="showvideoaudioformbool" class="navigationsbuttons">Add video or audio</button>
-    <button (click)="showimagepostsform()" [class.selected]="showimagepostsformbool" class="navigationsbuttons">Add image</button>
-    <button (click)="showtextpostform()" [class.selected]="showtextpostformbool" class="navigationsbuttons">Add text</button>
-    <button (click)="showlinkpostform()" [class.selected]="showlinkpostformbool" class="navigationsbuttons">Add link</button>
+    <button (click)="showvideoaudioform()" [class.selected]="showvideobool" class="navigationsbuttons">Add Short</button>
+    <button (click)="showaudioform()" [class.selected]="showaudiobool" class="navigationsbuttons">Add Audio</button>
+    <button (click)="showimagepostsform()" [class.selected]="showimagepostsformbool" class="navigationsbuttons">Add Image</button>
+    <button (click)="showtextpostform()" [class.selected]="showtextpostformbool" class="navigationsbuttons">Add Text</button>
+    <button (click)="showlinkpostform()" [class.selected]="showlinkpostformbool" class="navigationsbuttons">Add Link</button>
   </div>
   
 
 
 
-<form  [formGroup]="addPostForm" (ngSubmit)="onSubmit()" *ngIf="showvideoaudioformbool">
+<form  [formGroup]="addPostForm" (ngSubmit)="onSubmit()" *ngIf="showvideobool || showaudiobool">
 
 
     <div *ngIf="durationError" class="error-message">
@@ -27,7 +28,7 @@
 
 
     <div>
-      <label for="postdescription">Description</label>
+      <label for="postdescription">{{onselectaudioorviodeselectdiscriptiontext}}</label>
       <input id="postdescription" formControlName="postdescription" type="text" placeholder="Wrrite something here...">
 
     </div>
@@ -129,12 +130,13 @@
     <div class="thebodyoftext">
       <label for="textPostbody">Body</label>
       <textarea id="textPostbody"
-              formControlName="textPostbody"
-              placeholder="Write body here..."
-              #bodytext
-              (input)="autoResize(bodytext)"
-              rows="1"
-              style="resize: none; overflow: hidden;"></textarea>
+      class="custom-textarea"
+      formControlName="textPostbody"
+      placeholder="Write body here..."
+      #bodytext
+      (input)="autoResize(bodytext)"
+      rows="1"></textarea>
+      <div class="char-count">{{ characterCount }}/700 characters</div>
     </div>
   
     <div class="preview-window" *ngIf="writigtextpost">

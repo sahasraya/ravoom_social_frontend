@@ -31,6 +31,7 @@ export class AddPostGroupComponent {
 
   selectedColor: string = '';
   linkUrl: string = '';
+  onselectaudioorviodeselectdiscriptiontext: string = '';
   
   apiRoute = 'https://opengraph.io/api/1.1/site/:site?app_id=3ec5a83b-4cce-4f5e-8ed7-30f72e7414e7';
           
@@ -41,7 +42,9 @@ export class AddPostGroupComponent {
 
   showvideoaudioformbool:boolean =true;
   showtextpostformbool:boolean =false;
-  showimagepostsformbool:boolean =false;
+  showimagepostsformbool: boolean = false;
+  showvideobool:boolean =true;
+  showaudiobool:boolean =false;
   showlinkpostformbool:boolean =false;
   isuploadingthepost:boolean=false;
  
@@ -136,7 +139,7 @@ this.getLinkPreview(this.linkUrl);
 
 
 
-  onSubmitText(): void {
+ async onSubmitText(): Promise<void> {
     if (this.textPostForm.valid) {
       const formData = new FormData();
       
@@ -440,38 +443,56 @@ this.getLinkPreview(this.linkUrl);
   
 
 
- 
-  
-
   showvideoaudioform():void{
-    this.showvideoaudioformbool =true;
+    this.showvideobool =true;
     this.showtextpostformbool =false;
     this.showimagepostsformbool =false;
     this.showlinkpostformbool = false;
+    this.showaudiobool = false;
+    this.onselectaudioorviodeselectdiscriptiontext = 'Short Discription';
+  }
+
+  showaudioform():void{
+    this.showvideobool =false;
+    this.showtextpostformbool =false;
+    this.showimagepostsformbool =false;
+    this.showlinkpostformbool = false;
+    this.showaudiobool = true;
+    this.onselectaudioorviodeselectdiscriptiontext = 'Audio Discription';
+
   }
 
 
+
   showimagepostsform():void{
-    this.showvideoaudioformbool =false;
+    this.showvideobool =false;
     this.showtextpostformbool =false;
     this.showimagepostsformbool =true;
     this.showlinkpostformbool = false;
+    this.showaudiobool = false;
+    this.onselectaudioorviodeselectdiscriptiontext = '';
+
 
   }
 
   showtextpostform():void{
-    this.showvideoaudioformbool =false;
+    this.showvideobool =false;
     this.showtextpostformbool =true;
     this.showimagepostsformbool =false;
     this.showlinkpostformbool = false;
+    this.showaudiobool = false;
+    this.onselectaudioorviodeselectdiscriptiontext = '';
 
   }
 
   showlinkpostform():void{
-    this.showvideoaudioformbool =false;
+    this.showvideobool =false;
     this.showtextpostformbool =false;
     this.showimagepostsformbool =false;
     this.showlinkpostformbool = true;
+    this.showaudiobool = false;
+    this.onselectaudioorviodeselectdiscriptiontext = '';
+
   }
 
   

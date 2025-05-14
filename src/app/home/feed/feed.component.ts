@@ -414,11 +414,13 @@ async getuserdetails(userid:string):Promise<void>{
  
   }
 
-  onPostAdded(): void {
+  async onPostAdded(): Promise<void> {
  
     this.offset = 0;
     this.posts = [];
-    this.getPostsFeed();  
+    await this.getPostsFeed();  
+    this.processPostsDetails();
+    
   }
 
 
