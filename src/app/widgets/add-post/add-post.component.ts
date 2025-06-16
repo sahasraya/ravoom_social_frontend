@@ -9,7 +9,9 @@ import { environment } from '../../../environments/environment';
 import { PreLoaderComponent } from '../pre-loader/pre-loader.component';
 import { useridexported } from '../../auth/const/const';
 import { firstValueFrom } from 'rxjs';
- 
+import { EditorModule } from '@tinymce/tinymce-angular';
+import { getLinkPreview } from 'link-preview-js';
+import { Editor, RawEditorOptions } from 'tinymce';  // Add this
 
 @Component({
   selector: 'app-add-post',
@@ -20,7 +22,8 @@ import { firstValueFrom } from 'rxjs';
     FormsModule,
     ReactiveFormsModule,
     RouterModule,
-    PreLoaderComponent
+    PreLoaderComponent,
+    EditorModule
   ],
   templateUrl: './add-post.component.html',
   styleUrl: './add-post.component.css'
@@ -39,7 +42,8 @@ export class AddPostComponent {
   mediaDuration: number | null = null;
   selectedColor: string = '';
   linkUrl: string = '';
-  isuploadingthepost:boolean = false;
+  isuploadingthepost: boolean = false;
+  
 
   
   apiRoute = 'https://opengraph.io/api/1.1/site/:site?app_id=3ec5a83b-4cce-4f5e-8ed7-30f72e7414e7';
@@ -59,6 +63,17 @@ export class AddPostComponent {
   isLoadingPreview = false;
   onselectaudioorviodeselectdiscriptiontext: string = '';
 
+  init: RawEditorOptions = {
+    base_url: '/assets/tinymce',
+    suffix: '.min',
+    plugins: 'lists link image table code help wordcount',
+    toolbar: 'undo redo | formatselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help',
+    setup: (editor: any) => {  // Use 'any' as a temporary workaround
+      editor.on('PasteChange', (e: any) => {
+        this.handlePaste(editor, e);
+      });
+    }
+  };
   
   linkPreviewData: any = null;
 
@@ -110,6 +125,56 @@ export class AddPostComponent {
 
   }
  
+
+
+  async handlePaste(editor: Editor, e: any) {
+    // alert('111111111111111');
+    // Get pasted content
+    const pastedText = e.clipboardData?.getData('text/plain');
+    
+    if (!pastedText) return;
+
+    // Simple URL detection
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
+    const urls = pastedText.match(urlRegex);
+    
+    if (urls && urls.length > 0) {
+      e.preventDefault();
+      
+      try {
+        // Get link preview data
+        const previewData = await getLinkPreview(urls[0]);
+        
+        // Create HTML for the preview card
+        const previewHtml = this.generatePreviewHtml(previewData);
+        
+        // Insert at cursor position
+        editor.insertContent(previewHtml);
+      } catch (error) {
+        console.error('Error fetching link preview:', error);
+        // Fallback to just inserting the URL
+        editor.insertContent(`<a href="${urls[0]}" target="_blank">${urls[0]}</a>`);
+      }
+    }
+  }
+
+  generatePreviewHtml(data: any): string {
+    return `
+      <div class="link-preview" style="border: 1px solid #ddd; padding: 10px; margin: 10px 0; border-radius: 4px; max-width: 500px;">
+        ${data.images && data.images.length > 0 ? 
+          `<img src="${data.images[0]}" style="max-width: 100%; margin-bottom: 10px;">` : ''}
+        <div>
+          <a href="${data.url}" target="_blank" style="font-weight: bold; color: #333; text-decoration: none;">
+            ${data.title || data.url}
+          </a>
+          ${data.description ? 
+            `<p style="margin: 5px 0; color: #666; font-size: 0.9em;">${data.description}</p>` : ''}
+        </div>
+      </div>
+    `;
+  }
+ 
+
   checkposttype(postType:string):void{
 
     if(postType =="v"){

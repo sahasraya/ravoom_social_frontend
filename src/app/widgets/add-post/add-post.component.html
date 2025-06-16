@@ -178,6 +178,9 @@
      
     <div >
       <h2>Add Preview</h2>
+      <editor [init]="init"></editor>
+    
+
       <input type="text" placeholder="Enter URL" (input)="getPreview(link.value)" #link formControlName="linkrul">
  
       <div *ngIf="linkPreviewData" class="previewdiv">
