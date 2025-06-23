@@ -175,13 +175,51 @@
 
     </div>
   
+      <!-- <editor [init]="init"></editor> -->
      
     <div >
+
+
       <h2>Add Preview</h2>
-      <editor [init]="init"></editor>
+<div class="form-group">
+  <input 
+    type="text" 
+    placeholder="Enter URL" 
+    formControlName="linkrul"
+    (input)="onLinkInput($event)"
+    class="form-control"
+  >
+</div>
+
+<!-- Loading state -->
+<div *ngIf="isLoadingPreview" class="loading-state">
+  <app-pre-loader></app-pre-loader>
+  <span>Loading preview...</span>
+</div>
+
+<!-- Link Preview Card -->
+<div *ngIf="linkPreviewData && !isLoadingPreview" class="link-preview-card">
+  <div class="preview-image-container" [class.no-image]="!linkPreviewData.image">
+    <img *ngIf="linkPreviewData.image" 
+         [src]="linkPreviewData.image" 
+         alt="Preview"
+         (error)="handleImageError()">
+    <div *ngIf="!linkPreviewData.image" class="domain-initial">
+      {{ linkPreviewData.domain.charAt(0).toUpperCase() }}
+    </div>
+  </div>
+  <div class="preview-content">
+    <div class="preview-domain">{{ linkPreviewData.domain }}</div>
+    <h3 class="preview-title">
+      <a [href]="linkPreviewData.url" target="_blank">{{ linkPreviewData.title }}</a>
+    </h3>
+    <a [href]="linkPreviewData.url" target="_blank" class="preview-url">Visit Site</a>
+  </div>
+</div>
+
     
 
-      <input type="text" placeholder="Enter URL" (input)="getPreview(link.value)" #link formControlName="linkrul">
+      <!-- <input type="text" placeholder="Enter URL" (input)="getPreview(link.value)" #link formControlName="linkrul"> -->
  
       <div *ngIf="linkPreviewData" class="previewdiv">
         <h3>{{ linkPreviewData.title }}</h3>

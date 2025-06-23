@@ -1,6 +1,6 @@
-import { Component, EventEmitter, Inject, Input, Output } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Inject, Input, Output, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'; 
-import { CommonModule } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import {  RouterModule } from '@angular/router';
 import { HttpClient, HttpClientModule, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -11,7 +11,9 @@ import { useridexported } from '../../auth/const/const';
 import { firstValueFrom } from 'rxjs';
 import { EditorModule } from '@tinymce/tinymce-angular';
 import { getLinkPreview } from 'link-preview-js';
-import { Editor, RawEditorOptions } from 'tinymce';  // Add this
+import { Editor, RawEditorOptions } from 'tinymce';  
+import EmbedJS from 'embed-js';
+import urlPlugin from 'embed-plugin-url';
 
 @Component({
   selector: 'app-add-post',
@@ -62,6 +64,7 @@ export class AddPostComponent {
   isNoImage: boolean = false;
   isLoadingPreview = false;
   onselectaudioorviodeselectdiscriptiontext: string = '';
+   @ViewChild('embedContainer') embedContainer!: ElementRef;
 
   init: RawEditorOptions = {
     base_url: '/assets/tinymce',
@@ -125,8 +128,176 @@ export class AddPostComponent {
 
   }
  
+async onLinkInput(event: Event) {
+    const url = (event.target as HTMLInputElement).value;
+    this.linkUrl = url;
+    
+    if (this.isValidUrl(url)) {
+      await this.fetchLinkPreview(url);
+    } else {
+      this.clearPreview();
+    }
+  }
+
+  isValidUrl(string: string): boolean {
+    try {
+      new URL(string);
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
+
+async fetchLinkPreview(url: string): Promise<void> {
+  if (!isPlatformBrowser(this.platformId)) return;
+
+  try {
+    this.isLoadingPreview = true;
+    this.clearPreview();
+
+    const embed = new EmbedJS({
+      input: url,
+      plugins: [
+        urlPlugin({
+          fetchOptions: { 
+            headers: { 'Accept': 'text/html' },
+            mode: 'no-cors'
+          }
+        })
+      ]
+    });
+
+    const { result } = await embed.text();
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = result;
+    const previewElement = tempDiv.querySelector('.embed-url');
+
+    // First get basic data
+    const previewData = {
+      title: previewElement?.getAttribute('data-title') || this.extractTitleFromUrl(url) || 'No title available',
+      description: previewElement?.getAttribute('data-description') || '',
+      image: previewElement?.getAttribute('data-image') || '',
+      url: previewElement?.getAttribute('data-url') || url,
+      domain: this.getDomainFromUrl(url)
+    };
+
+    // If no image found, try to get favicon or logo
+    if (!previewData.image) {
+      previewData.image = await this.getFallbackImage(url);
+    }
+
+    this.linkPreviewData = previewData;
+    console.log('Final preview data:', this.linkPreviewData);
+
+  } catch (error) {
+    console.error('Error fetching link preview:', error);
+    this.linkPreviewData = {
+      title: this.extractTitleFromUrl(url) || 'No title available',
+      description: '',
+      image: await this.getFallbackImage(url),
+      url: url,
+      domain: this.getDomainFromUrl(url)
+    };
+  } finally {
+    this.isLoadingPreview = false;
+  }
+}
+
+private async getFallbackImage(url: string): Promise<string> {
+  try {
+    const domain = this.getDomainFromUrl(url);
+    
+    // YouTube specific handling
+    if (domain.includes('youtube.com') || domain.includes('youtu.be')) {
+      const videoId = this.extractYouTubeId(url);
+      if (videoId) {
+        return `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`;
+      }
+    }
+
+    // Define domain images with type safety
+    const domainImages: Record<string, string> = {
+      'npmjs.com': 'https://authy.com/wp-content/uploads/npm-logo.png',
+      'github.com': 'https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png',
+      'twitter.com': 'https://abs.twimg.com/favicons/twitter.2.ico',
+      // Add more domains as needed
+    };
+
+    // Find matching domain (case insensitive)
+    const domainKey = Object.keys(domainImages).find(key => 
+      domain.toLowerCase().includes(key.toLowerCase())
+    );
+
+    if (domainKey) {
+      return domainImages[domainKey];
+    }
+
+    // Try favicon service
+    const faviconUrl = `https://www.google.com/s2/favicons?domain=${domain}&sz=128`;
+    const faviconExists = await this.testImage(faviconUrl);
+    return faviconExists ? faviconUrl : '';
+
+  } catch {
+    return '';
+  }
+}
+
+private extractYouTubeId(url: string): string | null {
+  const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+  const match = url.match(regExp);
+  return (match && match[2].length === 11) ? match[2] : null;
+}
+
+// Helper to test if image exists
+private testImage(url: string): Promise<boolean> {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => resolve(true);
+    img.onerror = () => resolve(false);
+    img.src = url;
+  });
+}
+handleImageError() {
+  if (this.linkPreviewData.domain.includes('youtube.com')) {
+    const videoId = this.extractYouTubeId(this.linkPreviewData.url);
+    if (videoId) {
+      // Try different YouTube thumbnail qualities
+      this.linkPreviewData.image = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+      return;
+    }
+  }
+  this.linkPreviewData.image = '';
+} 
+
+// Helper method to extract domain from URL
+private getDomainFromUrl(url: string): string {
+  try {
+    return new URL(url).hostname.replace('www.', '');
+  } catch {
+    return url;
+  }
+}
+
+// Helper method to extract a simple title from URL
+private extractTitleFromUrl(url: string): string {
+  try {
+    const domain = this.getDomainFromUrl(url);
+    const path = new URL(url).pathname;
+    return `${domain}${path ? ' - ' + path.split('/').filter(Boolean).join(' ') : ''}`;
+  } catch {
+    return url;
+  }
+}
+
+  private clearPreview(): void {
+    this.linkPreviewData = null;
+    if (this.embedContainer?.nativeElement) {
+      this.embedContainer.nativeElement.innerHTML = '';
+    }
+  }
 
 
+  
   async handlePaste(editor: Editor, e: any) {
     // alert('111111111111111');
     // Get pasted content
