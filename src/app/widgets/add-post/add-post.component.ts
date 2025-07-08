@@ -128,25 +128,68 @@ export class AddPostComponent {
 
   }
  
-async onLinkInput(event: Event) {
-    const url = (event.target as HTMLInputElement).value;
-    this.linkUrl = url;
-    
-    if (this.isValidUrl(url)) {
-      await this.fetchLinkPreview(url);
-    } else {
-      this.clearPreview();
-    }
-  }
 
-  isValidUrl(string: string): boolean {
-    try {
-      new URL(string);
-      return true;
-    } catch (_) {
-      return false;
+  onSubmitLink(): void {
+  if (this.linkPostForm.valid) {
+    this.mackingtheoverflowcorrect();
+
+    const token = localStorage.getItem('jwt');
+    if (!token) {
+      alert("Unauthorized access. Please check your credentials.");
+      return;
     }
+
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+
+    const formData = new FormData();
+    formData.append('uid', this.userid);
+    formData.append('imagePostdescription', this.linkPostForm.get('listPostdescription')!.value);
+    formData.append('thelink', this.linkUrl);
+    formData.append('linktitle', this.linkPreviewData.title);
+
+    if (this.linkPreviewData.image) {
+      formData.append('linkimage', this.linkPreviewData.image);
+    } else {
+      formData.append('linkimage', '');
+    }
+
+    this.http.post(this.APIURL + 'add-post-link', formData, { headers }).subscribe({
+      next: response => {
+        this.linkPostForm.reset();
+        this.postAdded.emit();
+        this.closePost.emit();
+      },
+      error: error => {
+        if (error.status === 401) {
+          alert("Unauthorized access. Please check your credentials.");
+        }
+        console.error('There was an error!', error);
+      }
+    });
   }
+}
+
+async onLinkInput(event: Event) {
+  const url = (event.target as HTMLInputElement).value;
+  this.linkUrl = url;
+
+  if (this.isValidUrl(url)) {
+    await this.fetchLinkPreview(url);
+  } else {
+    this.clearPreview();
+  }
+}
+
+isValidUrl(string: string): boolean {
+  try {
+    new URL(string);
+    return true;
+  } catch (_) {
+    return false;
+  }
+}
 
 async fetchLinkPreview(url: string): Promise<void> {
   if (!isPlatformBrowser(this.platformId)) return;
@@ -159,7 +202,7 @@ async fetchLinkPreview(url: string): Promise<void> {
       input: url,
       plugins: [
         urlPlugin({
-          fetchOptions: { 
+          fetchOptions: {
             headers: { 'Accept': 'text/html' },
             mode: 'no-cors'
           }
@@ -172,7 +215,6 @@ async fetchLinkPreview(url: string): Promise<void> {
     tempDiv.innerHTML = result;
     const previewElement = tempDiv.querySelector('.embed-url');
 
-    // First get basic data
     const previewData = {
       title: previewElement?.getAttribute('data-title') || this.extractTitleFromUrl(url) || 'No title available',
       description: previewElement?.getAttribute('data-description') || '',
@@ -181,7 +223,6 @@ async fetchLinkPreview(url: string): Promise<void> {
       domain: this.getDomainFromUrl(url)
     };
 
-    // If no image found, try to get favicon or logo
     if (!previewData.image) {
       previewData.image = await this.getFallbackImage(url);
     }
@@ -202,6 +243,8 @@ async fetchLinkPreview(url: string): Promise<void> {
     this.isLoadingPreview = false;
   }
 }
+
+  
 
 private async getFallbackImage(url: string): Promise<string> {
   try {
@@ -628,54 +671,6 @@ private extractTitleFromUrl(url: string): string {
 
 
 
-  onSubmitLink(): void {
-    if (this.linkPostForm.valid) {
-      this.mackingtheoverflowcorrect();
-      const token = localStorage.getItem('jwt');
-      if(!token){
-        alert("Unauthorized access. Please check your credentials.");
-        return;
-      }
-
-      const headers = new HttpHeaders({
-        'Authorization': `Bearer ${token}`
-      });
-
-
-
-      const formData = new FormData();
-      formData.append('uid', this.userid);
-      formData.append('imagePostdescription', this.linkPostForm.get('listPostdescription')!.value);
-      formData.append('thelink', this.linkUrl);
-      formData.append('linktitle', this.linkPreviewData.title);
-      if (this.linkPreviewData.img) {
-        formData.append('linkimage', this.linkPreviewData.img);
-    } else {
-        formData.append('linkimage', '');  
-    }
-  
- 
-    
-  
-      this.http.post(this.APIURL + 'add-post-link', formData,{headers}).subscribe({
-        next: response => {
- 
-  
-          this.linkPostForm.reset();
-          this.postAdded.emit();
-          this.closePost.emit();
-        },
-        error: error => {
-          if (error.status === 401) {
-            alert("Unauthorized access. Please check your credentials.");
-  
-          }
-          
-          console.error('There was an error!', error);
-        }
-      });
-    }
-  }
 
 
 
