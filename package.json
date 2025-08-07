@@ -26,6 +26,7 @@
     "@angular/router": "^17.0.0",
     "@angular/ssr": "^17.0.7",
     "@tinymce/tinymce-angular": "^8.0.1",
+    "angular-gtag": "^1.0.4",
     "crypto-js": "^4.2.0",
     "embed-js": "^5.0.4",
     "embed-plugin-emoji": "^5.0.4",

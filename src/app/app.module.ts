@@ -1,12 +1,19 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { AppComponent } from './app.component'; // Import the standalone component
 import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { GtagModule } from 'angular-gtag';
+
+import { AppComponent } from './app.component'; // Import the standalone component
+
 
 @NgModule({
-  declarations: [],  
-  imports: [BrowserModule,HttpClientModule],
+  declarations: [AppComponent],  
+  imports: [
+    BrowserModule,
+    HttpClientModule,
+    GtagModule.forRoot({ trackingId: 'G-QNK5BT8Y1R', trackPageviews: true })
+  ],
   providers: [],
-  bootstrap: [], 
+  bootstrap: [AppComponent],
 })
 export class AppModule {}

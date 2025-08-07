@@ -38,7 +38,7 @@
 
  
 
-  <form [formGroup]="signUpForm" (ngSubmit)="onSubmit()">
+  <form [formGroup]="signUpForm" (ngSubmit)="onSubmit()" enctype="multipart/form-data">
 
 
     <img src="../../../assets/images/reset.png" alt="" class="reset-icon" (click)="resetform($event)" title="reset this form">
@@ -83,7 +83,7 @@
           <input id="emailaddress" formControlName="emailaddress" type="email" placeholder="Email Address" #emailInput>
         </div>
       
-        <!-- <div>
+<!--         <div>
           <label for="phonenumber">
             <div class="icon-wrapper">
               <img src="../../../assets/images/telephone.png" alt="">
