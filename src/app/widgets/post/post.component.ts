@@ -213,6 +213,8 @@ export class PostComponent implements OnInit {
     return URL.createObjectURL(blob);
   }
 
+ 
+  
   loadCurrentImage(): void {
     const image = this.post.images[this.currentImageIndex];
     this.imageUrl = this.createBlobUrl(image, 'image/jpeg');

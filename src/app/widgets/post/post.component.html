@@ -1,55 +1,52 @@
+<div class="fixed-bottom-div" *ngIf="showUndoDiv">
+  <span>User Blocked <b>{{ countdown }}</b> </span>
+  <button class="undo-btn" (click)="undoBlock(post.userid ,post.username)">Undo</button>
+</div>
 
 
- 
+<div class="fixed-bottom-div-unblocked" *ngIf="userunblocked">
+  <span>User Unblocked </span>
+
+</div>
 
 
-  <div class="fixed-bottom-div" *ngIf="showUndoDiv">
-    <span>User Blocked <b>{{ countdown }}</b> </span>
-    <button class="undo-btn" (click)="undoBlock(post.userid ,post.username)">Undo</button>
-  </div>
-
-
-  <div class="fixed-bottom-div-unblocked" *ngIf="userunblocked">
-    <span>User Unblocked </span>
-     
-  </div>
-
-  
 
 <div *ngIf="!post.deleted" class="post">
 
 
- 
+
 
   <div class="liked_members_div_fixed" *ngIf="islikedmembereddivvisible">
     <div class="member_main_outer_holder" #memberMainOuterHolder>
-     <div class="main_titile_holder">
-      <h3>Members Who Liked</h3>
-     </div>
-      <img src="../../../assets/images/close.png" alt="" class="closeicon" (click)="closememebrslikeddiv($event)" >
-  
+      <div class="main_titile_holder">
+        <h3>Members Who Liked</h3>
+      </div>
+      <img src="../../../assets/images/close.png" alt="" class="closeicon" (click)="closememebrslikeddiv($event)">
+
       <div class="main_member_holder" *ngFor="let member of likedMembers">
         <img [src]="member.profileimage" alt="Profile Image" loading="lazy">
-        <span class="liked_member_name" >{{ member.username }}</span>
+        <span class="liked_member_name">{{ member.username }}</span>
       </div>
-  
-      
-      <button *ngIf="!loadingMoreMembers && hasMoreMembers" (click)="loadMoreMembers($event)" class="loadmorebutton">Load More</button>
+
+
+      <button *ngIf="!loadingMoreMembers && hasMoreMembers" (click)="loadMoreMembers($event)"
+        class="loadmorebutton">Load More</button>
     </div>
   </div>
-  
-  
 
 
 
-  
 
 
 
-   <div class="reporting-screen" *ngIf="showreportscreenBool" >
-    <img src="../../../assets/images/close.png" alt="" class="closeicon" (click)="closeReportScreen()" >
-    <app-reportting [type]="postreport" [selectedreportPostId]="selectedreportPostId" [selectedrepostpostowneruid]="selectedrepostpostowneruid"></app-reportting>
-   </div>
+
+
+
+  <div class="reporting-screen" *ngIf="showreportscreenBool">
+    <img src="../../../assets/images/close.png" alt="" class="closeicon" (click)="closeReportScreen()">
+    <app-reportting [type]="postreport" [selectedreportPostId]="selectedreportPostId"
+      [selectedrepostpostowneruid]="selectedrepostpostowneruid"></app-reportting>
+  </div>
 
 
 
@@ -58,123 +55,132 @@
 
 
   <div class="post-header">
-    
+
 
     <div class="bottom-message" *ngIf="addedtofav"><span>{{favtext}}</span></div>
- 
+
     <div *ngIf="profileImageUrl" class="profile-image-container">
-      <img *ngIf="profileImageUrl" [src]="profileImageUrl" alt="User Profile Image" class="profile-image"  />
+      <img *ngIf="profileImageUrl" [src]="profileImageUrl" alt="User Profile Image" class="profile-image" />
       <div class="green-dot" *ngIf="onlinestatus"></div>
     </div>
 
 
 
     <div class="postownerdetailholder">
-           <div class="username-holder">
-            <span>
-              <div class="postdetilsholder">
-                <a  class="username" (click)="navigatetouser()" title="see {{post.username}} profile">{{ post.username }} </a>
-              <small >{{ calculateTimeAgo(post.posteddate) }}</small>
-              </div>
-   
-            </span>
-                  <div class="buttun-hodler" >
-                   
-                     <span *ngIf="this.userid !=''">
-                      <span class="joinbtn" *ngIf="post.posttype === 'group' || post.groupid != null " (click)="joingroup(post.grouptype,post.groupid,post.username,post.userid )">{{btntext}}</span>
-                     </span>
-                     
-                   
-              
-                    
-                  
-                    <img src="../../../assets/images/threedots.png" alt=""   (click)="toggleDropdown($event, post)" class="dropdown-toggle"  >
+      <div class="username-holder">
+        <span>
+          <div class="postdetilsholder">
+            <a class="username" (click)="navigatetouser()" title="see {{post.username}} profile">{{ post.username }}
+            </a>
+            <small>{{ calculateTimeAgo(post.posteddate) }}</small>
+          </div>
 
-                  </div>
-                  <div *ngIf="post.showDropdown" class="dropdown-menu">
-                    <ul>
-                      <li (click)="removePost(post.postid)" *ngIf="post.userid == this.userid && this.userid !=''" class="dropdownicons">
-                        <img src="../../../assets/images/delete.png" alt="" >
-                        Delete
-                      </li>
-                      <li (click)="showreportscreen(post)" *ngIf="this.userid !=''">  <img src="../../../assets/images/complain.png" alt="" *ngIf="this.userid !=''"> Report</li>
-                      <li (click)="savepost($event,post.postid,post)" *ngIf="this.userid !=''">  <img src="../../../assets/images/save.png" alt="" >   {{ post.isSaved ? 'Remove from favorites' : 'Save' }}</li>
+        </span>
+        <div class="buttun-hodler">
+
+          <span *ngIf="this.userid !=''">
+            <span class="joinbtn" *ngIf="post.posttype === 'group' || post.groupid != null "
+              (click)="joingroup(post.grouptype,post.groupid,post.username,post.userid )">{{btntext}}</span>
+          </span>
 
 
-                       <li (click)="blockuser(post.userid ,post.username)" *ngIf="post.userid != this.userid && this.userid !=''" class="dropdownicons">
-                        <img src="../../../assets/images/blocked.png" alt="" >
-                        Block
-                      </li>
-
-                      <li (click)="copypostlink(post.postid ,post.n_or_g)"   class="dropdownicons">
-                        <img src="../../../assets/images/copy.png" alt="" >
-                        Copy
-                      </li>
 
 
-                      
-                    </ul>
-                  </div>
 
-           </div>
-  
- 
+          <img src="../../../assets/images/threedots.png" alt="" (click)="toggleDropdown($event, post)"
+            class="dropdown-toggle">
+
+        </div>
+        <div *ngIf="post.showDropdown" class="dropdown-menu">
+          <ul>
+            <li (click)="removePost(post.postid)" *ngIf="post.userid == this.userid && this.userid !=''"
+              class="dropdownicons">
+              <img src="../../../assets/images/delete.png" alt="">
+              Delete
+            </li>
+            <li (click)="showreportscreen(post)" *ngIf="this.userid !=''"> <img
+                src="../../../assets/images/complain.png" alt="" *ngIf="this.userid !=''"> Report</li>
+            <li (click)="savepost($event,post.postid,post)" *ngIf="this.userid !=''"> <img
+                src="../../../assets/images/save.png" alt=""> {{ post.isSaved ? 'Remove from favorites' : 'Save' }}</li>
+
+
+            <li (click)="blockuser(post.userid ,post.username)" *ngIf="post.userid != this.userid && this.userid !=''"
+              class="dropdownicons">
+              <img src="../../../assets/images/blocked.png" alt="">
+              Block
+            </li>
+
+            <li (click)="copypostlink(post.postid ,post.n_or_g)" class="dropdownicons">
+              <img src="../../../assets/images/copy.png" alt="">
+              Copy
+            </li>
+
+
+
+          </ul>
+        </div>
+
+      </div>
+
+
     </div>
 
 
   </div>
- 
-   <small class="postdiscription">{{post.postdescription}}</small>
+
+  <small class="postdiscription">{{post.postdescription}}</small>
   <div *ngIf="userid != post.userid">
-    <h3 *ngIf="post.posttype === 'group'"> {{post.username}} has created a {{post.grouptype}} group. {{post.grouptype === 'private' ? 'Get permission to join.' :'You can join now.'}}</h3>
+    <h3 *ngIf="post.posttype === 'group'"> {{post.username}} has created a {{post.grouptype}} group. {{post.grouptype
+      === 'private' ? 'Get permission to join.' :'You can join now.'}}</h3>
   </div>
 
- 
-  <h3 *ngIf="userid == post.userid && post.posttype === 'group'">Your group</h3>
-  <span *ngIf="post.groupname != null" class="groupname" (click)="joingroup(post.grouptype,post.groupid,post.username,post.userid )">  {{ post.groupname }}</span>
 
- 
+  <h3 *ngIf="userid == post.userid && post.posttype === 'group'">Your group</h3>
+  <span *ngIf="post.groupname != null" class="groupname"
+    (click)="joingroup(post.grouptype,post.groupid,post.username,post.userid )"> {{ post.groupname }}</span>
+
+
   <!-- <span *ngIf="post.posttype === 'link'" class="linktext">dddddddddddddddd{{post.filepath}}</span> -->
 
   <a [href]="post.thelink" target="_blank" class="link-wrapper" *ngIf="post.posttype === 'link'">{{post.thelink}}</a>
 
   <div *ngIf="post.posttype === 'text'" class="textholder">
-    <div class="text-holder"   (click)="getthecomments($event, post.postid,post.n_or_g)">
+    <div class="text-holder" (click)="getthecomments($event, post.postid,post.n_or_g)">
       <p class="text-post-text">{{ post.textbody }}</p>
     </div>
   </div>
 
-  
+
   <div class="main-outer-div-holder-image" *ngIf="post.posttype === 'image'">
- 
+
     <span class="numberofimages" *ngIf="post.images.length > 1">{{ post.images.length }}</span>
-    
+
     <!-- Display the current image -->
-    <img [src]="imageUrl" alt="Post Image" (click)="getthecomments($event, post.postid, post.n_or_g)" class="mainimage"  />
-  
+    <img [src]="imageUrl" alt="Post Image" (click)="getthecomments($event, post.postid, post.n_or_g)"
+      class="mainimage" />
+
     <!-- Navigation buttons when there are multiple images -->
     <div *ngIf="post.images.length > 1" class="image-nav-controls">
-      <img src="../../../assets/images/left-arrow.png" alt="" (click)="prevImage()" title="prevImage" >
-      <img src="../../../assets/images/right-arrow.png" alt="" (click)="nextImage()" title="nextImage" >
-     
+      <img src="../../../assets/images/left-arrow.png" alt="" (click)="prevImage()" title="prevImage">
+      <img src="../../../assets/images/right-arrow.png" alt="" (click)="nextImage()" title="nextImage">
+
     </div>
 
     <div *ngIf="post.images.length > 1" class="dot-indicators">
-      <span *ngFor="let dot of post.images; let i = index" 
-            [ngClass]="{'active-dot': i === currentImageIndex}" 
-            (click)="goToImage(i)">
+      <span *ngFor="let dot of post.images; let i = index" [ngClass]="{'active-dot': i === currentImageIndex}"
+        (click)="goToImage(i)">
       </span>
     </div>
-    
-  
+
+
     <div [ngStyle]="backgroundStyle" class="imageholder"></div>
   </div>
-  
+
 
 
   <div *ngIf="post.posttype === 'group'" class="imageholder">
-    <img   [src]="groupImageUrl" alt="Post group"    />
-    
+    <img [src]="groupImageUrl" alt="Post group" />
+
   </div>
 
 
@@ -189,12 +195,12 @@
       <button class="close-button" (click)="closeImageSlider()">Close</button>
     </div>
   </div> -->
-  
+
 
 
   <!-- <app-image-larger *ngIf="showLargerImage" [imageUrl]="imageUrl" (close)="onCloseLargerImage()"></app-image-larger> -->
 
-  
+
 
   <div *ngIf="post.posttype === 'video'" class="videoholder">
     <video *ngIf="videoUrl" controls (click)="getthecomments($event, post.postid,post.n_or_g)">
@@ -206,69 +212,75 @@
 
 
 
-<div *ngIf="post.posttype === 'link'" class="imageholder">
-   
-    <img [src]="post.textbody" alt="" (click)="getthecomments($event, post.postid,post.n_or_g)" >
-    
-</div>
+  <div *ngIf="post.posttype === 'link'" class="Linkimageholder">
+
+    <img [src]="post.textbody" alt="" (click)="getthecomments($event, post.postid,post.n_or_g)">
+
+  </div>
 
 
 
-  
 
 
- <div *ngIf="post.posttype === 'audio'" class="audioholder" (click)="getthecomments($event, post.postid,post.n_or_g)">
-  <audio *ngIf="audioUrl" controls class="audiofile" (click)="getthecomments($event, post.postid,post.n_or_g)">
-    <source [src]="audioUrl" type="audio/mpeg" (click)="getthecomments($event, post.postid,post.n_or_g)">
-    Your browser does not support the audio element.
-  </audio>
-</div>
+
+  <div *ngIf="post.posttype === 'audio'" class="audioholder" (click)="getthecomments($event, post.postid,post.n_or_g)">
+    <audio *ngIf="audioUrl" controls class="audiofile" (click)="getthecomments($event, post.postid,post.n_or_g)">
+      <source [src]="audioUrl" type="audio/mpeg" (click)="getthecomments($event, post.postid,post.n_or_g)">
+      Your browser does not support the audio element.
+    </audio>
+  </div>
   <div class="active-buttons-holder">
-  
-    <span *ngIf="likedornottext =='yes'" class="dot liked-dot" (click)="likePost(post.postid, post.userid,  post.username, post.userprofile,post.n_or_g)" [attr.data-postid]="post.postid">
+
+    <span *ngIf="likedornottext =='yes'" class="dot liked-dot"
+      (click)="likePost(post.postid, post.userid,  post.username, post.userprofile,post.n_or_g)"
+      [attr.data-postid]="post.postid">
     </span>
 
-    <span *ngIf="likedornottext !='yes'" class="dot dot-blue" (click)="likePost(post.postid, post.userid,  post.username, post.userprofile,post.n_or_g)" [attr.data-postid]="post.postid">
+    <span *ngIf="likedornottext !='yes'" class="dot dot-blue"
+      (click)="likePost(post.postid, post.userid,  post.username, post.userprofile,post.n_or_g)"
+      [attr.data-postid]="post.postid">
     </span>
- 
- 
+
+
     <span class="likescount" *ngIf="likes > 0" (click)="getlikeedmembers(post.postid)">{{ likes }} </span>
 
 
 
 
     <!-- Comment button -->
-     <!-- <span class="comment-button" (click)="commentOnPost($event,post.postid,post.n_or_g)" *ngIf="post.posttype != 'group'">
+    <!-- <span class="comment-button" (click)="commentOnPost($event,post.postid,post.n_or_g)" *ngIf="post.posttype != 'group'">
       <img src="../../../assets/images/comment.png" alt="" title="add comment"><span *ngIf="comments > 0"> {{ comments }}</span>
      </span> -->
 
-     <span class="comment-button" (click)="getthecomments($event, post.postid,post.n_or_g)" *ngIf="post.posttype != 'group'">
-      <img src="../../../assets/images/comment.png" alt="" title="add comment" ><span *ngIf="comments > 0"> {{ comments }}</span>
-     </span>
+    <span class="comment-button" (click)="getthecomments($event, post.postid,post.n_or_g)"
+      *ngIf="post.posttype != 'group'">
+      <img src="../../../assets/images/comment.png" alt="" title="add comment"><span *ngIf="comments > 0"> {{ comments
+        }}</span>
+    </span>
 
- 
-   
- 
- <span *ngIf="this.userid !='' && userid != post.userid && post.posttype !='group'">
-  <span (click)="iamstartedtofollow(post.userid)" class="comment-button"  title="{{followButtonText}} now">{{followButtonText}}</span>
 
- </span>
+
+
+    <span *ngIf="this.userid !='' && userid != post.userid && post.posttype !='group'">
+      <span (click)="iamstartedtofollow(post.userid)" class="comment-button"
+        title="{{followButtonText}} now">{{followButtonText}}</span>
+
+    </span>
 
 
   </div>
 
- 
+
 
 
 
   <div [ngClass]="{'hiddencommentdiv': !getthecommentsBool, 'commentscreen-holder': getthecommentsBool}">
-    <img src="../../../assets/images/close.png" alt="" class="closeicon" (click)="closememebrslikeddiv($event)" >
+    <img src="../../../assets/images/close.png" alt="" class="closeicon" (click)="closememebrslikeddiv($event)">
 
-    <app-comment 
-        *ngIf="getthecommentsBool && selectedPostId === post.postid" 
-        [postid]="selectedPostId" [groupornormalpostinput]="groupornormalpost">
+    <app-comment *ngIf="getthecommentsBool && selectedPostId === post.postid" [postid]="selectedPostId"
+      [groupornormalpostinput]="groupornormalpost">
     </app-comment>
-</div>
+  </div>
 
 
 
@@ -277,20 +289,3 @@
 
 
 </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

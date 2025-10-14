@@ -59,6 +59,25 @@
   border-radius: 50%;
   border: 2px solid white;
 }
+.Linkimageholder {
+  width: 100%;
+  background-color: #d9d9d9; /* Gray background */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-top: 10px;
+}
+
+.Linkimageholder img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  border-radius: 10px;
+  cursor: pointer;
+  margin: 15px 0px;
+}
 
 .imageholder {
   margin-top: 10px;
